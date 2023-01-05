@@ -2394,7 +2394,7 @@ functions:
     ANGLE aFOV = plr_fFOV;
     // disable zoom in deathmatch
     if (!GetSP()->sp_bCooperative) {
-      aFOV = 90.0f;
+      //aFOV = 90.0f;
     }
     // if sniper active
     if (((CPlayerWeapons&)*m_penWeapons).m_iCurrentWeapon==WEAPON_SNIPER && ((CPlayerWeapons&)*m_penWeapons).m_bSniping)
@@ -4020,7 +4020,7 @@ functions:
     }
     
     en_fAcceleration = plr_fAcceleration;
-    en_fDeceleration = plr_fDeceleration;
+    en_fDeceleration = 0.0f;//plr_fDeceleration;
     if( !GetSP()->sp_bCooperative)
     {
       vTranslation(1) *= 1.35f;
@@ -4278,8 +4278,47 @@ functions:
         vTranslation(2) = 0.0f;
       }
 
-      // set translation
-      SetDesiredTranslation(vTranslation);
+      //Quake movement
+      BOOL bOnGround = en_penReference!=NULL;
+      FLOAT jumpt = vTranslation(2);
+      vTranslation(2) = 0.0f;
+      FLOAT fTickQuantum=_pTimer->TickQuantum;
+      FLOAT3D vAccelDir = (vTranslation * en_mRotation).Normalize();
+      FLOAT fProjVel = en_vCurrentTranslationAbsolute % vAccelDir;
+      FLOAT max_acceleration = 20.0f;
+      if(!bOnGround) { max_acceleration /= 10.0f; }
+      //CPrintF(TRANSV("max accel %f\n"), max_acceleration);
+      FLOAT max_velocity = 17.0f * 1.2f;
+      FLOAT addspeed = max_velocity - fProjVel;
+      if(addspeed > 0.0f && vTranslation.Length() > 0.01f) {
+        FLOAT accelspeed = max_acceleration * fTickQuantum * max_velocity;
+        if(accelspeed > addspeed ) { accelspeed = addspeed; }
+        en_vCurrentTranslationAbsolute += vAccelDir * accelspeed;
+        //CPrintF(TRANSV("t\n"));
+      }
+
+      //apply friciton
+      if(bOnGround) {
+        FLOAT stop_speed = 5.6f;
+        FLOAT friction = 5.0f;
+        FLOAT fSpeed = en_vCurrentTranslationAbsolute.Length();
+        FLOAT fControl = fSpeed < stop_speed ? stop_speed : fSpeed;
+        FLOAT fDrop = fControl * friction * fTickQuantum;
+        FLOAT fNewSpeed = fSpeed > fDrop ? ( fSpeed - fDrop ) : 0.0f;
+
+        CPrintF(TRANSV("speed factor %f\n"), fNewSpeed / fSpeed);
+        if(fSpeed > 0.001f) {
+          en_vCurrentTranslationAbsolute *= fNewSpeed / fSpeed;
+        }
+      }
+
+      CPrintF(TRANSV("speed %f\n"), en_vCurrentTranslationAbsolute.Length());
+
+      //CPrintF(TRANSV("accel: %f %f %f ProjVel %f\n"), en_vCurrentTranslationAbsolute(1), en_vCurrentTranslationAbsolute(2), en_vCurrentTranslationAbsolute(3), fProjVel);
+
+      SetDesiredTranslation(FLOAT3D(0.0, jumpt, 0.0)); //jump
+      //AddToMovers();
+      bOnGround = (m_pstState == PST_STAND)||(m_pstState == PST_CROUCH);
 
       // set pitch and banking from the normal rotation into the view rotation
       en_plViewpoint.Rotate_HPB(ANGLE3D(
@@ -4298,7 +4337,7 @@ functions:
           FLOATmatrix3D mViewRot;
           MakeRotationMatrixFast(mViewRot, ANGLE3D(en_plViewpoint.pl_OrientationAngle(1),0,0));
           FLOAT3D vTransRel = vTranslation*mViewRot;
-          SetDesiredTranslation(vTransRel);
+          //SetDesiredTranslation(vTransRel);
         }
         en_plViewpoint.pl_OrientationAngle(1) = 0.0f;
 
@@ -4320,7 +4359,6 @@ functions:
       // play moving sounds
       FLOAT fWantSpeed = en_vDesiredTranslationRelative.Length();
       FLOAT fGoesSpeed = en_vCurrentTranslationAbsolute.Length();
-      BOOL bOnGround = (m_pstState == PST_STAND)||(m_pstState == PST_CROUCH);
       BOOL bRunning = bOnGround && fWantSpeed>5.0f && fGoesSpeed>5.0f;
       BOOL bWalking = bOnGround && !bRunning && fWantSpeed>2.0f && fGoesSpeed>2.0f;
       BOOL bSwimming = (m_pstState == PST_SWIM) && fWantSpeed>2.0f && fGoesSpeed>2.0f;
