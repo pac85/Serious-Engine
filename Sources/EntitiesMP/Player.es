@@ -4277,25 +4277,9 @@ functions:
       if (!(m_ulFlags&PLF_JUMPALLOWED) && vTranslation(2)>0) {
         vTranslation(2) = 0.0f;
       }
-
       //Quake movement
       BOOL bOnGround = en_penReference!=NULL;
-      FLOAT jumpt = vTranslation(2);
-      vTranslation(2) = 0.0f;
       FLOAT fTickQuantum=_pTimer->TickQuantum;
-      FLOAT3D vAccelDir = (vTranslation * en_mRotation).Normalize();
-      FLOAT fProjVel = en_vCurrentTranslationAbsolute % vAccelDir;
-      FLOAT max_acceleration = 20.0f;
-      if(!bOnGround) { max_acceleration /= 10.0f; }
-      //CPrintF(TRANSV("max accel %f\n"), max_acceleration);
-      FLOAT max_velocity = 17.0f * 1.2f;
-      FLOAT addspeed = max_velocity - fProjVel;
-      if(addspeed > 0.0f && vTranslation.Length() > 0.01f) {
-        FLOAT accelspeed = max_acceleration * fTickQuantum * max_velocity;
-        if(accelspeed > addspeed ) { accelspeed = addspeed; }
-        en_vCurrentTranslationAbsolute += vAccelDir * accelspeed;
-        //CPrintF(TRANSV("t\n"));
-      }
 
       //apply friciton
       if(bOnGround) {
@@ -4310,6 +4294,22 @@ functions:
         if(fSpeed > 0.001f) {
           en_vCurrentTranslationAbsolute *= fNewSpeed / fSpeed;
         }
+      }
+
+      FLOAT jumpt = vTranslation(2);
+      vTranslation(2) = 0.0f;
+      FLOAT3D vAccelDir = (vTranslation * en_mRotation).Normalize();
+      FLOAT fProjVel = en_vCurrentTranslationAbsolute % vAccelDir;
+      FLOAT max_acceleration = 15.0f;
+      if(!bOnGround) { max_acceleration /= 10.0f; }
+      //CPrintF(TRANSV("max accel %f\n"), max_acceleration);
+      FLOAT max_velocity = plr_fSpeedForward * 1.7f;
+      FLOAT addspeed = max_velocity - fProjVel;
+      if(addspeed > 0.0f && vTranslation.Length() > 0.01f) {
+        FLOAT accelspeed = max_acceleration * fTickQuantum * max_velocity;
+        if(accelspeed > addspeed ) { accelspeed = addspeed; }
+        en_vCurrentTranslationAbsolute += vAccelDir * accelspeed;
+        //CPrintF(TRANSV("t\n"));
       }
 
       CPrintF(TRANSV("speed %f\n"), en_vCurrentTranslationAbsolute.Length());
