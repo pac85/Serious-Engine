@@ -1154,9 +1154,10 @@ properties:
  192 FLOAT m_tmSeriousBombFired = -10.0f,  // when the bomb was last fired
  193 FLOAT bunnyspeed = 0.0f,
  194 FLOAT maxbunnyspeed = 10.0f,
- 195 FLOAT bunnyincrease = 3.0f,
- 196 FLOAT bunnydecrease = 8.0f,
+ 195 FLOAT bunnyincrease = 2.5f,
+ 196 FLOAT bunnydecrease = 50.0f,
  197 FLOAT3D bunnyvector = 1.0f,
+ 198 BOOL wasgrounded = FALSE,
 
 
 {
@@ -4304,10 +4305,11 @@ functions:
 
 
       FLOAT3D unnormalizedMovement = FLOAT3D(0.0f, 0.0f, 0.0f);
-      if(pctlCurrent.bMoveForward  ) { unnormalizedMovement(3) -= plr_fSpeedForward; }
-      if(pctlCurrent.bMoveBackward ) { unnormalizedMovement(3) += plr_fSpeedBackward; }
-      if(pctlCurrent.bMoveLeft  || (pctlCurrent.bStrafe&&pctlCurrent.bTurnLeft)) { unnormalizedMovement(1) -= plr_fSpeedSide; }
-      if(pctlCurrent.bMoveRight || (pctlCurrent.bStrafe&&pctlCurrent.bTurnRight)) { unnormalizedMovement(1) += plr_fSpeedSide; }
+      FLOAT playerspeed = 15.0f;
+      if(pctlCurrent.bMoveForward  ) { unnormalizedMovement(3) -= playerspeed; }
+      if(pctlCurrent.bMoveBackward ) { unnormalizedMovement(3) += playerspeed; }
+      if(pctlCurrent.bMoveLeft  || (pctlCurrent.bStrafe&&pctlCurrent.bTurnLeft)) { unnormalizedMovement(1) -= playerspeed; }
+      if(pctlCurrent.bMoveRight || (pctlCurrent.bStrafe&&pctlCurrent.bTurnRight)) { unnormalizedMovement(1) += playerspeed; }
       BOOL isStrafing = pctlCurrent.bMoveLeft || pctlCurrent.bMoveRight;
       FLOAT jumpt = vTranslation(2);
       BOOL isJumping = jumpt != 0 && bOnGround;
@@ -4318,9 +4320,10 @@ functions:
         bunnyspeed += bunnyincrease;
       }
 
-      if(bOnGround) {
+      if(bOnGround && wasgrounded) {
         bunnyspeed -= bunnydecrease * fTickQuantum;
       }
+      wasgrounded = bOnGround;
 
       bunnyspeed = Clamp(bunnyspeed, 0.0f, maxbunnyspeed);
 
@@ -4329,7 +4332,7 @@ functions:
 
       bunnyvector *= (bunnyspeed > maxbunnyspeed / 2.0) ? bunnyspeed : 0.0f;
 
-      FLOAT max_acceleration = 8.0f;
+      FLOAT max_acceleration = 5.2f;
       FLOAT3D max_velocity = (unnormalizedMovement + bunnyvector) * en_mRotation;
       FLOAT3D addspeed = max_velocity - FLOAT3D(en_vCurrentTranslationAbsolute(1), 0.0, en_vCurrentTranslationAbsolute(3));
       FLOAT pushLen = addspeed.Length();
@@ -4346,7 +4349,7 @@ functions:
 
       //CPrintF(TRANSV("accel: %f %f %f ProjVel %f\n"), en_vCurrentTranslationAbsolute(1), en_vCurrentTranslationAbsolute(2), en_vCurrentTranslationAbsolute(3), fProjVel);
 
-      SetDesiredTranslation(FLOAT3D(0.0, jumpt, 0.0)); //jump
+      SetDesiredTranslation(FLOAT3D(0.0, jumpt/1.3f, 0.0)); //jump
       //AddToMovers();
       bOnGround = (m_pstState == PST_STAND)||(m_pstState == PST_CROUCH);
 
