@@ -1152,6 +1152,12 @@ properties:
  190 INDEX m_iSeriousBombCount = 0,      // ammount of serious bombs player owns
  191 INDEX m_iLastSeriousBombCount = 0,  // ammount of serious bombs player had before firing
  192 FLOAT m_tmSeriousBombFired = -10.0f,  // when the bomb was last fired
+ 193 FLOAT bunnyspeed = 0.0f,
+ 194 FLOAT maxbunnyspeed = 10.0f,
+ 195 FLOAT bunnyincrease = 3.0f,
+ 196 FLOAT bunnydecrease = 8.0f,
+ 197 FLOAT3D bunnyvector = 1.0f,
+
 
 {
   ShellLaunchData ShellLaunchData_array;  // array of data describing flying empty shells
@@ -4277,7 +4283,7 @@ functions:
       if (!(m_ulFlags&PLF_JUMPALLOWED) && vTranslation(2)>0) {
         vTranslation(2) = 0.0f;
       }
-      //Quake movement
+      //Dusk movement
       BOOL bOnGround = en_penReference!=NULL;
       FLOAT fTickQuantum=_pTimer->TickQuantum;
 
@@ -4296,23 +4302,47 @@ functions:
         }
       }
 
+
+      FLOAT3D unnormalizedMovement = FLOAT3D(0.0f, 0.0f, 0.0f);
+      if(pctlCurrent.bMoveForward  ) { unnormalizedMovement(3) -= plr_fSpeedForward; }
+      if(pctlCurrent.bMoveBackward ) { unnormalizedMovement(3) += plr_fSpeedBackward; }
+      if(pctlCurrent.bMoveLeft  || (pctlCurrent.bStrafe&&pctlCurrent.bTurnLeft)) { unnormalizedMovement(1) -= plr_fSpeedSide; }
+      if(pctlCurrent.bMoveRight || (pctlCurrent.bStrafe&&pctlCurrent.bTurnRight)) { unnormalizedMovement(1) += plr_fSpeedSide; }
+      BOOL isStrafing = pctlCurrent.bMoveLeft || pctlCurrent.bMoveRight;
       FLOAT jumpt = vTranslation(2);
+      BOOL isJumping = jumpt != 0 && bOnGround;
+
       vTranslation(2) = 0.0f;
-      FLOAT3D vAccelDir = (vTranslation * en_mRotation).Normalize();
-      FLOAT fProjVel = en_vCurrentTranslationAbsolute % vAccelDir;
-      FLOAT max_acceleration = 15.0f;
-      if(!bOnGround) { max_acceleration /= 10.0f; }
-      //CPrintF(TRANSV("max accel %f\n"), max_acceleration);
-      FLOAT max_velocity = plr_fSpeedForward * 1.7f;
-      FLOAT addspeed = max_velocity - fProjVel;
-      if(addspeed > 0.0f && vTranslation.Length() > 0.01f) {
-        FLOAT accelspeed = max_acceleration * fTickQuantum * max_velocity;
-        if(accelspeed > addspeed ) { accelspeed = addspeed; }
-        en_vCurrentTranslationAbsolute += vAccelDir * accelspeed;
-        //CPrintF(TRANSV("t\n"));
+
+      if(isJumping && isStrafing) {
+        bunnyspeed += bunnyincrease;
       }
 
-      CPrintF(TRANSV("speed %f\n"), en_vCurrentTranslationAbsolute.Length());
+      if(bOnGround) {
+        bunnyspeed -= bunnydecrease * fTickQuantum;
+      }
+
+      bunnyspeed = Clamp(bunnyspeed, 0.0f, maxbunnyspeed);
+
+      bunnyvector = vTranslation;
+      bunnyvector = bunnyvector.Normalize();
+
+      bunnyvector *= (bunnyspeed > maxbunnyspeed / 2.0) ? bunnyspeed : 0.0f;
+
+      FLOAT max_acceleration = 8.0f;
+      FLOAT3D max_velocity = (unnormalizedMovement + bunnyvector) * en_mRotation;
+      FLOAT3D addspeed = max_velocity - FLOAT3D(en_vCurrentTranslationAbsolute(1), 0.0, en_vCurrentTranslationAbsolute(3));
+      FLOAT pushLen = addspeed.Length();
+      FLOAT3D pushDir = addspeed.Normalize();
+      FLOAT canPush = max_velocity.Length() * max_acceleration * fTickQuantum;
+      canPush = canPush > pushLen ? pushLen : canPush;
+
+      if(vTranslation.Length() > 0.01f && pushLen > 0.01f) {
+        en_vCurrentTranslationAbsolute += pushDir * canPush;
+      }
+
+
+      CPrintF(TRANSV("speed %f %f\n"), en_vCurrentTranslationAbsolute.Length(), bunnyspeed);
 
       //CPrintF(TRANSV("accel: %f %f %f ProjVel %f\n"), en_vCurrentTranslationAbsolute(1), en_vCurrentTranslationAbsolute(2), en_vCurrentTranslationAbsolute(3), fProjVel);
 
