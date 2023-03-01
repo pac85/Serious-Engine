@@ -41,9 +41,6 @@
     <Filter Include="Source Files\Light">
       <UniqueIdentifier>{12376991-b050-4460-b833-319fe3e1dfa9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\zlib">
-      <UniqueIdentifier>{e949b98b-06d0-4289-98bd-bb485f6ba16f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Ska">
       <UniqueIdentifier>{23578051-c3bd-4c95-82c7-03bd7b80b788}</UniqueIdentifier>
     </Filter>
@@ -86,9 +83,6 @@
     </Filter>
     <Filter Include="Header Files\Light Headers">
       <UniqueIdentifier>{007f2692-6d91-486f-95a3-3fd602a1b232}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\zlib Headers">
-      <UniqueIdentifier>{22ff6724-e781-4878-a594-b526f04ffcb3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Ska Headers">
       <UniqueIdentifier>{9e9b829a-a1b4-4d50-b915-38027bb2ef24}</UniqueIdentifier>
@@ -630,42 +624,6 @@
     </ClCompile>
     <ClCompile Include="Light\LightSource.cpp">
       <Filter>Source Files\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\adler32.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\compress.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\deflate.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\infblock.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\infcodes.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\inffast.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\inflate.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\inftrees.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\infutil.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\trees.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\uncompr.c">
-      <Filter>Source Files\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\zutil.c">
-      <Filter>Source Files\zlib</Filter>
     </ClCompile>
     <ClCompile Include="Ska\AnimSet.cpp">
       <Filter>Source Files\Ska</Filter>
@@ -1244,39 +1202,6 @@
     </ClInclude>
     <ClInclude Include="Light\LightSource.h">
       <Filter>Header Files\Light Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\deflate.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\infblock.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\infcodes.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\inffast.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\inffixed.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\inftrees.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\infutil.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\trees.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\zconf.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\zlib.h">
-      <Filter>Header Files\zlib Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\zutil.h">
-      <Filter>Header Files\zlib Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\AnimSet.h">
       <Filter>Header Files\Ska Headers</Filter>
