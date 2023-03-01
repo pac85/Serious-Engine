@@ -230,8 +230,6 @@
     <ClCompile Include="WorldEditorView.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="ReadMe.txt" />
-    <CustomBuild Include="..\..\Flesh\Data\SED_TipOfTheDay.txt" />
     <CustomBuild Include="arrowcop.cur" />
     <CustomBuild Include="res\bmp00001.bmp" />
     <CustomBuild Include="res\bmp00002.bmp" />

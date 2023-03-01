@@ -179,7 +179,6 @@
     <CustomBuild Include="Graphics.clw">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

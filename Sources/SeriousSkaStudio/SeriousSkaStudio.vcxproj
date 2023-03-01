@@ -248,7 +248,6 @@ del %(RootDir)%(Directory)\Parser.c /q</Command>
     <CustomBuild Include="SeriousSkaStudio.clw">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CheckBox.h" />

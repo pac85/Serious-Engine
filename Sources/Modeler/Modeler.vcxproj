@@ -197,7 +197,6 @@
     <ResourceCompile Include="Modeler.rc" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="ReadMe.txt" />
     <CustomBuild Include="res\animcont.bmp" />
     <CustomBuild Include="res\bmp00001.bmp" />
     <CustomBuild Include="res\bmp00002.bmp" />

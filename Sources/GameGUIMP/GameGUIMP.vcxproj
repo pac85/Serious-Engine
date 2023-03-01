@@ -216,7 +216,6 @@
     <CustomBuild Include="GameGUIMP.clw">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameGUI.rc" />

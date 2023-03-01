@@ -162,7 +162,6 @@
     <CustomBuild Include="res\RCon.rc2">
       <FileType>RC</FileType>
     </CustomBuild>
-    <CustomBuild Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

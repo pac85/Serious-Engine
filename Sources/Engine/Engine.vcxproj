@@ -977,8 +977,6 @@ del %(RootDir)%(Directory)\smcPars.c /q</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
-    <CustomBuild Include="ReadMe.txt" />
-    <CustomBuild Include="..\..\Flesh\Help\ShellSymbols.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
