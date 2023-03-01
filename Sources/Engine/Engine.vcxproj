@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>..\libvorbis\include\;..\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\libvorbis\include\;$(SolutionDir)ThirdParty\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -124,7 +124,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>..\libvorbis\include\;..\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\libvorbis\include\;$(SolutionDir)ThirdParty\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>

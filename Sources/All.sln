@@ -48,7 +48,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameMP", "GameMP\GameMP.vcx
 		{D9F67AA1-970A-BFDD-6BE9-BD0CDCE98A10} = {D9F67AA1-970A-BFDD-6BE9-BD0CDCE98A10}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LWSkaExporter", "LWSkaExporter\LWSkaExporter.vcxproj", "{ACF94A1E-A365-0A7E-A849-CBA468D5EFCF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LWSkaExporter", "ThirdParty\LWSkaExporter\LWSkaExporter.vcxproj", "{ACF94A1E-A365-0A7E-A849-CBA468D5EFCF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MakeFONT", "MakeFONT\MakeFONT.vcxproj", "{ABD12F55-02CD-418D-3393-CF6F09A415F2}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -90,11 +90,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorldEditor", "WorldEditor\
 		{AC040397-6FEA-E9B2-2B28-5BB08E1607A1} = {AC040397-6FEA-E9B2-2B28-5BB08E1607A1}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg", "libogg\libogg_dynamic.vcxproj", "{15CBFEFF-7965-41F5-B4E2-21E8795C9159}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg", "ThirdParty\libogg\libogg_dynamic.vcxproj", "{15CBFEFF-7965-41F5-B4E2-21E8795C9159}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbisfile", "libvorbis\libvorbisfile_dynamic.vcxproj", "{CEBDE98B-A6AA-46E6-BC79-FAAF823DB9EC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbisfile", "ThirdParty\libvorbis\libvorbisfile_dynamic.vcxproj", "{CEBDE98B-A6AA-46E6-BC79-FAAF823DB9EC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "libvorbis\libvorbis_dynamic.vcxproj", "{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "ThirdParty\libvorbis\libvorbis_dynamic.vcxproj", "{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{15CBFEFF-7965-41F5-B4E2-21E8795C9159} = {15CBFEFF-7965-41F5-B4E2-21E8795C9159}
 	EndProjectSection
