@@ -94,6 +94,16 @@
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -109,7 +119,6 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>libogg.lib;libvorbis.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Bin\Debug;..\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>vorbisfile.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)libvorbisfile.pdb</ProgramDatabaseFile>
@@ -142,7 +151,6 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>libogg.lib;libvorbis.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\..\libogg\win32\VS2010\$(Platform)\$(Configuration);..\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>vorbisfile.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)libvorbisfile.pdb</ProgramDatabaseFile>
@@ -167,7 +175,6 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>libogg.lib;libvorbis.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>vorbisfile.def</ModuleDefinitionFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -198,7 +205,6 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>libogg.lib;libvorbis.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\..\libogg\win32\VS2010\$(Platform)\$(Configuration);..\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>vorbisfile.def</ModuleDefinitionFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>

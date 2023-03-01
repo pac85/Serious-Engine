@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -21,7 +29,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -32,7 +46,17 @@
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
     <Import Project="$(SolutionDir)Properties\Release.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\Release.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\Debug.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
     <Import Project="$(SolutionDir)Properties\Debug.props" />
@@ -46,6 +70,14 @@
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
@@ -53,6 +85,14 @@
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -62,6 +102,39 @@
       <Optimization>Disabled</Optimization>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;DIRECT3D_VERSION=0x0800;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996;4333</DisableSpecificWarnings>
+    </ClCompile>
+    <Midl>
+      <TypeLibraryName>.\Debug\Ecc.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+    <CustomBuildStep />
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;DIRECT3D_VERSION=0x0800;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996;4333</DisableSpecificWarnings>
     </ClCompile>
@@ -125,6 +198,43 @@
       <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <WarningLevel>Level3</WarningLevel>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <OmitFramePointers>false</OmitFramePointers>
+      <StringPooling>true</StringPooling>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;DIRECT3D_VERSION=0x0800;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996;4333</DisableSpecificWarnings>
+    </ClCompile>
+    <Midl>
+      <TypeLibraryName>.\Release\Ecc.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+    <CustomBuildStep />
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="Parser.y">
       <FileType>Document</FileType>
@@ -133,29 +243,50 @@ bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pushd $(SolutionDir)
+bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d  
+popd
+copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
+del %(RootDir)%(Directory)\Parser.c /q</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating parser source</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pushd $(SolutionDir)
 bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d  
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pushd $(SolutionDir)
+bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d  
+popd
+copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
+del %(RootDir)%(Directory)\Parser.c /q</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating parser source</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Scanner.l">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating scanner source</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Scanner.cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Scanner.cpp;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Parser.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Parser.cpp" />
