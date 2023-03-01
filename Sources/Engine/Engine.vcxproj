@@ -9,10 +9,6 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Template|Win32">
-      <Configuration>Template</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName>
@@ -23,18 +19,11 @@
     <ProjectGuid>{4B6F587C-7C59-4481-FBB9-CA44380D0CBF}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfMfc>false</UseOfMfc>
-    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,42 +31,38 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\Release.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\Debug.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>Debug\</OutDir>
-    <IntDir>Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>$(SolutionDir)..\Tools.Win32;$(SolutionDir)..\Bin\Debug;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(SolutionDir);$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Include;$(SolutionDir)Engine;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)D</TargetName>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>Release\</OutDir>
-    <IntDir>Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>$(SolutionDir)..\Tools.Win32;$(SolutionDir)..\Bin;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(SolutionDir);$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Lib;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)</TargetName>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -85,16 +70,11 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ENGINE_EXPORTS;_WINDLL;_USE_32BIT_TIME_T;DIRECT3D_VERSION=0x0800;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
-      <PrecompiledHeaderOutputFile>.\Debug\Engine.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
-      <ObjectFileName>.\Debug\</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>..\libvorbis\include\;..\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -110,34 +90,25 @@
       <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug\Engine.bsc</OutputFile>
-    </Bscmake>
+    <Bscmake />
     <Link>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <OutputFile>Debug/EngineD.dll</OutputFile>
-      <ImportLibrary>.\Debug\EngineD.lib</ImportLibrary>
       <AdditionalDependencies>gdi32.lib;DbgHelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
       <IgnoreSpecificDefaultLibraries>libci.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
-    <CustomBuildStep>
-      <Command>copy Debug\$(TargetName).dll $(SolutionDir)..\Bin\Debug\ &gt;nul
-copy Debug\$(TargetName).map $(SolutionDir)..\Bin\Debug\ &gt;nul
-copy Debug\$(TargetName).lib $(SolutionDir)..\Bin\Debug\ &gt;nul</Command>
-      <Message>Copying %(Filename) binaries to \Bin\Debug</Message>
-      <Outputs>$(SolutionDir)..\Bin\Debug\$(TargetName).dll;%(Outputs)</Outputs>
-    </CustomBuildStep>
+    <CustomBuildStep />
     <PreBuildEvent>
-      <Command>del $(SolutionDir)..\Bin\Debug\$(TargetName).dll /q &gt;nul</Command>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -145,18 +116,13 @@ copy Debug\$(TargetName).lib $(SolutionDir)..\Bin\Debug\ &gt;nul</Command>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <OmitFramePointers>false</OmitFramePointers>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORTS;DIRECT3D_VERSION=0x0800;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
-      <PrecompiledHeaderOutputFile>.\Release\Engine.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
-      <ObjectFileName>.\Release\</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
       <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>..\libvorbis\include\;..\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -171,39 +137,25 @@ copy Debug\$(TargetName).lib $(SolutionDir)..\Bin\Debug\ &gt;nul</Command>
       <Culture>0x0409</Culture>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release\Engine.bsc</OutputFile>
-    </Bscmake>
+    <Bscmake />
     <Link>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <OutputFile>.\Release\Engine.dll</OutputFile>
-      <ImportLibrary>.\Release\Engine.lib</ImportLibrary>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;DbgHelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
       <IgnoreSpecificDefaultLibraries>libci.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
-    <CustomBuildStep>
-      <Command>copy Release\$(TargetName).dll $(SolutionDir)..\Bin\ &gt;nul
-copy Release\$(TargetName).map $(SolutionDir)..\Bin\ &gt;nul
-copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
-      <Message>Copying %(Filename) binaries to \Bin</Message>
-      <Outputs>$(SolutionDir)..\Bin\$(TargetName).dll;%(Outputs)</Outputs>
-    </CustomBuildStep>
+    <CustomBuildStep />
     <PreBuildEvent>
-      <Command>del $(SolutionDir)..\Bin\$(TargetName).dll /q &gt;nul</Command>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
     </PreBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-    <Link>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-    </Link>
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Base\Anim.cpp">
@@ -982,58 +934,48 @@ del %(RootDir)%(Directory)\smcPars.c /q</Command>
     </CustomBuild>
     <CustomBuild Include="Classes\BaseEvents.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\MovableBrushEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\MovableEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\MovableModelEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\PlayerEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd $(SolutionDir)
-ecc Engine/Classes/%(Filename).es </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Engine/Classes/%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Classes/%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)\%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)\%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="ReadMe.txt" />
     <CustomBuild Include="..\..\Flesh\Help\ShellSymbols.txt" />

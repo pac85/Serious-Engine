@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <BinDir>$(SolutionDir)Bin\$(Configuration).$(PlatformShortName)\</BinDir>
+    <ObjDir>$(SolutionDir)Obj\$(Configuration).$(PlatformShortName)\$(ProjectName)\</ObjDir>
+
+    <DX8LibPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Lib;</DX8LibPath>
+    <DX8InclPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Include;</DX8InclPath>
+
+    <SE1Exe>$(BinDir);$(SolutionDir)..\Tools.Win32;</SE1Exe>
+    <SE1Incl>$(SolutionDir);$(ProjectDir);$(DX8InclPath);</SE1Incl>
+    <SE1Libs>$(BinDir);$(DX8LibPath);</SE1Libs>
+  </PropertyGroup>
+</Project>
