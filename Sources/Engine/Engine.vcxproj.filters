@@ -1293,6 +1293,12 @@
     <ClInclude Include="Sound\ov_functions.h">
       <Filter>Header Files\Sound Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Base\Config.h">
+      <Filter>Header Files\Base Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\ByteSwap.h">
+      <Filter>Header Files\Base Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Base\CTString.inl">

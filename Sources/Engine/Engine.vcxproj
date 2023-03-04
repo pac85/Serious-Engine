@@ -879,8 +879,10 @@
     <ClInclude Include="Base\Anim.h" />
     <ClInclude Include="Base\Assert.h" />
     <ClInclude Include="Base\Base.h" />
+    <ClInclude Include="Base\ByteSwap.h" />
     <ClInclude Include="Base\Changeable.h" />
     <ClInclude Include="Base\ChangeableRT.h" />
+    <ClInclude Include="Base\Config.h" />
     <ClInclude Include="Base\Console.h" />
     <ClInclude Include="Base\Console_internal.h" />
     <ClInclude Include="Base\CRC.h" />
