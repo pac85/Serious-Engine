@@ -1371,7 +1371,7 @@ void DrawSelectedVertices(GFXVertex *pavVertices, GFXColor *pacolColors, INDEX c
     GFXVertex &vtx = pavVertices[ivx];
     GFXColor  &col = pacolColors[ivx];
     // draw vertex
-    _pdp->DrawPoint3D(FLOAT3D(vtx.x,vtx.y,vtx.z),ByteSwap(col.abgr),3);
+    _pdp->DrawPoint3D(FLOAT3D(vtx.x,vtx.y,vtx.z),ByteSwap32(col.abgr),3);
   }
   gfxDisableDepthBias();
 }

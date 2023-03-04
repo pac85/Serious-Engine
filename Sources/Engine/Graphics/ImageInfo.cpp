@@ -175,7 +175,7 @@ void CImageInfo::ExpandEdges( INDEX ctPasses/*=8192*/)
       { // determine pixel location
         const PIX pixOffset = pixV*ii_Width + pixU;
         // do nothing if it is already visible
-        COLOR col = ByteSwap(pulSrc[pixOffset]);
+        COLOR col = ByteSwap32(pulSrc[pixOffset]);
         if( ((col&CT_AMASK)>>CT_ASHIFT)>3) continue;
         bAllPixelsVisible = FALSE;
         // average all surrounding pixels that are visible
@@ -184,7 +184,7 @@ void CImageInfo::ExpandEdges( INDEX ctPasses/*=8192*/)
         for( INDEX j=-1; j<=1; j++) {
           for( INDEX i=-1; i<=1; i++) {
             const PIX pixSurrOffset = pixOffset + j*ii_Width + i;
-            col = ByteSwap(pulSrc[pixSurrOffset]);
+            col = ByteSwap32(pulSrc[pixSurrOffset]);
             if( ((col&CT_AMASK)>>CT_ASHIFT)<4) continue; // skip non-visible pixels
             UBYTE ubR, ubG, ubB;
             ColorToRGB( col, ubR,ubG,ubB);
@@ -197,7 +197,7 @@ void CImageInfo::ExpandEdges( INDEX ctPasses/*=8192*/)
           ulRa/=ctVisible;  ulGa/=ctVisible;  ulBa/=ctVisible;
           col = RGBAToColor( ulRa,ulGa,ulBa,255);
           // put it to center pixel
-          pulDst[pixOffset] = ByteSwap(col);
+          pulDst[pixOffset] = ByteSwap32(col);
         }
       }
     } // copy resulting picture over source

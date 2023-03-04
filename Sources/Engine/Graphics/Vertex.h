@@ -51,7 +51,7 @@ struct GFXColor
 {
   union {
     struct { UBYTE r,g,b,a; };
-    struct { ULONG abgr;    };  // reverse order - use ByteSwap()!
+    struct { ULONG abgr;    };  // reverse order - use ByteSwap32()!
   };
 
   GFXColor() {};

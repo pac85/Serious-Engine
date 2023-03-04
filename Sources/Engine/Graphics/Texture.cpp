@@ -551,7 +551,7 @@ static void Convert( CTextureData *pTD)
       // pack it back to 32-bit
       ULONG ulPix = RGBAToColor(r,g,b,a);
       // store 32-bit pixel
-      pulFramesNew[pixFrameOffset+iPix] = ByteSwap(ulPix);
+      pulFramesNew[pixFrameOffset+iPix] = ByteSwap32(ulPix);
     }
   }
 
@@ -625,7 +625,7 @@ static BOOL IsEqualized( ULONG *pulMipmap, INDEX pixMipSize)
   COLOR col;
   ULONG ulR=0, ulG=0, ulB=0;
   for( INDEX iPix=0; iPix<pixMipSize; iPix++) {
-    col  = ByteSwap(pulMipmap[iPix]);
+    col  = ByteSwap32(pulMipmap[iPix]);
     ulR += (col&CT_RMASK)>>CT_RSHIFT;
     ulG += (col&CT_GMASK)>>CT_GSHIFT;
     ulB += (col&CT_BMASK)>>CT_BSHIFT;
@@ -651,7 +651,7 @@ static BOOL IsTransparent( ULONG *pulMipmap, INDEX pixMipSize)
   ULONG ulA;
   // determine transparency
   for( INDEX iPix=0; iPix<pixMipSize; iPix++) {
-    col = ByteSwap(pulMipmap[iPix]);
+    col = ByteSwap32(pulMipmap[iPix]);
     ulA = (col&CT_AMASK)>>CT_ASHIFT;
     if( ulA>TRANS_TRESHOLD && ulA<(255-TRANS_TRESHOLD)) return FALSE;
   }
@@ -665,7 +665,7 @@ static BOOL IsGray( ULONG *pulMipmap, INDEX pixMipSize)
 {
   // loop thru texels
   for( INDEX iPix=0; iPix<pixMipSize; iPix++) {
-    COLOR col = ByteSwap(pulMipmap[iPix]);
+    COLOR col = ByteSwap32(pulMipmap[iPix]);
     if( !IsGray(col)) return FALSE; // colored
   } // grayscaled
   return TRUE;
@@ -1759,7 +1759,7 @@ COLOR CTextureData::GetTexel( MEX mexU, MEX mexV)
   ASSERT(pixU>=0 && pixU<GetPixWidth());
   ASSERT(pixV>=0 && pixV<GetPixHeight());
   // read texel from texture
-  return ByteSwap( *(ULONG*)(td_pulFrames + pixV*GetPixWidth() + pixU));
+  return ByteSwap32( *(ULONG*)(td_pulFrames + pixV*GetPixWidth() + pixU));
 }
 
 

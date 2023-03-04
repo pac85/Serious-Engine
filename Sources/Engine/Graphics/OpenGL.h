@@ -84,10 +84,7 @@ inline void glCOLOR( COLOR col)
 {
 /* rcg10052001 Platform-wrappers. */
 #if (defined USE_PORTABLE_C)
-	col = ( ((col << 24)            ) |
-            ((col << 8) & 0x00FF0000) |
-            ((col >> 8) & 0x0000FF00) |
-            ((col >> 24)            ) );
+  col = ByteSwap32(col);
 
 #elif (defined _MSC_VER)
   __asm {

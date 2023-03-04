@@ -551,7 +551,7 @@ void GenerateTerrainBrushTexture( INDEX iBrush, FLOAT fHotSpot, FLOAT fFallOff)
       }
       UBYTE ubCol=fcolPower*255.0f;
       COLOR col=RGBToColor(ubCol,ubCol,ubCol)|CT_OPAQUE;
-      *pcol=ByteSwap(col);
+      *pcol=ByteSwap32(col);
       pcol++;
     }
   }
@@ -982,7 +982,7 @@ void ApplyLayerTextureCommand(INDEX iSelectedItem)
           COLOR colPix2=ptdGradient->GetTexel(0,iGradPix2);
           FLOAT fLerpFactor=iGradientHeight*fHeightRatio-INDEX(iGradientHeight*fHeightRatio);
           COLOR colResult=LerpColor(colPix1,colPix2,fLerpFactor);
-          *(pcol+iy*ii.ii_Width+ix)=ByteSwap(colResult);
+          *(pcol+iy*ii.ii_Width+ix)=ByteSwap32(colResult);
         }
       }
       _pTextureStock->Release(ptdGradient);
@@ -1809,7 +1809,7 @@ void DisplayHeightMapWindow(CPoint pt)
       UBYTE ubR=UBYTE(fPix);
       COLOR col=RGBToColor(ubR,ubR,ubR)|CT_OPAQUE;
       col=RGBToColor(ubR,ubR,ubR)|CT_OPAQUE;
-      *(pcol+iy*(pixW-1)+ix)=ByteSwap(col);
+      *(pcol+iy*(pixW-1)+ix)=ByteSwap32(col);
     }
   }
 

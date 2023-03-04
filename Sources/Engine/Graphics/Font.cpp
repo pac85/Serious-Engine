@@ -182,7 +182,7 @@ void CFontData::Make_t( const CTFileName &fnTexture, PIX pixCharWidth, PIX pixCh
                                       pixTexWidth * iPixelLine +   // move trough pixel lines of one letter
                                       iPixelColumn);               // move trough pixel columns of one letter
           // if we test alpha channel and alpha value is not 0
-          if( ByteSwap(*puwPixel) & colPixMask) {
+          if( ByteSwap32(*puwPixel) & colPixMask) {
             // if examined pixel is narrower in letter than last opaque pixel found, remember it as left-most pixel
             if( iPixelColumn < pixCurrentStart) pixCurrentStart = iPixelColumn;
             // if examined pixel is wider in letter than last opaque pixel found, remember it as right-most pixel

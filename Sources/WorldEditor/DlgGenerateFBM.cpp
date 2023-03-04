@@ -152,7 +152,7 @@ BOOL CreateFBMTexture(PIX pixW, PIX pixH, CTFileName fnFBMFile)
       FLOAT fValue=pafFBM[iOffset];
       UBYTE ub=(fValue-fMin)*fConvertFactor;
       COLOR col=RGBToColor(ub,ub,ub)|CT_OPAQUE;
-      *pcol=ByteSwap(col);
+      *pcol=ByteSwap32(col);
       pcol++;
     }
   }

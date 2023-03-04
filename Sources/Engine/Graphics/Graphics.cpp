@@ -91,7 +91,7 @@ void AddAlphaChannel( UBYTE *pubSrcBitmap, ULONG *pulDstBitmap, PIX pixSize, UBY
     ubB = pubSrcBitmap[iPix*3 +2];
     if( pubAlphaBitmap!=NULL) ubA = pubAlphaBitmap[iPix];
     else ubA = 255; // for the sake of forced RGBA internal formats!
-    pulDstBitmap[iPix] = ByteSwap( RGBAToColor( ubR,ubG,ubB, ubA));
+    pulDstBitmap[iPix] = ByteSwap32( RGBAToColor( ubR,ubG,ubB, ubA));
   }
 }
 
@@ -101,7 +101,7 @@ void RemoveAlphaChannel( ULONG *pulSrcBitmap, UBYTE *pubDstBitmap, PIX pixSize)
   UBYTE ubR,ubG,ubB;
   // loop thru all bitmap pixels
   for( INDEX iPix=0; iPix<pixSize; iPix++) {
-    ColorToRGB( ByteSwap( pulSrcBitmap[iPix]), ubR,ubG,ubB);
+    ColorToRGB( ByteSwap32( pulSrcBitmap[iPix]), ubR,ubG,ubB);
     pubDstBitmap[iPix*3 +0] = ubR;
     pubDstBitmap[iPix*3 +1] = ubG;
     pubDstBitmap[iPix*3 +2] = ubB;
@@ -355,7 +355,7 @@ void ColorizeMipmaps( INDEX i1stMipmapToColorize, ULONG *pulMipmaps, PIX pixWidt
     pixMipSize   = pixCurrWidth*pixCurrHeight;
     pulDstMipmap = pulSrcMipmap + pixMipSize;
     // mask mipmap
-    const ULONG ulColorMask = ByteSwap( _acolMips[iTableOfs] | 0x3F3F3FFF);
+    const ULONG ulColorMask = ByteSwap32( _acolMips[iTableOfs] | 0x3F3F3FFF);
     for( INDEX iPix=0; iPix<pixMipSize; iPix++) pulSrcMipmap[iPix] &= ulColorMask;
     // advance to next mipmap
     pulSrcMipmap += pixMipSize;
@@ -376,7 +376,7 @@ __int64 mmSumR2=0, mmSumG2=0, mmSumB2=0;
 
   // calculate sum and sum^2
   for( INDEX iPix=0; iPix<pixSize; iPix++) {
-    ColorToRGB( ByteSwap(pulBitmap[iPix]), ubR,ubG,ubB);
+    ColorToRGB( ByteSwap32(pulBitmap[iPix]), ubR,ubG,ubB);
     ulSumR  += ubR;      ulSumG  += ubG;      ulSumB  += ubB;
     mmSumR2 += ubR*ubR;  mmSumG2 += ubG*ubG;  mmSumB2 += ubB*ubB;
   }
@@ -1096,7 +1096,7 @@ void AdjustBitmapColor( ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeigh
                         SLONG const slHueShift, SLONG const slSaturation)
 {
   for( INDEX i=0; i<(pixWidth*pixHeight); i++) {
-    pulDst[i] = ByteSwap( AdjustColor( ByteSwap(pulSrc[i]), slHueShift, slSaturation));
+    pulDst[i] = ByteSwap32( AdjustColor( ByteSwap32(pulSrc[i]), slHueShift, slSaturation));
   }
 }
 
@@ -1619,7 +1619,7 @@ allDoneE:
             for( INDEX u=0; u<4; u++) {
               const INDEX iColSrc = ((u-1)+i*2) & slMaskU;
               const INDEX iWeight = aiWeights[u][v];
-              col = ByteSwap( pulSrcMipmap[iRowSrc*(slMaskU+1)+iColSrc]);
+              col = ByteSwap32( pulSrcMipmap[iRowSrc*(slMaskU+1)+iColSrc]);
               ColorToRGBA( col, ubR,ubG,ubB,ubA);
               slR += ubR*iWeight;
               slG += ubG*iWeight;
@@ -1628,7 +1628,7 @@ allDoneE:
             }
           }
           col = RGBAToColor( slR>>8, slG>>8, slB>>8, slA>>8);
-          pulDstMipmap[j*pixWidth+i] = ByteSwap(col);
+          pulDstMipmap[j*pixWidth+i] = ByteSwap32(col);
         }
       }
     }

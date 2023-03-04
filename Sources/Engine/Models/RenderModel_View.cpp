@@ -2078,7 +2078,7 @@ srfVtxLoop:
     // get model bump color
     GFXColor colMdlBump;
     COLOR colB = AdjustColor( rm.rm_pmdModelData->md_colBump, _slTexHueShift, _slTexSaturation);
-    colMdlBump.abgr = (ByteSwap(colB)>>1) & 0x7F7F7F7F; // divide by 2 for bump equation (1-A+B)/2
+    colMdlBump.abgr = (ByteSwap32(colB)>>1) & 0x7F7F7F7F; // divide by 2 for bump equation (1-A+B)/2
     // alpha controls bump strength - premultiplied for per surface calculation *(1/128)*(1/16)*(1/128)
     const FLOAT fMdlBump = ((colB&0xFF)-128.0f) * 3.8144E-6; 
     // get bump texture corrections
@@ -2399,7 +2399,7 @@ diffColLoop:
     // get model detail color
     GFXColor colMdlBump;
     const COLOR colB = AdjustColor( rm.rm_pmdModelData->md_colBump, _slTexHueShift, _slTexSaturation);
-    colMdlBump.abgr  = ByteSwap(colB);
+    colMdlBump.abgr  = ByteSwap32(colB);
     // get detail texture corrections
     fTexCorrU = 1.0f / ptdBump->GetWidth(); 
     fTexCorrV = 1.0f / ptdBump->GetHeight();
@@ -2584,7 +2584,7 @@ reflMipLoop:
     // get model reflection color
     GFXColor colMdlRefl;
     const COLOR colR = AdjustColor( rm.rm_pmdModelData->md_colReflections, _slTexHueShift, _slTexSaturation);
-    colMdlRefl.abgr = ByteSwap(colR);
+    colMdlRefl.abgr = ByteSwap32(colR);
     colMdlRefl.AttenuateA( (rm.rm_colBlend&CT_AMASK)>>CT_ASHIFT);
 
     // for each reflective surface in current mip model
@@ -2783,7 +2783,7 @@ specMipLoop:
     // get model specular color and multiply with light color
     GFXColor colMdlSpec;
     const COLOR colS = AdjustColor( rm.rm_pmdModelData->md_colSpecular, _slTexHueShift, _slTexSaturation);
-    colMdlSpec.abgr  = ByteSwap(colS);
+    colMdlSpec.abgr  = ByteSwap32(colS);
     colMdlSpec.AttenuateRGB( (rm.rm_colBlend&CT_AMASK)>>CT_ASHIFT);
     colMdlSpec.r = ClampUp( (colMdlSpec.r *_slLR)>>8, 255L);
     colMdlSpec.g = ClampUp( (colMdlSpec.g *_slLG)>>8, 255L);

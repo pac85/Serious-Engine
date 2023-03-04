@@ -4787,7 +4787,7 @@ void Particles_AfterBurner(CEntity *pen, FLOAT tmSpawn, FLOAT fStretch, INDEX iG
                                afStarsPositions[iRnd][3],
                                afStarsPositions[iRnd][1])*5.0f;
     vPosS=vPosS+vVelocityS*fT+vGDir*fGA/2.0f*(fT*fT)/32.0f;
-    Particle_RenderSquare( vPosS, fSizeS, fAngleS, ByteSwap(pcolSmoke[iIndex]));
+    Particle_RenderSquare( vPosS, fSizeS, fAngleS, ByteSwap32(pcolSmoke[iIndex]));
 
     // explosion
     FLOAT3D vPosE = (*pvPos1+*pvPos2)/2.0f;//Lerp(*pvPos1, *pvPos2, _pTimer->GetLerpFactor());
@@ -4798,7 +4798,7 @@ void Particles_AfterBurner(CEntity *pen, FLOAT tmSpawn, FLOAT fStretch, INDEX iG
                                afStarsPositions[iRnd][1],
                                afStarsPositions[iRnd][2])*3.0f;
     vPosE=vPosE+vVelocityE*fT+vGDir*fGA/2.0f*(fT*fT)/32.0f;
-    Particle_RenderSquare( vPosE, fSizeE, fAngleE, ByteSwap(pcolExp[iIndex]));
+    Particle_RenderSquare( vPosE, fSizeE, fAngleE, ByteSwap32(pcolExp[iIndex]));
 
   }
   // all done
@@ -4831,7 +4831,7 @@ void Particles_AfterBurner(CEntity *pen, FLOAT tmSpawn, FLOAT fStretch, INDEX iG
       FLOAT fSize = (aFlare_sol[iIndex]*2.0f)*fStretch;
       FLOAT3D vPos = Lerp(*pvPos1, *pvPos2, iInter*1.0f/CT_AFTERBURNER_HEAD_INTERPOSITIONS);
       FLOAT fAngle = afStarsPositions[iInter][0]*360.0f+fRatio*360.0f;
-      Particle_RenderSquare( vPos, fSize, fAngle,  MulColors( ByteSwap(pcolFlare[iIndex]), colMul));
+      Particle_RenderSquare( vPos, fSize, fAngle,  MulColors( ByteSwap32(pcolFlare[iIndex]), colMul));
     }
   }
 
@@ -4901,7 +4901,7 @@ void Particles_RocketMotorBurning(CEntity *pen, FLOAT tmSpawn, FLOAT3D vStretch,
     Particle_SetTexturePart( 512, 512, 1, 0);
     FLOAT fAngleS = afStarsPositions[iRnd][2]*360.0f+fT*120.0f*afStarsPositions[iRnd][3];
     FLOAT fSizeS = (3.0f+fT*4.5f)*fStretch;
-    Particle_RenderSquare( vPosS, fSizeS, fAngleS, ByteSwap(pcolSmoke[iIndex]));
+    Particle_RenderSquare( vPosS, fSizeS, fAngleS, ByteSwap32(pcolSmoke[iIndex]));
 
     // explosion
     Particle_SetTexturePart( 512, 512, 0, 0);
@@ -4909,7 +4909,7 @@ void Particles_RocketMotorBurning(CEntity *pen, FLOAT tmSpawn, FLOAT3D vStretch,
     vPosE=vPosS-vY*0.1f;
     FLOAT fAngleE = afStarsPositions[iRnd][0]*360.0f;
     FLOAT fSizeE = (2.5f+fT*4.0f)*fStretch;
-    Particle_RenderSquare( vPosE, fSizeE, fAngleE, ByteSwap(pcolExp[iIndex]));
+    Particle_RenderSquare( vPosE, fSizeE, fAngleE, ByteSwap32(pcolExp[iIndex]));
   }
   Particle_Flush();
 
@@ -4935,7 +4935,7 @@ void Particles_RocketMotorBurning(CEntity *pen, FLOAT tmSpawn, FLOAT3D vStretch,
     Particle_SetTexturePart( 512, 512, 1, 0);
     FLOAT fAngleS = afStarsPositions[iRnd][2]*360.0f+fT*120.0f*afStarsPositions[iRnd][3];
     FLOAT fSizeS = (1.5f+aSmoke_sol[iIndex]*2.5f)*fStretch*fFireStretch;
-    Particle_RenderSquare( vPosS, fSizeS, fAngleS, ByteSwap(pcolSmoke[iIndex]));
+    Particle_RenderSquare( vPosS, fSizeS, fAngleS, ByteSwap32(pcolSmoke[iIndex]));
 
     // explosion
     Particle_SetTexturePart( 512, 512, 0, 0);
@@ -4943,7 +4943,7 @@ void Particles_RocketMotorBurning(CEntity *pen, FLOAT tmSpawn, FLOAT3D vStretch,
     vPosE=vPosS-vY*0.1f;
     FLOAT fAngleE = afStarsPositions[iRnd][0]*360.0f;
     FLOAT fSizeE = (1.5f+aExp_sol[iIndex]*2.0f)*fStretch*fFireStretch;
-    Particle_RenderSquare( vPosE, fSizeE, fAngleE, ByteSwap(pcolExp[iIndex]));
+    Particle_RenderSquare( vPosE, fSizeE, fAngleE, ByteSwap32(pcolExp[iIndex]));
   }
   // all done
   Particle_Flush();
@@ -5410,8 +5410,8 @@ void Particles_SummonerDisappear( CEntity *pen, FLOAT tmStart)
 
     FLOAT fPulser=1.0f-(fRatio*(1.0f+(Sin(fRatio*360.0f*fRndPulseSpeed+fRndPulseOffset*360.0f)))/2.0f);
     UBYTE ubColor = UBYTE(CT_OPAQUE*fColorFactor*fPulser);
-    COLOR col=(ByteSwap(pcol[iRnd%255])&0xFFFFFF00)|ubColor;
-    COLOR colLighter=ByteSwap(pcolAdder[iIndex])&0xFFFFFF00;
+    COLOR col=(ByteSwap32(pcol[iRnd%255])&0xFFFFFF00)|ubColor;
+    COLOR colLighter=ByteSwap32(pcolAdder[iIndex])&0xFFFFFF00;
     col=AddColors(col,colLighter);
 
     FLOAT3D vPos = avVertices[iVtx];
@@ -5525,7 +5525,7 @@ void Particles_SummonerStaff(CEmiter &em)
     FLOAT3D vPos=Lerp(ep.ep_vLastPos, ep.ep_vPos, fLerpFactor);
     FLOAT fRot=Lerp(ep.ep_fLastRot, ep.ep_fRot, fLerpFactor);
     INDEX iIndex=Clamp((tmNow-ep.ep_tmEmitted)/(ep.ep_tmLife)*255.0f,0.0f,255.0f);
-    COLOR col=ByteSwap(pcol[iIndex]);
+    COLOR col=ByteSwap32(pcol[iIndex]);
     Particle_RenderSquare( vPos, 1.0f*ep.ep_fStretch, fRot, col);
   }
   // all done
@@ -5983,7 +5983,7 @@ void Particles_RunAfterBurner(CEntity *pen, FLOAT tmEnd, FLOAT fStretch, INDEX i
                                afStarsPositions[iRnd][3],
                                afStarsPositions[iRnd][1])*5.0f;
     vPosS=vPosS+vVelocityS*fT+vGDir*fGA/2.0f*(fT*fT)/32.0f;
-    col = ByteSwap(pcolSmoke[iIndex]);
+    col = ByteSwap32(pcolSmoke[iIndex]);
     col = (col&0xffffff00)|((col&0x000000ff)*ubColMul/255);
     Particle_RenderSquare( vPosS, fSizeS, fAngleS, col);
 
@@ -5996,7 +5996,7 @@ void Particles_RunAfterBurner(CEntity *pen, FLOAT tmEnd, FLOAT fStretch, INDEX i
                                afStarsPositions[iRnd][1],
                                afStarsPositions[iRnd][2])*3.0f;
     vPosE=vPosE+vVelocityE*fT+vGDir*fGA/2.0f*(fT*fT)/32.0f;
-    col = ByteSwap(pcolExp[iIndex]);
+    col = ByteSwap32(pcolExp[iIndex]);
     col = (col&0xffffff00)|((col&0x000000ff)*ubColMul/255);
     Particle_RenderSquare( vPosE, fSizeE, fAngleE, col);
 
@@ -6050,7 +6050,7 @@ void Particles_Fireworks01(CEmiter &em)
     FLOAT3D vPos=Lerp(ep.ep_vLastPos, ep.ep_vPos, fLerpFactor);
     FLOAT fRot=Lerp(ep.ep_fLastRot, ep.ep_fRot, fLerpFactor);
     INDEX iIndex=INDEX((tmNow-ep.ep_tmEmitted)*2.0f/(ep.ep_tmLife)*255.0f)%255;
-    COLOR col=MulColors(ByteSwap(pcol[iIndex]), MulColors(ep.ep_colColor, em.em_colGlobal));
+    COLOR col=MulColors(ByteSwap32(pcol[iIndex]), MulColors(ep.ep_colColor, em.em_colGlobal));
     Particle_RenderSquare( vPos, ep.ep_fStretch, fRot, col);
   }
   // all done

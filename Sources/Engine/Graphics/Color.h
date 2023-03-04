@@ -252,11 +252,8 @@ __forceinline ULONG abgr2argb( ULONG ul)
 {
 #if (defined USE_PORTABLE_C)
 	// this could be simplified, this is just a safe conversion from asm code
-	ul = ( ((ul << 24)            ) |
-         ((ul << 8) & 0x00FF0000) |
-         ((ul >> 8) & 0x0000FF00) |
-         ((ul >> 24)            ) );
-	return( (ul << 24) | (ul >> 8) );
+  ul = ByteSwap32(ul);
+  return ((ul << 24) | (ul >> 8));
 
 #elif (defined _MSC_VER)
   ULONG ulRet;

@@ -2165,12 +2165,12 @@ void CSeriousSkaStudioView::OnChangeAmbientcolor()
   memset(&cc, 0, sizeof(CHOOSECOLOR));
   cc.lStructSize = sizeof(CHOOSECOLOR);
   cc.Flags = CC_FULLOPEN | CC_RGBINIT;
-  cc.rgbResult = ByteSwap(pDoc->m_colAmbient);
+  cc.rgbResult = ByteSwap32(pDoc->m_colAmbient);
   cc.hwndOwner = GetSafeHwnd();
   cc.lpCustColors = (LPDWORD) acrCustClr;
   if(ChooseColor(&cc))
   {
-    COLOR colAmbient = ByteSwap(cc.rgbResult);
+    COLOR colAmbient = ByteSwap32(cc.rgbResult);
     colAmbient |= 0xFF;
     pDoc->m_colAmbient  = colAmbient;
   }
@@ -2203,12 +2203,12 @@ void CSeriousSkaStudioView::OnChangeLightcolor()
   memset(&cc, 0, sizeof(CHOOSECOLOR));
   cc.lStructSize = sizeof(CHOOSECOLOR);
   cc.Flags = CC_FULLOPEN | CC_RGBINIT;
-  cc.rgbResult = ByteSwap(pDoc->m_colLight);
+  cc.rgbResult = ByteSwap32(pDoc->m_colLight);
   cc.hwndOwner = GetSafeHwnd();
   cc.lpCustColors = (LPDWORD) acrCustClr;
   if(ChooseColor(&cc))
   {
-    COLOR colDiffuse = ByteSwap(cc.rgbResult);
+    COLOR colDiffuse = ByteSwap32(cc.rgbResult);
     colDiffuse |= 0xFF;
     pDoc->m_colLight = colDiffuse;
   }

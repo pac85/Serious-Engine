@@ -749,7 +749,7 @@ static void CalcPointLight(CPlacement3D &plLight, CLightSource *plsLight, Rect &
       }
       ULONG ulIntensity = NormFloatToByte(fIntensity);
       ulIntensity = (ulIntensity<<CT_RSHIFT)|(ulIntensity<<CT_GSHIFT)|(ulIntensity<<CT_BSHIFT);
-      colLight = MulColors(ByteSwap(colLight.abgr), ulIntensity);
+      colLight = MulColors(ByteSwap32(colLight.abgr), ulIntensity);
 
 
       FLOAT fDot = vNormal%vLightNormal;
@@ -1001,7 +1001,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
 
   INDEX ctpixs = ptrTerrain->GetShadingMapWidth()*ptrTerrain->GetShadingMapHeight();
   for(PIX ipix=0;ipix<ctpixs;ipix++) {
-    ULONG ulPixel = ByteSwap(*ppixShadowMip);
+    ULONG ulPixel = ByteSwap32(*ppixShadowMip);
     // ULONG ulPixel = ulTemp;
     *puwShade = (((ulPixel>>27)&0x001F)<<10) | 
                 (((ulPixel>>19)&0x001F)<< 5) | 

@@ -264,7 +264,7 @@ void CLayerMixer::AddAmbientPoint(void)
   // prepare some local variables
   __int64 mmDDL2oDU = _slDDL2oDU;
   __int64 mmDDL2oDV = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -350,7 +350,7 @@ void CLayerMixer::AddAmbientMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   // prepare some local variables
   __int64 mmDDL2oDU = _slDDL2oDU;
   __int64 mmDDL2oDV = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -481,7 +481,7 @@ void CLayerMixer::AddDiffusionPoint(void)
   // prepare some local variables
   __int64 mmDDL2oDU = _slDDL2oDU;
   __int64 mmDDL2oDV = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -570,7 +570,7 @@ void CLayerMixer::AddDiffusionMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   // prepare some local variables
   __int64 mmDDL2oDU = _slDDL2oDU;
   __int64 mmDDL2oDV = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -1072,7 +1072,7 @@ void CLayerMixer::AddDirectional(void)
 
 #if ASMOPT == 1
 
-  ULONG ulLight = ByteSwap( lm_colLight);
+  ULONG ulLight = ByteSwap32( lm_colLight);
   __asm {
     // prepare pointers and variables
     mov     edi,D [_pulLayer]
@@ -1130,7 +1130,7 @@ void CLayerMixer::AddMaskDirectional( UBYTE *pubMask, UBYTE ubMask)
 #if ASMOPT == 1
 
   // prepare some local variables
-  ULONG ulLight = ByteSwap( lm_colLight);
+  ULONG ulLight = ByteSwap32( lm_colLight);
   __asm {
     // prepare pointers and variables
     movzx   edx,B [ubMask]

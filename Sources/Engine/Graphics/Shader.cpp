@@ -191,7 +191,7 @@ void shaCalculateLight(void)
       colAmbient = 0xFFFFFFFF;
     }
     colConstant.MultiplyRGBA(colLight,colAmbient);
-    shaSetConstantColor(ByteSwap(colConstant.abgr));
+    shaSetConstantColor(ByteSwap32(colConstant.abgr));
     // no vertex colors
     return;
   }

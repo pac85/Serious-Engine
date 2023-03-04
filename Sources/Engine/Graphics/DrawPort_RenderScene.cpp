@@ -668,7 +668,7 @@ static void RSSetPolygonColors( ScenePolygon *pspoGroup, UBYTE ubAlpha)
   COLOR col;
   GFXColor *pcol;
   for( ScenePolygon *pspo = pspoGroup; pspo != NULL; pspo = pspo->spo_pspoSucc) {
-    col  = ByteSwap( AdjustColor( pspo->spo_cColor|ubAlpha, _slTexHueShift, _slTexSaturation));
+    col  = ByteSwap32( AdjustColor( pspo->spo_cColor|ubAlpha, _slTexHueShift, _slTexSaturation));
     pcol = &_acolPass[pspo->spo_iVtx0Pass];
     for( INDEX i=0; i<pspo->spo_ctVtx; i++) pcol[i].abgr = col;
   }
@@ -680,7 +680,7 @@ static void RSSetPolygonColors( ScenePolygon *pspoGroup, UBYTE ubAlpha)
 static void RSSetConstantColors( COLOR col)
 {
   _pfGfxProfile.StartTimer( CGfxProfile::PTI_RS_SETCOLORS);
-  col = ByteSwap( AdjustColor( col, _slTexHueShift, _slTexSaturation));
+  col = ByteSwap32( AdjustColor( col, _slTexHueShift, _slTexSaturation));
   GFXColor *pcol = &_acolPass[0];
   for( INDEX i=0; i<_acolPass.Count(); i++) pcol[i].abgr = col;
   gfxSetColorArray( &_acolPass[0]);
@@ -714,7 +714,7 @@ static void RSSetTextureColors( ScenePolygon *pspoGroup, ULONG ulLayerMask)
       if( colLayer!=0xFFFFFFFF) colTotal = MulColors( colTotal, colLayer);
     }
     // store
-    colTotal = ByteSwap(colTotal);
+    colTotal = ByteSwap32(colTotal);
     GFXColor *pcol= &_acolPass[pspo->spo_iVtx0Pass];
     for( INDEX i=0; i<pspo->spo_ctVtx; i++) pcol[i].abgr = colTotal;
   }
