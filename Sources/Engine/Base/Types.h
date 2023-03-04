@@ -1,4 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
+   Copyright (c) 2023 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -32,6 +33,20 @@ typedef unsigned short int  UWORD;
 typedef unsigned char       UBYTE;
 typedef unsigned int        UINT;
 
+// [Cecil] Platform-specific
+#if SE1_OLD_COMPILER
+  typedef INT_PTR intptr_t;
+  typedef UINT_PTR uintptr_t;
+
+  typedef unsigned __int64 UQUAD;
+  typedef   signed __int64 SQUAD;
+
+#else
+  #include <cstdint>
+
+  typedef unsigned long long UQUAD;
+  typedef   signed long long SQUAD;
+#endif
 
 #ifdef PLATFORM_UNIX  /* rcg10042001 */
     #define __forceinline inline

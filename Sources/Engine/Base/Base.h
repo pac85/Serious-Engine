@@ -19,10 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  *   catch them here...
  */
 #ifdef _MSC_VER
-  #ifndef PLATFORM_WIN32
-    #define PLATFORM_WIN32
-  #endif
-
   #ifndef PRAGMA_ONCE
     #define PRAGMA_ONCE
   #endif

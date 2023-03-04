@@ -13,14 +13,11 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+// [Cecil] Configuration of specific platform macros
+#include <Engine/Base/Config.h>
+
 // set this to 1 to enable checks whether somethig is deleted while iterating some array/container
 #define CHECKARRAYLOCKING 0
-
-#ifdef _WIN32
-  #ifndef PLATFORM_WIN32
-    #define PLATFORM_WIN32 1
-  #endif
-#endif
 
 #include <stdlib.h>
 #include <malloc.h>
@@ -33,17 +30,25 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <search.h>   // for qsort
 #include <float.h>    // for FPU control
 
-/* rcg10042001 !!! FIXME: Move these somewhere. */
-#if (defined PLATFORM_WIN32)
-#include <conio.h>
-#include <crtdbg.h>
-#include <winsock2.h>
-#include <windows.h>
-#include <mmsystem.h> // for timers
-#endif
+// [Cecil] Windows-specific
+#if SE1_WIN
+  #include <conio.h>
+  #include <crtdbg.h>
+  #include <winsock2.h>
+  #include <windows.h>
+  #include <mmsystem.h> // For timers
+
+  // [Cecil] Intrinsics for new compilers
+  #if !SE1_OLD_COMPILER
+    #include <intrin.h>
+  #endif
+#endif // SE1_WIN
 
 #include <Engine/Base/Base.h>
 #include <Engine/Base/Types.h>
+
+// [Cecil] Byte swapping functions
+#include <Engine/Base/ByteSwap.h>
 
 #include <Engine/Base/Input.h>
 #include <Engine/Base/KeyNames.h>
