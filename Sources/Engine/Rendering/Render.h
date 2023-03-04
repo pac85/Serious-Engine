@@ -13,6 +13,13 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+#ifndef SE_INCL_RENDERING_H
+#define SE_INCL_RENDERING_H
+
+#ifdef PRAGMA_ONCE
+  #pragma once
+#endif
+
 #include <Engine/Entities/Entity.h>
 #include <Engine/Brushes/Brush.h>
 /*
@@ -236,3 +243,5 @@ ENGINE_API extern void RenderView(CWorld &woWorld, CEntity &enViewer,
 ENGINE_API extern FLOAT3D _vViewerLightDirection;
 ENGINE_API extern COLOR _colViewerLight;
 ENGINE_API extern COLOR _colViewerAmbient;
+
+#endif // include-once check

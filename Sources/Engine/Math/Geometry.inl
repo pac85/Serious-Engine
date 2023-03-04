@@ -1,3 +1,9 @@
+#ifndef SE_INCL_GEOMETRY_INL
+#define SE_INCL_GEOMETRY_INL
+
+#ifdef PRAGMA_ONCE
+  #pragma once
+#endif
 
 // mirror a position vector by a given plane
 inline void ReflectPositionVectorByPlane(const FLOATplane3D &plPlane, FLOAT3D &vPoint)
@@ -128,3 +134,5 @@ inline void GetMajorAxesForPlane(
   ASSERT(Abs(plPlane(iMaxNormalAxis))>=Abs(plPlane(iMajorAxis1))
        &&Abs(plPlane(iMaxNormalAxis))>=Abs(plPlane(iMajorAxis2)));
 }
+
+#endif // include-once check

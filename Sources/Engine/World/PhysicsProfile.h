@@ -11,10 +11,14 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. 
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-S-Cape3D 3D game engine library
-Copyright (c) 1997-1998, CroTeam. */
+#ifndef SE_INCL_PHYSICSPROFILE_H
+#define SE_INCL_PHYSICSPROFILE_H
+
+#ifdef PRAGMA_ONCE
+  #pragma once
+#endif
 
 #ifndef __ENGINE_BASE_PROFILING_H__
 #include <Engine/Base/Profiling.h>
@@ -121,3 +125,5 @@ public:
   // constructor
   CPhysicsProfile(void);
 };
+
+#endif // include-once check
