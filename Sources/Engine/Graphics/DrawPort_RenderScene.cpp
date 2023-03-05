@@ -38,8 +38,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#define ASMOPT 1
-
 #define MAXTEXUNITS   4
 #define SHADOWTEXTURE 3
 
@@ -140,7 +138,7 @@ static __forceinline void AddElements( ScenePolygon *pspo)
 {
   const INDEX ctElems = pspo->spo_ctElements;
   INDEX *piDst = _aiElements.Push(ctElems);
-#if ASMOPT == 1
+#if SE1_USE_ASM
   __asm {
     mov     eax,D [pspo]
     mov     ecx,D [ctElems]
@@ -768,9 +766,8 @@ static void RSSetTextureCoords( ScenePolygon *pspoGroup, INDEX iLayer, INDEX iUn
     }
 
     // diffuse mapping
+  #if SE1_USE_ASM
     const FLOAT3D &vO = pspo->spo_amvMapping[iLayer].mv_vO;
-
-#if ASMOPT == 1
     __asm {
       mov     esi,D [pspo]
       mov     edi,D [iMappingOffset]
@@ -810,7 +807,7 @@ vtxLoop:
       dec     edx
       jnz     vtxLoop
     }
-#else
+  #else
     const FLOAT3D &vO = pspo->spo_amvMapping[iLayer].mv_vO;
     const FLOAT3D &vU = pspo->spo_amvMapping[iLayer].mv_vU;
     const FLOAT3D &vV = pspo->spo_amvMapping[iLayer].mv_vV;
@@ -821,7 +818,7 @@ vtxLoop:
       ptex[i].s = vU(1)*fDX + vU(2)*fDY + vU(3)*fDZ;
       ptex[i].t = vV(1)*fDX + vV(2)*fDY + vV(3)*fDZ;
     }
-#endif
+  #endif
   }
 
   // init array

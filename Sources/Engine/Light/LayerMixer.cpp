@@ -40,9 +40,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#define ASMOPT 1
-
-
 extern INDEX shd_bFineQuality;
 extern INDEX shd_iFiltering;
 extern INDEX shd_iDithering;
@@ -344,9 +341,6 @@ skipPixel:
 // add one layer point light without diffusion and with mask
 void CLayerMixer::AddAmbientMaskPoint( UBYTE *pubMask, UBYTE ubMask)
 {
-
-#if ASMOPT == 1
-
   // prepare some local variables
   __int64 mmDDL2oDU = _slDDL2oDU;
   __int64 mmDDL2oDV = _slDDL2oDV;
@@ -354,6 +348,7 @@ void CLayerMixer::AddAmbientMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   _slLightMax<<=7;
   _slLightStep>>=1;
 
+#if SE1_USE_ASM
   __asm {
     // prepare interpolants
     movd    mm0,D [_slL2Row]
@@ -433,7 +428,6 @@ skipPixel:
   }
 
 #else
-
   for( PIX pixV=0; pixV<_iRowCt; pixV++)
   {
     SLONG slL2Point = _slL2Row;
@@ -465,9 +459,7 @@ skipPixel:
     _slDL2oDV    += _slDDL2oDV;
     _slDL2oDURow += _slDDL2oDUoDV;
   }
-
 #endif
-
 }
 
 // add one layer point light with diffusion and without mask
@@ -565,8 +557,6 @@ void CLayerMixer::AddDiffusionMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   _slLightStep = FloatToInt(_slLightStep * _fMinLightDistance * _f1oFallOff);
   if( _slLightStep!=0) slMax1oL = (256<<8) / _slLightStep +256;
 
-#if ASMOPT == 1
-
   // prepare some local variables
   __int64 mmDDL2oDU = _slDDL2oDU;
   __int64 mmDDL2oDV = _slDDL2oDV;
@@ -574,6 +564,7 @@ void CLayerMixer::AddDiffusionMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   _slLightMax<<=7;
   _slLightStep>>=1;
 
+#if SE1_USE_ASM
   __asm {
     // prepare interpolants
     movd    mm0,D [_slL2Row]
@@ -686,9 +677,7 @@ skipPixel:
     _slDL2oDV    += _slDDL2oDV;
     _slDL2oDURow += _slDDL2oDUoDV;
   }
-
 #endif
-
 }
 
 // prepares point light that creates layer (returns TRUE if there is infulence)
@@ -755,7 +744,7 @@ BOOL CLayerMixer::PrepareOneLayerPoint( CBrushShadowLayer *pbsl, BOOL bNoMask)
   FLOAT fDL2oDV     = fDDL2oDV + 2*(lm_vStepV%v00);
   //_v00 = v00;
 
-#if ASMOPT == 1
+#if SE1_USE_ASM
   __asm {
     fld     D [fDDL2oDU]
     fadd    D [fDDL2oDU]
@@ -783,6 +772,7 @@ BOOL CLayerMixer::PrepareOneLayerPoint( CBrushShadowLayer *pbsl, BOOL bNoMask)
     fistp   D [_slDDL2oDV]
     fistp   D [_slDDL2oDU]
   }
+
 #else
   fDDL2oDU     *= 2;
   fDDL2oDV     *= 2;
@@ -868,8 +858,7 @@ void CLayerMixer::AddOneLayerGradient( CGradientParameters &gp)
   _pulLayer  = lm_pulShadowMap;
   FLOAT fStart = Clamp( fGr00-(fDGroDJ+fDGroDI)*0.5f, 0.0f, 1.0f);
 
-#if ASMOPT == 1
-
+#if SE1_USE_ASM
   __int64 mmRowAdv;
   SLONG fixGRow  = (fGr00-(fDGroDJ+fDGroDI)*0.5f)*32767.0f; // 16:15
   SLONG slModulo = (lm_pixCanvasSizeU-lm_pixPolygonSizeU) *BYTES_PER_TEXEL;
@@ -985,7 +974,6 @@ rowDone:
   }
 
 #else
-
   // well, make gradient ...
   SLONG slR0=0,slG0=0,slB0=0;
   SLONG slR1=0,slG1=0,slB1=0;
@@ -1059,9 +1047,7 @@ rowDone:
       fixBrow += fixDBoDJ;
     }
   }
-
 #endif
-
 }
 
 
@@ -1069,10 +1055,9 @@ rowDone:
 // apply directional light or ambient to layer
 void CLayerMixer::AddDirectional(void)
 {
+#if SE1_USE_ASM
+  ULONG ulLight = ByteSwap32(lm_colLight);
 
-#if ASMOPT == 1
-
-  ULONG ulLight = ByteSwap32( lm_colLight);
   __asm {
     // prepare pointers and variables
     mov     edi,D [_pulLayer]
@@ -1108,7 +1093,6 @@ rowNext:
   }
 
 #else
-
   // for each pixel in the shadow map
   for( PIX pixV=0; pixV<_iRowCt; pixV++) {
     for( PIX pixU=0; pixU<_iPixCt; pixU++) {
@@ -1118,17 +1102,13 @@ rowNext:
     } // go to the next row
     _pulLayer += slModulo;
   }
-
 #endif
-
 }
 
 // apply directional light thru mask to layer
 void CLayerMixer::AddMaskDirectional( UBYTE *pubMask, UBYTE ubMask)
 {
-
-#if ASMOPT == 1
-
+#if SE1_USE_ASM
   // prepare some local variables
   ULONG ulLight = ByteSwap32( lm_colLight);
   __asm {
@@ -1162,7 +1142,6 @@ skipLight:
   }
 
 #else
-
   // for each pixel in the shadow map
   for( PIX pixV=0; pixV<_iRowCt; pixV++) {
     for( PIX pixU=0; pixU<_iPixCt; pixU++) {
@@ -1180,9 +1159,7 @@ skipLight:
     } // go to the next row
     _pulLayer += slModulo;
   }
-
 #endif
-
 }
 
 

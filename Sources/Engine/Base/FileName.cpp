@@ -165,11 +165,11 @@ void CTFileName::SetAbsolutePath(void)
   for (INDEX iPart = 0; iPart < astrParts.Count(); ++iPart) {
     strRemaining += astrParts[iPart];
     if (iPart < astrParts.Count() - 1) {
-#ifdef PLATFORM_WIN32
+    #if SE1_WIN
       strRemaining += CTString("\\");
-#else
+    #else
       strRemaining += CTString("/");
-#endif
+    #endif
     }
   }
   (*this) = strRemaining;

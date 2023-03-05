@@ -37,8 +37,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#define ASMOPT 1
-
 
 extern INDEX gap_iTruformLevel;
 
@@ -1214,7 +1212,7 @@ extern void DrawElements_D3D( INDEX ctIndices, INDEX *pidx)
   const BOOL bSetRange = !(_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL) && (GFX_ctVertices>d3d_iVertexRangeTreshold);
   ASSERT( _iVtxPos>=0 && _iVtxPos<65536);
 
-#if ASMOPT == 1
+#if SE1_USE_ASM
   const __int64 mmSignD = 0x0000800000008000;
   const __int64 mmSignW = 0x8000800080008000;
   __asm {

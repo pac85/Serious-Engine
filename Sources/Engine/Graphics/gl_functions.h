@@ -987,7 +987,7 @@ DLLFUNCTION( OGL, void , glCopyTexSubImage3D,( GLenum target, GLint level,
 
 
 /* !!! FIXME: This needs to move to a GL context abstraction layer. */
-#ifdef PLATFORM_WIN32
+#if SE1_WIN
 // gdi functions
 DLLFUNCTION( OGL, BOOL , wglCopyContext,(HGLRC, HGLRC, UINT),0,0);
 DLLFUNCTION( OGL, HGLRC, wglCreateContext,(HDC),4,1);

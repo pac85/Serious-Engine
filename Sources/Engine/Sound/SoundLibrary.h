@@ -27,9 +27,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticStackArray.h>
 #include <Engine/Templates/DynamicArray.h>
 
-#ifdef PLATFORM_WIN32 /* rcg10042001 */
-#include <Engine/Sound/DSound.h>
-#include <Engine/Sound/EAX.h>
+// [Cecil] Windows-specific
+#if SE1_WIN
+  #include <initguid.h>
+  #include <Engine/Sound/DSound.h>
+  #include <Engine/Sound/EAX.h>
 #endif
 
 /* !!! FIXME: rcg10042001 This is going to need OpenAL or SDL_audio... */
@@ -75,7 +77,7 @@ public:
   CSoundTimerHandler sl_thTimerHandler;  // handler for mixing sounds in timer
 
 /* rcg !!! FIXME: This needs to be abstracted. */
-#ifdef PLATFORM_WIN32
+#if SE1_WIN
   INDEX sl_ctWaveDevices;                // number of devices detected
   BOOL  sl_bUsingDirectSound;
   BOOL  sl_bUsingEAX;

@@ -286,16 +286,18 @@ inline FLOAT FastRcp( const FLOAT f)
 // convert float from 0.0f to 1.0f -> ulong form 0 to 255
 inline ULONG NormFloatToByte( const FLOAT f)
 {
-    /* rcg10042001 !!! FIXME: Move this elsewhere. */
-#ifdef _MSC_VER
+#if SE1_USE_ASM
   const FLOAT f255 = 255.0f;
   ULONG ulRet;
+
   __asm {
     fld   D [f]
     fmul  D [f255]
     fistp D [ulRet]
   }
+
   return ulRet;
+
 #else
   assert((f >= 0.0) && (f <= 1.0));
   return( (ULONG) (f * 255.0) );
@@ -312,19 +314,19 @@ inline FLOAT NormByteToFloat( const ULONG ul)
 // fast float to int conversion
 inline SLONG FloatToInt( FLOAT f)
 {
-#if (defined USE_PORTABLE_C)
-  return((SLONG) f);  /* best of luck to you. */
-
-#elif (defined _MSC_VER)
+#if SE1_OLD_COMPILER || SE1_USE_ASM
   SLONG slRet;
+
   __asm {
     fld    D [f]
     fistp  D [slRet]
   }
+
   return slRet;
 
 #elif (defined __GNUC__)
   SLONG slRet;
+
   __asm__ __volatile__ (
     "flds     (%%ebx)   \n\t"
     "fistpl   (%%esi)   \n\t"
@@ -332,7 +334,9 @@ inline SLONG FloatToInt( FLOAT f)
         : "b" (&f), "S" (&slRet)
         : "memory"
   );
-  return(slRet);
+
+  return slRet;
+
 #else
   #error Fill this in for your platform.
 #endif

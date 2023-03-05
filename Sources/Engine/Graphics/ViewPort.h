@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 
 /* rcg !!! FIXME: This will need to go away. */
-#ifdef PLATFORM_WIN32
+#if SE1_WIN
 class CTempDC {
 public:
   HDC hdc;

@@ -32,8 +32,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#define ASMOPT 1
-
 
 static const __int64 mm1LO   = 0x0000000000000001;
 static const __int64 mm1HI   = 0x0000000100000000;
@@ -1234,11 +1232,11 @@ static void RenderWater(void)
 
   // execute corresponding displace routine
   if( _pixBufferWidth >= _pixTexWidth)
-  { // SUB-SAMPLING
+  {
+    // SUB-SAMPLING
     SLONG slHeightMapStep, slHeightRowStep;
 
-#if ASMOPT == 1
-
+  #if SE1_USE_ASM
     __asm {
       push    ebx
       bsf     ecx,D [_pixTexWidth]
@@ -1309,10 +1307,9 @@ pixLoop:
       pop     ebx
     }
 
-#else
-
+  #else
     PIX pixPos, pixDU, pixDV;
-    slHeightMapStep  = _pixBufferWidth/pixBaseWidth
+    slHeightMapStep  = _pixBufferWidth / pixBaseWidth;
     slHeightRowStep  = (slHeightMapStep-1)*_pixBufferWidth;
     mmShift = DISTORSION+ FastLog2(slHeightMapStep) +2;
     for( PIX pixV=0; pixV<_pixTexHeight; pixV++)
@@ -1330,15 +1327,13 @@ pixLoop:
       }
       pswHeightMap += slHeightRowStep;
     }
-
-#endif
+  #endif
 
   }
   else if( _pixBufferWidth*2 == _pixTexWidth)
-  { // BILINEAR SUPER-SAMPLING 2
-
-#if ASMOPT == 1
-
+  {
+    // BILINEAR SUPER-SAMPLING 2
+  #if SE1_USE_ASM
     __asm {
       push    ebx
       bsf     eax,D [pixBaseWidth]
@@ -1470,8 +1465,7 @@ pixLoop2:
       pop     ebx
     }
 
-#else
-
+  #else
     SLONG slU_00, slU_01, slU_10, slU_11;
     SLONG slV_00, slV_01, slV_10, slV_11;
     for( PIX pixV=0; pixV<_pixBufferHeight; pixV++)
@@ -1498,15 +1492,13 @@ pixLoop2:
       }
       pulTexture+=_pixTexWidth;
     }
-
-#endif
+  #endif
 
   }
   else if( _pixBufferWidth*4 == _pixTexWidth)
-  { // BILINEAR SUPER-SAMPLING 4
-
-#if ASMOPT == 1
-
+  {
+    // BILINEAR SUPER-SAMPLING 4
+  #if SE1_USE_ASM
     __asm {
       push    ebx
       bsf     eax,D [pixBaseWidth]
@@ -1840,8 +1832,7 @@ pixLoop4:
       pop     ebx
     }
 
-#else
-
+  #else
     SLONG slU_00, slU_01, slU_10, slU_11;
     SLONG slV_00, slV_01, slV_10, slV_11;
     mmBaseWidthShift = FastLog2( pixBaseWidth);        // faster multiplying with shift
@@ -1880,12 +1871,11 @@ pixLoop4:
 
         // advance to next texel
         pulTexture+=4;
-        pHeightMap++;
+        pswHeightMap++;
       }
       pulTexture+=_pixTexWidth*3;
     }
-
-#endif
+  #endif
 
   }
   else
@@ -2256,8 +2246,7 @@ static void AnimateFire( SLONG slDensity)
   SLONG slBufferMask   = _pixBufferWidth*_pixBufferHeight -1;
   SLONG slColumnModulo = _pixBufferWidth*(_pixBufferHeight-2) -1;
 
-#if ASMOPT == 1
-
+#if SE1_USE_ASM
   __asm {
     push    ebx
     mov     edi,D [ulRNDSeed] ;// EDI = randomizer
@@ -2308,7 +2297,6 @@ pixDone:
   }
 
 #else
-
   // inner rectangle (without 1 pixel border)
   for( PIX pixU=0; pixU<_pixBufferWidth; pixU++)
   {
@@ -2328,7 +2316,6 @@ pixDone:
       slOffset += _pixBufferWidth;
     }
   }
-
 #endif
 
 //  _sfStats.StopTimer(CStatForm::STI_EFFECTRENDER);
@@ -2351,8 +2338,7 @@ static void RenderPlasmaFire(void)
   SLONG slHeatRowStep  = (slHeatMapStep-1)*_pixBufferWidth;
   SLONG slBaseMipShift = 8 - FastLog2(pixBaseWidth);
 
-#if ASMOPT == 1
-
+#if SE1_USE_ASM
   __asm {
     push    ebx
     mov     ebx,D [pubHeat]
@@ -2382,7 +2368,6 @@ pixLoopF:
   }
 
 #else
-
   INDEX iPalette;
   for( INDEX pixV=0; pixV<_pixTexHeight; pixV++) {
     // for every pixel in horizontal line
@@ -2393,7 +2378,6 @@ pixLoopF:
     }
     pubHeat += slHeatRowStep;
   }
-
 #endif
 
 //  _sfStats.StopTimer(CStatForm::STI_EFFECTRENDER);

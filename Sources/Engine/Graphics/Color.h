@@ -278,7 +278,7 @@ extern void abgr2argb( ULONG *pulSrc, ULONG *pulDst, INDEX ct);
 // fast memory copy of ULONGs
 inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
 {
-#if (defined _MSC_VER)
+#if SE1_USE_ASM
   __asm {
     cld
     mov   esi,dword ptr [pulSrc]
@@ -287,7 +287,7 @@ inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
     rep   movsd
   }
 #else
-  memcpy( pulDst, pulSrc, ctLongs*4);
+  memcpy(pulDst, pulSrc, ctLongs * 4);
 #endif
 }
 
@@ -295,7 +295,7 @@ inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
 // fast memory set of ULONGs
 inline void StoreLongs( ULONG ulVal, ULONG *pulDst, INDEX ctLongs)
 {
-#if (defined _MSC_VER)
+#if SE1_USE_ASM
   __asm {
     cld
     mov   eax,dword ptr [ulVal]
@@ -304,7 +304,9 @@ inline void StoreLongs( ULONG ulVal, ULONG *pulDst, INDEX ctLongs)
     rep   stosd
   }
 #else
-  for( INDEX i=0; i<ctLongs; i++) pulDst[i] = ulVal;
+  for (INDEX i = 0; i < ctLongs; i++) {
+    pulDst[i] = ulVal;
+  }
 #endif
 }
 

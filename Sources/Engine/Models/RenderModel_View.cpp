@@ -40,8 +40,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#define ASMOPT 1
-
 extern INDEX mdl_bRenderBump;
 
 extern BOOL CVA_bModels;
@@ -673,7 +671,7 @@ static FLOAT   _fHazeAdd;
 // check vertex against fog
 static void GetFogMapInVertex( GFXVertex3 &vtx, GFXTexCoord &tex)
 {
-#if ASMOPT == 1
+#if SE1_USE_ASM
   __asm {
     mov     esi,D [vtx]
     mov     edi,D [tex]
@@ -718,7 +716,7 @@ static void GetFogMapInVertex( GFXVertex3 &vtx, GFXTexCoord &tex)
 // check vertex against haze
 static void GetHazeMapInVertex( GFXVertex3 &vtx, FLOAT &tx1)
 {
-#if ASMOPT == 1
+#if SE1_USE_ASM
   __asm {
     mov     esi,D [vtx]
     mov     edi,D [tx1]
@@ -1105,7 +1103,7 @@ static void UnpackFrame( CRenderModel &rm, BOOL bKeepNormals)
     const ModelFrameVertex16 *pFrame1 = rm.rm_pFrame16_1;
     if( pFrame0==pFrame1)
     {
-#if ASMOPT == 1
+    #if SE1_USE_ASM
       // for each vertex in mip
       const SLONG fixLerpRatio = FloatToInt(fLerpRatio*256.0f); // fix 8:8
       SLONG slTmp1, slTmp2, slTmp3;
@@ -1188,7 +1186,7 @@ vtxNext16:
         cmp     ecx,D [_ctAllMipVx]
         jl      vtxLoop16
       }
-#else
+    #else
       // for each vertex in mip
       for( INDEX iMipVx=0; iMipVx<_ctAllMipVx; iMipVx++) {
         // get destination for unpacking
@@ -1216,12 +1214,12 @@ vtxNext16:
           pnorMipBase[iMipVx].nz = fNZ;
         }
       }
-#endif
+    #endif
     }
     // if lerping
     else
     {
-#if ASMOPT == 1
+    #if SE1_USE_ASM
       // for each vertex in mip
       const SLONG fixLerpRatio = FloatToInt(fLerpRatio*256.0f); // fix 8:8
       SLONG slTmp1, slTmp2, slTmp3;
@@ -1349,7 +1347,7 @@ vtxNext16L:
         cmp     ecx,D [_ctAllMipVx]
         jl      vtxLoop16L
       }
-#else
+    #else
       // for each vertex in mip
       for( INDEX iMipVx=0; iMipVx<_ctAllMipVx; iMipVx++) {
         // get destination for unpacking
@@ -1378,7 +1376,7 @@ vtxNext16L:
           pnorMipBase[iMipVx].nz = fNZ;
         }
       }
-#endif
+    #endif
 
     }
   }
@@ -1390,7 +1388,7 @@ vtxNext16L:
     // if no lerping
     if( pFrame0==pFrame1)
     {
-#if ASMOPT == 1
+    #if SE1_USE_ASM
       // for each vertex in mip
       const SLONG fixLerpRatio = FloatToInt(fLerpRatio*256.0f); // fix 8:8
       SLONG slTmp1, slTmp2, slTmp3;
@@ -1459,7 +1457,7 @@ vtxNext8:
         cmp     ecx,D [_ctAllMipVx]
         jl      vtxLoop8
       }
-#else
+    #else
       // for each vertex in mip
       for( INDEX iMipVx=0; iMipVx<_ctAllMipVx; iMipVx++) {
         // get destination for unpacking
@@ -1484,12 +1482,12 @@ vtxNext8:
           pnorMipBase[iMipVx].nz = fNZ;
         }
       }
-#endif
+    #endif
     }
     // if lerping
     else
     {
-#if ASMOPT == 1
+    #if SE1_USE_ASM
       const SLONG fixLerpRatio = FloatToInt(fLerpRatio*256.0f); // fix 8:8
       SLONG slTmp1, slTmp2, slTmp3;
       // re-adjust stretching factors because of fixint lerping (divide by 256)
@@ -1603,7 +1601,7 @@ vtxNext8L:
         cmp     ecx,D [_ctAllMipVx]
         jl      vtxLoop8L
       }
-#else
+    #else
       // for each vertex in mip
       for( INDEX iMipVx=0; iMipVx<_ctAllMipVx; iMipVx++) {
         // get destination for unpacking
@@ -1630,12 +1628,12 @@ vtxNext8L:
           pnorMipBase[iMipVx].nz = fNZ;
         }
       }
-#endif
+    #endif
     }
   }
 
   // generate colors from shades
-#if ASMOPT == 1
+#if SE1_USE_ASM
   __asm {
     pxor    mm0,mm0
     // construct 64-bit RGBA light
@@ -2000,7 +1998,8 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
     pvtxSrfBase = &_avtxSrfBase[iSrfVx0];
     INDEX iSrfVx;
 
-#if ASMOPT == 1
+  #if SE1_USE_ASM
+    // [Cecil] NOTE: This code may cause problems if GFXVertex is switched from GFXVertex4 to GFXVertex3
     __asm {
       push    ebx
       mov     ebx,D [puwSrfToMip]
@@ -2015,13 +2014,13 @@ srfVtxLoop:
       mov     D [edi+0],edx
       movq    Q [edi+4],mm1
       add     ebx,2
-      add     edi,4*4
+      add     edi,4*4 // [Cecil] NOTE: If GFXVertex is GFXVertex3, it should be 4*3
       dec     ecx
       jnz     srfVtxLoop
       emms
       pop     ebx
     }
-#else
+  #else
     // setup vetrex array
     for( iSrfVx=0; iSrfVx<ctSrfVx; iSrfVx++) {
       const INDEX iMipVx = puwSrfToMip[iSrfVx];
@@ -2029,7 +2028,8 @@ srfVtxLoop:
       pvtxSrfBase[iSrfVx].y = pvtxMipBase[iMipVx].y;
       pvtxSrfBase[iSrfVx].z = pvtxMipBase[iMipVx].z;
     }
-#endif
+  #endif
+
     // setup normal array for truform (if enabled)
     if( GFX_bTruform) {
       GFXNormal *pnorSrfBase = &_anorSrfBase[iSrfVx0];
@@ -2212,7 +2212,7 @@ srfVtxLoop:
     const COLOR colD = AdjustColor( ms.ms_colDiffuse, _slTexHueShift, _slTexSaturation);
     colSrfDiff.MultiplyRGBA( colD, colMdlDiff);
 
-#if ASMOPT == 1
+  #if SE1_USE_ASM
     // setup texcoord array
     __asm {
       push    ebx
@@ -2252,13 +2252,14 @@ vtxRest:
 vtxEnd:
       pop     ebx
     }
-#else
+
+  #else
     // setup texcoord array
     for( INDEX iSrfVx=0; iSrfVx<ctSrfVx; iSrfVx++) {
       ptexSrfBase[iSrfVx].s = pvTexCoord[iSrfVx](1) *fTexCorrU;
       ptexSrfBase[iSrfVx].t = pvTexCoord[iSrfVx](2) *fTexCorrV;
     }
-#endif
+  #endif
 
     // setup color array
     if( ms.ms_sstShadingType==SST_FULLBRIGHT) {
@@ -2272,7 +2273,7 @@ vtxEnd:
       for( INDEX iSrfVx=0; iSrfVx<ctSrfVx; iSrfVx++) pcolSrfBase[iSrfVx] = colSrfDiffAdj;
     }
     else {
-#if ASMOPT == 1
+    #if SE1_USE_ASM
       // setup color array
       const COLOR colS = colSrfDiff.abgr;
       __asm {
@@ -2301,14 +2302,16 @@ diffColLoop:
         emms
         pop     ebx
       }
-#else
+
+    #else
       // setup diffuse color array
       for( INDEX iSrfVx=0; iSrfVx<ctSrfVx; iSrfVx++) {
         const INDEX iMipVx = puwSrfToMip[iSrfVx];
         pcolSrfBase[iSrfVx].MultiplyRGBCopyA1( colSrfDiff, pcolMipBase[iMipVx]);
       }
-#endif
+    #endif
     }
+
     // eventually attenuate color in case of fog or haze
     if( (ms.ms_ulRenderingFlags&SRF_OPAQUE) && !_bForceTranslucency) continue;
     // eventually do some haze and/or fog attenuation of alpha channel in surface
@@ -2472,7 +2475,7 @@ diffColLoop:
     // cache rotation
     const FLOATmatrix3D &m = rm.rm_mObjectRotation;
 
-#if ASMOPT == 1
+  #if SE1_USE_ASM
     __asm {
       push    ebx
       mov     ebx,D [m]
@@ -2555,11 +2558,11 @@ reflMipLoop:
       jnz     reflMipLoop
       pop     ebx
     }
-#else
+  #else
     // for each mip vertex
     for( INDEX iMipVx=0; iMipVx<_ctAllMipVx; iMipVx++)
     { // get normal in absolute space
-      const GFXNormal &nor = pnorMipBase[iMipVx];
+      const GFXNormal3 &nor = pnorMipBase[iMipVx];
       const FLOAT fNx = nor.nx*m(1,1) + nor.ny*m(1,2) + nor.nz*m(1,3);
       const FLOAT fNy = nor.nx*m(2,1) + nor.ny*m(2,2) + nor.nz*m(2,3);
       const FLOAT fNz = nor.nx*m(3,1) + nor.ny*m(3,2) + nor.nz*m(3,3);
@@ -2574,7 +2577,8 @@ reflMipLoop:
       ptexMipBase[iMipVx].s = fRVx*f1oFM +0.5f;
       ptexMipBase[iMipVx].t = fRVz*f1oFM +0.5f;
     }
-#endif
+  #endif
+
     _pfModelProfile.StopTimer( CModelProfile::PTI_VIEW_INIT_REFL_MIP);
 
     // setup surface vertices
@@ -2667,7 +2671,7 @@ reflMipLoop:
     // cache object view rotation
     const FLOATmatrix3D &m = rm.rm_mObjectToView;
 
-#if ASMOPT == 1
+  #if SE1_USE_ASM
     __asm {
       push    ebx
       mov     ebx,D [m]
@@ -2755,11 +2759,11 @@ specMipLoop:
       jnz     specMipLoop
       pop     ebx
     }
-#else
+  #else
     // for each mip vertex
     for( INDEX iMipVx=0; iMipVx<_ctAllMipVx; iMipVx++)
     { // reflect light vector around vertex normal in object space
-      GFXNormal &nor = pnorMipBase[iMipVx];
+      GFXNormal3 &nor = pnorMipBase[iMipVx];
       const FLOAT fNL = nor.nx*_vLightObj(1) + nor.ny*_vLightObj(2) +	nor.nz*_vLightObj(3);
       const FLOAT fRx = _vLightObj(1) - 2*nor.nx*fNL;
       const FLOAT fRy = _vLightObj(2) - 2*nor.ny*fNL;
@@ -2773,7 +2777,8 @@ specMipLoop:
       ptexMipBase[iMipVx].s = fRVx*f1oFM +0.5f;
       ptexMipBase[iMipVx].t = fRVy*f1oFM +0.5f;
     }
-#endif
+  #endif
+
     _pfModelProfile.StopTimer( CModelProfile::PTI_VIEW_INIT_SPEC_MIP);
 
     // setup surface vertices

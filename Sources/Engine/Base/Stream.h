@@ -119,7 +119,7 @@ public:
   /* Static function disable stream handling. */
   static void DisableStreamHandling(void);
 
-#ifdef PLATFORM_WIN32 /* rcg10042001 !!! FIXME */
+#if SE1_WIN /* rcg10042001 !!! FIXME */
   /* Static function to filter exceptions and intercept access violation */
   static int ExceptionFilter(DWORD dwCode, _EXCEPTION_POINTERS *pExceptionInfoPtrs);
 #endif

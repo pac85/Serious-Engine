@@ -30,8 +30,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#define ASMOPT 1
-
 
 // console variables for volume
 extern FLOAT snd_fSoundVolume;
@@ -206,8 +204,7 @@ inline void MixMono( CSoundObject *pso)
 {
   _pfSoundProfile.StartTimer(CSoundProfile::PTI_RAWMIXER);
 
-#if ASMOPT == 1
-
+#if SE1_USE_ASM
   __asm {
     // convert from floats to fixints 32:16
     fld     D [fLeftOfs]
@@ -341,7 +338,6 @@ loopEnd:
   }
 
 #else
-
   // initialize some local vars
   SLONG slLeftSample, slRightSample, slNextSample;
   SLONG *pslDstBuffer = (SLONG*)pvMixerBuffer;
@@ -426,8 +422,7 @@ inline void MixStereo( CSoundObject *pso)
 {
   _pfSoundProfile.StartTimer(CSoundProfile::PTI_RAWMIXER);
 
-#if ASMOPT == 1
-
+#if SE1_USE_ASM
   __asm {
     // convert from floats to fixints 32:16
     fld     D [fLeftOfs]

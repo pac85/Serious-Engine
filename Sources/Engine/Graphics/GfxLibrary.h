@@ -194,7 +194,7 @@ private:
   void EndDriver_OGL(void);
   void TestExtension_OGL( ULONG ulFlag, const char *strName); // if exist, add OpenGL extension to flag and list
   void AddExtension_OGL(  ULONG ulFlag, const char *strName); // unconditionally add OpenGL extension to flag and list
-#ifdef PLATFORM_WIN32
+#if SE1_WIN
   BOOL CreateContext_OGL( HDC hdc);
   BOOL SetupPixelFormat_OGL( HDC hdc, BOOL bReport=FALSE);
 #endif

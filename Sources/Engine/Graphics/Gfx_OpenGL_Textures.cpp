@@ -13,6 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+// [Cecil] ASM code translation:
+// https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Graphics/Gfx_OpenGL_Textures.cpp
+
 #include "stdh.h"
 
 #include <Engine/Graphics/GfxLibrary.h>
@@ -164,6 +167,8 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
       if( pixSizeU==0) pixSizeU=1;
       if( pixSizeV==0) pixSizeV=1;
       pixSize = pixSizeU*pixSizeV;
+
+    #if SE1_USE_ASM
       __asm {   
         pxor    mm0,mm0
         mov     esi,D [pulSrc]
@@ -184,6 +189,23 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
         jnz     pixLoop
         emms
       }
+
+    #else
+      UBYTE *dptr = (UBYTE *)pulDst;
+      UBYTE *sptr = (UBYTE *)pulSrc;
+
+      for (PIX i = 0; i < pixSize; i++)
+      {
+        for (PIX j = 0; j < 4; j++)
+        {
+          *dptr = (UBYTE)((((UWORD)sptr[0]) + ((UWORD)sptr[4])) >> 1);
+          dptr++;
+          sptr++;
+        }
+        sptr += 4;
+      }
+    #endif
+
       // upload mipmap
       if( bUseSubImage) {
         pglTexSubImage2D( GL_TEXTURE_2D, iMip, 0, 0, pixSizeU, pixSizeV,

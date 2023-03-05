@@ -47,7 +47,7 @@ extern GLint     (__stdcall *pwglGetSwapIntervalEXT)(void);
 extern void (__stdcall *pglActiveTextureARB)(GLenum texunit);
 extern void (__stdcall *pglClientActiveTextureARB)(GLenum texunit);
 
-#ifdef PLATFORM_WIN32 /* !!! FIXME: Move to abstraction layer. --rcg. */
+#if SE1_WIN /* !!! FIXME: Move to abstraction layer. --rcg. */
 // t-buffer support
 extern char *(__stdcall *pwglGetExtensionsStringARB)(HDC hdc);
 extern BOOL  (__stdcall *pwglChoosePixelFormatARB)(HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
@@ -56,7 +56,7 @@ extern BOOL  (__stdcall *pwglGetPixelFormatAttribivARB)(HDC hdc, int iPixelForma
 extern void  (__stdcall *pglTBufferMask3DFX)(GLuint mask);
 
 // GL_NV_vertex_array_range & GL_NV_fence
-#ifdef PLATFORM_WIN32 /* !!! FIXME: Move to abstraction layer. --rcg. */
+#if SE1_WIN /* !!! FIXME: Move to abstraction layer. --rcg. */
 extern void *(__stdcall *pwglAllocateMemoryNV)(GLint size, GLfloat readfreq, GLfloat writefreq, GLfloat priority);
 extern void  (__stdcall *pwglFreeMemoryNV)(void *pointer);
 #endif
