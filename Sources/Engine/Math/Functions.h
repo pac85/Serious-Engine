@@ -1,4 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
+   Copyright (c) 2023 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -488,9 +489,10 @@ inline FLOAT RadAngle(ANGLE aAngle) {
   return FLOAT (WrapAngle(aAngle)*PI/ANGLE_180);
 }
 
-ENGINE_API FLOAT Sin(ANGLE a);
-ENGINE_API FLOAT Cos(ANGLE a);
-ENGINE_API FLOAT Tan(ANGLE a);
+// [Cecil] Replaced old overcomplicated implementations with fast ones
+#define Sin(a) SinFast(a)
+#define Cos(a) CosFast(a)
+#define Tan(a) TanFast(a)
 
 inline ENGINE_API FLOAT SinFast(ANGLE a) { return (FLOAT)sin(a*(PI/ANGLE_180)); };
 inline ENGINE_API FLOAT CosFast(ANGLE a) { return (FLOAT)cos(a*(PI/ANGLE_180)); };
