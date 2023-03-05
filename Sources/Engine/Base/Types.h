@@ -81,7 +81,7 @@ typedef unsigned int        UINT;
 
 
 #define MAX_SLONG ((SLONG)0x7FFFFFFFL)
-#define MAX_SWORD ((UWORD)0x7FFF)
+#define MAX_SWORD ((SWORD)0x7FFF)
 #define MAX_SBYTE ((SBYTE)0x7F)
 
 #define MIN_SLONG ((SLONG)0x80000000L)
