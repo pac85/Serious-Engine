@@ -70,7 +70,7 @@ CMemHandlerInit::CMemHandlerInit(void)
 
 #undef AllocMemory
 
-void *AllocMemory( SLONG memsize )
+void *AllocMemory(size_t memsize)
 {
   void *pmem;
   ASSERTMSG(memsize>0, "AllocMemory: Block size is less or equal zero.");
@@ -87,7 +87,7 @@ void *AllocMemory( SLONG memsize )
 }
 
 #ifndef NDEBUG
-void *_debug_AllocMemory( SLONG memsize, int iType, const char *strFile, int iLine)
+void *_debug_AllocMemory(size_t memsize, int iType, const char *strFile, int iLine)
 {
   void *pmem;
   ASSERTMSG(memsize>0, "AllocMemory: Block size is less or equal zero.");
@@ -105,25 +105,27 @@ void *_debug_AllocMemory( SLONG memsize, int iType, const char *strFile, int iLi
 }
 #endif
 
-void *AllocMemoryAligned( SLONG memsize, SLONG slAlignPow2)
+void *AllocMemoryAligned(size_t memsize, SLONG slAlignPow2)
 {
-  ULONG ulMem = (ULONG)AllocMemory(memsize+slAlignPow2*2);
-  ULONG ulMemAligned = ((ulMem+slAlignPow2-1) & ~(slAlignPow2-1)) + slAlignPow2;
-  ((ULONG *)ulMemAligned)[-1] = ulMem;
-  return (void*)ulMemAligned;
-}
-void FreeMemoryAligned( void *memory)
-{
-  FreeMemory((void*) ( ( (ULONG*)memory )[-1] ) );
+  uintptr_t ulMem = (uintptr_t)AllocMemory(memsize + slAlignPow2 * 2);
+  uintptr_t ulMemAligned = ((ulMem + slAlignPow2 - 1) & ~(slAlignPow2 - 1)) + slAlignPow2;
+  ((uintptr_t *)ulMemAligned)[-1] = ulMem;
+
+  return (void *)ulMemAligned;
 }
 
-void FreeMemory( void *memory )
+void FreeMemoryAligned(void *memory)
+{
+  FreeMemory((void *)(((uintptr_t *)memory)[-1]));
+}
+
+void FreeMemory(void *memory )
 {
   ASSERTMSG(memory!=NULL, "FreeMemory: NULL pointer input.");
-  free( (char *)memory);
+  free((char *)memory);
 }
 
-void ResizeMemory( void **ppv, SLONG slSize )
+void ResizeMemory(void **ppv, size_t slSize)
 {
   if (_bCheckAllAllocations) {
     _CrtCheckMemory();
@@ -137,12 +139,12 @@ void ResizeMemory( void **ppv, SLONG slSize )
   *ppv = pv;
 }
 
-void GrowMemory( void **ppv, SLONG newSize )
+void GrowMemory(void **ppv, size_t newSize)
 {
   ResizeMemory(ppv, newSize);
 }
 
-void ShrinkMemory( void **ppv, SLONG newSize )
+void ShrinkMemory(void **ppv, size_t newSize)
 {
   ResizeMemory(ppv, newSize);
 }

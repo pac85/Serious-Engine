@@ -147,7 +147,7 @@ void CSoundObject::Set3DParameters( FLOAT fFalloff, FLOAT fHotSpot,
       //CPrintF("SET3D: ");
       CEntity *pen = so_penEntity->GetPredictionTail();
       if (pen!=so_penEntity) {
-        pso = (CSoundObject *)( ((UBYTE*)pen) + (int(this)-int(so_penEntity)) );
+        pso = (CSoundObject *)(((UBYTE *)pen) + (size_t(this) - size_t(so_penEntity)));
       }
     }
   }
@@ -175,7 +175,7 @@ CSoundObject *CSoundObject::GetPredictionTail(ULONG ulTypeID, ULONG ulEventID)
       // it must not play the sound
       return NULL;
     }
-    SLONG slOffset = int(this)-int(so_penEntity);
+    SLONG slOffset = size_t(this) - size_t(so_penEntity);
 
     ULONG ulCRC;
     CRC_Start(ulCRC);
@@ -213,7 +213,7 @@ void CSoundObject::Play(CSoundData *pCsdLink, SLONG slFlags)
 
   //CPrintF("PLAY: '%s'", (const char*)pCsdLink->GetName().FileName());
   // get prediction tail
-  CSoundObject *psoTail = GetPredictionTail(EVENT_SOUNDPLAY, (ULONG)pCsdLink);
+  CSoundObject *psoTail = GetPredictionTail(EVENT_SOUNDPLAY, PointerToID(pCsdLink));
   // if the event is predicted
   if (psoTail==NULL) {
     // do nothing;
@@ -349,7 +349,7 @@ void CSoundObject::Stop(void)
 
   CSoundObject *psoTail = this;
   // get prediction tail
-  psoTail = GetPredictionTail(EVENT_SOUNDSTOP, (ULONG)so_pCsdLink);
+  psoTail = GetPredictionTail(EVENT_SOUNDSTOP, PointerToID(so_pCsdLink));
   // if the event is predicted
   if (psoTail==NULL) {
     // do nothing;

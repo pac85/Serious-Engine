@@ -121,7 +121,7 @@ public:
   /* Return the number of elements in list. */
   INDEX Count(void) const;
   /* Sort the list. */
-  void Sort(int (*pCompare)(const void *p0, const void *p1), int iNodeOffset);
+  void Sort(int (*pCompare)(const void *p0, const void *p1), size_t iNodeOffset);
 };
 
 #include <Engine/Base/Lists.inl>

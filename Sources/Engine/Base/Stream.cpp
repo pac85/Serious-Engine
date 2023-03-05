@@ -164,7 +164,7 @@ void InitStreams(void)
 
   // for each group file in base directory
   struct _finddata_t c_file;
-  long hFile;
+  intptr_t hFile;
   hFile = _findfirst(_fnmApplicationPath+"*.gro", &c_file);
   BOOL bOK = (hFile!=-1);
   while(bOK) {
@@ -180,7 +180,7 @@ void InitStreams(void)
   if (_fnmMod!="") {
     // for each group file in mod directory
     struct _finddata_t c_file;
-    long hFile;
+    intptr_t hFile;
     hFile = _findfirst(_fnmApplicationPath+_fnmMod+"*.gro", &c_file);
     BOOL bOK = (hFile!=-1);
     while(bOK) {
@@ -197,7 +197,7 @@ void InitStreams(void)
   if (_fnmCDPath!="") {
     // for each group file on the CD
     struct _finddata_t c_file;
-    long hFile;
+    intptr_t hFile;
     hFile = _findfirst(_fnmCDPath+"*.gro", &c_file);
     BOOL bOK = (hFile!=-1);
     while(bOK) {
@@ -213,7 +213,7 @@ void InitStreams(void)
     if (_fnmMod!="") {
       // for each group file in mod directory
       struct _finddata_t c_file;
-      long hFile;
+      intptr_t hFile;
       hFile = _findfirst(_fnmCDPath+_fnmMod+"*.gro", &c_file);
       BOOL bOK = (hFile!=-1);
       while(bOK) {
