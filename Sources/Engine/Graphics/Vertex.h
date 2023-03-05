@@ -54,20 +54,14 @@ struct GFXColor
     struct { ULONG abgr;    };  // reverse order - use ByteSwap32()!
   };
 
-  GFXColor() {};
+  GFXColor() : abgr(0) {};
 
   GFXColor( COLOR col) {
-    _asm mov   ecx,dword ptr [this]
-    _asm mov   eax,dword ptr [col]
-    _asm bswap eax
-    _asm mov   dword ptr [ecx],eax
+    abgr = ByteSwap32(col);
   }
 
   __forceinline void Set( COLOR col) {
-    _asm mov   ecx,dword ptr [this]
-    _asm mov   eax,dword ptr [col]
-    _asm bswap eax
-    _asm mov   dword ptr [ecx],eax
+    abgr = ByteSwap32(col);
   }
 
   void MultiplyRGBA( const GFXColor &col1, const GFXColor &col2) {

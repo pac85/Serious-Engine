@@ -199,75 +199,15 @@ ENGINE_API extern COLOR AddColors( COLOR col1, COLOR col2); // fast color addito
 
 // converts colors between Croteam, OpenGL and DirectX
 
-__forceinline ULONG ByteSwap( ULONG ul)
-{
-/* rcg10052001 Platform-wrappers. */
-#if (defined USE_PORTABLE_C)
-	return( ((ul << 24)            ) |
-            ((ul << 8) & 0x00FF0000) |
-            ((ul >> 8) & 0x0000FF00) |
-            ((ul >> 24)            ) );
-
-#elif (defined _MSC_VER)
-  ULONG ulRet;
-  __asm {
-    mov   eax,dword ptr [ul]
-    bswap eax
-    mov   dword ptr [ulRet],eax
-  }
-  return ulRet;
-#elif (defined __GNUC__)
-  __asm__ __volatile__ (
-    "bswapl   %%eax    \n\t"
-        : "=a" (ul)
-        : "a" (ul)
-  );
-  return(ul);
-
-#else
-  #error please define for your platform.
-#endif
-}
-
 __forceinline ULONG rgba2argb( COLOR col)
 {
-#if (defined USE_PORTABLE_C)
-	return( (col << 24) | (col >> 8) );
-
-#elif (defined _MSC_VER)
-  ULONG ulRet;
-  __asm {
-    mov   eax,dword ptr [col]
-    ror   eax,8
-    mov   dword ptr [ulRet],eax
-  }
-  return ulRet;
-
-#else
-  #error please define for your platform.
-#endif
+	return ((col << 24) | (col >> 8));
 }
 
 __forceinline ULONG abgr2argb( ULONG ul)
 {
-#if (defined USE_PORTABLE_C)
-	// this could be simplified, this is just a safe conversion from asm code
   ul = ByteSwap32(ul);
   return ((ul << 24) | (ul >> 8));
-
-#elif (defined _MSC_VER)
-  ULONG ulRet;
-  __asm {
-    mov   eax,dword ptr [ul]
-    bswap eax
-    ror   eax,8
-    mov   dword ptr [ulRet],eax
-  }
-  return ulRet;
-
-#else
-  #error please define for your platform.
-#endif
 }
 
 
