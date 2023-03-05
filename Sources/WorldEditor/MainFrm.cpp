@@ -805,10 +805,12 @@ void CMainFrame::CustomColorPicker( PIX pixX, PIX pixY)
     // instantiate new choose color palette window
     m_pColorPalette = new CColorPaletteWnd;
     // create window
-    BOOL bResult = m_pColorPalette->CreateEx( WS_EX_TOOLWINDOW,
-      NULL, L"Palette", WS_CHILD|WS_POPUP|WS_VISIBLE,
-      rectWindow.left, rectWindow.top, rectWindow.Width(), rectWindow.Height(),
-      m_hWnd, NULL, NULL);
+    BOOL bResult = m_pColorPalette->CreateEx(WS_EX_TOOLWINDOW,
+      NULL, L"Palette", WS_POPUP | WS_VISIBLE,
+      rectWindow, NULL, NULL, NULL);
+    DWORD err = GetLastError();
+    m_pColorPalette->SetFocus();
+
     if( !bResult)
     {
       AfxMessageBox( L"Error: Failed to create color palette");

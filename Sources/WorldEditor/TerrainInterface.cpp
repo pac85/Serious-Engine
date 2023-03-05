@@ -1970,15 +1970,26 @@ void InvokeTerrainBrushPalette( PIX pixX, PIX pixY)
     // instantiate new choose color palette window
     _pBrushPalette = new CBrushPaletteWnd;
     // create window
-    CMainFrame* pMainFrame = STATIC_DOWNCAST(CMainFrame, AfxGetMainWnd());
+    //CMainFrame* pMainFrame = STATIC_DOWNCAST(CMainFrame, AfxGetMainWnd());
+    // FIXME: Can't create with WS_CHILD flag, possibly due to AfxGetMainWnd() returning a pointer to CMainFrame from another thread
     BOOL bResult = _pBrushPalette->CreateEx( WS_EX_TOOLWINDOW,
-      NULL, L"Brush palette", WS_CHILD|WS_POPUP|WS_VISIBLE,
-      rectWindow.left, rectWindow.top, rectWindow.Width(), rectWindow.Height(),
-      pMainFrame->m_hWnd, NULL, NULL);
+      NULL, L"Brush palette", WS_POPUP | WS_VISIBLE,
+      rectWindow, NULL, NULL, NULL);
+
     _pBrushPalette->SetFocus();
     if( !bResult)
     {
-      AfxMessageBox( L"Error: Failed to create brush palette");
+      DWORD err = GetLastError();
+
+      CString str;
+      str.Format(L"Error %d: Failed to create brush palette", err);
+      AfxMessageBox(str);
+
+      if (_pBrushPalette) {
+        delete _pBrushPalette;
+      }
+
+      _pBrushPalette = NULL;
       return;
     }
     // initialize canvas for active texture button
