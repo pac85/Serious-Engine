@@ -309,6 +309,8 @@ ENGINE_API extern ULONG StringToAddress(const CTString &strAddress);
 // convert address to a printable string
 ENGINE_API extern CTString AddressToString(ULONG ulHost);
 
+// [Cecil] Replacement for the shell symbol
+ENGINE_API extern CWorld *_pwoCurrentWorld;
 
 #endif  /* include-once check. */
 

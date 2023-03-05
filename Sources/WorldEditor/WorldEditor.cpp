@@ -2098,7 +2098,7 @@ BOOL CWorldEditorApp::OnIdle(LONG lCount)
     if (pvCurrent!=NULL) {
       CWorldEditorDoc *pdocCurrent = pvCurrent->GetDocument();
       if (pdocCurrent!=NULL) {
-        _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&pdocCurrent->m_woWorld);
+        _pwoCurrentWorld = &pdocCurrent->m_woWorld;
       }
     }
 
