@@ -204,6 +204,7 @@ CTextureData::CTextureData()
   td_slFrameSize = 0;
   td_ulInternalFormat = TEXFMT_NONE;
   td_ulProbeObject = NONE;
+  td_pulObjects = NULL;
   td_ulObject = NONE;
   td_pulFrames = NULL;
 
@@ -1311,7 +1312,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
 
   // if not already generated, generate bind number(s) and force upload
   const PIX pixTextureSize = pixWidth*pixHeight;
-  if( td_ulObject==NONE)
+  if ((td_ctFrames > 1 && td_pulObjects == NULL) || (td_ctFrames <= 1 && td_ulObject == NONE))
   {
     // check whether frames are present
     ASSERT( td_pulFrames!=NULL && td_pulFrames[0]!=0xDEADBEEF); 
@@ -1366,7 +1367,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
       for( INDEX iFr=0; iFr<td_ctFrames; iFr++)
       { // determine frame offset and upload texture frame
         ULONG *pulCurrentFrame = td_pulFrames + (iFr * td_slFrameSize/BYTES_PER_TEXEL);
-        gfxSetTexture( ((ULONG*)td_ulObject)[iFr], td_tpLocal);
+        gfxSetTexture(td_pulObjects[iFr], td_tpLocal);
         gfxUploadTexture( pulCurrentFrame, pixWidth, pixHeight, td_ulInternalFormat, bNoDiscard);
       }
     } else {
@@ -1391,7 +1392,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
       td_pulFrames = NULL;
     }
     // done uploading
-    ASSERT( td_ulObject!=NONE);
+    ASSERT((td_ctFrames > 1 && td_pulObjects != NULL) || (td_ctFrames == 1 && td_ulObject != NONE));
     return;
   }
 
@@ -1400,12 +1401,13 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
     // must reset local texture parameters for each frame of animated texture
     for( INDEX iFr=0; iFr<td_ctFrames; iFr++) {
       td_tpLocal.Clear();
-      gfxSetTexture( ((ULONG*)td_ulObject)[iFr], td_tpLocal);
+      gfxSetTexture(td_pulObjects[iFr], td_tpLocal);
     }
   } 
   // set corresponding probe or texture frame as current
   ULONG ulTexObject = td_ulObject; // single-frame
-  if( td_ctFrames>1) ulTexObject = ((ULONG*)td_ulObject)[iFrameNo]; // animation
+  if (td_ctFrames > 1) ulTexObject = td_pulObjects[iFrameNo]; // animation
+
   if( bUseProbe) {
     // set probe if burst value doesn't allow real texture
     if( _pGfx->gl_slAllowedUploadBurst<0) {  
@@ -1425,7 +1427,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
   MarkDrawn();
 
   // debug check
-  ASSERT( td_ulObject!=NONE);
+  ASSERT((td_ctFrames > 1 && td_pulObjects != NULL) || (td_ctFrames <= 1 && td_ulObject != NONE));
 }
 
 
