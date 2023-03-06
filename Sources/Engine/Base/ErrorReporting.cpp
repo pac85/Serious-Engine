@@ -190,5 +190,10 @@ void ThrowF_t(char *strFormat, ...)  // throws char *
 // must be in separate function to disable stupid optimizer
 extern void Breakpoint(void)
 {
+// [Cecil] Prioritize old compiler
+#if SE1_OLD_COMPILER || SE1_USE_ASM
   __asm int 0x03;
+#else
+  __debugbreak();
+#endif
 }

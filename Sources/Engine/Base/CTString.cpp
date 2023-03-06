@@ -1,4 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
+   Copyright (c) 2023 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -12,6 +13,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
+
+// [Cecil] ASM code translation:
+// https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Core/Base/String.cpp
 
 #include "stdh.h"
 
@@ -504,11 +508,13 @@ INDEX CTString::VPrintF(const char *strFormat, va_list arg)
   return iLen;
 }
 
-
+// [Cecil] Prioritize old compiler
+#if SE1_OLD_COMPILER || SE1_USE_ASM
 
 static void *psscanf = &sscanf;
+
 // Scan formatted from a string
-__declspec(naked) INDEX CTString::ScanF(const char *strFormat, ...)
+__declspec(naked) INDEX CTString::ScanF(const char *strFormat, ...) const
 {
   __asm {
     push    eax
@@ -519,6 +525,38 @@ __declspec(naked) INDEX CTString::ScanF(const char *strFormat, ...)
     jmp     dword ptr [psscanf]
   }
 }
+
+#else
+
+// [Cecil] Workaround for supporting x64 compilers before VS2013
+#if SE1_INCOMPLETE_CPP11
+  static __forceinline int vsscanf(const char *str, const char *format, va_list ap)
+  {
+    const int maxArgs = 20;
+    void *a[maxArgs];
+
+    for (int i = 0; i < maxArgs; i++) {
+      a[i] = va_arg(ap, void *);
+    }
+
+    return sscanf(str, format, a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9],
+                  a[10], a[11], a[12], a[13], a[14], a[15], a[16], a[17], a[18], a[19]);
+  }
+#endif
+
+// Scan formatted from a string
+INDEX CTString::ScanF(const char *strFormat, ...) const
+{
+  va_list arg;
+  va_start(arg, strFormat);
+
+  INDEX iResult = vsscanf(str_String, strFormat, arg);
+  va_end(arg);
+
+  return iResult;
+}
+
+#endif
 
 
   // split string in two strings at specified position (char AT splitting position goes to str2)

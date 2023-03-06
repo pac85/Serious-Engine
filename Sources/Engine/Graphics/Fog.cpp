@@ -13,6 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+// [Cecil] ASM code translation:
+// https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Graphics/Fog.cpp
+
 #include "StdH.h"
 
 #include <Engine/Base/Memory.h>
@@ -66,7 +69,9 @@ extern BOOL _bMultiPlayer;
 ULONG PrepareTexture( UBYTE *pubTexture, PIX pixSizeI, PIX pixSizeJ)
 {
   // need to upload from RGBA format
-  const PIX pixTextureSize = pixSizeI*pixSizeJ;
+  const PIX pixTextureSize = pixSizeI * pixSizeJ;
+
+#if SE1_USE_ASM
   __asm {
     mov     esi,D [pubTexture]
     mov     edi,D [pubTexture]
@@ -82,6 +87,22 @@ pixLoop:
     dec     ecx
     jnz     pixLoop
   }
+
+#else
+  UBYTE *pSrc = pubTexture;
+  // After 'pixTextureSize' bytes, RGBA data is stored
+  ULONG *pDst = (ULONG *)(pSrc + pixTextureSize);
+
+  for (PIX i = 0; i < pixTextureSize; i++)
+  {
+    ULONG ulPixel = (ULONG)pSrc[i];
+    ulPixel = ulPixel | 0xFFFFFF00;
+    ulPixel = ByteSwap32(ulPixel);
+
+    pDst[i] = ulPixel; // Write to destination
+  }
+#endif
+
   // determine internal format
   extern INDEX gap_bAllowGrayTextures;
   extern INDEX tex_bFineFog;

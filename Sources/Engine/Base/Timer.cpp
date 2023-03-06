@@ -30,6 +30,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Read the Pentium TimeStampCounter
 static inline __int64 ReadTSC(void)
 {
+// [Cecil] Prioritize old compiler
+#if SE1_OLD_COMPILER || SE1_USE_ASM
   __int64 mmRet;
   __asm {
     rdtsc
@@ -37,6 +39,10 @@ static inline __int64 ReadTSC(void)
     mov   dword ptr [mmRet+4],edx
   }
   return mmRet;
+
+#else
+  return __rdtsc();
+#endif
 }
 
 
@@ -385,6 +391,11 @@ void CTimer::DisableLerp(void)
   tm_fLerpFactor =1.0f;
   tm_fLerpFactor2=1.0f;
 }
+
+// Get current timer value of high precision timer
+CTimerValue CTimer::GetHighPrecisionTimer(void) {
+  return ReadTSC();
+};
 
 // convert a time value to a printable string (hh:mm:ss)
 CTString TimeToString(FLOAT fTime)

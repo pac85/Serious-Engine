@@ -1,4 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
+   Copyright (c) 2023 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -122,6 +123,7 @@ static void DetectCPU(void)
   ULONG ulFeatures;
 
   // test MMX presence and update flag
+#if SE1_OLD_COMPILER || SE1_USE_ASM
   __asm {
     mov     eax,0           ;// request for basic id
     cpuid
@@ -133,6 +135,29 @@ static void DetectCPU(void)
     mov     dword ptr [ulTFMS], eax ;// remember type, family, model and stepping
     mov     dword ptr [ulFeatures], edx
   }
+
+#else
+  union {
+    int regs[4];
+
+    struct {
+      int EAX, EBX, ECX, EDX;
+    };
+  } procID;
+
+  // Get highest function parameter and CPU's manufacturer ID string
+  __cpuid(procID.regs, 0);
+
+  memcpy(&strVendor[0], &procID.EBX, 4);
+  memcpy(&strVendor[4], &procID.EDX, 4);
+  memcpy(&strVendor[8], &procID.ECX, 4);
+
+  // Get processor info and feature bits
+  __cpuid(procID.regs, 1);
+
+  memcpy(&ulTFMS, &procID.EAX, 4);
+  memcpy(&ulFeatures, &procID.EDX, 4);
+#endif
 
   INDEX iType     = (ulTFMS>>12)&0x3;
   INDEX iFamily   = (ulTFMS>> 8)&0xF;
@@ -572,6 +597,19 @@ ENGINE_API void SE_UpdateWindowHandle( HWND hwndMain)
   _bFullScreen = _pGfx!=NULL && (_pGfx->gl_ulFlags&GLF_FULLSCREEN);
 }
 
+// [Cecil] Don't care about pretouching
+#if !SE1_OLD_COMPILER
+
+extern BOOL _bNeedPretouch = FALSE;
+
+ENGINE_API extern void SE_PretouchIfNeeded(void)
+{
+  extern INDEX gam_bPretouch;
+  gam_bPretouch = FALSE;
+  _bNeedPretouch = FALSE;
+};
+
+#else
 
 static BOOL TouchBlock(UBYTE *pubMemoryBlock, INDEX ctBlockSize)
 {
@@ -682,49 +720,4 @@ nextRegion:
   if( ctFails>1) CPrintF( TRANS("(%d blocks were skipped)\n"), ctFails);
   //_pShell->Execute("StockDump();");
 }
-
-
-
-
-#if 0
-
-      // printout block info
-      CPrintF("--------\n");
-      CTString strTmp1, strTmp2;
-      CPrintF("Base/Alloc Address: 0x%8X / 0x%8X - Size: %d KB\n", mbi.BaseAddress, mbi.AllocationBase, mbi.RegionSize/1024);
-      switch( mbi.Protect) {
-      case PAGE_READONLY:          strTmp1 = "PAGE_READONLY";          break;
-      case PAGE_READWRITE:         strTmp1 = "PAGE_READWRITE";         break;
-      case PAGE_WRITECOPY:         strTmp1 = "PAGE_WRITECOPY";         break;
-      case PAGE_EXECUTE:           strTmp1 = "PAGE_EXECUTE";           break;
-      case PAGE_EXECUTE_READ:      strTmp1 = "PAGE_EXECUTE_READ";      break;
-      case PAGE_EXECUTE_READWRITE: strTmp1 = "PAGE_EXECUTE_READWRITE"; break;
-      case PAGE_GUARD:             strTmp1 = "PAGE_GUARD";             break;
-      case PAGE_NOACCESS:          strTmp1 = "PAGE_NOACCESS";          break;
-      case PAGE_NOCACHE:           strTmp1 = "PAGE_NOCACHE";           break;
-      }
-      switch( mbi.AllocationProtect) {
-      case PAGE_READONLY:          strTmp2 = "PAGE_READONLY";          break;
-      case PAGE_READWRITE:         strTmp2 = "PAGE_READWRITE";         break;
-      case PAGE_WRITECOPY:         strTmp2 = "PAGE_WRITECOPY";         break;
-      case PAGE_EXECUTE:           strTmp2 = "PAGE_EXECUTE";           break;
-      case PAGE_EXECUTE_READ:      strTmp2 = "PAGE_EXECUTE_READ";      break;
-      case PAGE_EXECUTE_READWRITE: strTmp2 = "PAGE_EXECUTE_READWRITE"; break;
-      case PAGE_GUARD:             strTmp2 = "PAGE_GUARD";             break;
-      case PAGE_NOACCESS:          strTmp2 = "PAGE_NOACCESS";          break;
-      case PAGE_NOCACHE:           strTmp2 = "PAGE_NOCACHE";           break;
-      }
-      CPrintF("Current/Alloc protect: %s / %s\n", strTmp1, strTmp2);
-      switch( mbi.State) {
-      case MEM_COMMIT:  strTmp1 = "MEM_COMMIT";  break;
-      case MEM_FREE:    strTmp1 = "MEM_FREE";    break;
-      case MEM_RESERVE: strTmp1 = "MEM_RESERVE"; break;
-      }
-      switch( mbi.Type) {
-      case MEM_IMAGE:   strTmp2 = "MEM_IMAGE";   break;
-      case MEM_MAPPED:  strTmp2 = "MEM_MAPPED";  break;
-      case MEM_PRIVATE: strTmp2 = "MEM_PRIVATE"; break;
-      }
-      CPrintF("State/Type: %s / %s\n", strTmp1, strTmp2);
-
 #endif

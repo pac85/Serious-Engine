@@ -438,12 +438,20 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
 
   // determine maximum used groups
   ASSERT( _ctGroupsCount);
+
+#if SE1_OLD_COMPILER || SE1_USE_ASM
   __asm {
     mov     eax,2
     bsr     ecx,D [_ctGroupsCount]
     shl     eax,cl
     mov     D [_ctGroupsCount],eax
   }
+
+#else
+  ULONG ulReverse = 0;
+  _BitScanReverse(&ulReverse, _ctGroupsCount);
+  _ctGroupsCount = 2 << ulReverse;
+#endif
 
   // done with bining
   _pfGfxProfile.StopTimer( CGfxProfile::PTI_RS_BINTOGROUPS);

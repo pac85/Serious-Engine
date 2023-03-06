@@ -24,6 +24,8 @@ template CStaticArray<CProfileTimer>;
 
 static inline __int64 ReadTSC_profile(void)
 {
+// [Cecil] Prioritize old compiler
+#if SE1_OLD_COMPILER || SE1_USE_ASM
   __int64 mmRet;
   __asm {
     rdtsc
@@ -31,6 +33,10 @@ static inline __int64 ReadTSC_profile(void)
     mov   dword ptr [mmRet+4],edx
   }
   return mmRet;
+
+#else
+  return __rdtsc();
+#endif
 }
 
 

@@ -103,173 +103,6 @@ inline DOUBLE Abs( const DOUBLE f) { return fabs(f); }
 inline FLOAT  Abs( const FLOAT f)  { return (FLOAT)fabs(f); }
 inline SLONG  Abs( const SLONG sl) { return labs(sl); }
 
-
-/*
-inline FLOAT Min( const FLOAT fA, const FLOAT fB)
-{
-  FLOAT fRet;
-  __asm {
-    fld     D [fA]
-    fld     D [fB]
-    fucomi  st(0),st(1)
-    fcmovnb st(0),st(1)
-    ffree   st(1)
-    fstp    D [fRet]
-  }
-  return fRet;
-}
-
-inline FLOAT Max( const FLOAT fA, const FLOAT fB)
-{
-  FLOAT fRet;
-  __asm {
-    fld     D [fA]
-    fld     D [fB]
-    fucomi  st(0),st(1)
-    fcmovb  st(0),st(1)
-    ffree   st(1)
-    fstp    D [fRet]
-  }
-  return fRet;
-}
-
-
-inline SLONG Min( const SLONG slA, const SLONG slB)
-{
-  SLONG slRet;
-  __asm {
-    mov     eax,D [slA]
-    cmp     eax,D [slB]
-    cmovg   eax,D [slB]
-    mov     D [slRet],eax
-  }
-  return slRet;
-}
-
-inline ULONG Min( const ULONG slA, const ULONG slB)
-{
-  ULONG ulRet;
-  __asm {
-    mov     eax,D [slA]
-    cmp     eax,D [slB]
-    cmova   eax,D [slB]
-    mov     D [ulRet],eax
-  }
-  return ulRet;
-}
-
-inline SLONG Max( const SLONG slA, const SLONG slB)
-{
-  SLONG slRet;
-  __asm {
-    mov     eax,D [slA]
-    cmp     eax,D [slB]
-    cmovl   eax,D [slB]
-    mov     D [slRet],eax
-  }
-  return slRet;
-}
-
-inline ULONG Max( const ULONG slA, const ULONG slB)
-{
-  ULONG ulRet;
-  __asm {
-    mov     eax,D [slA]
-    cmp     eax,D [slB]
-    cmovb   eax,D [slB]
-    mov     D [ulRet],eax
-  }
-  return ulRet;
-}
-
-
-
-inline FLOAT ClampUp( const FLOAT f, const FLOAT fuplimit)
-{
-  FLOAT fRet;
-  __asm {
-    fld     D [fuplimit]
-    fld     D [f]
-    fucomi  st(0),st(1)
-    fcmovnb st(0),st(1)
-    fstp    D [fRet]
-    fstp    st(0)
-  }
-  return fRet;
-}
-
-inline FLOAT ClampDn( const FLOAT f, const FLOAT fdnlimit)
-{
-  FLOAT fRet;
-  __asm {
-    fld     D [fdnlimit]
-    fld     D [f]
-    fucomi  st(0),st(1)
-    fcmovb  st(0),st(1)
-    fstp    D [fRet]
-    fstp    st(0)
-  }
-  return fRet;
-}
-
-inline FLOAT Clamp( const FLOAT f, const FLOAT fdnlimit, const FLOAT fuplimit)
-{
-  FLOAT fRet;
-  __asm {
-    fld     D [fdnlimit]
-    fld     D [fuplimit]
-    fld     D [f]
-    fucomi  st(0),st(2)
-    fcmovb  st(0),st(2)
-    fucomi  st(0),st(1)
-    fcmovnb st(0),st(1)
-    fstp    D [fRet]
-    fcompp
-  }
-  return fRet;
-}
-
-
-inline SLONG ClampDn( const SLONG sl, const SLONG sldnlimit)
-{
-  SLONG slRet;
-  __asm {
-    mov     eax,D [sl]
-    cmp     eax,D [sldnlimit]
-    cmovl   eax,D [sldnlimit]
-    mov     D [slRet],eax
-  }
-  return slRet;
-}
-
-inline SLONG ClampUp( const SLONG sl, const SLONG sluplimit)
-{
-  SLONG slRet;
-  __asm {
-    mov     eax,D [sl]
-    cmp     eax,D [sluplimit]
-    cmovg   eax,D [sluplimit]
-    mov     D [slRet],eax
-  }
-  return slRet;
-}
-
-inline SLONG Clamp( const SLONG sl, const SLONG sldnlimit, const SLONG sluplimit)
-{
-  SLONG slRet;
-  __asm {
-    mov     eax,D [sl]
-    cmp     eax,D [sldnlimit]
-    cmovl   eax,D [sldnlimit]
-    cmp     eax,D [sluplimit]
-    cmovg   eax,D [sluplimit]
-    mov     D [slRet],eax
-  }
-  return slRet;
-}
-
-*/
-
 /* 
  *  fast functions
  */
@@ -300,8 +133,8 @@ inline ULONG NormFloatToByte( const FLOAT f)
   return ulRet;
 
 #else
-  assert((f >= 0.0) && (f <= 1.0));
-  return( (ULONG) (f * 255.0) );
+  ASSERT(f >= 0.0f && f <= 1.0f);
+  return ULONG(f * 255.0f);
 #endif
 }
 
@@ -339,72 +172,45 @@ inline SLONG FloatToInt( FLOAT f)
   return slRet;
 
 #else
-  #error Fill this in for your platform.
+  // Round to the nearest by adding/subtracting 0.5
+  FLOAT addToRound = (f < 0.0f ? -0.5f : 0.5f);
+  return SLONG(f + addToRound);
 #endif
 }
 
 // log base 2 of any float numero
 inline FLOAT Log2( FLOAT f) {
-#if (defined USE_PORTABLE_C)
-  return (FLOAT)(log10(x)*3.321928094887);  // log10(x)/log10(2)
+// [Cecil] No log2f
+#if SE1_INCOMPLETE_CPP11
+  return FLOAT(log10(f) * 3.321928094887); // log10(f) / log10(2)
 
-#elif (defined _MSC_VER)
-  FLOAT fRet;
-  _asm {
-    fld1
-    fld     D [f]
-    fyl2x
-    fstp    D [fRet]
-  }
-  return fRet;
-
-#elif (defined __GNUC__)
-  FLOAT fRet;
-  __asm__ __volatile__ (
-    "fld1               \n\t"
-    "flds     (%%ebx)   \n\t"
-    "fyl2x              \n\t"
-    "fstps    (%%esi)   \n\t"
-        :
-        : "b" (&f), "S" (&fRet)
-        : "memory"
-  );
-  return(fRet);
 #else
-  #error Fill this in for your platform.
+  return log2f(f);
 #endif
 }
-
 
 // returns accurate values only for integers that are power of 2
 inline SLONG FastLog2( SLONG x)
 {
-#if (defined USE_PORTABLE_C)
-  #error write me.
-
-#elif (defined _MSC_VER)
-  SLONG slRet;
-  __asm {
-    bsr   eax,D [x]
-    mov   D [slRet],eax
+#if SE1_OLD_COMPILER
+  for (SLONG l = 31; l > 0; --l)
+  {
+    if (x & (1 << l)) {
+      return l;
+    }
   }
-  return slRet;
 
-#elif (defined __GNUC__)
-  SLONG slRet;
-  __asm__ __volatile__ (
-    "bsrl  (%%ebx), %%eax     \n\t"
-    "movl   %%eax, (%%esi)    \n\t"
-        :
-        : "b" (&x), "S" (&slRet)
-        : "memory"
-  );
-  return(slRet);
+  return 0;
+
 #else
-  #error Fill this in for your platform.
+  ULONG r = 0;
+  _BitScanReverse(&r, x);
+  return r;
 #endif
 }
 
+// [Cecil] NOTE: Unused
+/*
 // returns log2 of first larger value that is a power of 2
 inline SLONG FastMaxLog2( SLONG x)
 { 
@@ -439,7 +245,7 @@ inline SLONG FastMaxLog2( SLONG x)
   #error Fill this in for your platform.
 #endif
 }
-
+*/
 
 
 // square root (works with negative numbers)
