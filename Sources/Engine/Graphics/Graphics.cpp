@@ -13,6 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+// [Cecil] ASM code translation:
+// https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Graphics/Graphics.cpp
+
 #include "stdh.h"
 
 #include <Engine/Base/Statistics_internal.h>
@@ -199,6 +202,7 @@ static void MakeOneMipmap( ULONG *pulSrcMipmap, ULONG *pulDstMipmap, PIX pixWidt
 
   if( bBilinear) // type of filtering?
   { // BILINEAR
+  #if SE1_USE_ASM
     __asm {
       pxor    mm0,mm0
       mov     ebx,D [pixWidth]
@@ -234,9 +238,66 @@ pixLoopN:
       jnz     rowLoop
       emms
     }
+
+  #else
+    UBYTE *src = (UBYTE *)pulSrcMipmap;
+    UBYTE *dest = (UBYTE *)pulDstMipmap;
+
+    // Cycle trough rows
+    for (INDEX i = 0; i < pixHeight; i++)
+    {
+      // For each pixel in a row.
+      for (INDEX j = 0; j < pixWidth; j++)
+      {
+        // Grab pixels from image
+        UWORD upleft[4];
+        UWORD upright[4];
+        UWORD downleft[4];
+        UWORD downright[4];
+        upleft[0] = *(src + 0);
+        upleft[1] = *(src + 1);
+        upleft[2] = *(src + 2);
+        upleft[3] = *(src + 3);
+        upright[0] = *(src + 4);
+        upright[1] = *(src + 5);
+        upright[2] = *(src + 6);
+        upright[3] = *(src + 7);
+
+        downleft[0] = *(src + pixWidth * 8 + 0);
+        downleft[1] = *(src + pixWidth * 8 + 1);
+        downleft[2] = *(src + pixWidth * 8 + 2);
+        downleft[3] = *(src + pixWidth * 8 + 3);
+        downright[0] = *(src + pixWidth * 8 + 4);
+        downright[1] = *(src + pixWidth * 8 + 5);
+        downright[2] = *(src + pixWidth * 8 + 6);
+        downright[3] = *(src + pixWidth * 8 + 7);
+
+        UWORD answer[4];
+        answer[0] = upleft[0] + upright[0] + downleft[0] + downright[0] + 2;
+        answer[1] = upleft[1] + upright[1] + downleft[1] + downright[1] + 2;
+        answer[2] = upleft[2] + upright[2] + downleft[2] + downright[2] + 2;
+        answer[3] = upleft[3] + upright[3] + downleft[3] + downright[3] + 2;
+        answer[0] /= 4;
+        answer[1] /= 4;
+        answer[2] /= 4;
+        answer[3] /= 4;
+
+        *(dest + 0) = answer[0];
+        *(dest + 1) = answer[1];
+        *(dest + 2) = answer[2];
+        *(dest + 3) = answer[3];
+
+        src += 8;
+        dest += 4;
+      }
+
+      src += 8 * pixWidth;
+    }
+  #endif
   }
   else
   { // NEAREST-NEIGHBOUR but with border preserving
+  #if SE1_USE_ASM
     ULONG ulRowModulo = pixWidth*2 *BYTES_PER_TEXEL;
     __asm {   
       xor     ebx,ebx
@@ -282,6 +343,36 @@ halfEnd:
       jne     halfLoop
 fullEnd:
     }
+
+  #else
+    PIX offset = 0;
+    ULONG ulRowModulo = pixWidth * 2 * BYTES_PER_TEXEL;
+    ulRowModulo /= 4;
+
+    for (int q = 0; q < 2; q++)
+    {
+      for (PIX i = pixHeight / 2; i > 0; i--)
+      {
+        for (PIX j = pixWidth / 2; j > 0; j--)
+        {
+          *pulDstMipmap = *(pulSrcMipmap + offset);
+          pulSrcMipmap += 2;
+          pulDstMipmap++;
+        }
+
+        for (PIX j = pixWidth / 2; j > 0; j--)
+        {
+          *pulDstMipmap = *(pulSrcMipmap + offset + 1);
+          pulSrcMipmap += 2;
+          pulDstMipmap++;
+        }
+
+        pulSrcMipmap += ulRowModulo;
+      }
+
+      offset = pixWidth * 2;
+    }
+  #endif
   }
 }
 
@@ -426,7 +517,7 @@ static __int64 mmErrDiffMask=0;
 static __int64 mmW3 = 0x0003000300030003;
 static __int64 mmW5 = 0x0005000500050005;
 static __int64 mmW7 = 0x0007000700070007;
-static __int64 mmShift = 0;
+static __int64 mmShifter = 0;
 static __int64 mmMask  = 0;
 static ULONG *pulDitherTable;
 
@@ -436,231 +527,428 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
 {
   _pfGfxProfile.StartTimer( CGfxProfile::PTI_DITHERBITMAP);
 
-  // determine row modulo
-  if( pixCanvasWidth ==0) pixCanvasWidth  = pixWidth;
-  if( pixCanvasHeight==0) pixCanvasHeight = pixHeight;
-  ASSERT( pixCanvasWidth>=pixWidth && pixCanvasHeight>=pixHeight);
-  SLONG slModulo      = (pixCanvasWidth-pixWidth) *BYTES_PER_TEXEL;
-  SLONG slWidthModulo = pixWidth*BYTES_PER_TEXEL +slModulo;
-
-  // if bitmap is smaller than 4x2 pixels
-  if( pixWidth<4 || pixHeight<2)
-  { // don't dither it at all, rather copy only (if needed)
-    if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
-    goto theEnd;
+#if !SE1_DITHERBITMAP
+  // Don't dither it at all, rather copy only (if needed)
+  if (pulDst != pulSrc) {
+    memcpy(pulDst, pulSrc, pixCanvasWidth * pixCanvasHeight * BYTES_PER_TEXEL);
   }
 
-  // determine proper dither type
-  switch( iDitherType)
-  { // low dithers
-  case 1:
-    pulDitherTable = &ulDither2[0][0];
-    mmShift = 2;
-    mmMask  = 0x3F3F3F3F3F3F3F3F;
-    goto ditherOrder;
-  case 2:
-    pulDitherTable = &ulDither2[0][0];
-    mmShift = 1;
-    mmMask  = 0x7F7F7F7F7F7F7F7F;
-    goto ditherOrder;
-  case 3:
-    mmErrDiffMask = 0x0003000300030003;
-    goto ditherError;
-  // medium dithers
-  case 4:
-    pulDitherTable = &ulDither2[0][0];
-    mmShift = 0;
-    mmMask  = 0xFFFFFFFFFFFFFFFF;
-    goto ditherOrder;
-  case 5:
-    pulDitherTable = &ulDither3[0][0];
-    mmShift = 1;
-    mmMask  = 0x7F7F7F7F7F7F7F7F;
-    goto ditherOrder;
-  case 6:
-    pulDitherTable = &ulDither4[0][0];
-    mmShift = 1;
-    mmMask  = 0x7F7F7F7F7F7F7F7F;
-    goto ditherOrder;
-  case 7:
-    mmErrDiffMask = 0x0007000700070007;
-    goto ditherError;
-  // high dithers
-  case 8:
-    pulDitherTable = &ulDither3[0][0];
-    mmShift = 0;
-    mmMask  = 0xFFFFFFFFFFFFFFFF;
-    goto ditherOrder;
-  case 9:
-    pulDitherTable = &ulDither4[0][0];
-    mmShift = 0;
-    mmMask  = 0xFFFFFFFFFFFFFFFF;
-    goto ditherOrder;
-  case 10:
-    mmErrDiffMask = 0x000F000F000F000F;
-    goto ditherError;
-  default:
-    // improper dither type
-    ASSERTALWAYS( "Improper dithering type.");
-    // if bitmap copying is needed
-    if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
-    goto theEnd;
+#else
+  // Determine row modulo
+  if (pixCanvasWidth == 0) {
+    pixCanvasWidth  = pixWidth;
   }
 
-// ------------------------------- ordered matrix dithering routine
-
-ditherOrder:
-  __asm {
-    mov     esi,D [pulSrc]
-    mov     edi,D [pulDst]
-    mov     ebx,D [pulDitherTable]
-    // reset dither line offset
-    xor     eax,eax
-    mov     edx,D [pixHeight]
-rowLoopO:
-    // get horizontal dither patterns
-    movq    mm4,Q [ebx+ eax*4 +0]
-    movq    mm5,Q [ebx+ eax*4 +8]
-    psrlw   mm4,Q [mmShift]
-    psrlw   mm5,Q [mmShift]
-    pand    mm4,Q [mmMask]
-    pand    mm5,Q [mmMask]
-    // process row
-    mov     ecx,D [pixWidth]
-pixLoopO:
-    movq    mm1,Q [esi +0]
-    movq    mm2,Q [esi +8]
-    paddusb mm1,mm4
-    paddusb mm2,mm5
-    movq    Q [edi +0],mm1
-    movq    Q [edi +8],mm2
-    // advance to next pixel
-    add     esi,4*4
-    add     edi,4*4
-    sub     ecx,4
-    jg      pixLoopO  // !!!! possible memory leak?
-    je      nextRowO
-    // backup couple of pixels
-    lea     esi,[esi+ ecx*4]
-    lea     edi,[edi+ ecx*4]
-nextRowO:
-    // get next dither line patterns
-    add     esi,D [slModulo]
-    add     edi,D [slModulo]
-    add     eax,1*4
-    and     eax,4*4-1
-    // advance to next row
-    dec     edx
-    jnz     rowLoopO
-    emms;
+  if (pixCanvasHeight == 0) {
+    pixCanvasHeight = pixHeight;
   }
-  goto theEnd;
 
-// ------------------------------- error diffusion dithering routine
+  ASSERT(pixCanvasWidth >= pixWidth && pixCanvasHeight >= pixHeight);
+  SLONG slModulo      = (pixCanvasWidth - pixWidth) * BYTES_PER_TEXEL;
+  SLONG slWidthModulo = pixWidth * BYTES_PER_TEXEL + slModulo;
 
-ditherError:
-  // since error diffusion algorithm requires in-place dithering, original bitmap must be copied if needed
-  if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
-  // slModulo+=4;
-  // now, dither destination
-  __asm {
-    pxor    mm0,mm0
-    mov     esi,D [pulDst]
-    mov     ebx,D [pixCanvasWidth]
-    mov     edx,D [pixHeight]
-    dec     edx // need not to dither last row
-rowLoopE:
-    // left to right
-    mov     ecx,D [pixWidth]
-    dec     ecx
-pixLoopEL:
-    movd    mm1,D [esi]
-    punpcklbw mm1,mm0
-    pand    mm1,Q [mmErrDiffMask] 
-    // determine errors
-    movq    mm3,mm1
-    movq    mm5,mm1
-    movq    mm7,mm1
-    pmullw  mm3,Q [mmW3]
-    pmullw  mm5,Q [mmW5]
-    pmullw  mm7,Q [mmW7]
-    psrlw   mm3,4     // *3/16
-    psrlw   mm5,4     // *5/16
-    psrlw   mm7,4     // *7/16
-    psubw   mm1,mm3
-    psubw   mm1,mm5
-    psubw   mm1,mm7   // *rest/16
-    packuswb mm1,mm0
-    packuswb mm3,mm0
-    packuswb mm5,mm0
-    packuswb mm7,mm0
-    // spread errors
-    paddusb mm7,Q [esi+       +4]
-    paddusb mm3,Q [esi+ ebx*4 -4]
-    paddusb mm5,Q [esi+ ebx*4 +0]
-    paddusb mm1,Q [esi+ ebx*4 +4]  // !!!! possible memory leak?
-    movd    D [esi+       +4],mm7
-    movd    D [esi+ ebx*4 -4],mm3
-    movd    D [esi+ ebx*4 +0],mm5
-    movd    D [esi+ ebx*4 +4],mm1
-    // advance to next pixel
-    add     esi,4
-    dec     ecx
-    jnz     pixLoopEL
-    // advance to next row
-    add     esi,D [slWidthModulo]
-    dec     edx
-    jz      allDoneE
+  // TODO: Enum mb?
+  // 0 - skip dither,  1 - order matrix, 2 - error diffusion.
+  int ditherMethod = 0; 
 
-    // right to left
-    mov     ecx,D [pixWidth]
-    dec     ecx
-pixLoopER:
-    movd    mm1,D [esi]
-    punpcklbw mm1,mm0
-    pand    mm1,Q [mmErrDiffMask] 
-    // determine errors
-    movq    mm3,mm1
-    movq    mm5,mm1
-    movq    mm7,mm1
-    pmullw  mm3,Q [mmW3]
-    pmullw  mm5,Q [mmW5]
-    pmullw  mm7,Q [mmW7]
-    psrlw   mm3,4     // *3/16
-    psrlw   mm5,4     // *5/16
-    psrlw   mm7,4     // *7/16
-    psubw   mm1,mm3
-    psubw   mm1,mm5
-    psubw   mm1,mm7   // *rest/16
-    packuswb mm1,mm0
-    packuswb mm3,mm0
-    packuswb mm5,mm0
-    packuswb mm7,mm0
-    // spread errors
-    paddusb mm7,Q [esi+       -4]
-    paddusb mm1,Q [esi+ ebx*4 -4]
-    paddusb mm5,Q [esi+ ebx*4 +0]
-    paddusb mm3,Q [esi+ ebx*4 +4]   // !!!! possible memory leak?
-    movd    D [esi+       -4],mm7
-    movd    D [esi+ ebx*4 -4],mm1
-    movd    D [esi+ ebx*4 +0],mm5
-    movd    D [esi+ ebx*4 +4],mm3
-    // revert to previous pixel
-    sub     esi,4
-    dec     ecx
-    jnz     pixLoopER
-    // advance to next row
-    lea     esi,[esi+ ebx*4]
-    dec     edx
-    jnz     rowLoopE
-allDoneE:
-    emms;
+  // If bitmap is smaller than 4x2 pixels
+  if (pixWidth < 4 || pixHeight < 2)
+  {
+    // Don't dither it at all, rather copy only (if needed)
+    if (pulDst != pulSrc) {
+      memcpy(pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
+    }
+  } else {
+    // Determine proper dither type
+    switch (iDitherType)
+    {
+      // WARN: Set pulDitherTable for ordered matrix dither method
+
+      // Low dithers
+      case 1:
+        pulDitherTable = &ulDither2[0][0];
+        mmShifter = 2;
+        mmMask = 0x3F3F3F3F3F3F3F3F;
+        ditherMethod = 1;
+        break;
+      case 2:
+        pulDitherTable = &ulDither2[0][0];
+        mmShifter = 1;
+        mmMask = 0x7F7F7F7F7F7F7F7F;
+        ditherMethod = 1;
+        break;
+      case 3:
+        mmErrDiffMask = 0x0003000300030003;
+        ditherMethod = 2;
+        break;
+
+      // Medium dithers
+      case 4:
+        pulDitherTable = &ulDither2[0][0];
+        mmShifter = 0;
+        mmMask = 0xFFFFFFFFFFFFFFFF;
+        ditherMethod = 1;
+        break;
+      case 5:
+        pulDitherTable = &ulDither3[0][0];
+        mmShifter = 1;
+        mmMask = 0x7F7F7F7F7F7F7F7F;
+        ditherMethod = 1;
+        break;
+      case 6:
+        pulDitherTable = &ulDither4[0][0];
+        mmShifter = 1;
+        mmMask = 0x7F7F7F7F7F7F7F7F;
+        ditherMethod = 1;
+        break;
+      case 7:
+        mmErrDiffMask = 0x0007000700070007;
+        ditherMethod = 2;
+        break;
+
+      // High dithers
+      case 8:
+        pulDitherTable = &ulDither3[0][0];
+        mmShifter = 0;
+        mmMask = 0xFFFFFFFFFFFFFFFF;
+        ditherMethod = 1;
+        break;
+      case 9:
+        pulDitherTable = &ulDither4[0][0];
+        mmShifter = 0;
+        mmMask = 0xFFFFFFFFFFFFFFFF;
+        ditherMethod = 1;
+        break;
+      case 10:
+        mmErrDiffMask = 0x000F000F000F000F;
+        ditherMethod = 2;
+        break;
+      default:
+        // Improper dither type
+        ASSERTALWAYS("Improper dithering type.");
+        // If bitmap copying is needed
+        if (pulDst != pulSrc) {
+          memcpy(pulDst, pulSrc, pixCanvasWidth * pixCanvasHeight * BYTES_PER_TEXEL);
+        }
+        ditherMethod = 0;
+    }
   }
-  goto theEnd;
 
-  // all done
-theEnd:
-  _pfGfxProfile.StopTimer( CGfxProfile::PTI_DITHERBITMAP);
+#if !SE1_USE_ASM
+  // x64 register simulation
+  union uConv
+  {
+    uint64_t val;
+    uint32_t dword[2];
+    uint16_t word[4];
+    int16_t  sWord[4];
+    uint8_t byte[8];
+    int8_t sByte[8];
+  };
+#endif
+
+  if(ditherMethod == 1)
+  {
+    // ------------------------------- ordered matrix dithering routine
+    #if SE1_USE_ASM
+      __asm {
+        mov     esi,D [pulSrc]
+        mov     edi,D [pulDst]
+        mov     ebx,D [pulDitherTable]
+        // reset dither line offset
+        xor     eax,eax
+        mov     edx,D [pixHeight]
+    rowLoopO:
+        // get horizontal dither patterns
+        movq    mm4,Q [ebx+ eax*4 +0]
+        movq    mm5,Q [ebx+ eax*4 +8]
+        psrlw   mm4,Q [mmShifter]
+        psrlw   mm5,Q [mmShifter]
+        pand    mm4,Q [mmMask]
+        pand    mm5,Q [mmMask]
+        // process row
+        mov     ecx,D [pixWidth]
+    pixLoopO:
+        movq    mm1,Q [esi +0]
+        movq    mm2,Q [esi +8]
+        paddusb mm1,mm4
+        paddusb mm2,mm5
+        movq    Q [edi +0],mm1
+        movq    Q [edi +8],mm2
+        // advance to next pixel
+        add     esi,4*4
+        add     edi,4*4
+        sub     ecx,4
+        jg      pixLoopO  // !!!! possible memory leak?
+        je      nextRowO
+        // backup couple of pixels
+        lea     esi,[esi+ ecx*4]
+        lea     edi,[edi+ ecx*4]
+    nextRowO:
+        // get next dither line patterns
+        add     esi,D [slModulo]
+        add     edi,D [slModulo]
+        add     eax,1*4
+        and     eax,4*4-1
+        // advance to next row
+        dec     edx
+        jnz     rowLoopO
+        emms;
+      }
+    #else
+      // TODO: mb store it statically for each table/mmShifter/mmMask case..
+      // or compute it on change of dithering type
+      uConv table[8];
+      for(int i = 0; i < 8; i += 2)
+      {
+        auto& a = table[i];
+        auto& b = table[i + 1];
+        a.val  = *((uint64_t*)&pulDitherTable[i * 2]);
+        b.val  = *((uint64_t*)&pulDitherTable[i * 2 + 2]);
+        for (int j = 0; j < 4; j++)
+        {
+          a.word[j] >>= mmShifter;
+          b.word[j] >>= mmShifter;
+        }
+        a.val &= mmMask;
+        b.val &= mmMask;
+      }
+
+      int tablePos = 0;
+      uint64_t* itSrc = (uint64_t*)pulSrc;
+      uint64_t* itDst = (uint64_t*)pulDst;
+      for (int row = pixHeight; row; row--)
+      {
+        // So even and odd quads.. 2 texel each
+        uConv dither1 = table[tablePos], dither2 = table[tablePos + 1];
+        tablePos = (tablePos + 2) & 0x7;
+
+        int width = pixWidth;
+        for (; width > 0; width -= 4)
+        {
+          // using both quads
+          uConv data1, data2;
+          data1.val = *itSrc++;
+          data2.val = *itSrc++;
+
+          // Add ubytes - paddusb
+          for (int j = 0; j < 8; j++)
+          {
+            data1.byte[j] = Clamp(data1.byte[j] + dither1.byte[j], 0, 255);
+            data2.byte[j] = Clamp(data2.byte[j] + dither2.byte[j], 0, 255);
+          }
+
+          *itDst++ = data1.val;
+          *itDst++ = data2.val;
+        }
+        if (width < 0)
+        {
+          // if width less than mul 4, move pointer back by width*4 bytes
+          itSrc = (uint64_t*)((char*)itSrc + width * 4);
+          itDst = (uint64_t*)((char*)itDst + width * 4);
+        }
+
+        // move pointer by slModulo bytes
+        itSrc = (uint64_t*)((char*)itSrc + slModulo);
+        itDst = (uint64_t*)((char*)itDst + slModulo);
+      }
+    #endif
+
+  }
+
+  if(ditherMethod == 2)
+  {
+    // ------------------------------- error diffusion dithering routine
+
+    // Since error diffusion algorithm requires in-place dithering, original bitmap must be copied if needed
+    if (pulDst != pulSrc) {
+      memcpy(pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
+    }
+    //slModulo+=4;
+
+    // Now, dither destination
+  #if SE1_USE_ASM
+    __asm {
+      pxor    mm0,mm0
+      mov     esi,D [pulDst]
+      mov     ebx,D [pixCanvasWidth]
+      mov     edx,D [pixHeight]
+      dec     edx // need not to dither last row
+  rowLoopE:
+      // left to right
+      mov     ecx,D [pixWidth]
+      dec     ecx
+  pixLoopEL:
+      movd    mm1,D [esi]
+      punpcklbw mm1,mm0
+      pand    mm1,Q [mmErrDiffMask]
+      // determine errors
+      movq    mm3,mm1
+      movq    mm5,mm1
+      movq    mm7,mm1
+      pmullw  mm3,Q [mmW3]
+      pmullw  mm5,Q [mmW5]
+      pmullw  mm7,Q [mmW7]
+      psrlw   mm3,4     // *3/16
+      psrlw   mm5,4     // *5/16
+      psrlw   mm7,4     // *7/16
+      psubw   mm1,mm3
+      psubw   mm1,mm5
+      psubw   mm1,mm7   // *rest/16
+      packuswb mm1,mm0
+      packuswb mm3,mm0
+      packuswb mm5,mm0
+      packuswb mm7,mm0
+      // spread errors
+      paddusb mm7,Q [esi+       +4]
+      paddusb mm3,Q [esi+ ebx*4 -4]
+      paddusb mm5,Q [esi+ ebx*4 +0]
+      paddusb mm1,Q [esi+ ebx*4 +4]  // !!!! possible memory leak?
+      movd    D [esi+       +4],mm7
+      movd    D [esi+ ebx*4 -4],mm3
+      movd    D [esi+ ebx*4 +0],mm5
+      movd    D [esi+ ebx*4 +4],mm1
+      // advance to next pixel
+      add     esi,4
+      dec     ecx
+      jnz     pixLoopEL
+      // advance to next row
+      add     esi,D [slWidthModulo]
+      dec     edx
+      jz      allDoneE
+
+      // right to left
+      mov     ecx,D [pixWidth]
+      dec     ecx
+  pixLoopER:
+      movd    mm1,D [esi]
+      punpcklbw mm1,mm0
+      pand    mm1,Q [mmErrDiffMask]
+      // determine errors
+      movq    mm3,mm1
+      movq    mm5,mm1
+      movq    mm7,mm1
+      pmullw  mm3,Q [mmW3]
+      pmullw  mm5,Q [mmW5]
+      pmullw  mm7,Q [mmW7]
+      psrlw   mm3,4     // *3/16
+      psrlw   mm5,4     // *5/16
+      psrlw   mm7,4     // *7/16
+      psubw   mm1,mm3
+      psubw   mm1,mm5
+      psubw   mm1,mm7   // *rest/16
+      packuswb mm1,mm0
+      packuswb mm3,mm0
+      packuswb mm5,mm0
+      packuswb mm7,mm0
+      // spread errors
+      paddusb mm7,Q [esi+       -4]
+      paddusb mm1,Q [esi+ ebx*4 -4]
+      paddusb mm5,Q [esi+ ebx*4 +0]
+      paddusb mm3,Q [esi+ ebx*4 +4]   // !!!! possible memory leak?
+      movd    D [esi+       -4],mm7
+      movd    D [esi+ ebx*4 -4],mm1
+      movd    D [esi+ ebx*4 +0],mm5
+      movd    D [esi+ ebx*4 +4],mm3
+      // revert to previous pixel
+      sub     esi,4
+      dec     ecx
+      jnz     pixLoopER
+      // advance to next row
+      lea     esi,[esi+ ebx*4]
+      dec     edx
+      jnz     rowLoopE
+  allDoneE:
+      emms;
+    }
+  #else
+    ULONG* itDst = pulDst;
+    int width = pixCanvasWidth;
+    bool even = true;  // swap between left->right|right->left
+    for (int row = pixHeight - 1; row; row--)
+    {
+      for (int col = pixWidth - 1; col; col--)
+      {
+        uConv mm1;
+        mm1.dword[0] = *itDst; mm1.dword[1] = 0; // to be sure LE
+
+        // punpcklbw mm1,mm0
+        // 0xBBGGRRAA -> 0xBB00GG00RR00AA00
+        for (int i = 3; i > 0; i--)
+        {
+          mm1.byte[i * 2] = mm1.byte[i];
+          mm1.byte[i] = 0;
+        }
+        mm1.val &= mmErrDiffMask;
+
+        // pmullw & psrlw
+        auto mm3 = mm1, mm5 = mm1, mm7 = mm1;
+        for (int i = 0; i < 4; i++)
+        {
+          // pix3.channel[i] = (unsigned)(pix.channel[i] * 3) >> 4;
+          // pix5.channel[i] = (unsigned)(pix.channel[i] * 5) >> 4;
+          // pix7.channel[i] = (unsigned)(pix.channel[i] * 7) >> 4;
+          // pix.channel[i] =  pix.channel[i]  - pix3.channel[i] - pix5.channel[i] - pix7.channel[i];
+          // Kinda stupid, but its all about shift implementation
+          mm3.sWord[i] *= 3;
+          mm5.sWord[i] *= 5;
+          mm7.sWord[i] *= 7;
+          mm3.word[i] >>= 4;
+          mm5.word[i] >>= 4;
+          mm7.word[i] >>= 4;
+          mm1.sWord[i] -= mm3.sWord[i];
+          mm1.sWord[i] -= mm5.sWord[i];
+          mm1.sWord[i] -= mm7.sWord[i];
+        }
+
+        //packuswb - signed word saturate to ubyte
+        // 0xBBBBGGGGRRRRAAAA -> 0xBBGGRRAA00000000
+        for (int i = 0; i < 4; i++)
+        {
+          mm1.byte[i] = Clamp((int)mm1.sWord[i], 0, 255);
+          mm3.byte[i] = Clamp((int)mm3.sWord[i], 0, 255);
+          mm5.byte[i] = Clamp((int)mm5.sWord[i], 0, 255);
+          mm7.byte[i] = Clamp((int)mm7.sWord[i], 0, 255);
+        }
+        mm1.dword[1] = 0;
+        mm3.dword[1] = 0;
+        mm5.dword[1] = 0;
+        mm7.dword[1] = 0;
+
+        // Store result to 2x2 window
+        // paddusb
+        uConv tmp7, tmp5, tmp3, tmp1;
+        tmp7.val = *(uint64_t*)(itDst + (even? 1 : -1));
+        tmp5.val = *(uint64_t*)(itDst + width);
+        tmp3.val = *(uint64_t*)(itDst + width + (even? -1 : 1));
+        tmp1.val = *(uint64_t*)(itDst + width + (even? 1 : -1));
+
+        for (int i = 0; i < 8; i++)
+        {
+          mm1.byte[i] = Clamp((int)mm1.byte[i] + tmp1.byte[i], 0, 255);
+          mm3.byte[i] = Clamp((int)mm3.byte[i] + tmp3.byte[i], 0, 255);
+          mm5.byte[i] = Clamp((int)mm5.byte[i] + tmp5.byte[i], 0, 255);
+          mm7.byte[i] = Clamp((int)mm7.byte[i] + tmp7.byte[i], 0, 255);
+        }
+
+        // movd
+        *(itDst + (even? 1 : -1))         = mm7.dword[0];
+        *(itDst + width)                  = mm5.dword[0];
+        *(itDst + width + (even? -1 : 1)) = mm3.dword[0];
+        *(itDst + width + (even? 1 : -1)) = mm1.dword[0];
+
+        // nextColor
+        even? itDst++: itDst--;
+      }
+      itDst = even? (ULONG*)((char*)itDst + slWidthModulo) : itDst + width;
+      even = !even;
+    }
+  #endif
+  }
+#endif // SE1_DITHERBITMAP
+
+  // All done
+  _pfGfxProfile.StopTimer(CGfxProfile::PTI_DITHERBITMAP);
 }
 
 
@@ -745,6 +1033,75 @@ static void GenerateConvolutionMatrix( INDEX iFilter)
   mm = iCm  & 0xFFFF;  mmCm = (mm<<48) | (mm<<32) | (mm<<16) | mm;
 }
 
+#if !SE1_USE_ASM
+
+typedef SWORD ExtPix[4];
+
+static inline void extpix_fromi64(ExtPix &pix, const __int64 i64)
+{
+  //memcpy(pix, i64, sizeof (ExtPix));
+  pix[0] = ((i64 >>  0) & 0xFFFF);
+  pix[1] = ((i64 >> 16) & 0xFFFF);
+  pix[2] = ((i64 >> 32) & 0xFFFF);
+  pix[3] = ((i64 >> 48) & 0xFFFF);
+}
+
+static inline void extend_pixel(const ULONG ul, ExtPix &pix)
+{
+  pix[0] = ((ul >>  0) & 0xFF);
+  pix[1] = ((ul >>  8) & 0xFF);
+  pix[2] = ((ul >> 16) & 0xFF);
+  pix[3] = ((ul >> 24) & 0xFF);
+}
+
+static inline ULONG unextend_pixel(const ExtPix &pix)
+{
+  return (
+    (((ULONG) ((pix[0] >= 255) ? 255 : ((pix[0] <= 0) ? 0 : pix[0]))) <<  0) |
+    (((ULONG) ((pix[1] >= 255) ? 255 : ((pix[1] <= 0) ? 0 : pix[1]))) <<  8) |
+    (((ULONG) ((pix[2] >= 255) ? 255 : ((pix[2] <= 0) ? 0 : pix[2]))) << 16) |
+    (((ULONG) ((pix[3] >= 255) ? 255 : ((pix[3] <= 0) ? 0 : pix[3]))) << 24)
+  );
+}
+
+static inline void extpix_add(ExtPix &p1, const ExtPix &p2)
+{
+  p1[0] = (SWORD) (((SLONG) p1[0]) + ((SLONG) p2[0]));
+  p1[1] = (SWORD) (((SLONG) p1[1]) + ((SLONG) p2[1]));
+  p1[2] = (SWORD) (((SLONG) p1[2]) + ((SLONG) p2[2]));
+  p1[3] = (SWORD) (((SLONG) p1[3]) + ((SLONG) p2[3]));
+}
+
+static inline void extpix_mul(ExtPix &p1, const ExtPix &p2)
+{
+  p1[0] = (SWORD) (((SLONG) p1[0]) * ((SLONG) p2[0]));
+  p1[1] = (SWORD) (((SLONG) p1[1]) * ((SLONG) p2[1]));
+  p1[2] = (SWORD) (((SLONG) p1[2]) * ((SLONG) p2[2]));
+  p1[3] = (SWORD) (((SLONG) p1[3]) * ((SLONG) p2[3]));
+}
+
+static inline void extpix_adds(ExtPix &p1, const ExtPix &p2)
+{
+  SLONG x0 = (((SLONG) ((SWORD) p1[0])) + ((SLONG) ((SWORD) p2[0])));
+  SLONG x1 = (((SLONG) ((SWORD) p1[1])) + ((SLONG) ((SWORD) p2[1])));
+  SLONG x2 = (((SLONG) ((SWORD) p1[2])) + ((SLONG) ((SWORD) p2[2])));
+  SLONG x3 = (((SLONG) ((SWORD) p1[3])) + ((SLONG) ((SWORD) p2[3])));
+
+  p1[0] = (SWORD) ((x0 <= -32768) ? -32768 : ((x0 >= 32767) ? 32767 : x0));
+  p1[1] = (SWORD) ((x1 <= -32768) ? -32768 : ((x1 >= 32767) ? 32767 : x1));
+  p1[2] = (SWORD) ((x2 <= -32768) ? -32768 : ((x2 >= 32767) ? 32767 : x2));
+  p1[3] = (SWORD) ((x3 <= -32768) ? -32768 : ((x3 >= 32767) ? 32767 : x3));
+}
+
+static inline void extpix_mulhi(ExtPix &p1, const ExtPix &p2)
+{
+  p1[0] = (SWORD) (((((SLONG) p1[0]) * ((SLONG) p2[0])) >> 16) & 0xFFFF);
+  p1[1] = (SWORD) (((((SLONG) p1[1]) * ((SLONG) p2[1])) >> 16) & 0xFFFF);
+  p1[2] = (SWORD) (((((SLONG) p1[2]) * ((SLONG) p2[2])) >> 16) & 0xFFFF);
+  p1[3] = (SWORD) (((((SLONG) p1[3]) * ((SLONG) p2[3])) >> 16) & 0xFFFF);
+}
+
+#endif // !SE1_USE_ASM
  
 // applies filter to bitmap
 void FilterBitmap( INDEX iFilter, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight,
@@ -773,6 +1130,7 @@ void FilterBitmap( INDEX iFilter, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PI
   SLONG slCanvasWidth = pixCanvasWidth *BYTES_PER_TEXEL;
 
   // lets roll ...
+#if SE1_USE_ASM
   __asm {
     cld
     mov     eax,D [pixCanvasWidth] // EAX = positive row offset
@@ -1085,6 +1443,267 @@ lowerLoop:
     emms
   }
 
+#else
+  slModulo1 /= BYTES_PER_TEXEL;  // C++ handles incrementing by sizeof type
+  slCanvasWidth /= BYTES_PER_TEXEL;  // C++ handles incrementing by sizeof type
+
+  ULONG *src = pulSrc;
+  ULONG *dst = pulDst;
+  ULONG *rowptr = aulRows;
+
+  ExtPix rmm1={0}, rmm2={0}, rmm3={0}, rmm4={0}, rmm5={0}, rmm6={0}, rmm7={0};
+
+  #define EXTPIXFROMINT64(x) ExtPix r##x; extpix_fromi64(r##x, x);
+  EXTPIXFROMINT64(mmCm);
+  EXTPIXFROMINT64(mmCe);
+  EXTPIXFROMINT64(mmCc);
+  EXTPIXFROMINT64(mmEch);
+  EXTPIXFROMINT64(mmEcl);
+  EXTPIXFROMINT64(mmEe);
+  EXTPIXFROMINT64(mmEm);
+  EXTPIXFROMINT64(mmMm);
+  EXTPIXFROMINT64(mmMe);
+  EXTPIXFROMINT64(mmMc);
+  EXTPIXFROMINT64(mmAdd);
+  EXTPIXFROMINT64(mmInvDiv);
+  #undef EXTPIXFROMINT64
+
+  // ----------------------- process upper left corner
+  extend_pixel(src[0], rmm1);
+  extend_pixel(src[1], rmm2);
+  extend_pixel(src[pixCanvasWidth], rmm3);
+  extend_pixel(src[pixCanvasWidth+1], rmm4);
+
+  extpix_add(rmm2, rmm3);
+  extpix_mul(rmm1, rmmCm);
+  extpix_mul(rmm2, rmmCe);
+  extpix_mul(rmm4, rmmCc);
+  extpix_add(rmm1, rmm2);
+  extpix_add(rmm1, rmm4);
+  extpix_adds(rmm1, rmmAdd);
+  extpix_mulhi(rmm1, rmmInvDiv);
+  *(rowptr++) = unextend_pixel(rmm1);
+
+  src++;
+
+  // ----------------------- process upper edge pixels
+  for (PIX i = pixWidth - 2; i != 0; i--)
+  {
+    extend_pixel(src[-1], rmm1);
+    extend_pixel(src[0], rmm2);
+    extend_pixel(src[1], rmm3);
+    extend_pixel(src[pixCanvasWidth-1], rmm4);
+    extend_pixel(src[pixCanvasWidth], rmm5);
+    extend_pixel(src[pixCanvasWidth+1], rmm6);
+
+    extpix_add(rmm1, rmm3);
+    extpix_add(rmm4, rmm6);
+    extpix_mul(rmm1, rmmEch);
+    extpix_mul(rmm2, rmmEm);
+    extpix_mul(rmm4, rmmEcl);
+    extpix_mul(rmm5, rmmEe);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm4);
+    extpix_add(rmm1, rmm5);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    *(rowptr++) = unextend_pixel(rmm1);
+    src++;
+  }
+
+  // ----------------------- process upper right corner
+
+  extend_pixel(src[-1], rmm1);
+  extend_pixel(src[0], rmm2);
+  extend_pixel(src[pixCanvasWidth-1], rmm3);
+  extend_pixel(src[pixCanvasWidth], rmm4);
+
+  extpix_add(rmm1, rmm4);
+  extpix_mul(rmm1, rmmCe);
+  extpix_mul(rmm2, rmmCm);
+  extpix_mul(rmm3, rmmCc);
+  extpix_add(rmm1, rmm2);
+  extpix_add(rmm1, rmm3);
+  extpix_adds(rmm1, rmmAdd);
+  extpix_mulhi(rmm1, rmmInvDiv);
+  *rowptr = unextend_pixel(rmm1);
+
+  // ----------------------- process bitmap middle pixels
+
+  dst += slCanvasWidth;
+  src += slModulo1;
+
+  // for each row
+  for (size_t i = pixHeight-2; i != 0; i--)  // rowLoop
+  {
+    rowptr = aulRows;
+
+    // process left edge pixel
+    extend_pixel(src[-pixCanvasWidth], rmm1);
+    extend_pixel(src[(-pixCanvasWidth)+1], rmm2);
+    extend_pixel(src[0], rmm3);
+    extend_pixel(src[1], rmm4);
+    extend_pixel(src[pixCanvasWidth], rmm5);
+    extend_pixel(src[pixCanvasWidth+1], rmm6);
+
+    extpix_add(rmm1, rmm5);
+    extpix_add(rmm2, rmm6);
+    extpix_mul(rmm1, rmmEch);
+    extpix_mul(rmm2, rmmEcl);
+    extpix_mul(rmm3, rmmEm);
+    extpix_mul(rmm4, rmmEe);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm3);
+    extpix_add(rmm1, rmm4);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    dst[-pixCanvasWidth] = *rowptr;
+    *(rowptr++) = unextend_pixel(rmm1);
+    src++;
+    dst++;
+
+    // for each pixel in current row
+    for (size_t j = pixWidth-2; j != 0; j--)  // pixLoop
+    {
+      // prepare upper convolution row
+      extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+      extend_pixel(src[-pixCanvasWidth], rmm2);
+      extend_pixel(src[(-pixCanvasWidth)+1], rmm3);
+
+      // prepare middle convolution row
+      extend_pixel(src[-1], rmm4);
+      extend_pixel(src[0], rmm5);
+      extend_pixel(src[1], rmm6);
+
+      // free some registers
+      extpix_add(rmm1, rmm3);
+      extpix_add(rmm2, rmm4);
+      extpix_mul(rmm5, rmmMm);
+
+      // prepare lower convolution row
+      extend_pixel(src[pixCanvasWidth-1], rmm3);
+      extend_pixel(src[pixCanvasWidth], rmm4);
+      extend_pixel(src[pixCanvasWidth+1], rmm7);
+
+      // calc weightened value
+      extpix_add(rmm2, rmm6);
+      extpix_add(rmm1, rmm3);
+      extpix_add(rmm2, rmm4);
+      extpix_add(rmm1, rmm7);
+      extpix_mul(rmm2, rmmMe);
+      extpix_mul(rmm1, rmmMc);
+      extpix_add(rmm2, rmm5);
+      extpix_add(rmm1, rmm2);
+
+      // calc and store wightened value
+      extpix_adds(rmm1, rmmAdd);
+      extpix_mulhi(rmm1, rmmInvDiv);
+      dst[-pixCanvasWidth] = *rowptr;
+      *(rowptr++) = unextend_pixel(rmm1);
+
+      // advance to next pixel
+      src++;
+      dst++;
+    }
+
+    // process right edge pixel
+    extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+    extend_pixel(src[-pixCanvasWidth], rmm2);
+    extend_pixel(src[-1], rmm3);
+    extend_pixel(src[0], rmm4);
+    extend_pixel(src[pixCanvasWidth-1], rmm5);
+    extend_pixel(src[pixCanvasWidth], rmm6);
+
+    extpix_add(rmm1, rmm5);
+    extpix_add(rmm2, rmm6);
+    extpix_mul(rmm1, rmmEcl);
+    extpix_mul(rmm2, rmmEch);
+    extpix_mul(rmm3, rmmEe);
+    extpix_mul(rmm4, rmmEm);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm3);
+    extpix_add(rmm1, rmm4);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    dst[-pixCanvasWidth] = *rowptr;
+    *rowptr = unextend_pixel(rmm1);
+
+    // advance to next row
+    src += slModulo1;
+    dst += slModulo1;
+  }
+
+  // ----------------------- process lower left corner
+  rowptr = aulRows;
+  extend_pixel(src[-pixCanvasWidth], rmm1);
+  extend_pixel(src[(-pixCanvasWidth)+1], rmm2);
+  extend_pixel(src[0], rmm3);
+  extend_pixel(src[1], rmm4);
+
+  extpix_add(rmm1, rmm4);
+  extpix_mul(rmm1, rmmCe);
+  extpix_mul(rmm2, rmmCc);
+  extpix_mul(rmm3, rmmCm);
+  extpix_add(rmm1, rmm2);
+  extpix_add(rmm1, rmm3);
+  extpix_adds(rmm1, rmmAdd);
+  extpix_mulhi(rmm1, rmmInvDiv);
+  dst[-pixCanvasWidth] = *rowptr;
+  dst[0] = unextend_pixel(rmm1);
+
+  src++;
+  dst++;
+  rowptr++;
+
+  // ----------------------- process lower edge pixels
+  for (size_t i = pixWidth-2; i != 0; i--)  // lowerLoop
+  {
+    // for each pixel
+    extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+    extend_pixel(src[-pixCanvasWidth], rmm2);
+    extend_pixel(src[(-pixCanvasWidth)+1], rmm3);
+    extend_pixel(src[-1], rmm4);
+    extend_pixel(src[0], rmm5);
+    extend_pixel(src[1], rmm6);
+
+    extpix_add(rmm1, rmm3);
+    extpix_add(rmm4, rmm6);
+    extpix_mul(rmm1, rmmEcl);
+    extpix_mul(rmm2, rmmEe);
+    extpix_mul(rmm4, rmmEch);
+    extpix_mul(rmm5, rmmEm);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm4);
+    extpix_add(rmm1, rmm5);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    dst[-pixCanvasWidth] = *rowptr;
+    dst[0] = unextend_pixel(rmm1);
+
+    // advance to next pixel
+    src++;
+    dst++;
+    rowptr++;
+  }
+
+  // ----------------------- lower right corners
+  extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+  extend_pixel(src[-pixCanvasWidth], rmm2);
+  extend_pixel(src[-1], rmm3);
+  extend_pixel(src[0], rmm4);
+
+  extpix_add(rmm2, rmm3);
+  extpix_mul(rmm1, rmmCc);
+  extpix_mul(rmm2, rmmCe);
+  extpix_mul(rmm4, rmmCm);
+  extpix_add(rmm1, rmm2);
+  extpix_add(rmm1, rmm4);
+  extpix_adds(rmm1, rmmAdd);
+  extpix_mulhi(rmm1, rmmInvDiv);
+  dst[-pixCanvasWidth] = *rowptr;
+  dst[0] = unextend_pixel(rmm1);
+#endif
+
   // all done (finally)
   _pfGfxProfile.StopTimer( CGfxProfile::PTI_FILTERBITMAP);
 }
@@ -1374,269 +1993,3 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
     }
   }
 }
-
-
-
-
-
-
-
-
-// ---------------------------------------------------------------------------------------------
-
-
-#if 0
-
-  // bilinear filtering of lower mipmap
-  
-  // row loop
-  UBYTE r,g,b,a;
-  for( PIX v=0; v<pixHeight; v++)
-  { // column loop
-    for( PIX u=0; u<pixWidth; u++)
-    { // read four neighbour pixels
-      COLOR colUL = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +0];
-      COLOR colUR = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +1];
-      COLOR colDL = pulSrcMipmap[((v*2+1)*pixCurrWidth*2+u*2) +0];
-      COLOR colDR = pulSrcMipmap[((v*2+1)*pixCurrWidth*2+u*2) +1];
-      // separate and add channels
-      ULONG rRes=0, gRes=0, bRes=0, aRes=0;
-      ColorToRGBA( colUL, r,g,b,a); rRes += r; gRes += g; bRes += b; aRes += a;
-      ColorToRGBA( colUR, r,g,b,a); rRes += r; gRes += g; bRes += b; aRes += a;
-      ColorToRGBA( colDL, r,g,b,a); rRes += r; gRes += g; bRes += b; aRes += a;
-      ColorToRGBA( colDR, r,g,b,a); rRes += r; gRes += g; bRes += b; aRes += a;
-      // round, average and store
-      rRes += 2; gRes += 2; bRes += 2; aRes += 2;
-      rRes >>=2; gRes >>=2; bRes >>=2; aRes >>=2;
-      pulDstMipmap[v*pixCurrWidth+u] = RGBAToColor( rRes,gRes,bRes,aRes);
-    }
-  }
-
-
-
-  // nearest-neighbouring of lower mipmap (with border preservance)
-
-  // row loop
-  PIX u,v;
-  for( v=0; v<pixCurrHeight/2; v++) { 
-    for( u=0; u<pixCurrWidth/2; u++) { // mipmap upper left pixel
-      pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +0];
-    }
-    for( u=pixCurrWidth/2; u<pixCurrWidth; u++) { // mipmap upper right pixel
-      pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +1];
-    }
-  }
-  for( v=pixCurrHeight/2; v<pixCurrHeight; v++) { 
-    for( u=0; u<pixCurrWidth/2; u++) { // mipmap upper left pixel
-      pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+1)*pixCurrWidth*2+u*2) +0];
-    }
-    for( u=pixCurrWidth/2; u<pixCurrWidth; u++) { // mipmap upper right pixel
-      pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+1)*pixCurrWidth*2+u*2) +1];
-    }
-  }
-
-
-
-  // left to right error diffusion dithering
-
-  __asm {
-    pxor    mm0,mm0
-    mov     esi,D [pulDst]
-    mov     ebx,D [pixCanvasWidth]
-    mov     edx,D [pixHeight]
-    dec     edx // need not to dither last row
-rowLoopE:
-    mov     ecx,D [pixWidth]
-    dec     ecx
-pixLoopE:
-    movd    mm1,D [esi]
-    punpcklbw mm1,mm0
-    pand    mm1,Q [mmErrDiffMask] 
-    // determine errors
-    movq    mm3,mm1
-    paddw   mm3,mm3 // *2
-    movq    mm5,mm3
-    paddw   mm5,mm5 // *4
-    movq    mm7,mm5
-    paddw   mm7,mm7 // *8
-    paddw   mm3,mm1 // *3
-    paddw   mm5,mm1 // *5
-    psubw   mm7,mm1 // *7
-    psrlw   mm1,4
-    psrlw   mm3,4
-    psrlw   mm5,4
-    psrlw   mm7,4
-    packuswb mm1,mm0
-    packuswb mm3,mm0
-    packuswb mm5,mm0
-    packuswb mm7,mm0
-    // spread errors
-    movd    mm2,D [esi+ ebx*4 +4]
-    paddusb mm1,mm2
-    paddusb mm3,Q [esi+ ebx*4 -4]
-    paddusb mm5,Q [esi+ ebx*4 +0]
-    paddusb mm7,Q [esi+       +4]
-    movd    D [esi+ ebx*4 +4],mm1
-    movd    D [esi+ ebx*4 -4],mm3
-    movd    D [esi+ ebx*4 +0],mm5
-    movd    D [esi+       +4],mm7
-    // advance to next pixel
-    add     esi,4
-    dec     ecx
-    jnz     pixLoopE
-    // advance to next row
-    add     esi,D [slModulo]
-    dec     edx
-    jnz     rowLoopE
-    emms
-  }
-
-
-  // left to right and right to left error diffusion dithering
-
-  __asm {
-    pxor    mm0,mm0
-    mov     esi,D [pulDst]
-    mov     ebx,D [pixCanvasWidth]
-    mov     edx,D [pixHeight]
-    dec     edx // need not to dither last row
-rowLoopE:
-    // left to right
-    mov     ecx,D [pixWidth]
-    dec     ecx
-pixLoopEL:
-    movd    mm1,D [esi]
-    punpcklbw mm1,mm0
-    pand    mm1,Q [mmErrDiffMask] 
-    // determine errors
-    movq    mm3,mm1
-    paddw   mm3,mm3 // *2
-    movq    mm5,mm3
-    paddw   mm5,mm5 // *4
-    movq    mm7,mm5
-    paddw   mm7,mm7 // *8
-    paddw   mm3,mm1 // *3
-    paddw   mm5,mm1 // *5
-    psubw   mm7,mm1 // *7
-    psrlw   mm1,4
-    psrlw   mm3,4
-    psrlw   mm5,4
-    psrlw   mm7,4
-    packuswb mm1,mm0
-    packuswb mm3,mm0
-    packuswb mm5,mm0
-    packuswb mm7,mm0
-    // spread errors
-    movd    mm2,D [esi+ ebx*4 +4]
-    paddusb mm1,mm2
-    paddusb mm3,Q [esi+ ebx*4 -4]
-    paddusb mm5,Q [esi+ ebx*4 +0]
-    paddusb mm7,Q [esi+       +4]
-    movd    D [esi+ ebx*4 +4],mm1
-    movd    D [esi+ ebx*4 -4],mm3
-    movd    D [esi+ ebx*4 +0],mm5
-    movd    D [esi+       +4],mm7
-    // advance to next pixel
-    add     esi,4
-    dec     ecx
-    jnz     pixLoopEL
-    // advance to next row
-    add     esi,D [slWidthModulo]
-    dec     edx
-    jz      allDoneE
-
-    // right to left
-    mov     ecx,D [pixWidth]
-    dec     ecx
-pixLoopER:
-    movd    mm1,D [esi]
-    punpcklbw mm1,mm0
-    pand    mm1,Q [mmErrDiffMask] 
-    // determine errors
-    movq    mm3,mm1
-    paddw   mm3,mm3 // *2
-    movq    mm5,mm3
-    paddw   mm5,mm5 // *4
-    movq    mm7,mm5
-    paddw   mm7,mm7 // *8
-    paddw   mm3,mm1 // *3
-    paddw   mm5,mm1 // *5
-    psubw   mm7,mm1 // *7
-    psrlw   mm1,4
-    psrlw   mm3,4
-    psrlw   mm5,4
-    psrlw   mm7,4
-    packuswb mm1,mm0
-    packuswb mm3,mm0
-    packuswb mm5,mm0
-    packuswb mm7,mm0
-    // spread errors
-    paddusb mm1,Q [esi+ ebx*4 -4]
-    paddusb mm3,Q [esi+ ebx*4 +4]
-    paddusb mm5,Q [esi+ ebx*4 +0]
-    paddusb mm7,Q [esi+       -4]
-    movd    D [esi+ ebx*4 -4],mm1
-    movd    D [esi+ ebx*4 +4],mm3
-    movd    D [esi+ ebx*4 +0],mm5
-    movd    D [esi+       -4],mm7
-    // revert to previous pixel
-    sub     esi,4
-    dec     ecx
-    jnz     pixLoopER
-    // advance to next row
-    add     esi,D [slCanvasWidth]
-    dec     edx
-    jnz     rowLoopE
-allDoneE:
-    emms
-  }
-
-
-
-// bicubic
-
-  static INDEX aiWeights[4][4] = {
-{ -1,  9,  9, -1, },
-{  9, 47, 47,  9, },
-{  9, 47, 47,  9, },
-{ -1,  9,  9, -1  }
-};
-
-
-      const SLONG slMaskU=pixWidth *2 -1;
-    const SLONG slMaskV=pixHeight*2 -1;
-
-    // bicubic?
-    if( pixWidth>4 && pixHeight>4 /*&& tex_bBicubicMipmaps*/)
-    {
-      for( INDEX j=0; j<pixHeight; j++) {
-        for( INDEX i=0; i<pixWidth; i++) {
-          COLOR col;
-          UBYTE ubR, ubG, ubB, ubA;
-          SLONG slR=0, slG=0, slB=0, slA=0;
-          for( INDEX v=0; v<4; v++) {
-            const INDEX iRowSrc = ((v-1)+j*2) & slMaskV;
-            for( INDEX u=0; u<4; u++) {
-              const INDEX iColSrc = ((u-1)+i*2) & slMaskU;
-              const INDEX iWeight = aiWeights[u][v];
-              col = ByteSwap32( pulSrcMipmap[iRowSrc*(slMaskU+1)+iColSrc]);
-              ColorToRGBA( col, ubR,ubG,ubB,ubA);
-              slR += ubR*iWeight;
-              slG += ubG*iWeight;
-              slB += ubB*iWeight;
-              slA += ubA*iWeight;
-            }
-          }
-          col = RGBAToColor( slR>>8, slG>>8, slB>>8, slA>>8);
-          pulDstMipmap[j*pixWidth+i] = ByteSwap32(col);
-        }
-      }
-    }
-    // bilinear!
-    else
-    {
-
-
-    }
-
-#endif
