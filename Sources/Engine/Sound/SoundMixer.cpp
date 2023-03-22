@@ -1,4 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
+   Copyright (c) 2023 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -12,6 +13,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
+
+// [Cecil] ASM code translation:
+// https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Sound/SoundMixer.cpp
 
 #include "stdh.h"
 
@@ -75,6 +79,7 @@ void ResetMixer( const SLONG *pslBuffer, const SLONG slBufferSize)
   slMixerBufferSampleRate = _pSound->sl_SwfeFormat.nSamplesPerSec;
 
   // wipe destination mixer buffer
+#if SE1_USE_ASM
   __asm {
     cld
     xor     eax,eax
@@ -83,15 +88,21 @@ void ResetMixer( const SLONG *pslBuffer, const SLONG slBufferSize)
     shl     ecx,1 // *2 because of 32-bit src format
     rep     stosd
   }
+
+#else
+  memset(pvMixerBuffer, 0, slMixerBufferSize * 8);
+#endif
 }
 
 
 // copy mixer buffer to the output buffer(s)
-void CopyMixerBuffer_stereo( const SLONG slSrcOffset, const void *pDstBuffer, const SLONG slBytes)
+void CopyMixerBuffer_stereo( const SLONG slSrcOffset, void *pDstBuffer, const SLONG slBytes)
 {
   ASSERT( pDstBuffer!=NULL);
   ASSERT( slBytes%4==0);
   if( slBytes<4) return;
+
+#if SE1_USE_ASM
   __asm {
     cld
     mov     esi,D [slSrcOffset]
@@ -101,15 +112,21 @@ void CopyMixerBuffer_stereo( const SLONG slSrcOffset, const void *pDstBuffer, co
     shr     ecx,2   // bytes to samples per channel
     rep     movsd
   }
+
+#else
+  memcpy(pDstBuffer, ((const char *)pvMixerBuffer) + slSrcOffset, slBytes);
+#endif
 }
 
 
 // copy one channel from mixer buffer to the output buffer(s)
-void CopyMixerBuffer_mono( const SLONG slSrcOffset, const void *pDstBuffer, const SLONG slBytes)
+void CopyMixerBuffer_mono( const SLONG slSrcOffset, void *pDstBuffer, const SLONG slBytes)
 {
   ASSERT( pDstBuffer!=NULL);
   ASSERT( slBytes%2==0);
   if( slBytes<4) return;
+
+#if SE1_USE_ASM
   __asm {
     mov     esi,D [slSrcOffset]
     add     esi,D [pvMixerBuffer]
@@ -124,6 +141,20 @@ copyLoop:
     dec     ecx
     jnz     copyLoop
   }
+
+#else
+  WORD *dst = (WORD *)pDstBuffer;
+  WORD *src = (WORD *)(((UINT8 *)pvMixerBuffer) + slSrcOffset);
+
+  SLONG max = slBytes / 4;
+
+  for (SLONG i = 0; i < max; i++)
+  {
+    *dst = *src;
+    dst += 1; // Move 16 bits
+    src += 2; // Move 32 bits
+  }
+#endif
 }
 
 
@@ -132,6 +163,8 @@ static void ConvertMixerBuffer( const SLONG slBytes)
 {
   ASSERT( slBytes%4==0);
   if( slBytes<4) return;
+
+#if SE1_USE_ASM
   __asm {
     cld
     mov     esi,D [pvMixerBuffer]
@@ -148,6 +181,24 @@ copyLoop:
     jnz     copyLoop
     emms
   }
+
+#else
+  WORD *dst = (WORD *)pvMixerBuffer;
+  DWORD *src = (DWORD *)pvMixerBuffer;
+  SLONG max = slBytes / 2;
+
+  int tmp;
+  for (SLONG i = 0; i < max; i++)
+  {
+    tmp = *src;
+    tmp = Clamp(tmp, -32767, 32767);
+
+    *dst = tmp;
+
+    dst++;
+    src++;
+  }
+#endif
 }
 
 
@@ -338,79 +389,83 @@ loopEnd:
   }
 
 #else
-  // initialize some local vars
+  // Initialize some local vars
   SLONG slLeftSample, slRightSample, slNextSample;
-  SLONG *pslDstBuffer = (SLONG*)pvMixerBuffer;
-  fixLeftOfs   = (__int64)(fLeftOfs   * 65536.0);
-  fixRightOfs  = (__int64)(fRightOfs  * 65536.0);
-  __int64 fixLeftStep  = (__int64)(fLeftStep  * 65536.0);
-  __int64 fixRightStep = (__int64)(fRightStep * 65536.0);
-  __int64 fixSoundBufferSize = ((__int64)slSoundBufferSize)<<16;
+  SLONG *pslDstBuffer = (SLONG *)pvMixerBuffer;
+  fixLeftOfs = (__int64)(fLeftOfs * 65536.0f);
+  fixRightOfs = (__int64)(fRightOfs * 65536.0f);
+  __int64 fixLeftStep = (__int64)(fLeftStep * 65536.0f);
+  __int64 fixRightStep = (__int64)(fRightStep * 65536.0f);
+  __int64 fixSoundBufferSize = ((__int64)slSoundBufferSize) << 16;
   mmSurroundFactor = (__int64)(SWORD)mmSurroundFactor;
 
-  // loop thru source buffer
+  SLONG slLeftVolTmp = slLeftVolume >> 16;
+  SLONG slRightVolTmp = slRightVolume >> 16;
+
+  // Loop through source buffer
   INDEX iCt = slMixerBufferSize;
   FOREVER
   {
-    // if left channel source sample came to end of sample buffer
-    if( fixLeftOfs >= fixSoundBufferSize) {
+    // If left channel source sample came to end of sample buffer
+    if (fixLeftOfs >= fixSoundBufferSize) {
       fixLeftOfs -= fixSoundBufferSize;
-      // if has no loop, end it
+      // If has no loop, end it
       bEndOfSound = bNotLoop;
     }
-    // if right channel source sample came to end of sample buffer
-    if( fixRightOfs >= fixSoundBufferSize) {
+
+    // If right channel source sample came to end of sample buffer
+    if (fixRightOfs >= fixSoundBufferSize) {
       fixRightOfs -= fixSoundBufferSize;
-      // if has no loop, end it
+      // If has no loop, end it
       bEndOfSound = bNotLoop;
     }
-    // end of buffer?
-    if( iCt<=0 || bEndOfSound) break;
 
-    // fetch one lineary interpolated sample on left channel
-    slLeftSample = pswSrcBuffer[(fixLeftOfs>>16)+0];
-    slNextSample = pswSrcBuffer[(fixLeftOfs>>16)+1];
-    slLeftSample = (slLeftSample*(65535-(fixLeftOfs&65535)) + slNextSample*(fixLeftOfs&65535)) >>16;
-    // fetch one lineary interpolated sample on right channel
-    slRightSample = pswSrcBuffer[(fixRightOfs>>16)+0];
-    slNextSample  = pswSrcBuffer[(fixRightOfs>>16)+1];
-    slRightSample = (slRightSample*(65535-(fixRightOfs&65535)) + slNextSample*(fixRightOfs&65535)) >>16;
+    // End of buffer
+    if (iCt <= 0 || bEndOfSound) break;
 
-    // filter samples
-    slLastLeftSample  += ((slLeftSample -slLastLeftSample) *slLeftFilter) >>15;
-    slLastRightSample += ((slRightSample-slLastRightSample)*slRightFilter)>>15;
+    // Fetch one lineary interpolated sample on left channel
+    slLeftSample = pswSrcBuffer[(fixLeftOfs >> 16) + 0];
+    slNextSample = pswSrcBuffer[(fixLeftOfs >> 16) + 1];
+    slLeftSample = (slLeftSample * (0xFFFF - (fixLeftOfs & 0xFFFF)) + slNextSample * (fixLeftOfs & 0xFFFF)) >> 16;
 
-    // apply stereo volume to current sample
-    slLeftSample  = (slLastLeftSample  * slLeftVolume) >>15;
-    slRightSample = (slLastRightSample * slRightVolume)>>15;
+    // Fetch one lineary interpolated sample on right channel
+    slRightSample = pswSrcBuffer[(fixRightOfs >> 16) + 0];
+    slNextSample  = pswSrcBuffer[(fixRightOfs >> 16) + 1];
+    slRightSample = (slRightSample * (0xFFFF - (fixRightOfs & 0xFFFF)) + slNextSample * (fixRightOfs & 0xFFFF)) >> 16;
 
-    slRightSample = slRightSample ^ mmSurroundFactor;
+    // Filter samples
+    slLastLeftSample += ((slLeftSample - slLastLeftSample) * slLeftFilter) >> 15;
+    slLastRightSample += ((slRightSample - slLastRightSample) * slRightFilter) >> 15;
 
-    // mix in current sample
-    slLeftSample  += pslDstBuffer[0];
+    // Apply stereo volume to current sample
+    slLeftSample = (slLastLeftSample * slLeftVolTmp) >> 15;
+    slRightSample = (slLastRightSample * slRightVolTmp) >> 15;
+
+    slLeftSample ^= (SLONG)((mmSurroundFactor >> 0) & 0xFFFFFFFF);
+    slRightSample ^= (SLONG)((mmSurroundFactor >> 32) & 0xFFFFFFFF);
+
+    // Mix in current sample
+    slLeftSample += pslDstBuffer[0];
     slRightSample += pslDstBuffer[1];
-    // upper clamp
-    if( slLeftSample  > MAX_SWORD) slLeftSample  = MAX_SWORD;
-    if( slRightSample > MAX_SWORD) slRightSample = MAX_SWORD;
-    // lower clamp
-    if( slLeftSample  < MIN_SWORD) slLeftSample  = MIN_SWORD;
-    if( slRightSample < MIN_SWORD) slRightSample = MIN_SWORD;
 
-    // store samples (both channels)
+    // [Cecil] Faster clamping
+    slLeftSample = Clamp(slLeftSample, (SLONG)MIN_SWORD, (SLONG)MAX_SWORD);
+    slRightSample = Clamp(slRightSample, (SLONG)MIN_SWORD, (SLONG)MAX_SWORD);
+
+    // Store samples (both channels)
     pslDstBuffer[0] = slLeftSample;
     pslDstBuffer[1] = slRightSample;
 
-    // modify volume  `
-    slLeftVolume  += (SWORD)((mmVolumeGain>> 0)&0xFFFF);
-    slRightVolume += (SWORD)((mmVolumeGain>>16)&0xFFFF);
+    // Modify volume
+    slLeftVolume += (SWORD)((mmVolumeGain >>  0) & 0xFFFF);
+    slRightVolume += (SWORD)((mmVolumeGain >> 16) & 0xFFFF);
 
-    // advance to next sample
-    fixLeftOfs   += fixLeftStep;
-    fixRightOfs  += fixRightStep;
-    pslDstBuffer += 4;
+    // Advance to the next sample
+    fixLeftOfs += fixLeftStep;
+    fixRightOfs += fixRightStep;
+    pslDstBuffer += 2;
     iCt--;
   }
-                    
 #endif
 
   _pfSoundProfile.StopTimer(CSoundProfile::PTI_RAWMIXER);
@@ -557,6 +612,94 @@ loopEnd:
     emms
   }
 
+#else
+  // Initialize some local vars
+  SLONG slLeftSample, slRightSample;
+  SLONG slNextLeftSample, slNextRightSample; // [Cecil]
+  SLONG *pslDstBuffer = (SLONG *)pvMixerBuffer;
+  fixLeftOfs = (__int64)(fLeftOfs * 65536.0f);
+  fixRightOfs = (__int64)(fRightOfs * 65536.0f);
+  __int64 fixLeftStep = (__int64)(fLeftStep * 65536.0f);
+  __int64 fixRightStep = (__int64)(fRightStep * 65536.0f);
+  __int64 fixSoundBufferSize = ((__int64)slSoundBufferSize) << 16;
+  mmSurroundFactor = (__int64)(SWORD)mmSurroundFactor;
+
+  SLONG slLeftVolTmp = slLeftVolume >> 16;
+  SLONG slRightVolTmp = slRightVolume >> 16;
+
+  // Loop through source buffer
+  INDEX iCt = slMixerBufferSize;
+  FOREVER
+  {
+    // If left channel source sample came to end of sample buffer
+    if (fixLeftOfs >= fixSoundBufferSize) {
+      fixLeftOfs -= fixSoundBufferSize;
+      // If has no loop, end it
+      bEndOfSound = bNotLoop;
+    }
+
+    // If right channel source sample came to end of sample buffer
+    if (fixRightOfs >= fixSoundBufferSize) {
+      fixRightOfs -= fixSoundBufferSize;
+      // If has no loop, end it
+      bEndOfSound = bNotLoop;
+    }
+
+    // End of buffer
+    if (iCt <= 0 || bEndOfSound) break;
+
+    // [Cecil] These nullify the lowest bit and fix distortion during doppler
+    const __int64 fixLeftShift = (fixLeftOfs >> 16) << 1;
+    const __int64 fixRightShift = (fixRightOfs >> 16) << 1;
+
+    // Fetch one lineary interpolated sample on left channel
+    slLeftSample = pswSrcBuffer[fixLeftShift + 0];
+    slNextLeftSample = pswSrcBuffer[fixLeftShift + 2];
+
+    // Fetch one lineary interpolated sample on right channel
+    slRightSample = pswSrcBuffer[fixRightShift + 1];
+    slNextRightSample = pswSrcBuffer[fixRightShift + 3];
+
+    // [Cecil] Shortcuts
+    const SWORD swLOffset = fixLeftOfs & 0xFFFF;
+    const SWORD swROffset = fixRightOfs & 0xFFFF;
+
+    slLeftSample = (slLeftSample * (0xFFFF - swLOffset) + slNextLeftSample * swLOffset) >> 16;
+    slRightSample = (slRightSample * (0xFFFF - swROffset) + slNextRightSample * swROffset) >> 16;
+
+    // Filter samples
+    slLastLeftSample += ((slLeftSample - slLastLeftSample) * slLeftFilter) >> 15;
+    slLastRightSample += ((slRightSample - slLastRightSample) * slRightFilter) >> 15;
+
+    // Apply stereo volume to current sample
+    slLeftSample = (slLastLeftSample * slLeftVolTmp) >> 15;
+    slRightSample = (slLastRightSample * slRightVolTmp) >> 15;
+
+    slLeftSample ^= (SLONG)((mmSurroundFactor >> 0) & 0xFFFFFFFF);
+    slRightSample ^= (SLONG)((mmSurroundFactor >> 32) & 0xFFFFFFFF);
+
+    // Mix in current sample
+    slLeftSample += pslDstBuffer[0];
+    slRightSample += pslDstBuffer[1];
+
+    // [Cecil] Faster clamping
+    slLeftSample = Clamp(slLeftSample, (SLONG)MIN_SWORD, (SLONG)MAX_SWORD);
+    slRightSample = Clamp(slRightSample, (SLONG)MIN_SWORD, (SLONG)MAX_SWORD);
+
+    // Store samples (both channels)
+    pslDstBuffer[0] = slLeftSample;
+    pslDstBuffer[1] = slRightSample;
+
+    // Modify volume
+    slLeftVolume += (SWORD)((mmVolumeGain >> 0) & 0xFFFF);
+    slRightVolume += (SWORD)((mmVolumeGain >> 16) & 0xFFFF);
+
+    // Advance to the next sample
+    fixLeftOfs += fixLeftStep;
+    fixRightOfs += fixRightStep;
+    pslDstBuffer += 2;
+    iCt--;
+  }
 #endif
 
   _pfSoundProfile.StopTimer(CSoundProfile::PTI_RAWMIXER);
