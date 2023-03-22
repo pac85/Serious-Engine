@@ -17,6 +17,28 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Math/Float.h>
 
+// [Cecil] Non-Windows OS
+#if !SE1_WIN
+  #define MCW_PC  0x0300
+  #define _MCW_PC MCW_PC
+  #define _PC_24  0x0000
+  #define _PC_53  0x0200
+  #define _PC_64  0x0300
+
+  // Windows' _control87() reimplementation
+  inline ULONG _control87(WORD newcw, WORD mask)
+  {
+    static WORD fpw = _PC_64;
+
+    if (mask != 0) {
+      fpw &= ~mask;
+      fpw |= (newcw & mask);
+    }
+
+    return fpw;
+  }
+#endif
+
 /* Get current precision setting of FPU. */
 enum FPUPrecisionType GetFPUPrecision(void)
 {
@@ -108,7 +130,11 @@ BOOL IsValidFloat(float f)
 
 BOOL IsValidDouble(double f)
 {
-  return _finite(f) && (*(unsigned __int64*)&f)!=0xcdcdcdcdcdcdcdcdI64;
+#if SE1_WIN
+  return _finite(f) && (*(UQUAD *)&f) != 0xcdcdcdcdcdcdcdcdI64;
+#else
+  return _finite(f) && (*(UQUAD *)&f) != 0xcdcdcdcdcdcdcdcdll;
+#endif
 /*  int iClass = _fpclass(f);
   return
     iClass==_FPCLASS_NN ||
