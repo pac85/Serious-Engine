@@ -206,7 +206,7 @@ void MakeFatalError(void* pArgs)
   FatalError( "MakeFatalError()");
 }
 
-
+// [Cecil] TODO: Check if this function works on x64
 extern void ReportGlobalMemoryStatus(void)
 {
    CPrintF(TRANS("Global memory status...\n"));
@@ -220,44 +220,45 @@ extern void ReportGlobalMemoryStatus(void)
    CPrintF(TRANS("  Virtual memory used:  %4d/%4dMB\n"), (ms.dwTotalVirtual -ms.dwAvailVirtual )/MB, ms.dwTotalVirtual /MB);
    CPrintF(TRANS("  Memory load: %3d%%\n"), ms.dwMemoryLoad);
 
-   DWORD dwMin;
-   DWORD dwMax;
-   GetProcessWorkingSetSize(GetCurrentProcess(), &dwMin, &dwMax);
-   CPrintF(TRANS("  Process working set: %dMB-%dMB\n\n"), dwMin/(1024*1024), dwMax/(1024*1024));
+   SIZE_T uMin;
+   SIZE_T uMax;
+   GetProcessWorkingSetSize(GetCurrentProcess(), &uMin, &uMax);
+   CPrintF(TRANS("  Process working set: %dMB-%dMB\n\n"), uMin / (1024 * 1024), uMax / (1024 * 1024));
 }
 
+// [Cecil] TODO: Check if this function works on x64
 static void MemoryInfo(void)
 {
   ReportGlobalMemoryStatus();
 
   _HEAPINFO hinfo;
-   int heapstatus;
-   hinfo._pentry = NULL;
-   SLONG slTotalUsed = 0;
-   SLONG slTotalFree = 0;
-   INDEX ctUsed = 0;
-   INDEX ctFree = 0;
+  int heapstatus;
+  hinfo._pentry = NULL;
+  SLONG slTotalUsed = 0;
+  SLONG slTotalFree = 0;
+  INDEX ctUsed = 0;
+  INDEX ctFree = 0;
 
-   CPrintF( "Walking heap...\n");
-   while( ( heapstatus = _heapwalk( &hinfo ) ) == _HEAPOK )
-   {
-     if (hinfo._useflag == _USEDENTRY ) {
-       slTotalUsed+=hinfo._size;
-       ctUsed++;
-     } else {
-       slTotalFree+=hinfo._size;
-       ctFree++;
-     }
-   }
-   switch( heapstatus )   {
-     case _HEAPEMPTY:     CPrintF( "Heap empty?!?\n" );                break;
-     case _HEAPEND:       CPrintF( "Heap ok.\n" );                     break;
-     case _HEAPBADPTR:    CPrintF( "ERROR - bad pointer to heap\n" );  break;
-     case _HEAPBADBEGIN:  CPrintF( "ERROR - bad start of heap\n" );    break;
-     case _HEAPBADNODE:   CPrintF( "ERROR - bad node in heap\n" );     break;
-   }
-   CPrintF( "Total used: %d bytes (%.2f MB) in %d blocks\n", slTotalUsed, slTotalUsed/1024.0f/1024.0f, ctUsed);
-   CPrintF( "Total free: %d bytes (%.2f MB) in %d blocks\n", slTotalFree, slTotalFree/1024.0f/1024.0f, ctFree);
+  CPrintF( "Walking heap...\n");
+  while( ( heapstatus = _heapwalk( &hinfo ) ) == _HEAPOK )
+  {
+    if (hinfo._useflag == _USEDENTRY ) {
+      slTotalUsed+=hinfo._size;
+      ctUsed++;
+    } else {
+      slTotalFree+=hinfo._size;
+      ctFree++;
+    }
+  }
+  switch( heapstatus )   {
+    case _HEAPEMPTY:     CPrintF( "Heap empty?!?\n" );                break;
+    case _HEAPEND:       CPrintF( "Heap ok.\n" );                     break;
+    case _HEAPBADPTR:    CPrintF( "ERROR - bad pointer to heap\n" );  break;
+    case _HEAPBADBEGIN:  CPrintF( "ERROR - bad start of heap\n" );    break;
+    case _HEAPBADNODE:   CPrintF( "ERROR - bad node in heap\n" );     break;
+  }
+  CPrintF( "Total used: %d bytes (%.2f MB) in %d blocks\n", slTotalUsed, slTotalUsed/1024.0f/1024.0f, ctUsed);
+  CPrintF( "Total free: %d bytes (%.2f MB) in %d blocks\n", slTotalFree, slTotalFree/1024.0f/1024.0f, ctFree);
 }
 
 // get help for a shell symbol
