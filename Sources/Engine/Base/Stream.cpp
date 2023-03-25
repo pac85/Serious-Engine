@@ -39,8 +39,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Stock_CTextureData.h>
 #include <Engine/Templates/Stock_CModelData.h>
 
-// default size of page used for stream IO operations (4Kb)
-ULONG _ulPageSize = 0;
 // maximum lenght of file that can be saved (default: 128Mb)
 ULONG _ulMaxLenghtOfSavingFile = (1UL<<20)*128;
 extern INDEX fil_bPreferZips = FALSE;
@@ -116,12 +114,6 @@ static CTFileName _fnmApp;
 
 void InitStreams(void)
 {
-  // obtain information about system
-  SYSTEM_INFO siSystemInfo;
-  GetSystemInfo( &siSystemInfo);
-  // and remember page size
-  _ulPageSize = siSystemInfo.dwPageSize*16;   // cca. 64kB on WinNT/Win95
-
   // keep a copy of path for setting purposes
   _fnmApp = _fnmApplicationPath;
 
