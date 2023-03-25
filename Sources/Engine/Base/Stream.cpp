@@ -1053,11 +1053,11 @@ ULONG CTFileStream::GetStreamCRC32_t(void)
 }
 
 /* Read a block of data from stream. */
-void CTFileStream::Read_t(void *pvBuffer, SLONG slSize)
+void CTFileStream::Read_t(void *pvBuffer, size_t slSize)
 {
   if(fstrm_iZipHandle != -1) {
     memcpy(pvBuffer, fstrm_pubZipBuffer + fstrm_iZipLocation, slSize);
-    fstrm_iZipLocation += slSize;
+    fstrm_iZipLocation += (INDEX)slSize;
     return;
   }
 
@@ -1065,7 +1065,7 @@ void CTFileStream::Read_t(void *pvBuffer, SLONG slSize)
 }
 
 /* Write a block of data to stream. */
-void CTFileStream::Write_t(const void *pvBuffer, SLONG slSize)
+void CTFileStream::Write_t(const void *pvBuffer, size_t slSize)
 {
   if(fstrm_bReadOnly || fstrm_iZipHandle != -1) {
     throw "Stream is read-only!";
@@ -1252,17 +1252,17 @@ BOOL CTMemoryStream::IsSeekable(void)
 }
 
 /* Read a block of data from stream. */
-void CTMemoryStream::Read_t(void *pvBuffer, SLONG slSize)
+void CTMemoryStream::Read_t(void *pvBuffer, size_t slSize)
 {
   memcpy(pvBuffer, mstrm_pubBuffer + mstrm_slLocation, slSize);
-  mstrm_slLocation += slSize;
+  mstrm_slLocation += (SLONG)slSize;
 }
 
 /* Write a block of data to stream. */
-void CTMemoryStream::Write_t(const void *pvBuffer, SLONG slSize)
+void CTMemoryStream::Write_t(const void *pvBuffer, size_t slSize)
 {
   memcpy(mstrm_pubBuffer + mstrm_slLocation, pvBuffer, slSize);
-  mstrm_slLocation += slSize;
+  mstrm_slLocation += (SLONG)slSize;
 
   if(mstrm_pubBuffer + mstrm_slLocation > mstrm_pubBufferMax) {
     mstrm_pubBufferMax = mstrm_pubBuffer + mstrm_slLocation;

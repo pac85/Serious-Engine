@@ -140,9 +140,9 @@ public:
   virtual BOOL IsSeekable(void) = 0;
 
   /* Read a block of data from stream. */
-  virtual void Read_t(void *pvBuffer, SLONG slSize) = 0; // throw char *
+  virtual void Read_t(void *pvBuffer, size_t slSize) = 0; // throw char *
   /* Write a block of data to stream. */
-  virtual void Write_t(const void *pvBuffer, SLONG slSize) = 0; // throw char *
+  virtual void Write_t(const void *pvBuffer, size_t slSize) = 0; // throw char *
 
   /* Seek in stream. */
   virtual void Seek_t(SLONG slOffset, enum SeekDir sd) = 0; // throw char *
@@ -257,9 +257,9 @@ public:
   ULONG GetStreamCRC32_t(void);
 
   /* Read a block of data from stream. */
-  void Read_t(void *pvBuffer, SLONG slSize); // throw char *
+  void Read_t(void *pvBuffer, size_t slSize); // throw char *
   /* Write a block of data to stream. */
-  void Write_t(const void *pvBuffer, SLONG slSize); // throw char *
+  void Write_t(const void *pvBuffer, size_t slSize); // throw char *
 
   /* Seek in stream. */
   void Seek_t(SLONG slOffset, enum SeekDir sd); // throw char *
@@ -308,9 +308,9 @@ public:
   void UnlockBuffer(void);
 
   /* Read a block of data from stream. */
-  void Read_t(void *pvBuffer, SLONG slSize); // throw char *
+  void Read_t(void *pvBuffer, size_t slSize); // throw char *
   /* Write a block of data to stream. */
-  void Write_t(const void *pvBuffer, SLONG slSize); // throw char *
+  void Write_t(const void *pvBuffer, size_t slSize); // throw char *
 
   /* Seek in stream. */
   void Seek_t(SLONG slOffset, enum SeekDir sd); // throw char *
