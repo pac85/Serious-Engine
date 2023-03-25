@@ -195,7 +195,7 @@ void CVirtualTreeCtrl::OnDropFiles(HDROP hDropInfo)
         DeleteAllItems();
         m_pBrowser->AddDirectoryRecursiv( &m_pBrowser->m_VirtualTree, TVI_ROOT);   // Fill CTreeCtrl using recursion
         SortChildren( NULL);
-        SelectItem( (HTREEITEM) pVTNSrc->vtn_Handle);
+        SelectItem((HTREEITEM)pVTNSrc->vtn_Handle);
         m_pBrowser->m_bVirtualTreeChanged = TRUE;
         m_pBrowser->OpenSelectedDirectory();
       }

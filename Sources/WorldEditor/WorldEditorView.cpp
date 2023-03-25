@@ -8066,7 +8066,7 @@ void CWorldEditorView::GetToolTipText( char *pToolTipText)
     // get description line for all properties with name
     pdecDLLClass = penEntity->GetClass()->ec_pdecDLLClass;
     pchrCursor += sprintf(pchrCursor, "Class: %-24.24s\n", pdecDLLClass->dec_strName);
-    INDEX ctLetters = strlen("Class: ")+strlen(pdecDLLClass->dec_strName);
+    size_t ctLetters = strlen("Class: ") + strlen(pdecDLLClass->dec_strName);
     memset(pchrCursor, '�', ctLetters);
     pchrCursor+=ctLetters;
     *pchrCursor = '\n';

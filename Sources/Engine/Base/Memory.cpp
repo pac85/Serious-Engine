@@ -107,16 +107,16 @@ void *_debug_AllocMemory(size_t memsize, int iType, const char *strFile, int iLi
 
 void *AllocMemoryAligned(size_t memsize, SLONG slAlignPow2)
 {
-  uintptr_t ulMem = (uintptr_t)AllocMemory(memsize + slAlignPow2 * 2);
-  uintptr_t ulMemAligned = ((ulMem + slAlignPow2 - 1) & ~(slAlignPow2 - 1)) + slAlignPow2;
-  ((uintptr_t *)ulMemAligned)[-1] = ulMem;
+  UINT_PTR ulMem = (UINT_PTR)AllocMemory(memsize + slAlignPow2 * 2);
+  UINT_PTR ulMemAligned = ((ulMem + slAlignPow2 - 1) & ~(slAlignPow2 - 1)) + slAlignPow2;
+  ((UINT_PTR *)ulMemAligned)[-1] = ulMem;
 
   return (void *)ulMemAligned;
 }
 
 void FreeMemoryAligned(void *memory)
 {
-  FreeMemory((void *)(((uintptr_t *)memory)[-1]));
+  FreeMemory((void *)(((UINT_PTR *)memory)[-1]));
 }
 
 void FreeMemory(void *memory )
@@ -155,7 +155,7 @@ void ShrinkMemory(void **ppv, size_t newSize)
  */
 char *StringDuplicate(const char *strOriginal) {
   // get the size
-  SLONG slSize = strlen(strOriginal)+1;
+  size_t slSize = strlen(strOriginal) + 1;
   // allocate that much memory
   char *strCopy = (char *)AllocMemory(slSize);
   // copy it there

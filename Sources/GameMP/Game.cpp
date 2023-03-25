@@ -2243,7 +2243,7 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
           if (!CAM_IsOn()) {
             _bPlayerViewRendered = TRUE;
             // render it
-            apenViewers[i]->RenderGameView(pdp, (void*)ulFlags);
+            apenViewers[i]->RenderGameView(pdp, &ulFlags);
           } else {
             CAM_Render(apenViewers[i], pdp);
           }

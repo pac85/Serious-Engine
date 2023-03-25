@@ -56,9 +56,8 @@ BOOL FloatFromString(HWND hWnd, float &fNumber, BOOL &bValid)
   
   bValid = TRUE;  
   float fTmpNumber = fNumber;
-  int iNumLen, iRetLen;
-  iNumLen = strlen( CStringA(szWindowText));
-  iRetLen = sscanf( CStringA(szWindowText), "%f", &fTmpNumber);
+  size_t iNumLen = strlen(CStringA(szWindowText));
+  int iRetLen = sscanf(CStringA(szWindowText), "%f", &fTmpNumber);
   if( (iRetLen == 1)  || ((iNumLen == 1) && (szWindowText[0] == '-') || (iNumLen == 0)) )
   {
     fNumber = fTmpNumber;

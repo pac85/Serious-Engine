@@ -402,7 +402,7 @@ static void WriteTranslationToken_t(CTStream &strm, CTString str)
 static void WriteTranslationString_t(CTStream &strm, CTString str)
 {
   const char *s = str;
-  INDEX iLen=strlen(s);
+  INDEX iLen = (INDEX)strlen(s);
   for (INDEX i=0; i<iLen; i++) {
     char c = s[i];
     switch(c) {

@@ -175,11 +175,11 @@ CSoundObject *CSoundObject::GetPredictionTail(ULONG ulTypeID, ULONG ulEventID)
       // it must not play the sound
       return NULL;
     }
-    SLONG slOffset = size_t(this) - size_t(so_penEntity);
+    size_t slOffset = size_t(this) - size_t(so_penEntity);
 
     ULONG ulCRC;
     CRC_Start(ulCRC);
-    CRC_AddLONG(ulCRC, slOffset);
+    CRC_AddLONGLONG(ulCRC, slOffset);
     CRC_AddLONG(ulCRC, ulTypeID);
     CRC_Finish(ulCRC);
 

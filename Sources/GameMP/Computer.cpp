@@ -649,7 +649,7 @@ void PrintMessageText(CDrawPort *pdp)
   CTString strSubject2;
   //strSubject.PrintF("%g", _fMsgAppearFade);
   const char *strSubject = _acmMessages[_iActiveMessage].cm_strSubject;
-  INDEX ctSubjectLen = strlen(strSubject);
+  INDEX ctSubjectLen = (INDEX)strlen(strSubject);
   INDEX ctToPrint = int(_fMsgAppearDelta*20.0f);
   for (INDEX iChar=0; iChar<ctSubjectLen; iChar++) {
     char strChar[2];

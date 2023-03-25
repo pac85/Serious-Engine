@@ -50,9 +50,8 @@ BOOL FloatFromString(HWND hWnd, float &fNumber)
 	::GetWindowTextA(hWnd, szWindowText, 19);
   
   float fTmpNumber = fNumber;
-  int iNumLen, iRetLen;
-  iNumLen = strlen( szWindowText);
-  iRetLen = sscanf( szWindowText, "%f", &fTmpNumber);
+  size_t iNumLen = strlen(szWindowText);
+  int iRetLen = sscanf(szWindowText, "%f", &fTmpNumber);
   if( (iRetLen == 1)  || ((iNumLen == 1) && (szWindowText[0] == '-') || (iNumLen == 0)) )
   {
     fNumber = fTmpNumber;

@@ -35,9 +35,6 @@ typedef unsigned int        UINT;
 
 // [Cecil] Platform-specific
 #if SE1_OLD_COMPILER
-  typedef INT_PTR intptr_t;
-  typedef UINT_PTR uintptr_t;
-
   typedef unsigned __int64 UQUAD;
   typedef   signed __int64 SQUAD;
 

@@ -164,7 +164,7 @@ void InitStreams(void)
 
   // for each group file in base directory
   struct _finddata_t c_file;
-  intptr_t hFile;
+  INT_PTR hFile;
   hFile = _findfirst(_fnmApplicationPath+"*.gro", &c_file);
   BOOL bOK = (hFile!=-1);
   while(bOK) {
@@ -180,7 +180,7 @@ void InitStreams(void)
   if (_fnmMod!="") {
     // for each group file in mod directory
     struct _finddata_t c_file;
-    intptr_t hFile;
+    INT_PTR hFile;
     hFile = _findfirst(_fnmApplicationPath+_fnmMod+"*.gro", &c_file);
     BOOL bOK = (hFile!=-1);
     while(bOK) {
@@ -197,7 +197,7 @@ void InitStreams(void)
   if (_fnmCDPath!="") {
     // for each group file on the CD
     struct _finddata_t c_file;
-    intptr_t hFile;
+    INT_PTR hFile;
     hFile = _findfirst(_fnmCDPath+"*.gro", &c_file);
     BOOL bOK = (hFile!=-1);
     while(bOK) {
@@ -213,7 +213,7 @@ void InitStreams(void)
     if (_fnmMod!="") {
       // for each group file in mod directory
       struct _finddata_t c_file;
-      intptr_t hFile;
+      INT_PTR hFile;
       hFile = _findfirst(_fnmCDPath+_fnmMod+"*.gro", &c_file);
       BOOL bOK = (hFile!=-1);
       while(bOK) {
@@ -443,7 +443,7 @@ void CTStream::PutLine_t(const char *strBuffer) // throws char *
   // check that the stream is writteable
   ASSERT(IsWriteable());
   // get string length
-  INDEX iStringLength = strlen(strBuffer);
+  size_t iStringLength = strlen(strBuffer);
   // put line into stream
   Write_t(strBuffer, iStringLength);
   // write "\r\n" into stream
@@ -457,7 +457,7 @@ void CTStream::PutString_t(const char *strString) // throw char *
   // check that the stream is writteable
   ASSERT(IsWriteable());
   // get string length
-  INDEX iStringLength = strlen(strString);
+  INDEX iStringLength = (INDEX)strlen(strString);
   // put line into stream
   for( INDEX iLetter=0; iLetter<iStringLength; iLetter++)
   {

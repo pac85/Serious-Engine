@@ -220,13 +220,13 @@ BOOL CDrawPort::IsWideScreen(void)
 ULONG CDrawPort::GetID(void)
 {
   ULONG ulCRC;
-  CRC_Start(   ulCRC);
-  CRC_AddLONG( ulCRC, (ULONG)dp_Raster);
-  CRC_AddLONG( ulCRC, (ULONG)dp_MinI);
-  CRC_AddLONG( ulCRC, (ULONG)dp_MinJ);
-  CRC_AddLONG( ulCRC, (ULONG)dp_MaxI);
-  CRC_AddLONG( ulCRC, (ULONG)dp_MaxJ);
-  CRC_Finish(  ulCRC);
+  CRC_Start(ulCRC);
+  CRC_AddLONG(ulCRC, PointerToID(dp_Raster));
+  CRC_AddLONG(ulCRC, (ULONG)dp_MinI);
+  CRC_AddLONG(ulCRC, (ULONG)dp_MinJ);
+  CRC_AddLONG(ulCRC, (ULONG)dp_MaxI);
+  CRC_AddLONG(ulCRC, (ULONG)dp_MaxJ);
+  CRC_Finish(ulCRC);
   return ulCRC;
 }
 

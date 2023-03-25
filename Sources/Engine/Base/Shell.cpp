@@ -234,8 +234,8 @@ static void MemoryInfo(void)
   _HEAPINFO hinfo;
   int heapstatus;
   hinfo._pentry = NULL;
-  SLONG slTotalUsed = 0;
-  SLONG slTotalFree = 0;
+  size_t slTotalUsed = 0;
+  size_t slTotalFree = 0;
   INDEX ctUsed = 0;
   INDEX ctFree = 0;
 
@@ -257,8 +257,8 @@ static void MemoryInfo(void)
     case _HEAPBADBEGIN:  CPrintF( "ERROR - bad start of heap\n" );    break;
     case _HEAPBADNODE:   CPrintF( "ERROR - bad node in heap\n" );     break;
   }
-  CPrintF( "Total used: %d bytes (%.2f MB) in %d blocks\n", slTotalUsed, slTotalUsed/1024.0f/1024.0f, ctUsed);
-  CPrintF( "Total free: %d bytes (%.2f MB) in %d blocks\n", slTotalFree, slTotalFree/1024.0f/1024.0f, ctFree);
+  CPrintF("Total used: %u bytes (%.2f MB) in %d blocks\n", slTotalUsed, slTotalUsed / 1024.0f / 1024.0f, ctUsed);
+  CPrintF("Total free: %u bytes (%.2f MB) in %d blocks\n", slTotalFree, slTotalFree / 1024.0f / 1024.0f, ctFree);
 }
 
 // get help for a shell symbol

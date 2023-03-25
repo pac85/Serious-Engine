@@ -1127,7 +1127,7 @@ void CPropertyComboBar::ArrangeControls()
                   iAddedAs = m_EditEnumComboBox.AddString( L"Unnamed");
                 }
                 // set entity ptr as item's data
-                m_EditEnumComboBox.SetItemData( iAddedAs, (ULONG) &*iten);
+                m_EditEnumComboBox.SetItemData(iAddedAs, (UINT_PTR)&*iten);
               }
             }}
 

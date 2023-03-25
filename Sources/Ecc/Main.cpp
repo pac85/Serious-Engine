@@ -162,14 +162,14 @@ void ReplaceFileRL(const char *strOld, const char *strNew)
     bComment = 0;
 
     // read one line from file
-    int iRead = fread(strNewBuff,1,READSIZE,pfNew);
+    size_t iRead = fread(strNewBuff,1,READSIZE,pfNew);
     char *chLineEnd = strchr(strNewBuff,13);
     if(chLineEnd) *(chLineEnd+2) = 0;
     // get line length
-    int ctch = strlen(strNewBuff);
-    int iSeek = -iRead+ctch;
+    size_t ctch = strlen(strNewBuff);
+    size_t iSeek = ctch - iRead;
     // seek file for extra characters read
-    if(iSeek!=0) fseek(pfNew,iSeek ,SEEK_CUR);
+    if(iSeek!=0) fseek(pfNew, (long)iSeek, SEEK_CUR);
     if(strncmp(strNewBuff,"#line",5)==0)
     {
       continue;

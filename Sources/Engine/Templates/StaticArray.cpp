@@ -153,7 +153,7 @@ template<class Type>
 INDEX CStaticArray<Type>::Index(Type *ptMember) {
   ASSERT(this != NULL);
   ASSERT(sa_Count > 0);
-  ASSERT(uintptr_t(ptMember) >= uintptr_t(sa_Array)); // Error if behind the array pointer
+  ASSERT(UINT_PTR(ptMember) >= UINT_PTR(sa_Array)); // Error if behind the array pointer
 
   // Find the element
   for (ULONG i = 0; i < sa_Count; i++)

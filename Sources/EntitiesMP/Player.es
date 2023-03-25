@@ -2661,7 +2661,7 @@ functions:
 
   void RenderGameView(CDrawPort *pdp, void *pvUserData)
   {
-    BOOL bShowExtras = (ULONG(pvUserData)&GRV_SHOWEXTRAS);
+    BOOL bShowExtras = (*(ULONG *)pvUserData) & GRV_SHOWEXTRAS;
     pdp->Unlock();
 
     // if not yet initialized

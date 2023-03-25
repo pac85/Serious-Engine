@@ -168,22 +168,22 @@ void CListHead::Sort(int (*pCompare)(const void *p0, const void *p1), size_t iNo
   }
 
   // create array of that much integers (the array will hold pointers to the list)
-  uintptr_t *aulPointers = new uintptr_t[ctCount];
+  UINT_PTR *aulPointers = new UINT_PTR[ctCount];
   // fill it
   INDEX i=0;
   for ( CListIter<int, 0> iter(*this); !iter.IsPastEnd(); iter.MoveToNext() ) {
-    aulPointers[i] = ((uintptr_t)&*iter)-iNodeOffset;
+    aulPointers[i] = ((UINT_PTR)&*iter)-iNodeOffset;
     i++;
   }
 
   // sort it
-  qsort(aulPointers, ctCount, sizeof(uintptr_t), pCompare);
+  qsort(aulPointers, ctCount, sizeof(UINT_PTR), pCompare);
 
   // make temporary list
   CListHead lhTmp;
   // for each pointer
   {for(INDEX i=0; i<ctCount; i++) {
-    uintptr_t ul = aulPointers[i];
+    UINT_PTR ul = aulPointers[i];
     // get the node
     CListNode *pln = (CListNode*)(ul+iNodeOffset);
     // remove it from original list

@@ -162,11 +162,11 @@ void CBrowser::AddDirectoryRecursiv(CVirtualTreeNode *pOneDirectory, HTREEITEM h
   InsertedDir = m_TreeCtrl.InsertItem( 0, L"", 0, 0, TVIS_SELECTED, TVIF_STATE, 0,
                                        hParent, TVI_SORT );
 
-  pOneDirectory->vtn_Handle = (ULONG) InsertedDir;
-  m_TreeCtrl.SetItemData( InsertedDir, (ULONG)(pOneDirectory));
-  m_TreeCtrl.SetItemText( InsertedDir, CString(pOneDirectory->vtn_strName));
-  m_TreeCtrl.SetItemImage( InsertedDir, pOneDirectory->vtn_itIconType,
-                           pOneDirectory->vtn_itIconType + NO_OF_ICONS);
+  pOneDirectory->vtn_Handle = (UINT_PTR)InsertedDir;
+  m_TreeCtrl.SetItemData(InsertedDir, (UINT_PTR)pOneDirectory);
+  m_TreeCtrl.SetItemText(InsertedDir, CString(pOneDirectory->vtn_strName));
+  m_TreeCtrl.SetItemImage(InsertedDir, pOneDirectory->vtn_itIconType,
+                          pOneDirectory->vtn_itIconType + NO_OF_ICONS);
 
   // Now add this directory's subdirectories recursively
   FOREACHINLIST( CVirtualTreeNode, vtn_lnInDirectory, pOneDirectory->vtn_lhChildren, it)
@@ -219,7 +219,7 @@ void CBrowser::OnCreateDirectory()
     AddDirectoryRecursiv( &m_VirtualTree, TVI_ROOT);   // Fill CTreeCtrl using recursion
     m_TreeCtrl.SortChildren( NULL);
     // Now select it
-    m_TreeCtrl.SelectItem( (HTREEITEM) pvtnCurrent->vtn_Handle);
+    m_TreeCtrl.SelectItem((HTREEITEM)pvtnCurrent->vtn_Handle);
     OpenSelectedDirectory();
   }
   m_TreeCtrl.SetFocus();
@@ -232,7 +232,7 @@ void CBrowser::OnUpdateVirtualTreeControl(void)
   AddDirectoryRecursiv( &m_VirtualTree, TVI_ROOT);
   m_TreeCtrl.SortChildren( NULL);
   // Now select it
-  m_TreeCtrl.SelectItem( (HTREEITEM) m_VirtualTree.vtn_Handle);
+  m_TreeCtrl.SelectItem((HTREEITEM)m_VirtualTree.vtn_Handle);
   OpenSelectedDirectory();
   m_TreeCtrl.SetFocus();
 }
@@ -285,7 +285,7 @@ void CBrowser::DeleteDirectory(void)
   {
     AddDirectoryRecursiv( &m_VirtualTree, TVI_ROOT);   // Fill CTreeCtrl using recursion
     m_TreeCtrl.SortChildren( NULL);
-    HTREEITEM NewActiveDir = (HTREEITEM) pvtnParent->vtn_Handle;
+    HTREEITEM NewActiveDir = (HTREEITEM)pvtnParent->vtn_Handle;
     
     if( m_TreeCtrl.ItemHasChildren(NewActiveDir) )
     {
@@ -333,7 +333,7 @@ void CBrowser::SelectItemDirectory( CTFileName fnItemFileName)
   {
     CloseSelectedDirectory();
     // Now select it
-    m_TreeCtrl.SelectItem( (HTREEITEM) pvtnItemDirectory->vtn_Handle);
+    m_TreeCtrl.SelectItem((HTREEITEM)pvtnItemDirectory->vtn_Handle);
     OpenSelectedDirectory();
   }
 }

@@ -223,7 +223,7 @@ void _sendPacketTo(const char* pubBuffer, INDEX iLen, sockaddr_in* sin)
 }
 void _sendPacketTo(const char* szBuffer, sockaddr_in* addsin)
 {
-  sendto(_socket, szBuffer, strlen(szBuffer), 0, (sockaddr*)addsin, sizeof(sockaddr_in));
+  sendto(_socket, szBuffer, (int)strlen(szBuffer), 0, (sockaddr *)addsin, sizeof(sockaddr_in));
 }
 
 void _sendPacket(const char* pubBuffer, INDEX iLen)

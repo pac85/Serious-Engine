@@ -964,7 +964,7 @@ void CEditModel::LoadFromScript_t(CTFileName &fnScriptName) // throw char *
   bLoadInitialMapping = FALSE;
 
   // to hold number of line's chars
-  int iLineChars;
+  size_t iLineChars;
 	FOREVER
 	{
 		do
@@ -2075,7 +2075,7 @@ void CEditModel::PrintSurfaceNumbers( CDrawPort *pDP, CFontData *pFont,
     // set font
     pDP->SetFont( pFont);
     // print line
-    pDP->PutText( achrLine, pixCenter(1)-strlen(achrLine)*4, pixCenter(2)-6);
+    pDP->PutText(achrLine, pixCenter(1) - (PIX)strlen(achrLine) * 4, pixCenter(2) - 6);
   }
 }
 
