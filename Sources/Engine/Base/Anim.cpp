@@ -154,7 +154,7 @@ void CAnimData::Clear()
 SLONG CAnimData::GetUsedMemory(void)
 {
   SLONG slUsed = sizeof(*this)+sizeof(COneAnim)*ad_NumberOfAnims;
-  slUsed += strlen(GetName())+1;
+  slUsed += GetName().Length() + 1;
 
   for(INDEX iAnim=0; iAnim<ad_NumberOfAnims; iAnim++) {
     slUsed += ad_Anims[iAnim].oa_NumberOfFrames*sizeof(INDEX);
@@ -188,7 +188,7 @@ void CAnimData::RemReference_internal(void) {
 void CAnimData::CreateAnimations( INDEX ctAnimations, CTString strName/*="None"*/,
                                   INDEX iDefaultFrame/*=0*/, TIME tmSpeed/*=0.02f*/)
 {
-  ASSERT(strlen(strName)<NAME_SIZE);
+  ASSERT(strName.Length() < NAME_SIZE);
   // clear existing animations
   Clear();
   // set new number of anims
@@ -514,7 +514,7 @@ void CAnimData::AddAnimation(void)
 
 // replaces requested animation's name with given one
 void CAnimData::SetName( INDEX iAnimation, CTString strNewName){
-  ASSERT(strlen(strNewName)<NAME_SIZE);
+  ASSERT(strNewName.Length() < NAME_SIZE);
   strcpy( ad_Anims[iAnimation].oa_Name, strNewName);};
 // replaces requested animation's speed with given one
 void CAnimData::SetSpeed( INDEX iAnimation, TIME tmSpeed){

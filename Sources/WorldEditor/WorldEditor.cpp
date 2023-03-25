@@ -475,7 +475,7 @@ static CTString GetNextParam(void)
   } else {
     // find first next space
     INDEX iSpace;
-    INDEX ctChars = strlen(_strCmd);
+    INDEX ctChars = _strCmd.Length();
     for(iSpace=0; iSpace<ctChars; iSpace++) {
       if (isspace(_strCmd[iSpace])) {
         break;
@@ -500,7 +500,7 @@ void CWorldEditorApp::MyParseCommandLine(void)
   cmd_strOutput = "";
   cmd_strOutput+=CTString(0, TRANS("Command line: '%s'\n"), _strCmd);
   // if no command line
-  if (strlen(_strCmd) == 0) {
+  if (_strCmd.Length() == 0) {
     // do nothing
     return;
   }
@@ -2594,7 +2594,7 @@ INDEX CWorldEditorApp::Insert3DObjects(CWorldEditorDoc *pDoc)
   {
     CTString &str=*itfn;
     CTString strName=itfn->FileName();
-    if( ((char *)(const char *)strName)[strlen(strName)-1] == 'E')
+    if (strName[strName.Length() - 1] == 'E')
     {
       // join layers
       Add3DObject(pDoc, pwb, *itfn, FALSE);

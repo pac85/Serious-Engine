@@ -24,7 +24,7 @@ static void ParseKeyName(const CTString &strKey, HKEY &hKeyRoot, CTString &strKe
   // separate key into the value part and path
   strKeyName = CTFileName(strRemain).FileName();
   strRemain = CTFileName(strRemain).FileDir();
-  strRemain.TrimRight(strlen(strRemain)-1); // removes trailing backslash
+  strRemain.TrimRight(strRemain.Length() - 1); // removes trailing backslash
   // try to find root key value
 
   if (strRemain.RemovePrefix("HKEY_CLASSES_ROOT\\")) {
@@ -119,7 +119,7 @@ ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString)
   }
 
   // set the value
-  lRes = RegSetValueExA(hkey, strKeyName, 0, REG_SZ, (const UBYTE*)(const char*)strString, strlen(strString));
+  lRes = RegSetValueExA(hkey, strKeyName, 0, REG_SZ, (const UBYTE *)strString.str_String, strString.Length());
 
   // close the key
   RegCloseKey(hkey);

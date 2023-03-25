@@ -3002,7 +3002,7 @@ functions:
       if( eapi.iIronBalls != 0)     { strMessage.PrintF("%s %d %s,", strMessage, eapi.iIronBalls, TRANS("Cannonballs")); iAmmoTypes++; }
       if( eapi.iSniperBullets != 0) { strMessage.PrintF("%s %d %s,", strMessage, eapi.iSniperBullets, TRANS("Sniper bullets")); iAmmoTypes++; }
 
-      INDEX iLen = strlen(strMessage);
+      INDEX iLen = strMessage.Length();
       if( iLen>0 && strMessage[iLen-1]==',')
       {
         strMessage.DeleteChar(iLen-1);

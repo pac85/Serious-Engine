@@ -517,7 +517,7 @@ void CTStream::ExpectID_t(const CChunkID &cidExpected) // throws char *
 void CTStream::ExpectKeyword_t(const CTString &strKeyword) // throw char *
 {
   // check that the keyword is present
-  for(INDEX iKeywordChar=0; iKeywordChar<(INDEX)strlen(strKeyword); iKeywordChar++) {
+  for (INDEX iKeywordChar = 0; iKeywordChar < strKeyword.Length(); iKeywordChar++) {
     SBYTE chKeywordChar;
     (*this)>>chKeywordChar;
     if (chKeywordChar!=strKeyword[iKeywordChar]) {
@@ -900,7 +900,7 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
   }
 
   // check parameters
-  ASSERT(strlen(fnFileName)>0);
+  ASSERT(fnFileName.Length() > 0);
   // check that the file is not open
   ASSERT(fstrm_pFile==NULL && fstrm_iZipHandle==-1);
 
@@ -972,7 +972,7 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   INDEX iFile = ExpandFilePath(EFP_WRITE, fnFileNameAbsolute, fnmFullFileName);
 
   // check parameters
-  ASSERT(strlen(fnFileNameAbsolute)>0);
+  ASSERT(fnFileNameAbsolute.Length() > 0);
   // check that the file is not open
   ASSERT(fstrm_pFile == NULL);
 

@@ -1930,7 +1930,7 @@ functions:
   void GetGameAgentPlayerInfo( INDEX iPlayer, CTString &strOut) 
   {
     CTString strPlayerName = GetPlayerName();
-    INDEX iLen = strlen(strPlayerName);
+    INDEX iLen = strPlayerName.Length();
     for(INDEX i=0; i<iLen; i++) {
       if(strPlayerName[i] == '\r' || strPlayerName[i] == '\n') {
         // newline in name!

@@ -174,7 +174,7 @@ PIX CMGButton::GetCharOffset(CDrawPort *pdp, INDEX iCharNo)
 		return (pdp->dp_FontData->fd_pixCharWidth + pdp->dp_pixTextCharSpacing)*(iCharNo - 0.5f);
 	}
 	CTString strCut(mg_strText);
-	strCut.TrimLeft(strlen(mg_strText) - iCharNo);
+	strCut.TrimLeft(mg_strText.Length() - iCharNo);
 	PIX pixFullWidth = pdp->GetTextWidth(mg_strText);
 	PIX pixCutWidth = pdp->GetTextWidth(strCut);
 	// !!!! not implemented for different centering

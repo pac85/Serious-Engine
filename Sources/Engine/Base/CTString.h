@@ -52,7 +52,7 @@ public:
   BOOL IsValid(void) const;
 
   // return length of the string
-  inline INDEX Length(void) const { return strlen(str_String); };
+  inline INDEX Length(void) const { return (INDEX)strlen(str_String); };
   INDEX LengthNaked(void) const;
 
   // strip decorations from the string

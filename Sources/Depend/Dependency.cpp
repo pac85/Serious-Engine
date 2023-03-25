@@ -152,7 +152,7 @@ void CDependencyList::ExtractDependencies()
           pchrDependentFile = pFileInMemory + charCt + 4;
           // create full file name
           CTFileName fnTestName = CTString(pchrDependentFile);
-          if( strlen(fnTestName) > 254) {
+          if (fnTestName.Length() > 254) {
             continue;
           }
           // if found file name does not yet exists in dependacy list
@@ -203,7 +203,7 @@ void CDependencyList::ExtractDependencies()
           }
           *chrDst = 0;
           CTFileName fnTestName = CTString(chrFileName);
-          if( strlen(fnTestName) > 254) {
+          if (fnTestName.Length() > 254) {
             continue;
           }
           // if found file name does not yet exists in dependacy list
@@ -475,7 +475,7 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
         }
         *chrDst = 0;
         CTString str = CTString(chrString);
-        if( strlen(str) > 254) {
+        if (str.Length() > 254) {
           continue;
         }
         // add it
@@ -569,7 +569,7 @@ static void MakeDirectory_t(const CTFileName &fnm)
   }
   // remove trailing backslash
   CTFileName fnmDir = fnm;
-  ((char *)(const char*)fnmDir)[strlen(fnmDir)-1] = 0;
+  fnmDir.str_String[fnmDir.Length() - 1] = '\0';
   // get the path part
   CTFileName fnmDirPath = fnmDir.FileDir();
   // if there is a path part

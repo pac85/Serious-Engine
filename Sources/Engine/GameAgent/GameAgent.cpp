@@ -380,7 +380,7 @@ extern void GameAgent_ServerUpdate(void)
             plt.plt_penPlayerEntity->GetGameAgentPlayerInfo(plb.plb_Index, strPlayer);
 
             // if we don't have enough space left for the next player
-            if(strlen(strPacket) + strlen(strPlayer) > 2048) {
+            if (strPacket.Length() + strPlayer.Length() > 2048) {
               // send the packet
               _sendPacketTo(strPacket, &_sinFrom);
               strPacket = "";
@@ -447,7 +447,7 @@ extern void GameAgent_ServerUpdate(void)
               plt.plt_penPlayerEntity->GetMSLegacyPlayerInf(plb.plb_Index, strPlayer);
 
               // if we don't have enough space left for the next player
-              if(strlen(strPacket) + strlen(strPlayer) > 2048) {
+              if (strPacket.Length() + strPlayer.Length() > 2048) {
                 // send the packet
                 _sendPacketTo(strPacket, &_sinFrom);
                 strPacket = "";
@@ -499,7 +499,7 @@ extern void GameAgent_ServerUpdate(void)
             plt.plt_penPlayerEntity->GetMSLegacyPlayerInf(plb.plb_Index, strPlayer);
 
             // if we don't have enough space left for the next player
-            if(strlen(strPacket) + strlen(strPlayer) > 2048) {
+            if (strPacket.Length() + strPlayer.Length() > 2048) {
               // send the packet
               _sendPacketTo(strPacket, &_sinFrom);
               strPacket = "";
@@ -923,9 +923,9 @@ extern void GameAgent_EnumUpdate(void)
           default:
             // read into the value or into the key, depending where we are
             if(bReadValue) {
-              strValue.InsertChar(strlen(strValue), *pszPacket);
+              strValue.InsertChar(strValue.Length(), *pszPacket);
             } else {
-              strKey.InsertChar(strlen(strKey), *pszPacket);
+              strKey.InsertChar(strKey.Length(), *pszPacket);
             }
             break;
           }
@@ -1140,9 +1140,9 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
                 default:
                     // read into the value or into the key, depending where we are
                     if(bReadValue) {
-                        strValue.InsertChar(strlen(strValue), *pszPacket);
+                        strValue.InsertChar(strValue.Length(), *pszPacket);
                     } else {
-                        strKey.InsertChar(strlen(strKey), *pszPacket);
+                        strKey.InsertChar(strKey.Length(), *pszPacket);
                     }
                     break;
                   }
@@ -1348,9 +1348,9 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
                 default:
                     // read into the value or into the key, depending where we are
                     if(bReadValue) {
-                        strValue.InsertChar(strlen(strValue), *pszPacket);
+                        strValue.InsertChar(strValue.Length(), *pszPacket);
                     } else {
-                        strKey.InsertChar(strlen(strKey), *pszPacket);
+                        strKey.InsertChar(strKey.Length(), *pszPacket);
                     }
                     break;
                   }

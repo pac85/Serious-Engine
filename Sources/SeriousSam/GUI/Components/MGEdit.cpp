@@ -47,7 +47,7 @@ void CMGEdit::OnActivate(void)
   PlayMenuSound(_psdPress);
   IFeel_PlayEffect("Menu_press");
   SetText(mg_strText);
-  mg_iCursorPos = strlen(mg_strText);
+  mg_iCursorPos = mg_strText.Length();
   mg_bEditing = TRUE;
   _bEditingString = TRUE;
 }
@@ -69,7 +69,7 @@ void CMGEdit::OnKillFocus(void)
 static void Key_BackDel(CTString &str, INDEX &iPos, BOOL bShift, BOOL bRight)
 {
   // do nothing if string is empty
-  INDEX ctChars = strlen(str);
+  INDEX ctChars = str.Length();
   if (ctChars == 0) return;
   if (bRight && iPos<ctChars) {  // DELETE key
     if (bShift) {
@@ -108,10 +108,10 @@ BOOL CMGEdit::OnKeyDown(int iVKey)
   case VK_UP: case VK_DOWN:
   case VK_RETURN:  case VK_LBUTTON: *mg_pstrToChange = mg_strText;  Clear(); OnStringChanged();  break;
   case VK_ESCAPE:  case VK_RBUTTON:  mg_strText = *mg_pstrToChange; Clear(); OnStringCanceled(); break;
-  case VK_LEFT:    if (mg_iCursorPos > 0)                  mg_iCursorPos--;  break;
-  case VK_RIGHT:   if (mg_iCursorPos < strlen(mg_strText)) mg_iCursorPos++;  break;
+  case VK_LEFT:    if (mg_iCursorPos > 0)                   mg_iCursorPos--; break;
+  case VK_RIGHT:   if (mg_iCursorPos < mg_strText.Length()) mg_iCursorPos++; break;
   case VK_HOME:    mg_iCursorPos = 0;                   break;
-  case VK_END:     mg_iCursorPos = strlen(mg_strText);  break;
+  case VK_END:     mg_iCursorPos = mg_strText.Length(); break;
   case VK_BACK:    Key_BackDel(mg_strText, mg_iCursorPos, bShift, FALSE);  break;
   case VK_DELETE:  Key_BackDel(mg_strText, mg_iCursorPos, bShift, TRUE);   break;
   default:  break; // ignore all other special keys

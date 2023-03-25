@@ -1175,7 +1175,7 @@ ULONG CDrawPort::GetTextWidth( const CTString &strText) const
   PIX pixStringWidth=0, pixOldWidth=0;
   PIX pixCharStart=0, pixCharEnd=pixCellWidth;
   INDEX ctCharsPrinted=0;
-  for( INDEX i=0; i<(INDEX)strlen(strText); i++)
+  for (INDEX i = 0; i < strText.Length(); i++)
   { // get current letter
     unsigned char chrCurrent = strText[i];
     // next line situation?
@@ -1257,7 +1257,7 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
   // calculate and apply correction factor
   FLOAT fCorrectionU = 1.0f / td.GetPixWidth();
   FLOAT fCorrectionV = 1.0f / td.GetPixHeight();
-  INDEX ctMaxChars = (INDEX)strlen(strText);
+  INDEX ctMaxChars = strText.Length();
   // determine text color
   GFXColor glcolDefault( AdjustColor( colBlend, _slTexHueShift, _slTexSaturation));
   GFXColor glcol = glcolDefault;

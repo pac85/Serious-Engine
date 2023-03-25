@@ -62,7 +62,7 @@ void SubMain( int argc, char *argv[])
   // get application path from cmd line
   _fnmApplicationPath = CTString(ACHR_APP_DIR);
   // if not ending with backslash
-  if (_fnmApplicationPath[strlen(_fnmApplicationPath)-1]!='\\') {
+  if (_fnmApplicationPath[_fnmApplicationPath.Length() - 1] != '\\') {
     _fnmApplicationPath += "\\";
   }
 

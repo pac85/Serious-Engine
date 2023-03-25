@@ -90,9 +90,9 @@ void CDlgCreateAnimatedTexture::RefreshTexture(void)
     CTFileStream fileScript;
     fileScript.Create_t( fnTempScript);
     CTString strEditScript = CStringA(m_strEditScript);
-    char *pScript = (char *) AllocMemory( strlen(strEditScript)+1);
+    char *pScript = (char *) AllocMemory(strEditScript.Length() + 1);
     strcpy( pScript, strEditScript);
-    fileScript.WriteRawChunk_t( pScript, strlen(strEditScript)+1);
+    fileScript.WriteRawChunk_t(pScript, strEditScript.Length() + 1);
     fileScript.Close();
     FreeMemory( pScript);
   

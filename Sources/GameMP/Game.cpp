@@ -2722,7 +2722,7 @@ void CGame::GameMainLoop(void)
       // create a file for profile
       CTFileStream strmProfile;
       strmProfile.Create_t(CTString("Game.profile"));
-      strmProfile.Write_t(_strProfile, strlen(_strProfile));
+      strmProfile.Write_t(_strProfile, _strProfile.Length());
     } catch (char *strError) {
       CPutString(strError);
     }

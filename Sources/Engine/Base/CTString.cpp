@@ -89,7 +89,7 @@ CTString &CTString::operator+=(const CTString &strSecond)
 {
   ASSERT(IsValid() && strSecond.IsValid());
 
-  GrowMemory( (void **)&str_String, strlen( str_String) + strlen( strSecond) + 1 );
+  GrowMemory((void **)&str_String, Length() + strSecond.Length() + 1);
   strcat(str_String, strSecond.str_String);
   return *this;
 }
@@ -99,8 +99,8 @@ CTString &CTString::operator+=(const CTString &strSecond)
  */
 BOOL CTString::RemovePrefix( const CTString &strPrefix)
 {
-  INDEX lenPrefix = strlen( strPrefix);
-  INDEX lenDest = strlen( str_String) - lenPrefix;
+  INDEX lenPrefix = strPrefix.Length();
+  INDEX lenDest = Length() - lenPrefix;
 
   if( strnicmp( str_String, strPrefix, lenPrefix) != 0)
     return FALSE;
@@ -112,7 +112,7 @@ BOOL CTString::RemovePrefix( const CTString &strPrefix)
 /* Check if has given prefix */
 BOOL CTString::HasPrefix( const CTString &strPrefix) const
 {
-  INDEX lenPrefix = strlen( strPrefix);
+  INDEX lenPrefix = strPrefix.Length();
   if( strnicmp( str_String, strPrefix, lenPrefix) != 0)
     return FALSE;
   return TRUE;
@@ -158,7 +158,7 @@ INDEX CTString::TrimLeft( INDEX ctCharacters)
   // clamp negative values
   if( ctCharacters<0) ctCharacters = 0;
   // find how much characters to remove
-  INDEX lenOriginal = strlen(str_String);
+  INDEX lenOriginal = Length();
   INDEX lenPrefix = lenOriginal-ctCharacters;
   // if nothing needs to be removed
   if( lenPrefix<=0) return 0;
@@ -174,7 +174,7 @@ INDEX CTString::TrimRight( INDEX ctCharacters)
   // clamp negative values
   if( ctCharacters<0) ctCharacters = 0;
   // find how much characters to remove
-  INDEX lenOriginal = strlen(str_String);
+  INDEX lenOriginal = Length();
   INDEX lenPrefix = lenOriginal-ctCharacters;
   // if nothing needs to be removed
   if( lenPrefix<=0) return 0;
@@ -250,7 +250,7 @@ INDEX CTString::TrimSpacesLeft(void)
     }
   }
   // trim to that character
-  return TrimLeft(str_String+strlen(str_String) - chr);
+  return TrimLeft(str_String + Length() - chr);
 }
 
 /* Trim the string from from spaces from right. */
@@ -258,7 +258,7 @@ INDEX CTString::TrimSpacesRight(void)
 {
   // for each character in string reversed
   const char *chr;
-  for(chr = str_String+strlen(str_String)-1; chr>str_String; chr--) {
+  for (chr = str_String + Length() - 1; chr > str_String; chr--) {
     // if the character is not space 
     if (!IsSpace(*chr)) {
       // stop searching
@@ -289,7 +289,7 @@ void CTString::OnlyFirstLine(void)
 ULONG CTString::GetHash(void) const
 {
   ULONG ulKey = 0;
-  INDEX len = strlen(str_String);
+  INDEX len = Length();
 
   for(INDEX i=0; i<len; i++) {
     ulKey = _rotl(ulKey,4)+toupper(str_String[i]);
@@ -356,7 +356,7 @@ CTStream &operator<<(CTStream &strmStream, const CTString &strString)
   ASSERT(strString.IsValid());
 
   // calculate size
-  INDEX iStringLen = strlen( strString);
+  INDEX iStringLen = strString.Length();
   // write size
   strmStream<<iStringLen;
   // if the string is not empty
@@ -461,8 +461,8 @@ void CTString::SaveKeepCRLF_t(const class CTFileName &fnmFile)  // throw char *
   CTFileStream strmFile;
   strmFile.Create_t(fnmFile);
   // save the string to the file
-  if (strlen(str_String)>0) {
-    strmFile.Write_t(str_String, strlen(str_String));
+  if (Length() > 0) {
+    strmFile.Write_t(str_String, Length());
   }
 }
 
@@ -565,7 +565,7 @@ void CTString::Split( INDEX iPos, CTString &str1, CTString &str2)
   str1 = str_String;
   str2 = str_String;
   str1.TrimRight(iPos);
-  str2.TrimLeft(strlen(str2)-iPos);
+  str2.TrimLeft(str2.Length() - iPos);
 }
 
 
@@ -573,7 +573,7 @@ void CTString::Split( INDEX iPos, CTString &str1, CTString &str2)
 void CTString::InsertChar( INDEX iPos, char cChr)
 {
   // clamp position
-  INDEX ctChars = strlen(str_String);
+  INDEX ctChars = Length();
   if( iPos>ctChars) iPos=ctChars;
   else if( iPos<0)  iPos=0;
   // grow memory used by string
@@ -588,7 +588,7 @@ void CTString::InsertChar( INDEX iPos, char cChr)
 void CTString::DeleteChar( INDEX iPos)
 {
   // clamp position
-  INDEX ctChars = strlen(str_String);
+  INDEX ctChars = Length();
   if (ctChars==0) {
     return;
   }

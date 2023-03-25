@@ -482,7 +482,7 @@ HGLOBAL CreateHDrop( const CTFileName &fnToDrag, BOOL bAddAppPath/*=TRUE*/)
 
   HGLOBAL hGlobal;
 	// allocate space for DROPFILE structure plus the number of file and one extra byte for final NULL terminator
-	hGlobal = GlobalAlloc(GHND|GMEM_SHARE,(DWORD) (sizeof(DROPFILES)+strlen(fnFullToDrag)+2));
+	hGlobal = GlobalAlloc(GHND | GMEM_SHARE, DWORD(sizeof(DROPFILES) + fnFullToDrag.Length() + 2));
 	if(hGlobal == NULL)
 			return hGlobal;
 
