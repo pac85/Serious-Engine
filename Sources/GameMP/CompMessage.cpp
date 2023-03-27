@@ -90,9 +90,9 @@ void CCompMessage::Format(INDEX ctCharsPerLine)
   cm_ctFormattedWidth = ctCharsPerLine;
 
   // get text
-  const char *strText = cm_strText;
+  const char *strText = cm_strText.ConstData();
   if (strncmp(strText, "$STAT", 5)==0) {
-    strText = _strStatsDetails;
+    strText = _strStatsDetails.ConstData();
     cm_strFormattedText = strText;
     cm_ctFormattedLines = 1;
     for (INDEX i=0; i<cm_strFormattedText.Length(); i++) {
@@ -207,7 +207,7 @@ void CCompMessage::MarkRead(void)
 // get one formatted line
 CTString CCompMessage::GetLine(INDEX iLine)
 {
-  const char *strText = cm_strFormattedText;
+  const char *strText = cm_strFormattedText.ConstData();
   // find first line
   INDEX i = 0; 
   while (i<iLine) {
@@ -221,7 +221,7 @@ CTString CCompMessage::GetLine(INDEX iLine)
   }
   // find end of line
   CTString strLine = strText;
-  char *pchEndOfLine = (char*)strchr(strLine, '\n');
+  char *pchEndOfLine = (char *)strchr(strLine.ConstData(), '\n');
   // if found
   if (pchEndOfLine!=NULL) {
     // cut there

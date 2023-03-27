@@ -297,10 +297,10 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
           ThrowF_t(TRANS("encoded audio in archives must not be compressed!\n"));
         }
         // open ogg file
-        sdc_pogg->ogg_fFile = fopen(fnmZip, "rb");
+        sdc_pogg->ogg_fFile = fopen(fnmZip.ConstData(), "rb");
         // if error
         if (sdc_pogg->ogg_fFile==0) {
-          ThrowF_t(TRANS("cannot open archive '%s'"), (const char*)fnmZip);
+          ThrowF_t(TRANS("cannot open archive '%s'"), fnmZip.ConstData());
         }
         // remember offset and size
         sdc_pogg->ogg_slOffset = slOffset;
@@ -310,7 +310,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       // if not in zip
       } else if (iFileType==EFP_FILE) {
         // open ogg file
-        sdc_pogg->ogg_fFile = fopen(fnmExpanded, "rb");
+        sdc_pogg->ogg_fFile = fopen(fnmExpanded.ConstData(), "rb");
         // if error
         if (sdc_pogg->ogg_fFile==0) {
           ThrowF_t(TRANS("cannot open encoded audio file"));
@@ -356,7 +356,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       sdc_pogg->ogg_wfeFormat = form;
 
     } catch (char*strError) {
-      CPrintF(TRANS("Cannot open encoded audio '%s' for streaming: %s\n"), (const char*)fnm, (const char*)strError);
+      CPrintF(TRANS("Cannot open encoded audio '%s' for streaming: %s\n"), fnm.ConstData(), strError);
       if (sdc_pogg->ogg_vfVorbisFile!=NULL) {
         delete sdc_pogg->ogg_vfVorbisFile;
         sdc_pogg->ogg_vfVorbisFile = NULL;
@@ -406,10 +406,10 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
           ThrowF_t(TRANS("encoded audio in archives must not be compressed!\n"));
         }
         // open the zip file
-        sdc_pmpeg->mpeg_hMainFile = palOpenInputFile(fnmZip);
+        sdc_pmpeg->mpeg_hMainFile = palOpenInputFile(fnmZip.ConstData());
         // if error
         if (sdc_pmpeg->mpeg_hMainFile==0) {
-          ThrowF_t(TRANS("cannot open archive '%s'"), (const char*)fnmZip);
+          ThrowF_t(TRANS("cannot open archive '%s'"), fnmZip.ConstData());
         }
         // open the subfile
         sdc_pmpeg->mpeg_hFile = palOpenSubFile(sdc_pmpeg->mpeg_hMainFile, slOffset, slSizeUncompressed);
@@ -421,7 +421,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       // if not in zip
       } else if (iFileType==EFP_FILE) {
         // open mpx file
-        sdc_pmpeg->mpeg_hFile = palOpenInputFile(fnmExpanded);
+        sdc_pmpeg->mpeg_hFile = palOpenInputFile(fnmExpanded.ConstData());
         // if error
         if (sdc_pmpeg->mpeg_hFile==0) {
           ThrowF_t(TRANS("cannot open mpx file"));
@@ -462,7 +462,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         ThrowF_t(TRANS("cannot open mpx decoder"));
       }
     } catch (char*strError) {
-      CPrintF(TRANS("Cannot open mpx '%s' for streaming: %s\n"), (const char*)fnm, (const char*)strError);
+      CPrintF(TRANS("Cannot open mpx '%s' for streaming: %s\n"), fnm.ConstData(), strError);
       if (iZipHandle!=0) {
         UNZIPClose(iZipHandle);
       }

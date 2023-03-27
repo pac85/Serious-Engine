@@ -458,7 +458,7 @@ static void Startup2ndMouse(INDEX iPort)
     
   // create COM handle if needed
   if( _h2ndMouse==NONE) {
-    _h2ndMouse = CreateFileA( str2ndMousePort, GENERIC_READ|GENERIC_WRITE, 0, NULL,           
+    _h2ndMouse = CreateFileA(str2ndMousePort.ConstData(), GENERIC_READ|GENERIC_WRITE, 0, NULL,           
                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if( _h2ndMouse==INVALID_HANDLE_VALUE) {
       // failed! :(

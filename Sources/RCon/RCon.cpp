@@ -81,8 +81,10 @@ BOOL CRConApp::SubInitInstance()
 
   CRConDlg dlg;
 	m_pMainWnd = &dlg;
-  dlg.m_strLog = (const char*)CTString(0, 
-    "Serious Sam RCON v1.0\r\nServer: %s:%d\r\nReady for commands...\r\n", strHost, ulPort);
+
+  CTString strHeader(0, "Serious Sam RCON v1.0\r\nServer: %s:%d\r\nReady for commands...\r\n", strHost, ulPort);
+  dlg.m_strLog = strHeader.ConstData();
+
 	int nResponse = dlg.DoModal();
 
 	// Since the dialog has been closed, return FALSE so that we exit the

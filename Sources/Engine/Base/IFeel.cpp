@@ -117,7 +117,7 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
   if(_hLib!=NULL) return FALSE;
 
   UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-  _hLib = LoadLibraryA(fnmExpanded);
+  _hLib = LoadLibraryA(fnmExpanded.ConstData());
   SetErrorMode(iOldErrorMode);
   if(_hLib==NULL)
   {
@@ -147,7 +147,7 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
     IFeel_DeleteDevice();
     return FALSE;
   }
-  CPrintF("IFeel mouse '%s' initialized\n",(const char*)IFeel_GetProductName());
+  CPrintF("IFeel mouse '%s' initialized\n", IFeel_GetProductName().ConstData());
   ifeel_bEnabled = TRUE;
   return TRUE;
 }
@@ -175,7 +175,7 @@ BOOL IFeel_LoadFile(CTFileName fnFile)
 
   if(immLoadFile!=NULL)
   {
-    BOOL hr = immLoadFile((const char*)fnmExpanded);
+    BOOL hr = immLoadFile(fnmExpanded.ConstData());
     if(hr)
     {
       CPrintF("IFeel project file '%s' loaded\n", fnFile);

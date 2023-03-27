@@ -43,15 +43,15 @@ CDlgExportForSkinning::CDlgExportForSkinning(CTFileName fnExportFile, CWnd* pPar
   m_bWireFrame =                    GetFlagFromProfile(   "Export mapping wire frame", TRUE);
   m_bColoredSurfaces =              GetFlagFromProfile(   "Export mapping colored surfaces", TRUE);
   m_bSurfaceNumbers =               GetFlagFromProfile(   "Export surface numbers", TRUE);
-	m_strExportedFileName = fnExportFile;
-	m_strSurfaceListFile = fnExportFile.FileDir()+fnExportFile.FileName()+".txt";
+	m_strExportedFileName = fnExportFile.ConstData();
+	m_strSurfaceListFile = (fnExportFile.FileDir() + fnExportFile.FileName() + ".txt").ConstData();
 	
   COLOR colPaper = GetColorFromProfile( "Paper color", C_WHITE);
   m_ctrlPaperColor.SetColor( colPaper);
 	COLOR colWire = GetColorFromProfile( "Wire color", C_BLACK);
   m_ctrlWireColor.SetColor( colWire);
 
-  m_strExportedFileName = fnExportFile;
+  m_strExportedFileName = fnExportFile.ConstData();
 }
 
 
@@ -113,7 +113,7 @@ BOOL CDlgExportForSkinning::OnInitDialog()
   while( iWidth <= 2048)
   {
     strTemp.PrintF( "%d x %d", iWidth, INDEX(iWidth/fWHRatio));
-    INDEX iAddedAs = m_ctrlExportPictureSize.AddString( CString(strTemp));
+    INDEX iAddedAs = m_ctrlExportPictureSize.AddString(CString(strTemp.ConstData()));
     m_ctrlExportPictureSize.SetItemData( iAddedAs, iWidth);
     if( iWidth == m_iTextureWidth)
     {

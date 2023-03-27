@@ -108,7 +108,7 @@ CDlgCreateNormalTexture::CDlgCreateNormalTexture( CTFileName fnInputFile, CWnd* 
   if( _bWasForced32) m_wndViewCreatedTexture.m_bForce32 = TRUE;
   RefreshCreatedTexture();
   // set created texture name
-  m_strCreatedTextureName = fnTexFileName;
+  m_strCreatedTextureName = fnTexFileName.ConstData();
   // prepare string telling size of source picture
   char strSize[ 64];
   sprintf( strSize, "%d x %d", m_pixSourceWidth, m_pixSourceHeight);

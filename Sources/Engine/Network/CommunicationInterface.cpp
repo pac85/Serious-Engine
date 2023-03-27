@@ -153,11 +153,11 @@ CTString AddressToString(ULONG ulHost)
 ULONG StringToAddress(const CTString &strAddress)
 {
   // first try to convert numeric address
-  ULONG ulAddress = ntohl(inet_addr(strAddress));
+  ULONG ulAddress = ntohl(inet_addr(strAddress.ConstData()));
   // if not a valid numeric address
   if (ulAddress==INADDR_NONE) {
     // lookup the host
-    HOSTENT *phe = gethostbyname(strAddress);
+    HOSTENT *phe = gethostbyname(strAddress.ConstData());
     // if succeeded
     if (phe!=NULL) {
       // get that address
@@ -286,7 +286,7 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
     cm_ulLocalHost = 0;
     // if there is a desired local address
     if (net_strLocalHost!="") {
-      CPrintF(TRANS("  user forced local address: %s\n"), (const char*)net_strLocalHost);
+      CPrintF(TRANS("  user forced local address: %s\n"), net_strLocalHost.ConstData());
       // use that address
       cm_strName = net_strLocalHost;
       cm_ulLocalHost = StringToAddress(cm_strName);
@@ -305,7 +305,7 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
     gethostname(hostname, sizeof(hostname)-1);
     cm_strName = hostname;
     // lookup the host
-    HOSTENT *phe = gethostbyname(cm_strName);
+    HOSTENT *phe = gethostbyname(cm_strName.ConstData());
     // if succeeded
     if (phe!=NULL) {
       // get the addresses
@@ -394,7 +394,7 @@ void CCommunicationInterface::CreateSocket_t()
   cci_hSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	cci_bBound = FALSE;
   if (cci_hSocket == INVALID_SOCKET) {
-    ThrowF_t(TRANS("Cannot open socket. %s"), (const char*)GetSocketError(WSAGetLastError()));
+    ThrowF_t(TRANS("Cannot open socket. %s"), GetSocketError(WSAGetLastError()).ConstData());
   }
 
 };
@@ -414,7 +414,7 @@ void CCommunicationInterface::Bind_t(ULONG ulLocalHost, ULONG ulLocalPort)
 
   // bind socket to server address/port
   if (bind(cci_hSocket, (sockaddr*)&sin, sizeof(sin)) == SOCKET_ERROR) {
-    ThrowF_t(TRANS("Cannot bind socket. %s"), (const char*)GetSocketError(WSAGetLastError()));
+    ThrowF_t(TRANS("Cannot bind socket. %s"), GetSocketError(WSAGetLastError()).ConstData());
   }
   cci_bBound = TRUE;
 };
@@ -431,7 +431,7 @@ void CCommunicationInterface::SetNonBlocking_t(void)
   ULONG ulArgNonBlocking = 1;
   if (ioctlsocket(cci_hSocket, FIONBIO, &ulArgNonBlocking) == SOCKET_ERROR) {
     ThrowF_t(TRANS("Cannot set socket to non-blocking mode. %s"), 
-      (const char*)GetSocketError(WSAGetLastError()));
+      GetSocketError(WSAGetLastError()).ConstData());
   }
 };
 
@@ -479,7 +479,7 @@ void CCommunicationInterface::GetLocalAddress_t(ULONG &ulHost, ULONG &ulPort)
   int iSize = sizeof(sin);
   if (getsockname(cci_hSocket, (sockaddr*)&sin, &iSize) == SOCKET_ERROR) {
     ThrowF_t(TRANS("Cannot get local address on socket. %s"), 
-      (const char*)GetSocketError(WSAGetLastError()));
+      GetSocketError(WSAGetLastError()).ConstData());
   }
   ulHost = ntohl(sin.sin_addr.S_un.S_addr);
   ulPort = ntohs(sin.sin_port);
@@ -500,7 +500,7 @@ void CCommunicationInterface::GetRemoteAddress_t(ULONG &ulHost, ULONG &ulPort)
   int iSize = sizeof(sin);
   if (getpeername(cci_hSocket, (sockaddr*)&sin, &iSize) == SOCKET_ERROR) {
     ThrowF_t(TRANS("Cannot get remote address on socket. %s"), 
-      (const char*)GetSocketError(WSAGetLastError()));
+      GetSocketError(WSAGetLastError()).ConstData());
   }
   ulHost = ntohl(sin.sin_addr.S_un.S_addr);
   ulPort = ntohs(sin.sin_port);
@@ -1200,7 +1200,7 @@ void CCommunicationInterface::UpdateMasterBuffers()
 					// report it
 					if (iResult!=WSAECONNRESET || net_bReportICMPErrors) {
 						CPrintF(TRANS("Socket error during UDP receive. %s\n"), 
-							(const char*)GetSocketError(iResult));
+							GetSocketError(iResult).ConstData());
 						return;
 					}
 				}
@@ -1259,7 +1259,7 @@ void CCommunicationInterface::UpdateMasterBuffers()
 			// report it
 			} else if (iResult!=WSAECONNRESET || net_bReportICMPErrors) {
         CPrintF(TRANS("Socket error during UDP send. %s\n"), 
-          (const char*)GetSocketError(iResult));
+          GetSocketError(iResult).ConstData());
       }
 			return;    
     // if all sent ok

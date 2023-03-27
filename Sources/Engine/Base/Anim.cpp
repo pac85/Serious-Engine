@@ -199,7 +199,7 @@ void CAnimData::CreateAnimations( INDEX ctAnimations, CTString strName/*="None"*
   for( INDEX iAnimations=0; iAnimations<ctAnimations; iAnimations++)
   {
     // set default (or given) name
-    strcpy(ad_Anims[ iAnimations].oa_Name, strName);
+    strcpy(ad_Anims[iAnimations].oa_Name, strName.ConstData());
     // set default (or given) speed
     ad_Anims[ iAnimations].oa_SecsPerFrame = tmSpeed;
     // create one frame for this animation
@@ -402,7 +402,7 @@ void CAnimData::LoadFromScript_t( CTStream *File, CListHead *pFrameFileList) // 
       FOREACHINDYNAMICARRAY( astrFrames, CTString, itStrFrame)
       {
         // find existing index (of insert new one) for this file name into FileNameList
-			  poaOneAnim->oa_FrameIndices[ iFrame] = FindFrameIndex( pFrameFileList, *itStrFrame);
+			  poaOneAnim->oa_FrameIndices[iFrame] = FindFrameIndex(pFrameFileList, itStrFrame->ConstData());
         iFrame++;
       }
       // clear used array
@@ -471,8 +471,7 @@ void CAnimData::ExportAnimationNames_t( CTStream *ostrFile, CTString strAnimatio
   for( INDEX iAnimation=0; iAnimation<ad_NumberOfAnims; iAnimation++)
   {
     // prepare one #define line (add prefix)
-    sprintf( chrLine, "#define %s%s %d", strAnimationPrefix, ad_Anims[ iAnimation].oa_Name,
-             iAnimation);
+    sprintf(chrLine, "#define %s%s %d", strAnimationPrefix.ConstData(), ad_Anims[iAnimation].oa_Name, iAnimation);
     // put it into file
     ostrFile->PutLine_t( chrLine);
   }
@@ -515,7 +514,8 @@ void CAnimData::AddAnimation(void)
 // replaces requested animation's name with given one
 void CAnimData::SetName( INDEX iAnimation, CTString strNewName){
   ASSERT(strNewName.Length() < NAME_SIZE);
-  strcpy( ad_Anims[iAnimation].oa_Name, strNewName);};
+  strcpy(ad_Anims[iAnimation].oa_Name, strNewName.ConstData());
+};
 // replaces requested animation's speed with given one
 void CAnimData::SetSpeed( INDEX iAnimation, TIME tmSpeed){
   ad_Anims[iAnimation].oa_SecsPerFrame = tmSpeed;};

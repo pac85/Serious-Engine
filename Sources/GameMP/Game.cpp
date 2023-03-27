@@ -183,8 +183,8 @@ static void DumpDemoProfile(void)
     CTString strFileName = CTString( "temp\\DemoProfile.lst");
     strm.Create_t( strFileName, CTStream::CM_TEXT);
     // dump results
-    strm.FPrintF_t( strFragment);
-    strm.FPrintF_t( strAnalyzed);
+    strm.FPrintF_t(strFragment.ConstData());
+    strm.FPrintF_t(strAnalyzed.ConstData());
     // done!
     CPrintF( TRANS("Demo profile data dumped to '%s'.\n"), strFileName);
   } 
@@ -201,9 +201,9 @@ static void ReportDemoProfile(void)
   dem_iProfileRate = Clamp( dem_iProfileRate, 0L, 60L);
   strFragment = _pGame->DemoReportFragmentsProfile( dem_iProfileRate);
   strAnalyzed = _pGame->DemoReportAnalyzedProfile();
-  CPrintF( strFragment);
-  CPrintF( strAnalyzed);
-  CPrintF( "-\n");
+  CPrintF(strFragment.ConstData());
+  CPrintF(strAnalyzed.ConstData());
+  CPrintF("-\n");
 }
 
 #define MAX_SCRIPTSOUNDS 16
@@ -259,7 +259,7 @@ static void DumpProfileToFile(void)
 // Dump recorded profiling stats to console.
 static void DumpProfileToConsole(void)
 {
-  CPutString(_strProfile);
+  CPutString(_strProfile.ConstData());
 }
 
 // Record profiling stats.
@@ -1305,7 +1305,7 @@ BOOL CGame::StartDemoPlay(const CTFileName &fnDemo)
     fnmScript = CTString("Demos\\Default.ini");
   }
   CTString strCmd;
-  strCmd.PrintF("include \"%s\"", (const char*)fnmScript);
+  strCmd.PrintF("include \"%s\"", fnmScript.ConstData());
   _pShell->Execute(strCmd);
 
   MaybeDiscardLastLines();
@@ -1457,7 +1457,7 @@ SLONG CGame::PackHighScoreTable(void)
     // make its string
     char str[MAX_HIGHSCORENAME+1];
     memset(str, 0, sizeof(str));
-    strncpy(str, gm_ahseHighScores[i].hse_strPlayer, MAX_HIGHSCORENAME);
+    strncpy(str, gm_ahseHighScores[i].hse_strPlayer.ConstData(), MAX_HIGHSCORENAME);
     // copy the value and the string
     memcpy(pub, str, sizeof(str));
     pub += MAX_HIGHSCORENAME+1;
@@ -2266,7 +2266,7 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
       // print pause indicators
       CTString strIndicator;
       if (_pNetwork->IsDisconnected()) {
-        strIndicator.PrintF(TRANS("Disconnected: %s\nPress F9 to reconnect"), (const char *)_pNetwork->WhyDisconnected());
+        strIndicator.PrintF(TRANS("Disconnected: %s\nPress F9 to reconnect"), _pNetwork->WhyDisconnected().ConstData());
       } else if (_pNetwork->IsWaitingForPlayers()) {
         strIndicator = TRANS("Waiting for all players to connect");
       } else if (_pNetwork->IsWaitingForServer()) {
@@ -2338,8 +2338,8 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
       if( _pNetwork->IsDemoPlayFinished()) {
         // end profile
         gm_bProfileDemo = FALSE;
-        CPrintF( DemoReportAnalyzedProfile());
-        CPrintF( "-\n");
+        CPrintF(DemoReportAnalyzedProfile().ConstData());
+        CPrintF("-\n");
       } else {
         // determine frame time delta
         TIME tmDelta = (tvThisFrame - _tvLastFrame).GetSeconds();
@@ -2386,7 +2386,7 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
     bSaveScreenShot = FALSE;
     CTFileName fnmExpanded;
     ExpandFilePath(EFP_WRITE, CTString("ScreenShots"), fnmExpanded);
-    _mkdir(fnmExpanded);
+    _mkdir(fnmExpanded.ConstData());
 
     // create a name for screenshot
     CTFileName fnmScreenShot;
@@ -2542,7 +2542,7 @@ int qsort_CompareQuickSaves_FileUp( const void *elem1, const void *elem2)
 {
   const QuickSave &qs1 = **(QuickSave **)elem1;
   const QuickSave &qs2 = **(QuickSave **)elem2;
-  return strcmp(qs1.qs_fnm, qs2.qs_fnm);
+  return strcmp(qs1.qs_fnm.ConstData(), qs2.qs_fnm.ConstData());
 }
 
 // delete extra quicksaves and find the next free number
@@ -2722,7 +2722,7 @@ void CGame::GameMainLoop(void)
       // create a file for profile
       CTFileStream strmProfile;
       strmProfile.Create_t(CTString("Game.profile"));
-      strmProfile.Write_t(_strProfile, _strProfile.Length());
+      strmProfile.Write_t(_strProfile.ConstData(), _strProfile.Length());
     } catch (char *strError) {
       CPutString(strError);
     }

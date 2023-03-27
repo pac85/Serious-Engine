@@ -91,7 +91,7 @@ void CDlgCreateAnimatedTexture::RefreshTexture(void)
     fileScript.Create_t( fnTempScript);
     CTString strEditScript = CStringA(m_strEditScript);
     char *pScript = (char *) AllocMemory(strEditScript.Length() + 1);
-    strcpy( pScript, strEditScript);
+    strcpy(pScript, strEditScript.ConstData());
     fileScript.WriteRawChunk_t(pScript, strEditScript.Length() + 1);
     fileScript.Close();
     FreeMemory( pScript);
@@ -143,7 +143,7 @@ CDlgCreateAnimatedTexture::CDlgCreateAnimatedTexture(
   if( (fnInputFile != "") && 
       ((fnInputFile.FileExt() == ".tex") || (fnInputFile.FileExt() == ".scr")) )
   {
-    m_strCreatedTextureName = fnInputFile.FileDir() + fnInputFile.FileName() + ".tex";
+    m_strCreatedTextureName = (fnInputFile.FileDir() + fnInputFile.FileName() + ".tex").ConstData();
   }
   else
   {
@@ -251,7 +251,7 @@ void CDlgCreateAnimatedTexture::OnCreateTexture()
   {
     // extract last sub directory name
     char achrLastSubDir[ 256];
-    strcpy( achrLastSubDir, m_fnSourceFileName.FileDir());
+    strcpy(achrLastSubDir, m_fnSourceFileName.FileDir().ConstData());
     achrLastSubDir[ strlen(achrLastSubDir)-1]=0;  // remove last '\'
     CTString strLastSubDir = CTFileName(CTString(achrLastSubDir)).FileName();
 
@@ -272,8 +272,8 @@ void CDlgCreateAnimatedTexture::OnCreateTexture()
   CTFileName fnFullFinalScript = 
     fnFullFinalTexture.FileDir()+fnFullFinalTexture.FileName()+".scr";
   // copy temporary script and texture files into real their place
-  CopyFileA( fnFullTempScript, fnFullFinalScript, FALSE);
-  CopyFileA( fnFullTempTexture, fnFullFinalTexture, FALSE);
+  CopyFileA(fnFullTempScript.ConstData(), fnFullFinalScript.ConstData(), FALSE);
+  CopyFileA(fnFullTempTexture.ConstData(), fnFullFinalTexture.ConstData(), FALSE);
   m_fnCreatedFileName =fnSaveName;
   // end dialog
   EndDialog( IDOK);
@@ -298,7 +298,7 @@ BOOL CDlgCreateAnimatedTexture::OnInitDialog()
       pchrFile[ ulScriptFileSize] = 0;
       fileScript.Read_t( pchrFile, ulScriptFileSize);
       // copy script to edit ctrl
-      m_strEditScript = CTString( pchrFile);
+      m_strEditScript = pchrFile;
       delete pchrFile;
     }
     // catch errors
@@ -344,7 +344,7 @@ BOOL CDlgCreateAnimatedTexture::OnInitDialog()
       "SPEED 0.1\r\n"
       "FRAMES %d\r\n",
       METERS_MEX(m_pixSourceWidth * (1 << 5) ),
-      (CTString&)m_fnCreatedFileName.FileDir(),
+      m_fnCreatedFileName.FileDir().ConstData(),
       m_pafnPictures->Count());
     // add name for each frame
     FOREACHINDYNAMICARRAY( *m_pafnPictures, CTFileName, itPicture)
@@ -353,7 +353,7 @@ BOOL CDlgCreateAnimatedTexture::OnInitDialog()
       CTString strName=fn.FileName();
       CTString strExt=fn.FileExt();
       // add finishing part of script
-      sprintf( achrDefaultScript, "%s    %s%s\r\n", achrDefaultScript, strName, strExt);
+      sprintf(achrDefaultScript, "%s    %s%s\r\n", achrDefaultScript, strName.ConstData(), strExt.ConstData());
     }
     // add finishing part of script
     sprintf( achrDefaultScript, "%sANIM_END\r\nEND\r\n", achrDefaultScript);

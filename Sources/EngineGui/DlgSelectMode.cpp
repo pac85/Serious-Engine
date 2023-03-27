@@ -166,7 +166,7 @@ CDlgSelectMode::CDlgSelectMode( CDisplayMode &dm, enum GfxAPIType &gfxAPI,
   // set current mode and driver strings
   CTString str;
   str.PrintF( "%d x %d x %s", dm.dm_pixSizeI, dm.dm_pixSizeJ, dm.DepthString());
-  m_strCurrentMode = str;
+  m_strCurrentMode = str.ConstData();
 
   switch(gfxAPI) {
   case GAT_OGL:
@@ -273,9 +273,9 @@ void CDlgSelectMode::DoDataExchange(CDataExchange* pDX)
       PIX pixSizeJ = m_pdmAvailableModes[iMode].dm_pixSizeJ;
       strRes.PrintF( "%d x %d", pixSizeI, pixSizeJ);
       // if not yet added
-      if( m_ctrlResCombo.FindStringExact( 0, CString(strRes)) == CB_ERR) {
+      if (m_ctrlResCombo.FindStringExact(0, CString(strRes.ConstData())) == CB_ERR) {
         // add it to combo box list
-        i = m_ctrlResCombo.AddString(CString(strRes));
+        i = m_ctrlResCombo.AddString(CString(strRes.ConstData()));
         // set item data to match the resolutions (I in upper word, J in lower)
         m_ctrlResCombo.SetItemData( i, (pixSizeI<<16)|pixSizeJ);
         // if found old full screen mode

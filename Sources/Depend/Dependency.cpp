@@ -21,8 +21,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 void AdjustFilePath_t(CTFileName &fnm)
 {
   // if filename contains a colon or double backslash
-  if (strchr(fnm, ':')!=NULL
-    ||strstr(fnm, "\\\\")!=NULL) {
+  if (strchr(fnm.ConstData(), ':') != NULL
+   || strstr(fnm.ConstData(), "\\\\") != NULL) {
     // it must be prefixed with application path
     fnm.RemoveApplicationPath_t();
   }
@@ -40,7 +40,7 @@ BOOL CDependInfo::IsFileOnDiskUpdated(void)
 {
   int file_handle;
   // try to open file for reading
-  file_handle = _open( _fnmApplicationPath + di_fnFileName, _O_RDONLY | _O_BINARY);
+  file_handle = _open((_fnmApplicationPath + di_fnFileName).ConstData(), _O_RDONLY | _O_BINARY);
   // mark as it is not updated
   BOOL bUpdated = FALSE;
   // if opened succesefully
@@ -108,13 +108,13 @@ void CDependencyList::ExtractDependencies()
 
     CTFileName fnFileName = pdi->di_fnFileName;
     // try to open file for reading
-    file_handle = _open( _fnmApplicationPath + fnFileName, _O_RDONLY | _O_BINARY);
+    file_handle = _open((_fnmApplicationPath + fnFileName).ConstData(), _O_RDONLY | _O_BINARY);
     // if an error occured
     if( file_handle == -1)
     {
       // if file is not available remove it from list
       //FatalError( "File %s can't be opened!", (CTString&)(_fnmApplicationPath + fnFileName));
-      printf( "warning, cannot open: %s (referenced from %s)\n", (CTString&)(fnFileName), (CTString&)(pdi->di_fnParent));
+      printf("warning, cannot open: %s (referenced from %s)\n", fnFileName.ConstData(), pdi->di_fnParent.ConstData());
       delete pdi;
     }
     // if file is opened properly
@@ -282,7 +282,7 @@ void CDependencyList::ImportASCII( CTFileName fnAsciiFile)
       CTFileName fnFileName =  CTString(chrOneLine);
       AdjustFilePath_t(fnFileName);
 	    // try to open file for reading
-      file_handle = _open( _fnmApplicationPath+fnFileName, _O_RDONLY | _O_BINARY);
+      file_handle = _open((_fnmApplicationPath + fnFileName).ConstData(), _O_RDONLY | _O_BINARY);
 
       // if opened succesefully
       if( file_handle != -1) {
@@ -360,7 +360,7 @@ void CDependencyList::ExportASCII_t( CTFileName fnAsciiFile)
   FOREACHINLIST( CDependInfo, di_Node, dl_ListHead, itDependInfo)
   {
     // prepare line of text
-    sprintf( line, "%s\n", (CTString&)itDependInfo->di_fnFileName);
+    sprintf(line, "%s\n", itDependInfo->di_fnFileName.ConstData());
     // write text line into file
     strmFile.Write_t( line, strlen( line));
   }
@@ -378,7 +378,7 @@ static void AddStringForTranslation(const CTString &str)
   INDEX ct = _atpPairs.Count();
   for(INDEX i=0; i<ct; i++) {
     // if it is that one
-    if (strcmp(_atpPairs[i].tp_strSrc, str)==0) {
+    if (strcmp(_atpPairs[i].tp_strSrc.ConstData(), str.ConstData()) == 0) {
       // just mark it as used
       _atpPairs[i].m_bUsed = TRUE;
       // don't search any more
@@ -397,11 +397,11 @@ static void AddStringForTranslation(const CTString &str)
 
 static void WriteTranslationToken_t(CTStream &strm, CTString str)
 {
-  strm.PutString_t(str);
+  strm.PutString_t(str.ConstData());
 }
 static void WriteTranslationString_t(CTStream &strm, CTString str)
 {
-  const char *s = str;
+  const char *s = str.ConstData();
   INDEX iLen = (INDEX)strlen(s);
   for (INDEX i=0; i<iLen; i++) {
     char c = s[i];
@@ -569,7 +569,7 @@ static void MakeDirectory_t(const CTFileName &fnm)
   }
   // remove trailing backslash
   CTFileName fnmDir = fnm;
-  fnmDir.str_String[fnmDir.Length() - 1] = '\0';
+  fnmDir[fnmDir.Length() - 1] = '\0';
   // get the path part
   CTFileName fnmDirPath = fnmDir.FileDir();
   // if there is a path part
@@ -578,6 +578,6 @@ static void MakeDirectory_t(const CTFileName &fnm)
     MakeDirectory_t(fnmDirPath);
   }
   // try to create the directory
-  int iRes = _mkdir(_fnmApplicationPath+fnmDir);
+  int iRes = _mkdir((_fnmApplicationPath + fnmDir).ConstData());
 }
 

@@ -118,7 +118,7 @@ void CRCT_AddFile_t(const CTFileName &fnm, ULONG ulCRC/*=0*/) // throw char *
     bNew = TRUE;
   }
   if (bNew && net_bReportCRC) {
-    CPrintF("CRC %08x: '%s'\n", pce->ce_ulCRC, (const char*)pce->ce_fnmFile);
+    CPrintF("CRC %08x: '%s'\n", pce->ce_ulCRC, pce->ce_fnmFile.ConstData());
   }
 }
 

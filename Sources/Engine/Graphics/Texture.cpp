@@ -1748,7 +1748,7 @@ COLOR CTextureData::GetTexel( MEX mexU, MEX mexV)
   if (!(td_ulFlags&TEX_STATIC) && !(td_ulFlags&TEX_CONSTANT)) {
     // print warning
     ASSERTALWAYS("GetTexel: Texture needs to be static and constant.");
-    CPrintF("GetTexel: '%s' was not static and/or constant!\n", (const char*)GetName());
+    CPrintF("GetTexel: '%s' was not static and/or constant!\n", GetName().ConstData());
   }
 
   // make sure that the texture is static
@@ -1772,7 +1772,7 @@ void CTextureData::FetchRow( PIX pixRow, void *pvDst, INDEX iChannel/*=4*/, BOOL
   if (!(td_ulFlags&TEX_STATIC) && !(td_ulFlags&TEX_CONSTANT)) {
     // print warning
     ASSERTALWAYS("FetchRow: Texture needs to be static and constant.");
-    CPrintF("FetchRow: '%s' was not static and/or constant!\n", (const char*)GetName());
+    CPrintF("FetchRow: '%s' was not static and/or constant!\n", GetName().ConstData());
   }
   // workaround: make sure that the texture is static
   Force( TEX_STATIC|TEX_CONSTANT);
@@ -1794,7 +1794,7 @@ ULONG *CTextureData::GetRowPointer( PIX pixRow)
   if (!(td_ulFlags&TEX_STATIC) && !(td_ulFlags&TEX_CONSTANT)) {
     // print warning
     ASSERTALWAYS("GetRowPointer: Texture needs to be static and constant.");
-    CPrintF("GetRowPointer: '%s' was not static and/or constant!\n", (const char*)GetName());
+    CPrintF("GetRowPointer: '%s' was not static and/or constant!\n", GetName().ConstData());
   }
   // workaround: make sure that the texture is static
   Force( TEX_STATIC|TEX_CONSTANT);

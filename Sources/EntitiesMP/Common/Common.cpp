@@ -918,7 +918,7 @@ BOOL SetPlayerAppearance_internal(CModelObject *pmo, const CTFileName &fnmAMC, C
   } catch (char *strError) {
     // report error
     CPrintF(TRANS("Cannot load player model:\n%s (%d) : %s\n"), 
-      (const char*)_strFile, _ctLines, strError);
+      _strFile.ConstData(), _ctLines, strError);
     return FALSE;
   }
 }
@@ -1343,9 +1343,9 @@ CEntity *FixupCausedToPlayer(CEntity *penThis, CEntity *penCaused, BOOL bWarning
 
   if (bWarning && (ent_bReportBrokenChains || GetSP()->sp_bQuickTest)) {
     CPrintF(TRANS("WARNING: Triggering chain broken, entity: %s-%s(%s)\n"), 
-      (const char*)penThis->GetName(),
-      (const char*)penThis->GetDescription(),
-      (const char*)penThis->GetClass()->GetName());
+      penThis->GetName().ConstData(),
+      penThis->GetDescription().ConstData(),
+      penThis->GetClass()->GetName().ConstData());
   }
 
   INDEX ctPlayers = penThis->GetMaxPlayers();

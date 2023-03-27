@@ -3944,7 +3944,7 @@ void CWorldEditorView::SetEditingDataPaneInfo( BOOL bImidiateRepainting)
   else if( bTerrainMode)
   {
     // pane data text has bee obtained on render's ray cast
-    sprintf(strDataPaneText, "%s", m_strTerrainDataPaneText);
+    sprintf(strDataPaneText, "%s", m_strTerrainDataPaneText.ConstData());
   }
   else if( bCSGOn)
   {
@@ -8179,7 +8179,7 @@ void CWorldEditorView::GetToolTipText( char *pToolTipText)
             FLOAT fMipSwitchDistance = itbm->GetMipDistance();
             CTString strTmp;
             strTmp.PrintF("Mip %d is visible until ", iMip);
-            pchrCursor += sprintf(pchrCursor, "%-24s %g m\n", strTmp, fMipSwitchDistance);
+            pchrCursor += sprintf(pchrCursor, "%-24s %g m\n", strTmp.ConstData(), fMipSwitchDistance);
             iMip++;
           }
           pchrCursor += sprintf(pchrCursor, "%s\n", "������������������������������");
@@ -8210,16 +8210,16 @@ void CWorldEditorView::GetToolTipText( char *pToolTipText)
 ptd = (CTextureData*) mp.bpt_toTexture.GetData();\
 if( ptd == NULL) pchrCursor += sprintf(pchrCursor, "%-24s None\n", tex_name);\
 else {\
-  pchrCursor += sprintf(pchrCursor, "%-24s %.64s %s\n", tex_name, CTString(ptd->GetName()),\
-                ptd->GetDescription() );\
+  pchrCursor += sprintf(pchrCursor, "%-24s %.64s %s\n", tex_name, ptd->GetName().ConstData(), \
+                ptd->GetDescription().ConstData()); \
   pchrCursor += sprintf(pchrCursor, "%-24s %s     %s\n", " ",\
-      "Scroll: \""+pDoc->m_woWorld.wo_attTextureTransformations[mp.s.bpt_ubScroll].tt_strName+"\"",\
-      "Blend: \""+pDoc->m_woWorld.wo_atbTextureBlendings[mp.s.bpt_ubBlend].tb_strName+"\"");}
+      ("Scroll: \"" + pDoc->m_woWorld.wo_attTextureTransformations[mp.s.bpt_ubScroll].tt_strName + "\"").ConstData(), \
+      ("Blend: \"" + pDoc->m_woWorld.wo_atbTextureBlendings[mp.s.bpt_ubBlend].tb_strName + "\"").ConstData()); }
 
       CBrushPolygon &bpo = *crRayHit.cr_pbpoBrushPolygon;
-      SET_MAPPING_INFO( bpo.bpo_abptTextures[0], "Texture 1");
-      SET_MAPPING_INFO( bpo.bpo_abptTextures[1], "Texture 2");
-      SET_MAPPING_INFO( bpo.bpo_abptTextures[2], "Texture 3");
+      SET_MAPPING_INFO(bpo.bpo_abptTextures[0], "Texture 1");
+      SET_MAPPING_INFO(bpo.bpo_abptTextures[1], "Texture 2");
+      SET_MAPPING_INFO(bpo.bpo_abptTextures[2], "Texture 3");
       pchrCursor += sprintf(pchrCursor, "Polygon under mouse has %d edges\n", bpo.bpo_abpePolygonEdges.Count());
       pchrCursor += sprintf(pchrCursor, "Shadow on polygon under mouse occupies %g kb\n", bpo.bpo_smShadowMap.GetShadowSize()/1024.0f);
     }
@@ -8237,7 +8237,7 @@ else {\
         ctVertices+= itbsc->bsc_abvxVertices.Count();
         ctPlanes += itbsc->bsc_abplPlanes.Count();
       }
-      pchrCursor += sprintf(pchrCursor, "%-24s %d\n%-24s %d\n%-24s %d\n%-24s %d\n%-24s %d\n%",
+      pchrCursor += sprintf(pchrCursor, "%-24s %d\n%-24s %d\n%-24s %d\n%-24s %d\n%-24s %d\n%%",
         "No of sectors:", ctSectors,
         "No of polygons:", ctPolygons,
         "No of edges:", ctEdges,
@@ -8273,15 +8273,15 @@ else {\
 
       pchrCursor += sprintf(pchrCursor, "%-24.24s %.64s\n%-24s %d\n%-24s %d\n%-24s %d\n%-24s %d\n%-24s"
         "(R=%d G=%d B=%d) (H=%d S=%d V=%d)\n%-24.24s %.64s\n%-24.24s %.64s\n%-24.24s %.64s\n",
-        "Name:", strSectorName,
+        "Name:", strSectorName.ConstData(),
         "No of polygons:", ctPolygons,
         "No of edges:", ctEdges,
         "No of vertices:", ctVertices,
         "No of planes:", ctPlanes,
         "Ambient color:", ubR, ubG, ubB, ubH, ubS, ubV,
-        "Content type:", strContentType,
-        "Environment type:", strEnvironmentType,
-        "Force type:", strForceType);
+        "Content type:", strContentType.ConstData(),
+        "Environment type:", strEnvironmentType.ConstData(),
+        "Force type:", strForceType.ConstData());
     }
   }
   if( pDoc->GetEditingMode() == CSG_MODE)
@@ -8334,7 +8334,7 @@ else {\
     {FOREACHSRCOFDST(penEntity->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
       if( pbsc->bsc_strName != "")
       {
-        INDEX ctLetters = sprintf(pchrCursor, "In: %-24.24s\n", pbsc->bsc_strName);
+        INDEX ctLetters = sprintf(pchrCursor, "In: %-24.24s\n", pbsc->bsc_strName.ConstData());
         if( ctLetters > iLongestLineLetters) iLongestLineLetters = ctLetters;
         pchrCursor += ctLetters;
       }
@@ -8471,7 +8471,7 @@ else {\
             break;
           }
         }
-        INDEX ctLetters = sprintf(pchrCursor, "%-24.24s %.64s \n", epProperty.ep_strName, strValue);
+        INDEX ctLetters = sprintf(pchrCursor, "%-24.24s %.64s \n", epProperty.ep_strName, strValue.ConstData());
         if( ctLetters > iLongestLineLetters) iLongestLineLetters = ctLetters;
         pchrCursor += ctLetters;
       }
@@ -8487,7 +8487,7 @@ else {\
 
     if( penEntity->GetParent() != NULL)
     {
-      pchrCursor += sprintf(pchrCursor, "Parent: %s\n", penEntity->GetParent()->GetName());
+      pchrCursor += sprintf(pchrCursor, "Parent: %s\n", penEntity->GetParent()->GetName().ConstData());
     }
     else
     {
@@ -8512,7 +8512,7 @@ else {\
       if( ulSpawn & SPF_DEATHMATCH) strSpawn+="Deathmatch,";
       if( strSpawn != "")
       {
-        pchrCursor += sprintf(pchrCursor, "%s", strSpawn);
+        pchrCursor += sprintf(pchrCursor, "%s", strSpawn.ConstData());
         *(pchrCursor-1) = 0;
       }
       else

@@ -636,7 +636,7 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy)
     CPrintF( TRANS("Predicting %d entities:\n"), ctEntities);
     {FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {
       CEntity &enToCopy = *itenToCopy;
-      CPrintF("  %s:%s\n", enToCopy.GetClass()->ec_pdecDLLClass->dec_strName, (const char*)enToCopy.GetName());
+      CPrintF("  %s:%s\n", enToCopy.GetClass()->ec_pdecDLLClass->dec_strName, enToCopy.GetName().ConstData());
     }}
   }
 

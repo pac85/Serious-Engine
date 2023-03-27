@@ -243,15 +243,15 @@ void CSessionState::Start_t(INDEX ctLocalPlayers)
   // if this computer is client
   } else {
     // connect client to server computer
-    _cmiComm.Client_Init_t((char*)(const char*)_pNetwork->ga_strServerAddress);
+    _cmiComm.Client_Init_t(_pNetwork->ga_strServerAddress.Data());
     // connect as remote session state
     try {
       Start_AtClient_t(ctLocalPlayers);
     } catch(char *) {
       // if failed due to wrong mod
-      if (strncmp(ses_strDisconnected, "MOD:", 4)==0) {
+      if (strncmp(ses_strDisconnected.ConstData(), "MOD:", 4) == 0) {
         // remember the mod
-        _pNetwork->ga_strRequiredMod = ses_strDisconnected+4;
+        _pNetwork->ga_strRequiredMod = ses_strDisconnected.ConstData() + 4;
         // make sure that the string is never empty
         if (_pNetwork->ga_strRequiredMod=="") {
           _pNetwork->ga_strRequiredMod=" ";
@@ -561,7 +561,7 @@ void CSessionState::PrintChatMessage(ULONG ulFrom, const CTString &strFrom, cons
   // if proccessing didn't kill it
   if (cmd_strChatSender!="" && cmd_strChatMessage!="") {
     // print the message
-    CPrintF("%s: ^o^cFFFFFF%s^r\n", (const char*)cmd_strChatSender, (const char*)cmd_strChatMessage);
+    CPrintF("%s: ^o^cFFFFFF%s^r\n", cmd_strChatSender.ConstData(), cmd_strChatMessage.ConstData());
   }
   extern INDEX net_ctChatMessages;
   net_ctChatMessages++;
@@ -2067,7 +2067,7 @@ void CSessionState::SessionStateLoop(void)
       (_pTimer->GetHighPrecisionTimer()-ses_tvMessageReceived).GetSeconds()>net_tmDisconnectTimeout &&
       ses_strDisconnected=="") {
       ses_strDisconnected = TRANS("Connection timeout");
-      CPrintF(TRANS("Disconnected: %s\n"), (const char*)ses_strDisconnected);
+      CPrintF(TRANS("Disconnected: %s\n"), ses_strDisconnected.ConstData());
     }
   }
 

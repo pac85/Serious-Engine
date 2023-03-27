@@ -878,7 +878,7 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm)
       "This server runs version %d.%d, your version is %d.%d.\n"
       "Please visit http://www.croteam.com for information on version updating."),
       _SE_BUILD_MAJOR, _SE_BUILD_MINOR, iMajor, iMinor);
-    SendDisconnectMessage(iClient, strExplanation, /*bStream=*/TRUE);
+    SendDisconnectMessage(iClient, strExplanation.ConstData(), /*bStream=*/TRUE);
     return;
   }
   extern CTString net_strConnectPassword;
@@ -897,7 +897,7 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm)
     // disconnect the client
     // NOTE: DO NOT TRANSLATE THIS STRING!
     CTString strMod(0, "MOD:%s\\%s", _strModName, _strModURL);
-    SendDisconnectMessage(iClient, strMod, /*bStream=*/TRUE);
+    SendDisconnectMessage(iClient, strMod.ConstData(), /*bStream=*/TRUE);
     return;
   }
 
@@ -1005,7 +1005,7 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm)
     _pNetwork->SendToClientReliable(iClient, strmInfo);
   
     CPrintF(TRANS("Server: Sent initialization info to '%s' (%dk)\n"),
-      (const char*)_cmiComm.Server_GetClientName(iClient), slSize/1024);
+      _cmiComm.Server_GetClientName(iClient).ConstData(), slSize/1024);
   // if failed
   } catch (char *strError) {
     // deactivate it
@@ -1073,7 +1073,7 @@ void CServer::SendSessionStateData(INDEX iClient)
     _pNetwork->SendToClientReliable(iClient, strmInfo);
   
     CPrintF(TRANS("Server: Sent connection data to '%s' (%dk->%dk->%dk)\n"),
-      (const char*)_cmiComm.Server_GetClientName(iClient), 
+      _cmiComm.Server_GetClientName(iClient).ConstData(), 
       slFullSize/1024, slDeltaSize/1024, slSize/1024);
     if (net_bDumpConnectionInfo) {
       CPrintF(TRANS("Server: Connection data dumped.\n"));
@@ -1259,7 +1259,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
     if (iClient>0 && GetPlayersCountForClient(iClient)>=sso.sso_ctLocalPlayers) {
       CTString strMessage;
       strMessage.PrintF(TRANS("Protocol violation"));
-      SendDisconnectMessage(iClient, strMessage);
+      SendDisconnectMessage(iClient, strMessage.ConstData());
     }
 
     // read character data from the message
@@ -1283,7 +1283,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
       CTString strMessage;
       strMessage.PrintF(TRANS("Player character '%s' already exists in this session."),
         pcCharacter.GetName());
-      SendDisconnectMessage(iClient, strMessage);
+      SendDisconnectMessage(iClient, strMessage.ConstData());
 
     // if the max. number of clients is not reached
     } else if (pplbNewClient!=NULL) {
@@ -1544,7 +1544,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
     // send the stream to the remote session state
     _pNetwork->SendToClientReliable(iClient, strmCRC);
     CPrintF(TRANS("Server: Sent CRC challenge to '%s' (%dk)\n"),
-      (const char*)_cmiComm.Server_GetClientName(iClient), slSize/1024);
+      _cmiComm.Server_GetClientName(iClient).ConstData(), slSize/1024);
 
   } break;
   // if a crc response is received
@@ -1560,7 +1560,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
     // if same
     } else {
       CPrintF(TRANS("Server: Client '%s', CRC check OK\n"), 
-        (const char*)_cmiComm.Server_GetClientName(iClient));
+        _cmiComm.Server_GetClientName(iClient).ConstData());
       // use the piggybacked sequence number to initiate sending stream to it
       CSessionSocket &sso = srv_assoSessions[iClient];
       sso.sso_bSendStream = TRUE;
@@ -1579,17 +1579,17 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
       CNetworkMessage nmRes(MSG_ADMIN_RESPONSE);
       nmRes<<CTString(TRANS("Remote administration not allowed on this server.\n"));
       CPrintF(TRANS("Server: Client '%s', Tried to use remote administration.\n"), 
-        (const char*)_cmiComm.Server_GetClientName(iClient));
+        _cmiComm.Server_GetClientName(iClient).ConstData());
       _pNetwork->SendToClientReliable(iClient, nmRes);
     } else if (net_strAdminPassword!=strPassword) {
       CPrintF(TRANS("Server: Client '%s', Wrong password for remote administration.\n"), 
-        (const char*)_cmiComm.Server_GetClientName(iClient));
+        _cmiComm.Server_GetClientName(iClient).ConstData());
       SendDisconnectMessage(iClient, TRANS("Wrong admin password. The attempt was logged."));
       break;
     } else {
 
       CPrintF(TRANS("Server: Client '%s', Admin cmd: %s\n"), 
-        (const char*)_cmiComm.Server_GetClientName(iClient), strCommand);
+        _cmiComm.Server_GetClientName(iClient).ConstData(), strCommand.ConstData());
 
       con_bCapture = TRUE;
       con_strCapture = "";

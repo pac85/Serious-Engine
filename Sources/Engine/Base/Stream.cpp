@@ -157,7 +157,7 @@ void InitStreams(void)
   // for each group file in base directory
   struct _finddata_t c_file;
   INT_PTR hFile;
-  hFile = _findfirst(_fnmApplicationPath+"*.gro", &c_file);
+  hFile = _findfirst((_fnmApplicationPath + "*.gro").ConstData(), &c_file);
   BOOL bOK = (hFile!=-1);
   while(bOK) {
     if (CTString(c_file.name).Matches("*.gro")) {
@@ -173,7 +173,7 @@ void InitStreams(void)
     // for each group file in mod directory
     struct _finddata_t c_file;
     INT_PTR hFile;
-    hFile = _findfirst(_fnmApplicationPath+_fnmMod+"*.gro", &c_file);
+    hFile = _findfirst((_fnmApplicationPath + _fnmMod + "*.gro").ConstData(), &c_file);
     BOOL bOK = (hFile!=-1);
     while(bOK) {
       if (CTString(c_file.name).Matches("*.gro")) {
@@ -190,7 +190,7 @@ void InitStreams(void)
     // for each group file on the CD
     struct _finddata_t c_file;
     INT_PTR hFile;
-    hFile = _findfirst(_fnmCDPath+"*.gro", &c_file);
+    hFile = _findfirst((_fnmCDPath + "*.gro").ConstData(), &c_file);
     BOOL bOK = (hFile!=-1);
     while(bOK) {
       if (CTString(c_file.name).Matches("*.gro")) {
@@ -206,7 +206,7 @@ void InitStreams(void)
       // for each group file in mod directory
       struct _finddata_t c_file;
       INT_PTR hFile;
-      hFile = _findfirst(_fnmCDPath+_fnmMod+"*.gro", &c_file);
+      hFile = _findfirst((_fnmCDPath + _fnmMod + "*.gro").ConstData(), &c_file);
       BOOL bOK = (hFile!=-1);
       while(bOK) {
         if (CTString(c_file.name).Matches("*.gro")) {
@@ -315,7 +315,7 @@ int CTStream::ExceptionFilter(DWORD dwCode, _EXCEPTION_POINTERS *pExceptionInfoP
  */
 void CTStream::ExceptionFatalError(void)
 {
-  FatalError( GetWindowsError( GetLastError()) );
+  FatalError(GetWindowsError(GetLastError()).ConstData());
 }
 
 /*
@@ -327,7 +327,7 @@ void CTStream::Throw_t(char *strFormat, ...)  // throws char *
   char strFormatBuffer[slBufferSize];
   char strBuffer[slBufferSize];
   // add the stream description to the format string
-  _snprintf(strFormatBuffer, slBufferSize, "%s (%s)", strFormat, strm_strStreamDescription);
+  _snprintf(strFormatBuffer, slBufferSize, "%s (%s)", strFormat, strm_strStreamDescription.ConstData());
   // format the message in buffer
   va_list arg;
   va_start(arg, strFormat); // variable arguments start after this argument
@@ -915,14 +915,14 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
     // if it is a physical file
     } else if (iFile==EFP_FILE) {
       // open file in read only mode
-      fstrm_pFile = fopen(fnmFullFileName, "rb");
+      fstrm_pFile = fopen(fnmFullFileName.ConstData(), "rb");
     }
     fstrm_bReadOnly = TRUE;
   
   // if write mode requested
   } else if( om == OM_WRITE) {
     // open file for reading and writing
-    fstrm_pFile = fopen(fnmFullFileName, "rb+");
+    fstrm_pFile = fopen(fnmFullFileName.ConstData(), "rb+");
     fstrm_bReadOnly = FALSE;
   // if unknown mode
   } else {
@@ -969,16 +969,15 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   ASSERT(fstrm_pFile == NULL);
 
   // create the directory for the new file if it doesn't exist yet
-  MakeSureDirectoryPathExists(fnmFullFileName);
+  MakeSureDirectoryPathExists(fnmFullFileName.ConstData());
 
   // open file stream for writing (destroy file context if file existed before)
-  fstrm_pFile = fopen(fnmFullFileName, "wb+");
+  fstrm_pFile = fopen(fnmFullFileName.ConstData(), "wb+");
   // if not successfull
   if(fstrm_pFile == NULL)
   {
     // throw exception
-    Throw_t(TRANS("Cannot create file `%s' (%s)"), (CTString&)fnmFullFileName,
-      strerror(errno));
+    Throw_t(TRANS("Cannot create file `%s' (%s)"), fnmFullFileName.ConstData(), strerror(errno));
   }
   // if file creation was successfull, set stream description to file name
   strm_strStreamDescription = fnFileNameAbsolute;
@@ -1349,7 +1348,7 @@ BOOL FileExistsForWriting(const CTFileName &fnmFile)
   INDEX iFile = ExpandFilePath(EFP_WRITE, fnmFile, fnmFullFileName);
 
   // check if it exists
-  FILE *f = fopen(fnmFullFileName, "rb");
+  FILE *f = fopen(fnmFullFileName.ConstData(), "rb");
   if (f!=NULL) { 
     fclose(f);
     return TRUE;
@@ -1370,7 +1369,7 @@ SLONG GetFileTimeStamp_t(const CTFileName &fnm)
 
   int file_handle;
   // try to open file for reading
-  file_handle = _open( fnmExpanded, _O_RDONLY | _O_BINARY);
+  file_handle = _open(fnmExpanded.ConstData(), _O_RDONLY | _O_BINARY);
   if(file_handle==-1) {
     ThrowF_t(TRANS("Cannot open file '%s' for reading"), CTString(fnm));
     return -1;
@@ -1405,7 +1404,7 @@ BOOL IsFileReadOnly(const CTFileName &fnm)
 
   int file_handle;
   // try to open file for reading
-  file_handle = _open( fnmExpanded, _O_RDONLY | _O_BINARY);
+  file_handle = _open(fnmExpanded.ConstData(), _O_RDONLY | _O_BINARY);
   if(file_handle==-1) {
     return FALSE;
   }
@@ -1424,7 +1423,7 @@ BOOL RemoveFile(const CTFileName &fnmFile)
   CTFileName fnmExpanded;
   INDEX iFile = ExpandFilePath(EFP_WRITE, fnmFile, fnmExpanded);
   if (iFile==EFP_FILE) {
-    int ires = remove(fnmExpanded);
+    int ires = remove(fnmExpanded.ConstData());
     return ires==0;
   } else {
     return FALSE;
@@ -1434,7 +1433,7 @@ BOOL RemoveFile(const CTFileName &fnmFile)
 
 static BOOL IsFileReadable_internal(CTFileName &fnmFullFileName)
 {
-  FILE *pFile = fopen(fnmFullFileName, "rb");
+  FILE *pFile = fopen(fnmFullFileName.ConstData(), "rb");
   if (pFile!=NULL) {
     fclose(pFile);
     return TRUE;

@@ -53,7 +53,7 @@ ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString)
 
   // open the key
   HKEY hkey;
-  LONG lRes = RegOpenKeyExA(hKeyRoot, strKeyPath, 0, KEY_READ, &hkey);
+  LONG lRes = RegOpenKeyExA(hKeyRoot, strKeyPath.ConstData(), 0, KEY_READ, &hkey);
   if (lRes!=ERROR_SUCCESS) {
     return FALSE;
   }
@@ -62,7 +62,7 @@ ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString)
   char achrKeyValue[1024];
   ULONG ctType;
   ULONG ctLength = sizeof(achrKeyValue);
-  LONG lResult = RegQueryValueExA(hkey, strKeyName, 0, &ctType, (unsigned char *)achrKeyValue, &ctLength);
+  LONG lResult = RegQueryValueExA(hkey, strKeyName.ConstData(), 0, &ctType, (unsigned char *)achrKeyValue, &ctLength);
   if(lResult != ERROR_SUCCESS) {
     return FALSE;
   }
@@ -82,7 +82,7 @@ ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong)
 
   // open the key
   HKEY hkey;
-  LONG lRes = RegOpenKeyExA(hKeyRoot, strKeyPath, 0, KEY_READ, &hkey);
+  LONG lRes = RegOpenKeyExA(hKeyRoot, strKeyPath.ConstData(), 0, KEY_READ, &hkey);
   if (lRes!=ERROR_SUCCESS) {
     return FALSE;
   }
@@ -91,7 +91,7 @@ ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong)
   ULONG ulKeyValue;
   ULONG ctType;
   ULONG ctLength = sizeof(ulKeyValue);
-  LONG lResult = RegQueryValueExA(hkey, strKeyName, 0, &ctType, (unsigned char *)&ulKeyValue, &ctLength);
+  LONG lResult = RegQueryValueExA(hkey, strKeyName.ConstData(), 0, &ctType, (unsigned char *)&ulKeyValue, &ctLength);
   if(lResult != ERROR_SUCCESS) {
     return FALSE;
   }
@@ -112,14 +112,14 @@ ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString)
   // create the registry key
   HKEY hkey;
   DWORD dwDisposition;
-  LONG lRes = RegCreateKeyExA(hKeyRoot, (const char*)strKeyPath, 0,
+  LONG lRes = RegCreateKeyExA(hKeyRoot, strKeyPath.ConstData(), 0,
     "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition);
   if (lRes!=ERROR_SUCCESS) {
     return FALSE;
   }
 
   // set the value
-  lRes = RegSetValueExA(hkey, strKeyName, 0, REG_SZ, (const UBYTE *)strString.str_String, strString.Length());
+  lRes = RegSetValueExA(hkey, strKeyName.ConstData(), 0, REG_SZ, (const UBYTE *)strString.ConstData(), strString.Length());
 
   // close the key
   RegCloseKey(hkey);

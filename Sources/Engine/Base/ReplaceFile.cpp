@@ -122,7 +122,7 @@ BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
   // call file requester for substituting file
   CTString strDefaultFile;
   strDefaultFile = fnSourceFile.FileName() + fnSourceFile.FileExt();
-  fnReplacingFile = CallFileRequester((char*)(const char*)strTitle, (char*)(const char*)strDefaultFile, pFilter);
+  fnReplacingFile = CallFileRequester(strTitle.Data(), strDefaultFile.Data(), pFilter);
   if( fnReplacingFile == "") return FALSE;
 
   try

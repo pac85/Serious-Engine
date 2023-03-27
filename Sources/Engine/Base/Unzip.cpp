@@ -219,10 +219,10 @@ void ConvertSlashes(char *p)
 // read directory of a zip archive and add all files in it to active set
 void ReadZIPDirectory_t(CTFileName *pfnmZip)
 {
-
-  FILE *f = fopen(*pfnmZip, "rb");
+  const char *strZip = pfnmZip->ConstData();
+  FILE *f = fopen(strZip, "rb");
   if (f==NULL) {
-    ThrowF_t(TRANS("%s: Cannot open file (%s)"), (CTString&)*pfnmZip, strerror(errno));
+    ThrowF_t(TRANS("%s: Cannot open file (%s)"), strZip, strerror(errno));
   }
   // start at the end of file, minus expected minimum overhead
   fseek(f, 0, SEEK_END);
@@ -249,12 +249,12 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
       if (eod.eod_swDiskNo!=0||eod.eod_swDirStartDiskNo!=0
         ||eod.eod_swEntriesInDirOnThisDisk!=eod.eod_swEntriesInDir) {
         // fail
-        ThrowF_t(TRANS("%s: Multi-volume zips are not supported"), (CTString&)*pfnmZip);
+        ThrowF_t(TRANS("%s: Multi-volume zips are not supported"), strZip);
       }                                                     
       // check against empty zips
       if (eod.eod_swEntriesInDir<=0) {
         // fail
-        ThrowF_t(TRANS("%s: Empty zip"), (CTString&)*pfnmZip);
+        ThrowF_t(TRANS("%s: Empty zip"), strZip);
       }                                                     
       // all ok
       bEODFound = TRUE;
@@ -264,7 +264,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
   // if eod not found
   if (!bEODFound) {
     // fail
-    ThrowF_t(TRANS("%s: Cannot find 'end of central directory'"), (CTString&)*pfnmZip);
+    ThrowF_t(TRANS("%s: Cannot find 'end of central directory'"), strZip);
   }
 
   // check if the zip is from a mod
@@ -283,8 +283,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
     // if this is not the expected sig
     if (slSig!=SIGNATURE_FH) {
       // fail
-      ThrowF_t(TRANS("%s: Wrong signature for 'file header' number %d'"), 
-        (CTString&)*pfnmZip, iFile);
+      ThrowF_t(TRANS("%s: Wrong signature for 'file header' number %d'"), strZip, iFile);
     }
     // read its header
     FileHeader fh;
@@ -294,10 +293,10 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
     char strBuffer[slMaxFileName+1];
     memset(strBuffer, 0, sizeof(strBuffer));
     if (fh.fh_swFileNameLen>slMaxFileName) {
-      ThrowF_t(TRANS("%s: Too long filepath in zip"), (CTString&)*pfnmZip);
+      ThrowF_t(TRANS("%s: Too long filepath in zip"), strZip);
     }
     if (fh.fh_swFileNameLen<=0) {
-      ThrowF_t(TRANS("%s: Invalid filepath length in zip"), (CTString&)*pfnmZip);
+      ThrowF_t(TRANS("%s: Invalid filepath length in zip"), strZip);
     }
     fread(strBuffer, fh.fh_swFileNameLen, 1, f);
 
@@ -311,8 +310,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
       // check size
       if (fh.fh_slUncompressedSize!=0
         ||fh.fh_slCompressedSize!=0) {
-        ThrowF_t(TRANS("%s/%s: Invalid directory"), 
-          (CTString&)*pfnmZip, strBuffer);
+        ThrowF_t(TRANS("%s/%s: Invalid directory"), strZip, strBuffer);
       }
 
     // if the file is real file
@@ -345,11 +343,11 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
   // if error reading
   if (ferror(f)) {
     // fail
-    ThrowF_t(TRANS("%s: Error reading central directory"), (CTString&)*pfnmZip);
+    ThrowF_t(TRANS("%s: Error reading central directory"), strZip);
   }
 
   // report that file was read
-  CPrintF(TRANS("  %s: %d files\n"), (CTString&)*pfnmZip, ctFiles++);
+  CPrintF(TRANS("  %s: %d files\n"), strZip, ctFiles++);
 }
 
 // add one zip archive to current active set
@@ -428,7 +426,7 @@ int qsort_ArchiveCTFileName_reverse(const void *elem1, const void *elem2 )
   } else if (iPriority1>iPriority2) {
     return -1;
   } else {
-    return -stricmp(fnm1, fnm2);
+    return -stricmp(fnm1.ConstData(), fnm2.ConstData());
   }
 }
 // read directories of all currently added archives, in reverse alphabetical order
@@ -577,7 +575,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   zh.zh_zeEntry = *pze;
 
   // open zip archive for reading
-  zh.zh_fFile = fopen(*pze->ze_pfnmArchive, "rb");
+  zh.zh_fFile = fopen(pze->ze_pfnmArchive->ConstData(), "rb");
   // if failed to open it
   if (zh.zh_fFile==NULL) {
     // clear the handle

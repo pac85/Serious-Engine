@@ -227,7 +227,7 @@ CNetworkMessage &CNetworkMessage::operator<<(const CTString &str)
 {
   // start writing string to message
   nm_iBit = 0;
-  const char *pstr = (const char *)str;
+  const char *pstr = str.ConstData();
   // repeat
   for(;;) {
     // if reached one byte before end of message

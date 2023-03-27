@@ -143,7 +143,7 @@ UINT_PTR APIENTRY FileOpenRequesterHook( HWND hdlg, UINT uiMsg, WPARAM wParam,	L
           toPreview.SetData( pTextureData);
           _pDrawPort->PutTexture( &toPreview, rectPict);
           CWnd::FromHandle( GetDlgItem( hdlg, IDC_THUMBNAIL_DESCRIPTION))->SetWindowText( 
-            CString(pTextureData->GetDescription()));
+            CString(pTextureData->GetDescription().ConstData()));
           // release the texture
           _pTextureStock->Release( pTextureData);
         }
@@ -200,21 +200,21 @@ CTFileName CEngineGUI::FileRequester(
   ofnRequestFiles.hwndOwner = AfxGetMainWnd()->m_hWnd;
   ofnRequestFiles.lpstrFilter = pchrFilters;
   ofnRequestFiles.lpstrFile = chrFiles;
-  sprintf( chrFiles, "%s", strFileSelectedByDefault);
+  sprintf(chrFiles, "%s", strFileSelectedByDefault.ConstData());
   ofnRequestFiles.nMaxFile = 2048;
 
-  CString strRequestInDirectory = _fnmApplicationPath+strDefaultDir;
+  CString strRequestInDirectory = (_fnmApplicationPath + strDefaultDir).ConstData();
   if( pchrRegistry != NULL)
   {
     strRequestInDirectory = AfxGetApp()->GetProfileString(L"Scape", CString(pchrRegistry), 
-      CString(_fnmApplicationPath+strDefaultDir));
+      CString((_fnmApplicationPath + strDefaultDir).ConstData()));
   }
 
   // if directory is not inside engine dir
   CTString strTest = CStringA(strRequestInDirectory);
   if (!strTest.RemovePrefix(_fnmApplicationPath)) {
     // force it there
-    strRequestInDirectory = _fnmApplicationPath;
+    strRequestInDirectory = _fnmApplicationPath.ConstData();
   }
   
 

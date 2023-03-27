@@ -520,7 +520,7 @@ void CDlgBrowseByClass::AddEntity( CEntity *pen)
     itItem.iSubItem = iColumn;
     INDEX iFormat;
     CTString strValue=::GetItemValue(pen, iColumn, iFormat);
-    swprintf( achrTemp, L"%s", CString(strValue));
+    swprintf(achrTemp, L"%s", (const wchar_t *)CString(strValue.ConstData()));
     itItem.pszText = achrTemp;
     m_listEntities.SetItem( &itItem);
   }

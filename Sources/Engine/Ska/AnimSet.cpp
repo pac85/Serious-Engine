@@ -454,7 +454,7 @@ void CAnimSet::Read_t(CTStream *istrFile)
   if(iFileVersion != ANIMSET_VERSION)
   {
 		ThrowF_t(TRANS("File '%s'.\nInvalid animset file version. Expected Ver \"%d\" but found \"%d\"\n"),
-      (const char*)istrFile->GetDescription(),ANIMSET_VERSION,iFileVersion);
+      istrFile->GetDescription().ConstData(), ANIMSET_VERSION, iFileVersion);
   }
   INDEX ctan;
   // read anims count

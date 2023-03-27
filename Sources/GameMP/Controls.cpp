@@ -327,7 +327,7 @@ void CControls::Save_t( CTFileName fnFile)
       itba->ba_strName,
       _pInput->GetButtonName( itba->ba_iFirstKey),
       _pInput->GetButtonName( itba->ba_iSecondKey) );
-    strmFile.PutLine_t( strLine);
+    strmFile.PutLine_t(strLine.ConstData());
 
     // export pressed command
     strLine.PrintF(" Pressed:  %s", itba->ba_strCommandLineWhenPressed);
@@ -336,10 +336,10 @@ void CControls::Save_t( CTFileName fnFile)
       // delete EOL-s
       if( (strLine[ iLetter] == 0x0d) || (strLine[ iLetter] == 0x0a) )
       {
-        ((char*)(const char*)strLine)[ iLetter] = ' ';
+        strLine[iLetter] = ' ';
       }
     }}
-    strmFile.PutLine_t( strLine);
+    strmFile.PutLine_t(strLine.ConstData());
 
     // export released command
     strLine.PrintF(" Released: %s", itba->ba_strCommandLineWhenReleased);
@@ -348,10 +348,10 @@ void CControls::Save_t( CTFileName fnFile)
       // delete EOL-s
       if( (strLine[ iLetter] == 0x0d) || (strLine[ iLetter] == 0x0a) )
       {
-        ((char*)(const char*)strLine)[ iLetter] = ' ';
+        strLine[iLetter] = ' ';
       }
     }}
-    strmFile.PutLine_t( strLine);
+    strmFile.PutLine_t(strLine.ConstData());
   }
   // write axis actions
   for( INDEX iAxis=0; iAxis<AXIS_ACTIONS_CT; iAxis++)
@@ -385,7 +385,7 @@ void CControls::Save_t( CTFileName fnFile)
       strIfInverted,
       strIfRelative,
       strIfSmooth);
-    strmFile.PutLine_t( strLine);
+    strmFile.PutLine_t(strLine.ConstData());
   }
 
   // write global parameters

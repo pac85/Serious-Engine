@@ -214,7 +214,7 @@ void CSkeleton::Read_t(CTStream *istrFile)
   (*istrFile)>>iFileVersion;
   if(iFileVersion != SKELETON_VERSION) {
 		ThrowF_t(TRANS("File '%s'.\nInvalid skeleton file version.\nExpected Ver \"%d\" but found \"%d\"\n"),
-      (const char*)istrFile->GetDescription(),SKELETON_VERSION,iFileVersion);
+      istrFile->GetDescription().ConstData(), SKELETON_VERSION, iFileVersion);
   }
   // read skeleton lod count
   (*istrFile)>>ctslods;

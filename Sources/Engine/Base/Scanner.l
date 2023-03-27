@@ -27,8 +27,8 @@ static BOOL _bCmdParamCountErrorReported = FALSE;
 
 void TranscriptEsc(CTString &str)
 {
-  char *pchSrc = (char *)(const char *)str;
-  char *pchDst = (char *)(const char *)str;
+  char *pchSrc = str.Data();
+  char *pchDst = str.Data();
   // if quoted
   if (pchDst[0] == '"') {
     size_t len = strlen(pchDst);
@@ -91,7 +91,7 @@ PARAMCONTENT	([^\ \n\";]|(\\\ ))
   CTString strIncludeFile;
   try {
     strIncludeFile.Load_t(CTString(strFileName));
-    ShellPushBuffer(strFileName, strIncludeFile, FALSE);
+    ShellPushBuffer(strFileName, strIncludeFile.ConstData(), FALSE);
 
   } catch(char *strError) {
     _pShell->ErrorF("Cannot load script file '%s': %s", yytext, strError);
@@ -131,7 +131,7 @@ PARAMCONTENT	([^\ \n\";]|(\\\ ))
                   // at the end of the command
 
   // switch to the new input buffer with that command
-  ShellPushBuffer(ShellGetBufferName(), _strCmd, FALSE);
+  ShellPushBuffer(ShellGetBufferName(), _strCmd.ConstData(), FALSE);
   BEGIN(INITIAL);
 }
 
@@ -185,7 +185,7 @@ PARAMCONTENT	([^\ \n\";]|(\\\ ))
   strNew = yytext;
   // parse escape symbols and remove double quotes
   TranscriptEsc(strNew);
-  yylval.val.strString = (const char*)strNew;
+  yylval.val.strString = strNew.ConstData();
   return(c_string); 
 }
 "'"{CHARCONTENT}"'"       { return(c_char); }

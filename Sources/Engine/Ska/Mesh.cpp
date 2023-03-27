@@ -687,7 +687,7 @@ void CMesh::Read_t(CTStream *istrFile)
   // if file version is not 11 nor 12
   if(iFileVersion != 11 && iFileVersion!=12) {
 		ThrowF_t(TRANS("File '%s'.\nInvalid Mesh file version.\nExpected Ver \"%d\" but found \"%d\"\n"),
-      (const char*)istrFile->GetDescription(),MESH_VERSION,iFileVersion);
+      istrFile->GetDescription().ConstData(), MESH_VERSION, iFileVersion);
     return;
   }
 
@@ -810,10 +810,10 @@ void CMesh::Read_t(CTStream *istrFile)
           ShaderDesc shDesc;
           msrf.msrf_pShader->GetShaderDesc(shDesc);
           // check if saved params count match shader params count
-          if(shDesc.sd_astrTextureNames.Count() != cttx) ThrowF_t("File '%s'\nWrong texture count %d",(const char*)GetName(),cttx);
-          if(shDesc.sd_astrTexCoordNames.Count() != cttc) ThrowF_t("File '%s'\nWrong uvmaps count %d",(const char*)GetName(),cttc);
-          if(shDesc.sd_astrColorNames.Count() != ctcol) ThrowF_t("File '%s'\nWrong colors count %d",(const char*)GetName(),ctcol);
-          if(shDesc.sd_astrFloatNames.Count() != ctfl) ThrowF_t("File '%s'\nWrong floats count %d",(const char*)GetName(),ctfl);
+          if (shDesc.sd_astrTextureNames.Count() != cttx) ThrowF_t("File '%s'\nWrong texture count %d", GetName().ConstData(), cttx);
+          if (shDesc.sd_astrTexCoordNames.Count() != cttc) ThrowF_t("File '%s'\nWrong uvmaps count %d", GetName().ConstData(), cttc);
+          if (shDesc.sd_astrColorNames.Count() != ctcol) ThrowF_t("File '%s'\nWrong colors count %d", GetName().ConstData(), ctcol);
+          if (shDesc.sd_astrFloatNames.Count() != ctfl) ThrowF_t("File '%s'\nWrong floats count %d", GetName().ConstData(), ctfl);
         }
 
         // create arrays for shader params

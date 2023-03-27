@@ -98,7 +98,7 @@ CTFileName CEngineGUI::CreateTexture(CTFileName fnTexFileToRecreate/*=CTString("
         CTString strFullNameNoExt = _fnmApplicationPath +
           fnTexFileToRecreate.FileDir() + fnTexFileToRecreate.FileName();
         // if there is tga picture with same name
-        if( GetFileAttributesA( strFullNameNoExt+".tga") != -1)
+        if (GetFileAttributesA((strFullNameNoExt + ".tga").ConstData()) != -1)
         {
           // call create normal texture dialog with tga picture name
           CDlgCreateNormalTexture dlgCreateNormalTexture( fnToRecreateNoExt+".tga");
@@ -111,7 +111,7 @@ CTFileName CEngineGUI::CreateTexture(CTFileName fnTexFileToRecreate/*=CTString("
           }
         }
         // else if there is pcx picture with same name
-        else if( GetFileAttributesA( strFullNameNoExt+".pcx") != -1)
+        else if (GetFileAttributesA((strFullNameNoExt + ".pcx").ConstData()) != -1)
         {
           // call create normal texture dialog with tga picture name
           CDlgCreateNormalTexture dlgCreateNormalTexture( fnToRecreateNoExt+".pcx");
@@ -124,7 +124,7 @@ CTFileName CEngineGUI::CreateTexture(CTFileName fnTexFileToRecreate/*=CTString("
           }
         }
         // else if script exists
-        else if( GetFileAttributesA( strFullNameNoExt+".scr") != -1)
+        else if (GetFileAttributesA((strFullNameNoExt + ".scr").ConstData()) != -1)
         {
           CDynamicArray<CTFileName> afnScript;
           CTFileName *pfnScript = afnScript.New();
@@ -264,10 +264,10 @@ void CEngineGUI::GetFullScreenModeFromRegistry( CTString strSectionName, CDispla
   dm.dm_pixSizeJ = 480;
   dm.dm_ddDepth  = DD_DEFAULT;
   // read FS parameters from registry
-  CTString strResult = CStringA(AfxGetApp()->GetProfileString( CString(strSectionName), L"Full screen mode", L"640 x 480 x 0"));
+  CTString strResult = CStringA(AfxGetApp()->GetProfileString(CString(strSectionName.ConstData()), L"Full screen mode", L"640 x 480 x 0"));
   strResult.ScanF( "%d x %d x %d", &dm.dm_pixSizeI, &dm.dm_pixSizeJ, &dm.dm_ddDepth);
   if( dm.dm_ddDepth<DD_DEFAULT || dm.dm_ddDepth>DD_32BIT) dm.dm_ddDepth = DD_DEFAULT;
-  strResult = CStringA(AfxGetApp()->GetProfileString( CString(strSectionName), L"Full screen API", L"OpenGL"));
+  strResult = CStringA(AfxGetApp()->GetProfileString(CString(strSectionName.ConstData()), L"Full screen API", L"OpenGL"));
 #ifdef SE1_D3D
   gat = (strResult=="Direct3D") ? GAT_D3D : GAT_OGL;
 #else // SE1_D3D
@@ -284,6 +284,6 @@ void CEngineGUI::SetFullScreenModeToRegistry( CTString strSectionName, CDisplayM
 #else // SE1_D3D
   CTString strGAT = "OpenGL";
 #endif // SE1_D3D
-  AfxGetApp()->WriteProfileString(CString(strSectionName), L"Full screen mode", CString(strDM));
-  AfxGetApp()->WriteProfileString(CString(strSectionName), L"Full screen API", CString(strGAT));
+  AfxGetApp()->WriteProfileString(CString(strSectionName.ConstData()), L"Full screen mode", CString(strDM.ConstData()));
+  AfxGetApp()->WriteProfileString(CString(strSectionName.ConstData()), L"Full screen API", CString(strGAT.ConstData()));
 }

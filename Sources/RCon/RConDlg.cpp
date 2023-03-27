@@ -140,7 +140,7 @@ BOOL CRConDlg::PreTranslateMessage(MSG* pMsg)
         UpdateData(FALSE);
 
         CNetworkMessage nm(MSG_EXTRA);
-        nm<<CTString(0, "rcmd %u \"%s\" %s\n", theApp.m_ulCode, (const char*)theApp.m_strPass, (const char*)CStringA(strCommand));
+        nm << CTString(0, "rcmd %u \"%s\" %s\n", theApp.m_ulCode, theApp.m_strPass.ConstData(), (const char *)CStringA(strCommand));
         _pNetwork->SendBroadcast(nm, theApp.m_ulHost, theApp.m_uwPort);
         _cmiComm.Client_Update();
       }

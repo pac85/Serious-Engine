@@ -89,7 +89,7 @@ void CConsole::Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX 
   con_strCurrent = con_strLastLine;
 
   // open console file
-  con_fLog = fopen(fnmLog, "wt");
+  con_fLog = fopen(fnmLog.ConstData(), "wt");
 
   if (con_fLog==NULL) {
     FatalError("%s", strerror(errno));
@@ -287,7 +287,7 @@ extern void CPrintF(const char *strFormat, ...)
   strBuffer.VPrintF(strFormat, arg);
 
   // print it to the main console
-  _pConsole->PutString(strBuffer);
+  _pConsole->PutString(strBuffer.ConstData());
 }
 
 // Add a string of text to console

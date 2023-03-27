@@ -45,7 +45,7 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
       // read the line
       CTString strLine;
       strmMap.GetLine_t(strLine);
-      if (strncmp(strLine, "  Address", 9)==0) {
+      if (strncmp(strLine.ConstData(), "  Address", 9) == 0) {
         break;
       }
     }
@@ -116,11 +116,11 @@ void SubMain( int argc, char *argv[])
       strmSrc.GetLine_t(strLine);
 
       // try to find address marker in it
-      const char *strAdr = strstr(strLine, "$adr:");
+      const char *strAdr = strstr(strLine.ConstData(), "$adr:");
       // if there is no marker
       if (strAdr==NULL) {
         // just copy the line
-        strmDst.PutLine_t(strLine);
+        strmDst.PutLine_t(strLine.ConstData());
 
       // if there is marker
       } else {
@@ -137,7 +137,7 @@ void SubMain( int argc, char *argv[])
         // out put the result
         CTString strResult;
         strResult.PrintF("%s (%s+0X%X)", strLine, strFunction, slDelta);
-        strmDst.PutLine_t(strResult);
+        strmDst.PutLine_t(strResult.ConstData());
       }
     }
   }

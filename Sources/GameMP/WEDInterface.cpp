@@ -146,7 +146,7 @@ void CGame::QuickTest(const CTFileName &fnMapName,
         char *pachrTemp=getenv("TEMP");
         if( pachrTemp!=NULL)
         {
-          FILE *pfileMessage=fopen(CTString(pachrTemp)+"Messenger.msg","r");
+          FILE *pfileMessage = fopen((CTString(pachrTemp) + "Messenger.msg").ConstData(), "r");
           if( pfileMessage!=NULL)
           {
             char achrMessage[1024];

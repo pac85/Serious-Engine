@@ -169,13 +169,13 @@ void CStatForm::Reset(void)
 
 CTString CStatCounter::Report(void)
 {
-  CTString str( 0, sc_strFormat, sc_fCount*sc_fFactor);
+  CTString str(0, sc_strFormat.ConstData(), sc_fCount * sc_fFactor);
   return str;
 }
 
 CTString CStatTimer::Report(void)
 {
-  CTString str( 0, st_strFormat, st_tvElapsed.GetSeconds()*st_fFactor);
+  CTString str(0, st_strFormat.ConstData(), st_tvElapsed.GetSeconds() * st_fFactor);
   return str;
 }
 

@@ -820,18 +820,18 @@ void CShader::Read_t(CTStream *istrFile)
   // set new error mode
   UINT iOldErrorMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   // load dll
-  hLibrary = LoadLibraryA((const char*)fnmExpanded);
+  hLibrary = LoadLibraryA(fnmExpanded.ConstData());
   // return last error mode
   SetErrorMode(iOldErrorMode);
   // check if library has loaded
   if(hLibrary==NULL)
   {
     // report error
-    istrFile->Throw_t("Error loading '%s' library",(const char*)fnmExpanded);
+    istrFile->Throw_t("Error loading '%s' library", fnmExpanded.ConstData());
     return;
   }
   // get pointer to shader render function
-  ShaderFunc = (void(*)(void))GetProcAddress(hLibrary,(const char*)strShaderFunc);
+  ShaderFunc = (void (*)(void))GetProcAddress(hLibrary, strShaderFunc.ConstData());
   // if error accured
   if(ShaderFunc==NULL)
   {
@@ -839,7 +839,7 @@ void CShader::Read_t(CTStream *istrFile)
     istrFile->Throw_t("GetProcAddress 'ShaderFunc' Error");
   }
   // get pointer to shader info function
-  GetShaderDesc = (void(*)(ShaderDesc&))GetProcAddress(hLibrary,(const char*)strShaderInfo);
+  GetShaderDesc = (void (*)(ShaderDesc &))GetProcAddress(hLibrary, strShaderInfo.ConstData());
   // if error accured
   if(GetShaderDesc==NULL) {
     // report error

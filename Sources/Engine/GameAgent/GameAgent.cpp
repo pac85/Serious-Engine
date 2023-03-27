@@ -161,14 +161,14 @@ void _initializeWinsock(void)
   // get the host IP
   hostent* phe;
   if(!ga_bMSLegacy) {
-    phe = gethostbyname(ga_strServer);
+    phe = gethostbyname(ga_strServer.ConstData());
   } else {
-    phe = gethostbyname(ga_strMSLegacy);
+    phe = gethostbyname(ga_strMSLegacy.ConstData());
   }
   // if we couldn't resolve the hostname
   if(phe == NULL) {
     // report and stop
-    CPrintF("Couldn't resolve GameAgent server %s.\n", ga_strServer);
+    CPrintF("Couldn't resolve GameAgent server %s.\n", ga_strServer.ConstData());
     _uninitWinsock();
     return;
   }
@@ -276,7 +276,7 @@ void _sendHeartbeat(INDEX iChallenge)
   } else {
     strPacket.PrintF("\\heartbeat\\%hu\\gamename\\serioussamse", (_pShell->GetINDEX("net_iPort") + 1));
   }
-  _sendPacket(strPacket);
+  _sendPacket(strPacket.ConstData());
   _tmLastHeartbeat = _pTimer->GetRealTimeTick();
 }
 
@@ -310,7 +310,7 @@ extern void GameAgent_ServerInit(void)
   } else {
     CTString strPacket;
     strPacket.PrintF("\\heartbeat\\%hu\\gamename\\serioussamse", (_pShell->GetINDEX("net_iPort") + 1));
-    _sendPacket(strPacket);
+    _sendPacket(strPacket.ConstData());
   }
 }
 
@@ -324,7 +324,7 @@ extern void GameAgent_ServerEnd(void)
   if (ga_bMSLegacy) {
     CTString strPacket;
     strPacket.PrintF("\\heartbeat\\%hu\\gamename\\serioussamse\\statechanged", (_pShell->GetINDEX("net_iPort") + 1));
-    _sendPacket(strPacket);
+    _sendPacket(strPacket.ConstData());
   }
 
   _uninitWinsock();
@@ -363,7 +363,7 @@ extern void GameAgent_ServerUpdate(void)
           _SE_VER_STRING,
           _pShell->GetString("sam_strGameName"),
           _pShell->GetString("gam_strSessionName"));
-        _sendPacketTo(strPacket, &_sinFrom);
+        _sendPacketTo(strPacket.ConstData(), &_sinFrom);
         break;
       }
 
@@ -382,7 +382,7 @@ extern void GameAgent_ServerUpdate(void)
             // if we don't have enough space left for the next player
             if (strPacket.Length() + strPlayer.Length() > 2048) {
               // send the packet
-              _sendPacketTo(strPacket, &_sinFrom);
+              _sendPacketTo(strPacket.ConstData(), &_sinFrom);
               strPacket = "";
             }
 
@@ -391,7 +391,7 @@ extern void GameAgent_ServerUpdate(void)
         }
 
         strPacket += "\x04";
-        _sendPacketTo(strPacket, &_sinFrom);
+        _sendPacketTo(strPacket.ConstData(), &_sinFrom);
         break;
       }
 
@@ -400,7 +400,7 @@ extern void GameAgent_ServerUpdate(void)
         // just send back 1 byte and the amount of players in the server (this could be useful in some cases for external scripts)
         CTString strPacket;
         strPacket.PrintF("\x04%d", _pNetwork->ga_srvServer.GetPlayersCount());
-        _sendPacketTo(strPacket, &_sinFrom);
+        _sendPacketTo(strPacket.ConstData(), &_sinFrom);
         break;
       }
      }
@@ -449,7 +449,7 @@ extern void GameAgent_ServerUpdate(void)
               // if we don't have enough space left for the next player
               if (strPacket.Length() + strPlayer.Length() > 2048) {
                 // send the packet
-                _sendPacketTo(strPacket, &_sinFrom);
+                _sendPacketTo(strPacket.ConstData(), &_sinFrom);
                 strPacket = "";
               }
               strPacket += strPlayer;
@@ -457,7 +457,7 @@ extern void GameAgent_ServerUpdate(void)
           }
 
         strPacket += "\\final\\\\queryid\\333.1";
-        _sendPacketTo(strPacket, &_sinFrom);
+        _sendPacketTo(strPacket.ConstData(), &_sinFrom);
 
       } else if (sPch2){
 
@@ -469,7 +469,7 @@ extern void GameAgent_ServerUpdate(void)
           _getGameModeName(_getSP()->sp_gmGameMode),
           _pNetwork->ga_srvServer.GetPlayersCount(),
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers);
-        _sendPacketTo(strPacket, &_sinFrom);
+        _sendPacketTo(strPacket.ConstData(), &_sinFrom);
 
       } else if (sPch3){
 
@@ -484,7 +484,7 @@ extern void GameAgent_ServerUpdate(void)
           _SE_VER_STRING,
           //_pShell->GetString("net_strLocalHost"));
           strLocation);
-        _sendPacketTo(strPacket, &_sinFrom);
+        _sendPacketTo(strPacket.ConstData(), &_sinFrom);
 
       } else if (sPch4){
 
@@ -501,7 +501,7 @@ extern void GameAgent_ServerUpdate(void)
             // if we don't have enough space left for the next player
             if (strPacket.Length() + strPlayer.Length() > 2048) {
               // send the packet
-              _sendPacketTo(strPacket, &_sinFrom);
+              _sendPacketTo(strPacket.ConstData(), &_sinFrom);
               strPacket = "";
             }
 
@@ -510,7 +510,7 @@ extern void GameAgent_ServerUpdate(void)
         }
 
         strPacket += "\\final\\\\queryid\\6.1";
-        _sendPacketTo(strPacket, &_sinFrom);
+        _sendPacketTo(strPacket.ConstData(), &_sinFrom);
 
       } else {
         CPrintF("Unknown query server response!\n");
@@ -536,7 +536,7 @@ extern void GameAgent_ServerStateChanged(void)
   } else {
     CTString strPacket;
     strPacket.PrintF("\\heartbeat\\%hu\\gamename\\serioussamse\\statechanged", (_pShell->GetINDEX("net_iPort") + 1));
-    _sendPacket(strPacket);
+    _sendPacket(strPacket.ConstData());
   }
 }
 
@@ -669,7 +669,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
             *cSec                = NULL;
 
 
-    strcpy(cMS,ga_strMSLegacy);
+    strcpy(cMS, ga_strMSLegacy.ConstData());
 
     WSADATA wsadata;
     if(WSAStartup(MAKEWORD(2,2), &wsadata) != 0) {
@@ -857,7 +857,7 @@ extern void GameAgent_EnumUpdate(void)
 
           sockaddr_in sinServer;
           sinServer.sin_family = AF_INET;
-          sinServer.sin_addr.s_addr = inet_addr(strIP);
+          sinServer.sin_addr.s_addr = inet_addr(strIP.ConstData());
           sinServer.sin_port = htons(ip.iPort + 1);
 
           // insert server status request into container
@@ -964,8 +964,8 @@ extern void GameAgent_EnumUpdate(void)
         ns.ns_strAddress = inet_ntoa(_sinFrom.sin_addr) + CTString(":") + CTString(0, "%d", htons(_sinFrom.sin_port) - 1);
         ns.ns_tmPing = (tmPing / 1000.0f);
         ns.ns_strWorld = strLevel;
-        ns.ns_ctPlayers = atoi(strPlayers);
-        ns.ns_ctMaxPlayers = atoi(strMaxPlayers);
+        ns.ns_ctPlayers = atoi(strPlayers.ConstData());
+        ns.ns_ctMaxPlayers = atoi(strMaxPlayers.ConstData());
         ns.ns_strGameType = strGameType;
         ns.ns_strMod = strGameName;
         ns.ns_strVer = strVersion;
@@ -1042,7 +1042,7 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
 
         sockaddr_in sinServer;
         sinServer.sin_family = AF_INET;
-        sinServer.sin_addr.s_addr = inet_addr(strIP);
+        sinServer.sin_addr.s_addr = inet_addr(strIP.ConstData());
         sinServer.sin_port = ip.iPort;
 
         // insert server status request into container
@@ -1179,8 +1179,8 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
                     ns.ns_strAddress = inet_ntoa(_sinClient.sin_addr) + CTString(":") + CTString(0, "%d", htons(_sinClient.sin_port) - 1);
                     ns.ns_tmPing = (tmPing / 1000.0f);
                     ns.ns_strWorld = strLevel;
-                    ns.ns_ctPlayers = atoi(strPlayers);
-                    ns.ns_ctMaxPlayers = atoi(strMaxPlayers);
+                    ns.ns_ctPlayers = atoi(strPlayers.ConstData());
+                    ns.ns_ctMaxPlayers = atoi(strMaxPlayers.ConstData());
                     ns.ns_strGameType = strGameType;
                     ns.ns_strMod = strGameName;
                     ns.ns_strVer = strVersion;
@@ -1245,7 +1245,7 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
 
         sockaddr_in sinServer;
         sinServer.sin_family = AF_INET;
-        sinServer.sin_addr.s_addr = inet_addr(strIP);
+        sinServer.sin_addr.s_addr = inet_addr(strIP.ConstData());
         sinServer.sin_port = ip.iPort;
 
         // insert server status request into container
@@ -1388,8 +1388,8 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
                     ns.ns_strAddress = inet_ntoa(_sinClient.sin_addr) + CTString(":") + CTString(0, "%d", htons(_sinClient.sin_port) - 1);
                     ns.ns_tmPing = (tmPing / 1000.0f);
                     ns.ns_strWorld = strLevel;
-                    ns.ns_ctPlayers = atoi(strPlayers);
-                    ns.ns_ctMaxPlayers = atoi(strMaxPlayers);
+                    ns.ns_ctPlayers = atoi(strPlayers.ConstData());
+                    ns.ns_ctMaxPlayers = atoi(strMaxPlayers.ConstData());
                     ns.ns_strGameType = strGameType;
                     ns.ns_strMod = strGameName;
                     ns.ns_strVer = strVersion;

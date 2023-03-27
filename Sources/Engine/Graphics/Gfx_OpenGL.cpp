@@ -440,7 +440,7 @@ void CGfxLibrary::AddExtension_OGL( ULONG ulFlag, const char *strName)
 // determine OpenGL extensions that engine supports
 void CGfxLibrary::TestExtension_OGL( ULONG ulFlag, const char *strName)
 {
-  if( HasExtension( go_strExtensions, strName)) AddExtension_OGL( ulFlag, strName);
+  if (HasExtension(go_strExtensions.ConstData(), strName)) AddExtension_OGL(ulFlag, strName);
 }
 
 
@@ -553,9 +553,9 @@ void CGfxLibrary::InitContext_OGL(void)
   gl_ctRealTextureUnits = 1;
   pglActiveTextureARB       = NULL;
   pglClientActiveTextureARB = NULL;
-  if( HasExtension( go_strExtensions, "GL_ARB_multitexture")) {
+  if (HasExtension(go_strExtensions.ConstData(), "GL_ARB_multitexture")) {
     pglGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, (int*)&gl_ctRealTextureUnits); // get number of texture units
-    if( gl_ctRealTextureUnits>1 && HasExtension( go_strExtensions, "GL_EXT_texture_env_combine")) {
+    if (gl_ctRealTextureUnits > 1 && HasExtension(go_strExtensions.ConstData(), "GL_EXT_texture_env_combine")) {
       AddExtension_OGL( NONE, "GL_ARB_multitexture");
       AddExtension_OGL( NONE, "GL_EXT_texture_env_combine");
       pglActiveTextureARB       = (void (__stdcall*)(GLenum))pwglGetProcAddress( "glActiveTextureARB");
@@ -585,7 +585,7 @@ void CGfxLibrary::InitContext_OGL(void)
 
   // determine support for texture LOD biasing
   gl_fMaxTextureLODBias = 0.0f;
-  if( HasExtension( go_strExtensions, "GL_EXT_texture_lod_bias")) {
+  if (HasExtension(go_strExtensions.ConstData(), "GL_EXT_texture_lod_bias")) {
     AddExtension_OGL( NONE, "GL_EXT_texture_lod_bias"); // register
     // check max possible lod bias (absolute)
     pglGetFloatv( GL_MAX_TEXTURE_LOD_BIAS_EXT, &glfRet);
@@ -597,7 +597,7 @@ void CGfxLibrary::InitContext_OGL(void)
 
   // determine support for anisotropic filtering
   gl_iMaxTextureAnisotropy = 1;
-  if( HasExtension( go_strExtensions, "GL_EXT_texture_filter_anisotropic")) {
+  if (HasExtension(go_strExtensions.ConstData(), "GL_EXT_texture_filter_anisotropic")) {
     AddExtension_OGL( NONE, "GL_EXT_texture_filter_anisotropic"); // register
     // keep max allowed anisotropy degree
     pglGetIntegerv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gliRet);
@@ -608,7 +608,7 @@ void CGfxLibrary::InitContext_OGL(void)
   // check support for compiled vertex arrays
   pglLockArraysEXT   = NULL;
   pglUnlockArraysEXT = NULL;
-  if( HasExtension( go_strExtensions, "GL_EXT_compiled_vertex_array")) {
+  if (HasExtension(go_strExtensions.ConstData(), "GL_EXT_compiled_vertex_array")) {
     AddExtension_OGL( GLF_EXT_COMPILEDVERTEXARRAY, "GL_EXT_compiled_vertex_array");
     pglLockArraysEXT   = (void (__stdcall*)(GLint,GLsizei))pwglGetProcAddress( "glLockArraysEXT");
     pglUnlockArraysEXT = (void (__stdcall*)(void)         )pwglGetProcAddress( "glUnlockArraysEXT");
@@ -618,7 +618,7 @@ void CGfxLibrary::InitContext_OGL(void)
   // check support for swap interval
   pwglSwapIntervalEXT    = NULL;
   pwglGetSwapIntervalEXT = NULL;
-  if( HasExtension( go_strExtensions, "WGL_EXT_swap_control")) {
+  if (HasExtension(go_strExtensions.ConstData(), "WGL_EXT_swap_control")) {
     AddExtension_OGL( GLF_VSYNC, "WGL_EXT_swap_control");
     pwglSwapIntervalEXT    = (GLboolean (__stdcall*)(GLint))pwglGetProcAddress( "wglSwapIntervalEXT");
     pwglGetSwapIntervalEXT = (GLint     (__stdcall*)(void) )pwglGetProcAddress( "wglGetSwapIntervalEXT");
@@ -634,7 +634,7 @@ void CGfxLibrary::InitContext_OGL(void)
   pglPNTrianglesfATI = NULL;
   gl_iTessellationLevel    = 0;
   gl_iMaxTessellationLevel = 0;
-  if( HasExtension( go_strExtensions, "GL_ATI_pn_triangles")) {
+  if (HasExtension(go_strExtensions.ConstData(), "GL_ATI_pn_triangles")) {
     AddExtension_OGL( NONE, "GL_ATI_pn_triangles");
     pglPNTrianglesiATI = (void (__stdcall*)(GLenum,GLint  ))pwglGetProcAddress( "glPNTrianglesiATI");
     pglPNTrianglesfATI = (void (__stdcall*)(GLenum,GLfloat))pwglGetProcAddress( "glPNTrianglesfATI");
@@ -766,11 +766,11 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
   { // if driver doesn't exists on disk
     char strBuffer[_MAX_PATH+1];
     char *strDummy;
-    int iRes = SearchPathA( NULL, strDriverFileName, NULL, _MAX_PATH, strBuffer, &strDummy);
+    int iRes = SearchPathA(NULL, strDriverFileName.ConstData(), NULL, _MAX_PATH, strBuffer, &strDummy);
     if( iRes==0) ThrowF_t(TRANS("OpenGL driver '%s' not present"), strDriverFileName);
 
     // load opengl library
-    gl_hiDriver = ::LoadLibraryA( strDriverFileName);
+    gl_hiDriver = ::LoadLibraryA(strDriverFileName.ConstData());
     // if it cannot be loaded (although it is present on disk)
     if( gl_hiDriver==NONE) {
       // if it is 3dfx stand-alone driver

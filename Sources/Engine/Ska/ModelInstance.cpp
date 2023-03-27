@@ -83,7 +83,7 @@ void ParseSmcFile_t(CModelInstance &mi, const CTString &fnSmcFile)
   strIncludeFile.Load_t(fnFileName);
 
   _yy_mi = &mi;
-  SMCPushBuffer(fnFileName, strIncludeFile, TRUE);
+  SMCPushBuffer(fnFileName.ConstData(), strIncludeFile.ConstData(), TRUE);
   syyparse();
 }
 

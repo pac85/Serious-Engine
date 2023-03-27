@@ -261,13 +261,13 @@ static void Key_ArrowUp(void)
   do {
     // determine previous line in history
     iCurrentHistoryLine++;
-    const char *pchrHistoryStart = (const char*)strInputHistory;
+    const char *pchrHistoryStart = strInputHistory.ConstData();
     const char *pchrHistoryEnd = pchrHistoryStart + strInputHistory.Length() - 1;
     // we reach top of history, if line doesn't exist in history
     if( !GetLineCountBackward( pchrHistoryStart, pchrHistoryEnd, iCurrentHistoryLine, strHistoryLine)) return;
   } while (strCurrentLine != ""
-        && strnicmp(strHistoryLine,            strCurrentLine, Min(strHistoryLine.Length(), strCurrentLine.Length())) != 0
-        && strnicmp(strHistoryLine, strSlash + strCurrentLine, Min(strHistoryLine.Length(), strCurrentLine.Length() + 1)) != 0);
+        && strnicmp(strHistoryLine.ConstData(), strCurrentLine.ConstData(), Min(strHistoryLine.Length(), strCurrentLine.Length())) != 0
+        && strnicmp(strHistoryLine.ConstData(), (strSlash + strCurrentLine).ConstData(), Min(strHistoryLine.Length(), strCurrentLine.Length() + 1)) != 0);
   // set new editing line
   iHistoryLine   = iCurrentHistoryLine;
   strEditingLine = strHistoryLine;
@@ -283,15 +283,15 @@ static void Key_ArrowDown(void)
   INDEX iCurrentHistoryLine = iHistoryLine;
   while( iCurrentHistoryLine>1) {
     iCurrentHistoryLine--;
-    const char *pchrHistoryStart = (const char *) strInputHistory;
+    const char *pchrHistoryStart = strInputHistory.ConstData();
     const char *pchrHistoryEnd = pchrHistoryStart + strInputHistory.Length() - 1;
     // line must exist in history
     BOOL bExists = GetLineCountBackward( pchrHistoryStart, pchrHistoryEnd, iCurrentHistoryLine, strHistoryLine);
     ASSERT( bExists);
     // set new editing line
     if (strCurrentLine == ""
-     || strnicmp(strHistoryLine,            strCurrentLine, Min(strHistoryLine.Length(), strCurrentLine.Length())) == 0
-     || strnicmp(strHistoryLine, strSlash + strCurrentLine, Min(strHistoryLine.Length(), strCurrentLine.Length() + 1)) == 0) {
+     || strnicmp(strHistoryLine.ConstData(), strCurrentLine.ConstData(), Min(strHistoryLine.Length(), strCurrentLine.Length())) == 0
+     || strnicmp(strHistoryLine.ConstData(), (strSlash + strCurrentLine).ConstData(), Min(strHistoryLine.Length(), strCurrentLine.Length() + 1)) == 0) {
       iHistoryLine   = iCurrentHistoryLine;
       strEditingLine = strHistoryLine;
       iCursorPos = strEditingLine.Length();
@@ -369,7 +369,7 @@ static void Key_Return(void)
     // add to output and execute
     CPrintF( "-> %s\n", strEditingLine);
       strEditingLine+=";";
-      _pShell->Execute(strEditingLine+1);
+      _pShell->Execute(strEditingLine.ConstData() + 1);
   } 
   else if( !_pGame->gm_bGameOn) {
     // add to output and execute
@@ -415,11 +415,11 @@ static void Key_Tab( BOOL bShift)
   if( strLastExpanded == "") {
     strExpandStart = strEditingLine; 
     iSymbolOffset = 0;
-    char *pcLastSymbol = strrnonsym( strEditingLine);
+    char *pcLastSymbol = strrnonsym(strEditingLine.ConstData());
     // remember symbol text and offset inside editing line
     if( pcLastSymbol!=NULL) {
       strExpandStart = pcLastSymbol+1; 
-      iSymbolOffset  = (INDEX)(pcLastSymbol+1 - (const char*)strEditingLine);
+      iSymbolOffset  = (INDEX)(pcLastSymbol + 1 - strEditingLine.ConstData());
     }
     // printout all symbols that matches (if not only one, and not TAB only)
     INDEX ctSymbolsFound=0;
@@ -432,7 +432,7 @@ static void Key_Tab( BOOL bShift)
       if( !(itss->ss_ulFlags&SSF_USER)) continue;
       strSymbol = itss->GetCompletionString();
       // if this symbol can be expanded
-      if (strnicmp(strSymbol, strExpandStart, Min(strSymbol.Length(), strExpandStart.Length())) == 0) {
+      if (strnicmp(strSymbol.ConstData(), strExpandStart.ConstData(), Min(strSymbol.Length(), strExpandStart.Length())) == 0) {
         // can we print last found symbol ?
         if( strLastMatched!="") {
           if( !bFirstFound) CPrintF( "  -\n");
@@ -458,7 +458,7 @@ static void Key_Tab( BOOL bShift)
     strSymbol = itss->GetCompletionString();
 
     // if this symbol can be expanded
-    if (strnicmp(strSymbol, strExpandStart, Min(strSymbol.Length(), strExpandStart.Length())) == 0)
+    if (strnicmp(strSymbol.ConstData(), strExpandStart.ConstData(), Min(strSymbol.Length(), strExpandStart.Length())) == 0)
     {
       // at least one symbol is found, so tab will work
       bTabSymbolFound = TRUE;
@@ -474,7 +474,7 @@ static void Key_Tab( BOOL bShift)
         break;
       } 
       // if last expanded was not found yet, check if this one is last expanded
-      if( stricmp( strLastExpanded, strSymbol) == 0) {
+      if (stricmp(strLastExpanded.ConstData(), strSymbol.ConstData()) == 0) {
         // if looping backward (Shift+Tab)
         if( bShift) {
           // if we can loop backwards
@@ -497,7 +497,7 @@ static void Key_Tab( BOOL bShift)
   // if symbol was found
   if( bTabSymbolFound) {
     // set it in current editing line
-    *((char*)(const char*)strEditingLine +iSymbolOffset) = '\0';
+    strEditingLine[iSymbolOffset] = '\0';
     strEditingLine += strLastExpanded;
   }
   iCursorPos = strEditingLine.Length();

@@ -430,16 +430,16 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
   INDEX i;
 
   strmHFile.Create_t( fnFileName, CTStream::CM_TEXT);
-  strcpy( line, strDefinePrefix);
-  strupr( line);
+  strcpy(line, strDefinePrefix.ConstData());
+  strupr(line);
   strDefinePrefix = CTString( line);
 
   sprintf( line, "// Animation names\n");
   strmHFile.Write_t( line, strlen( line));
   // force animation prefix string to be upper case
   char achrUprName[ 256];
-  strcpy( achrUprName, strDefinePrefix);
-  strcat( achrUprName, "_ANIM_");
+  strcpy(achrUprName, strDefinePrefix.ConstData());
+  strcat(achrUprName, "_ANIM_");
   CTString strAnimationPrefix = achrUprName;
   edm_md.ExportAnimationNames_t( &strmHFile, achrUprName);
 
@@ -450,7 +450,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
   {
     if( edm_md.md_ColorNames[ i] != "")
     {
-      sprintf( line, "#define %s_PART_%s ((1L) << %d)\n", strDefinePrefix, edm_md.md_ColorNames[ i], i);
+      sprintf(line, "#define %s_PART_%s ((1L) << %d)\n", strDefinePrefix.ConstData(), edm_md.md_ColorNames[i].ConstData(), i);
       strmHFile.Write_t( line, strlen( line));
     }
   }
@@ -462,7 +462,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
     CTString strPatchName = edm_md.md_mpPatches[ iPatch].mp_strName;
     if( strPatchName != "")
     {
-      sprintf( line, "#define %s_PATCH_%s %d\n", strDefinePrefix, strPatchName, i);
+      sprintf(line, "#define %s_PATCH_%s %d\n", strDefinePrefix.ConstData(), strPatchName.ConstData(), i);
       strmHFile.Write_t( line, strlen( line));
     }
   }
@@ -475,8 +475,8 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
   for( INDEX iCollisionBox=0; iCollisionBox<edm_md.md_acbCollisionBox.Count(); iCollisionBox++)
   {
     // prepare collision box name as define
-    sprintf( line, "#define %s_COLLISION_BOX_%s %d\n", strDefinePrefix, GetCollisionBoxName( iCollisionBox),
-      iCollisionBox);
+    sprintf(line, "#define %s_COLLISION_BOX_%s %d\n", strDefinePrefix.ConstData(),
+      GetCollisionBoxName(iCollisionBox).ConstData(), iCollisionBox);
     strmHFile.Write_t( line, strlen( line));
   }
   edm_md.md_acbCollisionBox.Unlock();
@@ -488,9 +488,9 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
   FOREACHINDYNAMICARRAY(edm_aamAttachedModels, CAttachedModel, itam)
   {
     char achrUpper[ 256];
-    strcpy( achrUpper, itam->am_strName);
-    strupr( achrUpper);
-    sprintf( line, "#define %s_ATTACHMENT_%s %d\n", strDefinePrefix, achrUpper, iAttachingPlcement);
+    strcpy(achrUpper, itam->am_strName.ConstData());
+    strupr(achrUpper);
+    sprintf(line, "#define %s_ATTACHMENT_%s %d\n", strDefinePrefix.ConstData(), achrUpper, iAttachingPlcement);
     strmHFile.Write_t( line, strlen( line));
     iAttachingPlcement++;
   }
@@ -517,13 +517,13 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
       CTString strWithQuotes;
       strWithQuotes.PrintF( "\"%s\",", CTString(edm_aasAttachedSounds[iSound].as_fnAttachedSound));
 
-      sprintf( line, "//sound SOUND_%s_%-16s %-32s // %s, %s, %s\n",
-        strDefinePrefix,
+      sprintf(line, "//sound SOUND_%s_%-16s %-32s // %s, %s, %s\n",
+        strDefinePrefix.ConstData(),
         aiInfo.ai_AnimName,
-        strWithQuotes,
-        strAnimationPrefix+aiInfo.ai_AnimName,
-        strLooping,
-        strDelay);
+        strWithQuotes.ConstData(),
+        (strAnimationPrefix + aiInfo.ai_AnimName).ConstData(),
+        strLooping.ConstData(),
+        strDelay.ConstData());
       strmHFile.Write_t( line, strlen( line));
     }
   }
@@ -906,20 +906,20 @@ void CEditModel::CreateScriptFile_t(CTFileName &fnO3D) // throw char *
   File.PutLine_t( "STRETCH_DETAIL NO");
   File.PutLine_t( "");
   File.PutLine_t( ";******* Mip models");
-  sprintf( line, "DIRECTORY %s", (CTString&)fnO3D.FileDir());
+  sprintf(line, "DIRECTORY %s", fnO3D.FileDir().ConstData());
   File.PutLine_t( line);
   File.PutLine_t( "MIP_MODELS 1");
-  sprintf( line, "    %s", (CTString&)(fnO3D.FileName() + fnO3D.FileExt()));
+  sprintf(line, "    %s", (fnO3D.FileName() + fnO3D.FileExt()).ConstData());
   File.PutLine_t( line);
   File.PutLine_t( "");
   File.PutLine_t( "ANIM_START");
   File.PutLine_t( ";******* Start of animation block");
   File.PutLine_t( "");
-  sprintf( line, "DIRECTORY %s", (CTString&)fnO3D.FileDir());
+  sprintf(line, "DIRECTORY %s", fnO3D.FileDir().ConstData());
   File.PutLine_t( line);
   File.PutLine_t( "ANIMATION Default");
   File.PutLine_t( "SPEED 0.1");
-  sprintf( line, "    %s", (CTString&)(fnO3D.FileName() + fnO3D.FileExt()));
+  sprintf(line, "    %s", (fnO3D.FileName() + fnO3D.FileExt()).ConstData());
   File.PutLine_t( line);
   File.PutLine_t( "");
   File.PutLine_t( ";******* End of animation block");
@@ -2115,7 +2115,7 @@ const char *CEditModel::GetSurfaceName(INDEX iCurrentMip, INDEX iCurrentSurface)
 {
   struct MappingSurface *pSurface;
   pSurface = &edm_md.md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces[ iCurrentSurface];
-  return( pSurface->ms_Name);
+  return pSurface->ms_Name.ConstData();
 }
 //--------------------------------------------------------------------------------------------
 /*

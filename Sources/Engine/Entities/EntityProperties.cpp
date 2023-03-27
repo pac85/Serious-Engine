@@ -322,7 +322,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
               // replacing file was provided
               PROPERTY(pepProperty->ep_slOffset, CTFileName) = fnReplacingFile;
             } else {
-              ThrowF_t(TRANS("File '%s' does not exist"), (const char*)PROPERTY(pepProperty->ep_slOffset, CTFileName));
+              ThrowF_t(TRANS("File '%s' does not exist"), PROPERTY(pepProperty->ep_slOffset, CTFileName).ConstData());
             }
           }
           else

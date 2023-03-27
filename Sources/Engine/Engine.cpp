@@ -323,7 +323,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
     sys_iOSBuild = osv.dwBuildNumber & 0xFFFF;
     sys_strOSMisc = osv.szCSDVersion;
 
-    CPrintF(TRANS("  Type: %s\n"), (const char*)sys_strOS);
+    CPrintF(TRANS("  Type: %s\n"), sys_strOS.ConstData());
     CPrintF(TRANS("  Version: %d.%d, build %d\n"), 
       osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
     CPrintF(TRANS("  Misc: %s\n"), osv.szCSDVersion);

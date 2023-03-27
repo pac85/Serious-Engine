@@ -149,7 +149,7 @@ CDlgCreateEffectTexture::CDlgCreateEffectTexture(CTFileName fnInputFile/*=""*/, 
   m_wndViewCreatedTexture.m_toTexture.SetData( &m_tdCreated);
 
   // copy texture name to text control
-  m_strCreatedTextureName = m_fnCreatedTextureName;
+  m_strCreatedTextureName = m_fnCreatedTextureName.ConstData();
   m_bPreviewWindowsCreated = FALSE;
 }
 
@@ -212,8 +212,8 @@ void CDlgCreateEffectTexture::DoDataExchange(CDataExchange* pDX)
       PIX pixBaseTextureWidth  = m_tdCreated.td_ptdBaseTexture->GetPixWidth();
       PIX pixBaseTextureHeight = m_tdCreated.td_ptdBaseTexture->GetPixHeight();
       char achrBaseTextureName[ 256];
-      sprintf( achrBaseTextureName, "%s    (%d x %d)",
-        (CTString&)m_tdCreated.td_ptdBaseTexture->GetName(),
+      sprintf(achrBaseTextureName, "%s    (%d x %d)",
+        m_tdCreated.td_ptdBaseTexture->GetName().ConstData(),
         pixBaseTextureWidth, pixBaseTextureHeight);
       m_strBaseTextureName = achrBaseTextureName;
     }
@@ -490,7 +490,7 @@ void CDlgCreateEffectTexture::OnCreateAs()
       return;
     }
     // remember new name
-    m_strCreatedTextureName = fnNewTexName;
+    m_strCreatedTextureName = fnNewTexName.ConstData();
     m_fnCreatedTextureName = fnNewTexName;
     // show the change
     UpdateData( FALSE);

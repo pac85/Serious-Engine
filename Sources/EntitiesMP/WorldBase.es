@@ -94,13 +94,13 @@ static void MakeWorldStatistics(void)
     CTString strLine;
     strLine.PrintF("%-40s: %8s %8s %10s %10s", 
       "name", "count", "ammount", "health", "score");
-    strm.PutLine_t(strLine);
+    strm.PutLine_t(strLine.ConstData());
     {FOREACHINDYNAMICARRAY(_aes, EntityStats, ites) {
       EntityStats &es = *ites;
       CTString strLine;
       strLine.PrintF("%-40s: %8d %8d %10g %10d", 
         es.es_strName, es.es_ctCount, es.es_ctAmmount, es.es_fValue, es.es_iScore);
-      strm.PutLine_t(strLine);
+      strm.PutLine_t(strLine.ConstData());
     }}
     CPrintF("Dumped to '%s'\n", CTString(fnm));
   } catch (char *strError) {

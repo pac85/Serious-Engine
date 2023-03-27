@@ -162,7 +162,7 @@ CTString ScriptEsc(const CTString &str)
 {
   CTString strResult = "";
 
-  const char *pchSrc = (const char *)str;
+  const char *pchSrc = str.ConstData();
   char buf[2];
   buf[1] = 0;
 
@@ -471,42 +471,25 @@ void LoadCommands(void)
   }
 }
 
-CTString ToUpper(const CTString &strResult)
-{
-  const INDEX iLength = strResult.Length();
-  char *pch = strResult.str_String;
-  for (INDEX i = 0; i < iLength; i++) {
-    pch[i]=toupper(pch[i]);
-  }
-  return strResult;
-}
 CTString ToUpperCfunc(void* pArgs)
 {
   CTString strResult = *NEXTARGUMENT(CTString*);
-  return ToUpper(strResult);
+  return strResult.ToUpper();
 }
-CTString ToLower(const CTString &strResult)
-{
-  const INDEX iLength = strResult.Length();
-  char *pch = strResult.str_String;
-  for (INDEX i = 0; i < iLength; i++) {
-    pch[i]=tolower(pch[i]);
-  }
-  return strResult;
-}
+
 CTString ToLowerCfunc(void* pArgs)
 {
   CTString strResult = *NEXTARGUMENT(CTString*);
-  return ToLower(strResult);
+  return strResult.ToLower();
 }
 
 CTString RemoveSubstring(const CTString &strFull, const CTString &strSub)
 {
-  CTString strFullL = ToLower(strFull);
-  CTString strSubL = ToLower(strSub);
+  CTString strFullL = strFull.ToLower();
+  CTString strSubL = strSub.ToLower();
 
-  const char *pchFullL = strFullL;
-  const char *pchSubL = strSubL;
+  const char *pchFullL = strFullL.ConstData();
+  const char *pchSubL = strSubL.ConstData();
   const char *pchFound = strstr(pchFullL, pchSubL);
   INDEX iLenSub = strSub.Length();
 
@@ -583,7 +566,7 @@ void CShell::DeclareSymbol(const CTString &strDeclaration, void *pvValue)
   const BOOL old_bExecNextBlock = _bExecNextBlock;
   _bExecNextBlock = 1;
 
-  ShellPushBuffer("<declaration>", strDeclaration, TRUE);
+  ShellPushBuffer("<declaration>", strDeclaration.ConstData(), TRUE);
   yyparse();
 //  ShellPopBuffer();
 
@@ -611,7 +594,7 @@ void CShell::Execute(const CTString &strCommands)
   const BOOL old_bExecNextBlock = _bExecNextBlock;
   _bExecNextBlock = 1;
 
-  ShellPushBuffer("<command>", strCommands, TRUE);
+  ShellPushBuffer("<command>", strCommands.ConstData(), TRUE);
   yyparse();
   //ShellPopBuffer();
 
@@ -833,7 +816,7 @@ void CShell::ErrorF(const char *strFormat, ...)
   strBuffer.VPrintF(strFormat, arg);
 
   // print it to the main console
-  CPrintF(strBuffer);
+  CPrintF(strBuffer.ConstData());
   // go to new line
   CPrintF("\n");
 }
@@ -886,7 +869,7 @@ void CShell::StorePersistentSymbols(const CTFileName &fnScript)
         } else if (stBase.st_sttType==STT_STRING) {
           // dump all members
           for(INDEX i=0; i<st.st_ctArraySize; i++) {
-            fScript.FPrintF_t("%s[%d]=\"%s\";\n", ss.ss_strName, i, (const char*)(ScriptEsc(*(CTString*)ss.ss_pvValue)[i]) );
+            fScript.FPrintF_t("%s[%d]=\"%s\";\n", ss.ss_strName, i, ScriptEsc(((CTString *)ss.ss_pvValue)[i]).ConstData());
           }
         // otherwise
         } else {
@@ -903,7 +886,7 @@ void CShell::StorePersistentSymbols(const CTFileName &fnScript)
       // if string
       } else if (st.st_sttType==STT_STRING) {
         // dump as index
-        fScript.FPrintF_t("persistent extern %sCTString %s=\"%s\";\n", strUser, ss.ss_strName, (const char*)ScriptEsc(*(CTString*)ss.ss_pvValue) );
+        fScript.FPrintF_t("persistent extern %sCTString %s=\"%s\";\n", strUser, ss.ss_strName, ScriptEsc(*(CTString *)ss.ss_pvValue).ConstData());
       // otherwise
       } else {
         ThrowF_t("%s of wrong type", ss.ss_strName);

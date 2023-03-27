@@ -130,10 +130,10 @@ ENGINE_API void ReadTranslationTable_t(
     if (iToken!=CHAR_SRC) {
       if (iToken==CHAR_EOF) {
         ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"),
-          (const char *)fnmTable, _iLine);
+          fnmTable.ConstData(), _iLine);
       } else {
         ThrowF_t(TRANS("error in file <%s>, line #%d (pair #%d): expected '<' but found '%c'"),
-          (const char *)fnmTable, _iLine, iPair, iToken);
+          fnmTable.ConstData(), _iLine, iPair, iToken);
       }
     }
     // read source
@@ -142,10 +142,10 @@ ENGINE_API void ReadTranslationTable_t(
     if (ReadOneChar_t(strm)!=CHAR_DST) {
       if (iToken==CHAR_EOF) {
         ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"),
-          (const char *)fnmTable, _iLine);
+          fnmTable.ConstData(), _iLine);
       } else {
         ThrowF_t(TRANS("error in file <%s>, line #%d (pair #%d): expected '>' but found '%c'"),
-          (const char *)fnmTable, _iLine, iPair, iToken);
+          fnmTable.ConstData(), _iLine, iPair, iToken);
       }
     }
     // read destination
@@ -153,7 +153,7 @@ ENGINE_API void ReadTranslationTable_t(
   };
   // last token must be eof
   if (ReadOneChar_t(strm)!=CHAR_EOF) {
-    ThrowF_t(TRANS("error in file <%s>: end of file marker not found in line #%d!"), (const char *)fnmTable, _iLine);
+    ThrowF_t(TRANS("error in file <%s>: end of file marker not found in line #%d!"), fnmTable.ConstData(), _iLine);
   }
 }
 
@@ -216,6 +216,6 @@ ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset)
   // if found
   } else {
     // return translation
-    return ptp->tp_strDst;
+    return ptp->tp_strDst.ConstData();
   }
 }

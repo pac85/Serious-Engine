@@ -101,7 +101,7 @@ void WritePos(CCameraPos &cp)
       cp.cp_vPos(1), cp.cp_vPos(2), cp.cp_vPos(3),
       cp.cp_aRot(1), cp.cp_aRot(2), cp.cp_aRot(3),
       cp.cp_aFOV);
-    _strScript.PutLine_t(strLine);
+    _strScript.PutLine_t(strLine.ConstData());
 
   } catch (char *strError) {
     CPrintF("Camera: %s\n", strError);

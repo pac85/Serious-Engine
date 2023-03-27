@@ -977,7 +977,7 @@ void PrintPlayerDeathMessage(CPlayer *ppl, const EDeath &eDeath)
         return;
       }
       // describe how this enemy killed player
-      CPrintF("%s\n", (const char*)((CEnemyBase*)penKiller)->GetPlayerKillDescription(strMyName, eDeath));
+      CPrintF("%s\n", ((CEnemyBase *)penKiller)->GetPlayerKillDescription(strMyName, eDeath).ConstData());
 
     // if killed by some other entity
     } else {
@@ -1944,7 +1944,7 @@ functions:
     }
 
     CTString strKey;
-    strKey.PrintF("player_%d\x02%s\x03", iPlayer, (const char*)strPlayerName);
+    strKey.PrintF("player_%d\x02%s\x03", iPlayer, strPlayerName.ConstData());
     strOut+=strKey;
     if (GetSP()->sp_bUseFrags) {
       strKey.PrintF("frags_%d\x02%d\x03", iPlayer, m_psLevelStats.ps_iKills);
@@ -1961,7 +1961,7 @@ functions:
   void GetMSLegacyPlayerInf( INDEX iPlayer, CTString &strOut)
   {
     CTString strKey;
-    strKey.PrintF("\\player_%d\\%s", iPlayer, (const char*)GetPlayerName());
+    strKey.PrintF("\\player_%d\\%s", iPlayer, GetPlayerName().ConstData());
 	  strOut+=strKey;
     if (GetSP()->sp_bUseFrags) {
       strKey.PrintF("\\frags_%d\\%d", iPlayer, m_psLevelStats.ps_iKills);
@@ -3823,12 +3823,12 @@ functions:
         ParseGender(strNewLook);
         // report that
         CPrintF(TRANS("%s now appears as %s\n"), 
-          pcNew.GetNameForPrinting(), strNewLook);
+          pcNew.GetNameForPrinting().ConstData(), strNewLook.ConstData());
       // if failed
       } else {
         // report that
         CPrintF(TRANS("Cannot change appearance for %s: setting '%s' is unavailable\n"), 
-          pcNew.GetNameForPrinting(), (const char*)ppsNew->GetModelFilename());
+          pcNew.GetNameForPrinting().ConstData(), ppsNew->GetModelFilename().ConstData());
       }
       // attach weapon to new appearance
       GetPlayerAnimator()->SyncWeapon();
@@ -6765,7 +6765,7 @@ procedures:
       if (penNextPlayer!=NULL) {
         // transfer keys to that player
         CPrintF(TRANS("%s leaving, all keys transfered to %s\n"), 
-          (const char*)m_strName, (const char*)penNextPlayer->GetPlayerName());
+          m_strName.ConstData(), penNextPlayer->GetPlayerName().ConstData());
         penNextPlayer->m_ulKeys |= m_ulKeys;
       }
     }

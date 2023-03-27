@@ -289,11 +289,11 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   CTFileName fnmExpanded;
   ExpandFilePath(EFP_READ, fnmDLL, fnmExpanded);
 
-  ec_hiClassDLL = LoadDLL_t(fnmExpanded);
+  ec_hiClassDLL = LoadDLL_t(fnmExpanded.ConstData());
   ec_fnmClassDLL = fnmDLL;
 
   // get the pointer to the DLL class structure
-  ec_pdecDLLClass = (CDLLEntityClass *) GetProcAddress(ec_hiClassDLL, strClassName+"_DLLClass");
+  ec_pdecDLLClass = (CDLLEntityClass *)GetProcAddress(ec_hiClassDLL, (strClassName + "_DLLClass").ConstData());
   // if class structure is not found
   if (ec_pdecDLLClass == NULL) {
     // free the library

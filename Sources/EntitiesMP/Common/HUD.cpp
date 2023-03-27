@@ -219,7 +219,7 @@ static int qsort_CompareNames( const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en1 = **(CPlayer**)ppPEN1;
   CTString strName0 = en0.GetPlayerName();
   CTString strName1 = en1.GetPlayerName();
-  return strnicmp( strName0, strName1, 8);
+  return strnicmp(strName0.ConstData(), strName1.ConstData(), 8);
 }
 
 static int qsort_CompareScores( const void *ppPEN0, const void *ppPEN1) {

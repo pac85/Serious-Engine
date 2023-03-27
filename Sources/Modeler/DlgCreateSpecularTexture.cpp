@@ -92,7 +92,7 @@ void CDlgCreateSpecularTexture::DoDataExchange(CDataExchange* pDX)
     }
     CTString strNumericalExponent;
     strNumericalExponent.PrintF( "Value: %.1f", GetFactorForPercentage(iExponent));
-    m_strNumericalExponent = strNumericalExponent;
+    m_strNumericalExponent = strNumericalExponent.ConstData();
   }
 	
   //{{AFX_DATA_MAP(CDlgCreateSpecularTexture)
@@ -498,7 +498,7 @@ void CDlgCreateSpecularTexture::OnOK()
                                                 "Textures\\");
   if( fnFinal != "")
   {
-    CopyFileA( fnTemp, _fnmApplicationPath+fnFinal, FALSE);
+    CopyFileA(fnTemp.ConstData(), (_fnmApplicationPath + fnFinal).ConstData(), FALSE);
   }
 
 	CDialog::OnOK();

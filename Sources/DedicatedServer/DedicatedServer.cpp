@@ -50,8 +50,8 @@ void InitializeGame(void)
     CTFileName fnmExpanded;
     ExpandFilePath(EFP_READ, CTString(GAMEDLL), fnmExpanded);
 
-    CPrintF(TRANS("Loading game library '%s'...\n"), (const char *)fnmExpanded);
-    HMODULE hGame = LoadLibraryA(fnmExpanded);
+    CPrintF(TRANS("Loading game library '%s'...\n"), fnmExpanded.ConstData());
+    HMODULE hGame = LoadLibraryA(fnmExpanded.ConstData());
     if (hGame==NULL) {
       ThrowF_t("%s", GetWindowsError(GetLastError()));
     }
@@ -140,7 +140,7 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   // print status text
   CTString strRes;
   printf("\r                                                                      ");
-  printf("\r%s : %3.0f%%\r", pphi->phi_strDescription, pphi->phi_fCompleted*100);
+  printf("\r%s : %3.0f%%\r", pphi->phi_strDescription.ConstData(), pphi->phi_fCompleted*100);
 }
 
 // loading hook functions

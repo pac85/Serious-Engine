@@ -380,7 +380,7 @@ static void NetworkInfo(void)
     if (TIMER_PROFILING) {
         CTString strNetProfile;
         _pfNetworkProfile.Report(strNetProfile);
-        CPrintF(strNetProfile);
+        CPrintF(strNetProfile.ConstData());
     }
 }
 
@@ -419,7 +419,7 @@ static void KickClient(INDEX iClient, const CTString &strReason)
     return;
   }
   CPrintF( TRANS("Kicking %d with explanation '%s'...\n"), iClient, strReason);
-  _pNetwork->ga_srvServer.SendDisconnectMessage(iClient, "Admin: "+strReason);
+  _pNetwork->ga_srvServer.SendDisconnectMessage(iClient, ("Admin: " + strReason).ConstData());
 }
 static void KickClientCfunc(void* pArgs)
 {
@@ -980,7 +980,7 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
 
   // go on
   CPrintF( TRANS("Starting session: '%s'\n"), strSessionName);
-  CPrintF( TRANS("  level: '%s'\n"), (const char*) fnmWorld);
+  CPrintF( TRANS("  level: '%s'\n"), fnmWorld.ConstData());
   CPrintF( TRANS("  spawnflags: %08x\n"), ulSpawnFlags);
   CPrintF( TRANS("  max players: %d\n"), ctMaxPlayers);
   CPrintF( TRANS("  waiting: %d\n"), bWaitAllPlayers);
@@ -1984,11 +1984,11 @@ void CNetworkLibrary::MainLoop(void)
         CTString strAdr = AddressToString(ulFrom);
 
         if (net_strAdminPassword=="" || net_strAdminPassword!=strPass) {
-          CPrintF(TRANS("Server: Client '%s', Wrong password for remote administration.\n"), (const char*)strAdr);
+          CPrintF(TRANS("Server: Client '%s', Wrong password for remote administration.\n"), strAdr.ConstData());
           continue;
         }
 
-        CPrintF(TRANS("Server: Client '%s', Admin cmd: %s\n"), (const char*)strAdr, strCmd);
+        CPrintF(TRANS("Server: Client '%s', Admin cmd: %s\n"), strAdr.ConstData(), strCmd);
 
         con_bCapture = TRUE;
         con_strCapture = "";

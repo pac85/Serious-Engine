@@ -33,7 +33,7 @@ int qsort_CompareCTFileName(const void *elem1, const void *elem2 )
 {
   const CTFileName &fnm1 = **(CTFileName **)elem1;
   const CTFileName &fnm2 = **(CTFileName **)elem2;
-  return strcmp(fnm1, fnm2);
+  return strcmp(fnm1.ConstData(), fnm2.ConstData());
 }
 
 extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnm);
@@ -64,7 +64,7 @@ void FillDirList_internal(const CTFileName &fnmBasePath,
     
     // start listing the directory
     struct _finddata_t c_file; INT_PTR hFile;
-    hFile = _findfirst( (const char *)(fnmBasePath+fnmDir+"*"), &c_file );
+    hFile = _findfirst((fnmBasePath + fnmDir + "*").ConstData(), &c_file);
     
     // for each file in the directory
     for (

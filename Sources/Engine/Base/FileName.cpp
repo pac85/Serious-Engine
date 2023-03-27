@@ -37,7 +37,7 @@ CTFileName CTFileName::FileDir() const
   // make a temporary copy of string
   CTFileName strPath(*this);
   // find last backlash in it
-  char *pPathBackSlash = strrchr( strPath.str_String, '\\');
+  char *pPathBackSlash = strrchr(strPath.Data(), '\\');
   // if there is no backslash
   if( pPathBackSlash == NULL) {
     // return emptystring as directory
@@ -46,7 +46,7 @@ CTFileName CTFileName::FileDir() const
   // set end of string after where the backslash was
   pPathBackSlash[1] = 0;
   // return a copy of temporary string
-  return( CTFileName( strPath));
+  return strPath;
 }
 
 CTFileName &CTFileName::operator=(const char *strCharString)
@@ -65,7 +65,7 @@ CTFileName CTFileName::FileName() const
   // make a temporary copy of string
   CTFileName strPath(*this);
   // find last dot in it
-  char *pDot = strrchr( strPath.str_String, '.');
+  char *pDot = strrchr(strPath.Data(), '.');
   // if there is a dot
   if( pDot != NULL) {
     // set end of string there
@@ -73,11 +73,11 @@ CTFileName CTFileName::FileName() const
   }
 
   // find last backlash in what's left
-  char *pBackSlash = strrchr( strPath.str_String, '\\');
+  const char *pBackSlash = strrchr(strPath.ConstData(), '\\');
   // if there is no backslash
   if( pBackSlash == NULL) {
     // return it all as filename
-    return( CTFileName(strPath));
+    return strPath;
   }
   // return a copy of temporary string, starting after the backslash
   return( CTFileName( pBackSlash+1));
@@ -91,7 +91,7 @@ CTFileName CTFileName::FileExt() const
   ASSERT(IsValid());
 
   // find last dot in the string
-  char *pExtension = strrchr( str_String, '.');
+  const char *pExtension = strrchr(ConstData(), '.');
   // if there is no dot
   if( pExtension == NULL) {
     // return no extension
@@ -124,7 +124,7 @@ void CTFileName::SetAbsolutePath(void)
   // Collect path parts
   CTString strRemaining(*this);
   CStaticStackArray<CTString> astrParts;
-  INDEX iSlashPos = GetSlashPosition(strRemaining);
+  INDEX iSlashPos = GetSlashPosition(strRemaining.ConstData());
   if (0 > iSlashPos) {
     return; // Invalid path
   }
@@ -134,7 +134,7 @@ void CTFileName::SetAbsolutePath(void)
     strRemaining.Split(iSlashPos, strBeforeSlash, strAfterSlash);
     strAfterSlash.TrimLeft(strAfterSlash.Length() - 1);
     strRemaining = strAfterSlash;
-    iSlashPos = GetSlashPosition(strRemaining);
+    iSlashPos = GetSlashPosition(strRemaining.ConstData());
     if (0 > iSlashPos) {
       astrParts.Push() = strRemaining;
       break;

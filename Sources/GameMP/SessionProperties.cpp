@@ -337,7 +337,7 @@ CTString GetGameAgentRulesInfo(void)
     }
   }
 
-  strKey.PrintF(";difficulty;%s", (const char*)strDifficulty);
+  strKey.PrintF(";difficulty;%s", strDifficulty.ConstData());
   strOut+=strKey;
 
   strKey.PrintF(";friendlyfire;%d", sp.sp_bFriendlyFire?0:1);

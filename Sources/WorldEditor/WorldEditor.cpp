@@ -61,6 +61,9 @@ CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
   sscanf( strIni, "0X%08x", &var);
 #define GET_INDEX( var)                                       \
   sscanf( strIni, "%d", &var);
+// [Cecil] Get 1 byte long value
+#define GET_BYTE(var) \
+  sscanf(strIni, "%hhd", &var);
 #define GET_FLOAT( var)                                       \
   sscanf( strIni, "%f", &var);
 #define GET_STRING( var)                                      \
@@ -1434,7 +1437,7 @@ void CValuesForPrimitive::WriteToIniFile(CTString strPrimitiveType)
   INI_PRIMITIVE_WRITE( "mip start");
   SET_FLOAT( vfp_fMipStep);
   INI_PRIMITIVE_WRITE( "mip step");
-  SET_STRING( vfp_fnDisplacement);
+  SET_STRING(vfp_fnDisplacement.ConstData());
   INI_PRIMITIVE_WRITE( "displacement picture");
 }
 
@@ -1634,11 +1637,11 @@ void CWorldEditorApp::WriteToIniFileOnEnd(void)
   SET_FLOAT( m_fNoiseAltitude);  
   INI_WRITE( "Noise altitude");
 
-  SET_STRING( m_fnDistributionNoiseTexture);
-  INI_WRITE( "Distribution noise texture");
+  SET_STRING(m_fnDistributionNoiseTexture.ConstData());
+  INI_WRITE("Distribution noise texture");
   
-  SET_STRING( m_fnContinousNoiseTexture);
-  INI_WRITE( "Continous noise texture");
+  SET_STRING(m_fnContinousNoiseTexture.ConstData());
+  INI_WRITE("Continous noise texture");
 
   SET_INDEX( m_iFBMOctaves);
   INI_WRITE( "FBM Octaves");
@@ -1731,8 +1734,8 @@ void CAppPrefs::WriteToIniFile()
   SET_COLOR( ap_DefaultGridColor);
   INI_WRITE( "Current grid color");
 
-  SET_STRING( ap_strSourceSafeProject);
-  INI_WRITE( "Source safe project");
+  SET_STRING(ap_strSourceSafeProject.ConstData());
+  INI_WRITE("Source safe project");
 
   SET_FLOAT( ap_fDefaultFlyModeSpeed);  
   INI_WRITE( "Default fly mode speed");
@@ -2779,20 +2782,20 @@ void CWorldEditorApp::OnSetAsDefault()
 void CWorldEditorApp::ReadDefaultPolygonValues() 
 {
   char strIni[ 256];
-  INI_READ( "Default polygon flags", "0");
-  GET_INDEX( m_pbpoPolygonWithDeafultValues->bpo_ulFlags);
-  INI_READ( "Default polygon shadow color", "0XFFFFFFFF");
-  GET_COLOR( m_pbpoPolygonWithDeafultValues->bpo_colShadow);
-  INI_READ( "Default polygon surface", "0");
-  GET_INDEX( m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubSurfaceType);
-  INI_READ( "Default polygon illumination", "0");
-  GET_INDEX( m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubIlluminationType);
-  INI_READ( "Default polygon blend", "1");
-  GET_INDEX( m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubShadowBlend);
-  INI_READ( "Default polygon mirror", "0");
-  GET_INDEX( m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubMirrorType);
-  INI_READ( "Default polygon cluster size", "2");
-  GET_INDEX( m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_sbShadowClusterSize);
+  INI_READ("Default polygon flags", "0");
+  GET_INDEX(m_pbpoPolygonWithDeafultValues->bpo_ulFlags);
+  INI_READ("Default polygon shadow color", "0XFFFFFFFF");
+  GET_COLOR(m_pbpoPolygonWithDeafultValues->bpo_colShadow);
+  INI_READ("Default polygon surface", "0");
+  GET_BYTE(m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubSurfaceType);
+  INI_READ("Default polygon illumination", "0");
+  GET_BYTE(m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubIlluminationType);
+  INI_READ("Default polygon blend", "1");
+  GET_BYTE(m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubShadowBlend);
+  INI_READ("Default polygon mirror", "0");
+  GET_BYTE(m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_ubMirrorType);
+  INI_READ("Default polygon cluster size", "2");
+  GET_BYTE(m_pbpoPolygonWithDeafultValues->bpo_bppProperties.bpp_sbShadowClusterSize);
 }
 
 void CWorldEditorApp::WriteDefaultPolygonValues() 

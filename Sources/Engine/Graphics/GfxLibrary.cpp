@@ -457,7 +457,7 @@ static void TexturesInfo(void)
 extern CTString ReformatExtensionsString( CTString strUnformatted)
 {
   CTString strTmp, strDst = "\n";
-  char *pcSrc = (char*)(const char*)strUnformatted;
+  char *pcSrc = strUnformatted.Data();
   FOREVER {
     char *pcSpace = strchr( pcSrc, ' ');
     if( pcSpace==NULL) break;

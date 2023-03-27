@@ -648,7 +648,7 @@ void PrintMessageText(CDrawPort *pdp)
   CTString strSubject1;
   CTString strSubject2;
   //strSubject.PrintF("%g", _fMsgAppearFade);
-  const char *strSubject = _acmMessages[_iActiveMessage].cm_strSubject;
+  const char *strSubject = _acmMessages[_iActiveMessage].cm_strSubject.ConstData();
   INDEX ctSubjectLen = (INDEX)strlen(strSubject);
   INDEX ctToPrint = int(_fMsgAppearDelta*20.0f);
   for (INDEX iChar=0; iChar<ctSubjectLen; iChar++) {
@@ -674,7 +674,7 @@ void PrintMessageText(CDrawPort *pdp)
   pdp->DrawLine(0, PIX(_pixMarginJ*4), _boxMsgText.Size()(1), PIX(_pixMarginJ*4), _colBoxes);
 
   // fill in fresh player statistics
-  if (strncmp(_acmMessages[_iActiveMessage].cm_strText, "$STAT", 5)==0) {
+  if (strncmp(_acmMessages[_iActiveMessage].cm_strText.ConstData(), "$STAT", 5) == 0) {
     _ppenPlayer->GetStats(_strStatsDetails, CST_DETAIL, _ctTextCharsPerRow);
     _acmMessages[_iActiveMessage].cm_ctFormattedWidth = 0;
   }
