@@ -102,9 +102,9 @@ BOOL CTString::RemovePrefix( const CTString &strPrefix)
   INDEX lenPrefix = strPrefix.Length();
   INDEX lenDest = Length() - lenPrefix;
 
-  if( strnicmp( str_String, strPrefix, lenPrefix) != 0)
+  if (strnicmp(str_String, strPrefix.str_String, lenPrefix) != 0)
     return FALSE;
-  CTString strTemp = CTString( &str_String[ lenPrefix]);
+  CTString strTemp = &str_String[lenPrefix];
   ShrinkMemory( (void **)&str_String, lenDest+1);
   strcpy( str_String, strTemp.str_String);
   return TRUE;
@@ -113,7 +113,7 @@ BOOL CTString::RemovePrefix( const CTString &strPrefix)
 BOOL CTString::HasPrefix( const CTString &strPrefix) const
 {
   INDEX lenPrefix = strPrefix.Length();
-  if( strnicmp( str_String, strPrefix, lenPrefix) != 0)
+  if (strnicmp(str_String, strPrefix.str_String, lenPrefix) != 0)
     return FALSE;
   return TRUE;
 }
@@ -284,6 +284,29 @@ void CTString::OnlyFirstLine(void)
   TrimRight(pchNL-str_String);
 }
 
+// [Cecil] Convert all characters to lowercase
+CTString CTString::ToLower(void) const {
+  CTString strCopy(*this);
+  INDEX i = Length();
+
+  while (--i >= 0) {
+    strCopy[i] = tolower(strCopy[i]);
+  }
+
+  return strCopy;
+};
+
+// [Cecil] Convert all characters to uppercase
+CTString CTString::ToUpper(void) const {
+  CTString strCopy(*this);
+  INDEX i = Length();
+
+  while (--i >= 0) {
+    strCopy[i] = toupper(strCopy[i]);
+  }
+
+  return strCopy;
+};
 
 /* Calculate hashing value for the string. */
 ULONG CTString::GetHash(void) const
@@ -453,7 +476,7 @@ void CTString::Save_t(const class CTFileName &fnmFile)  // throw char *
   CTFileStream strmFile;
   strmFile.Create_t(fnmFile);
   // save the string to the file
-  strmFile.PutString_t(*this);
+  strmFile.PutString_t(str_String);
 }
 void CTString::SaveKeepCRLF_t(const class CTFileName &fnmFile)  // throw char *
 {
@@ -734,8 +757,8 @@ void SaveIntVar(const CTFileName &fnmVar, INDEX &iVar)
 CTString RemoveSpecialCodes( const CTString &str)
 {
   CTString strRet=str;
-  char *pcSrc = (char*)(const char*)strRet;
-  char *pcDst = (char*)(const char*)strRet;
+  char *pcSrc = strRet.Data();
+  char *pcDst = strRet.Data();
   // copy char inside string skipping special codes
   while( *pcSrc != 0)
   {

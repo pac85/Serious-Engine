@@ -44,6 +44,26 @@ public:
   /* Conversion into character string. */
   inline operator const char*() const;
 
+  // [Cecil] Retrieve string data
+  inline char *Data(void) {
+    return str_String;
+  };
+
+  // [Cecil] Retrieve constant string data
+  inline const char *ConstData(void) const {
+    return str_String;
+  };
+
+  // [Cecil] Character accessor
+  inline char &operator[](const size_t i) {
+    return str_String[i];
+  };
+
+  // [Cecil] Constant character accessor
+  inline const char &operator[](const size_t i) const {
+    return str_String[i];
+  };
+
   /* Assignment. */
   inline CTString &operator=(const char *strCharString);
   inline CTString &operator=(const CTString &strOther);
@@ -76,6 +96,12 @@ public:
   ULONG GetHash(void) const;
   // retain only first line of the string
   void OnlyFirstLine(void);
+
+  // [Cecil] Convert all characters to lowercase
+  CTString ToLower(void) const;
+
+  // [Cecil] Convert all characters to uppercase
+  CTString ToUpper(void) const;
 
   /* Equality comparison. */
   BOOL operator==(const CTString &strOther) const;
