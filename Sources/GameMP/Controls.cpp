@@ -336,7 +336,7 @@ void CControls::Save_t( CTFileName fnFile)
       // delete EOL-s
       if( (strLine[ iLetter] == 0x0d) || (strLine[ iLetter] == 0x0a) )
       {
-        strLine[iLetter] = ' ';
+        strLine.Data()[iLetter] = ' ';
       }
     }}
     strmFile.PutLine_t(strLine.ConstData());
@@ -348,7 +348,7 @@ void CControls::Save_t( CTFileName fnFile)
       // delete EOL-s
       if( (strLine[ iLetter] == 0x0d) || (strLine[ iLetter] == 0x0a) )
       {
-        strLine[iLetter] = ' ';
+        strLine.Data()[iLetter] = ' ';
       }
     }}
     strmFile.PutLine_t(strLine.ConstData());

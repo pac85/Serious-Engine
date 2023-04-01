@@ -1,4 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
+   Copyright (c) 2023 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -52,16 +53,6 @@ public:
   // [Cecil] Retrieve constant string data
   inline const char *ConstData(void) const {
     return str_String;
-  };
-
-  // [Cecil] Character accessor
-  inline char &operator[](const size_t i) {
-    return str_String[i];
-  };
-
-  // [Cecil] Constant character accessor
-  inline const char &operator[](const size_t i) const {
-    return str_String[i];
   };
 
   /* Assignment. */

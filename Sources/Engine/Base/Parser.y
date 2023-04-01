@@ -669,7 +669,7 @@ expression
   } else if ($1.lv_sttType==STT_INDEX) {
     $$.iIndex = *(INDEX*)$1.lv_pvAddress;
   } else if ($1.lv_sttType==STT_STRING) {
-    $$.strString = (const char*)*(CTString*)$1.lv_pvAddress;
+    $$.strString = ((CTString *)$1.lv_pvAddress)->ConstData();
   } else {
     $$.sttType = STT_FLOAT;
     $$.fFloat = -666.0f;
@@ -789,7 +789,7 @@ expression
   } else if ($1.sttType == STT_STRING) {
     CTString &strNew = _shell_astrTempStrings.Push();
     strNew = CTString($1.strString)+$3.strString;
-    $$.strString = (const char*)strNew;
+    $$.strString = strNew.ConstData();
   } else {
     $$.sttType = STT_FLOAT;
     $$.fFloat = -666.0f;
@@ -967,7 +967,7 @@ expression
     _pShell->ErrorF("Cannot convert to CTString");
     $$.sttType = STT_VOID;
   }
-  $$.strString = (const char*)strNew;
+  $$.strString = strNew.ConstData();
 }
 
 // function call
@@ -1018,7 +1018,7 @@ expression
           CTString &strNew = _shell_astrTempStrings.Push();
           PUSHPARAMS;
           strNew = ((CTString (*)(void))$1->ss_pvValue)();
-          $$.strString = (const char*)strNew;
+          $$.strString = strNew.ConstData();
         } else {
           ASSERT(FALSE);
           $$.sttType = STT_FLOAT;

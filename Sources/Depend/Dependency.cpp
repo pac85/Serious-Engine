@@ -569,7 +569,7 @@ static void MakeDirectory_t(const CTFileName &fnm)
   }
   // remove trailing backslash
   CTFileName fnmDir = fnm;
-  fnmDir[fnmDir.Length() - 1] = '\0';
+  fnmDir.Data()[fnmDir.Length() - 1] = '\0';
   // get the path part
   CTFileName fnmDirPath = fnmDir.FileDir();
   // if there is a path part

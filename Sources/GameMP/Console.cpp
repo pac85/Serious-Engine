@@ -497,7 +497,7 @@ static void Key_Tab( BOOL bShift)
   // if symbol was found
   if( bTabSymbolFound) {
     // set it in current editing line
-    strEditingLine[iSymbolOffset] = '\0';
+    strEditingLine.Data()[iSymbolOffset] = '\0';
     strEditingLine += strLastExpanded;
   }
   iCursorPos = strEditingLine.Length();

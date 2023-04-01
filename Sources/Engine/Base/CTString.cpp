@@ -290,7 +290,7 @@ CTString CTString::ToLower(void) const {
   INDEX i = Length();
 
   while (--i >= 0) {
-    strCopy[i] = tolower(strCopy[i]);
+    strCopy.Data()[i] = tolower(strCopy[i]);
   }
 
   return strCopy;
@@ -302,7 +302,7 @@ CTString CTString::ToUpper(void) const {
   INDEX i = Length();
 
   while (--i >= 0) {
-    strCopy[i] = toupper(strCopy[i]);
+    strCopy.Data()[i] = toupper(strCopy[i]);
   }
 
   return strCopy;
