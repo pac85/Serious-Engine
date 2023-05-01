@@ -17,8 +17,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Math/Float.h>
 
-// [Cecil] Non-Windows OS
-#if !SE1_WIN
+#if !SE1_WIN // [Cecil] Non-Windows OS
+
   #define MCW_PC  0x0300
   #define _MCW_PC MCW_PC
   #define _PC_24  0x0000
@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define _PC_64  0x0300
 
   // Windows' _control87() reimplementation
-  inline ULONG _control87(WORD newcw, WORD mask)
+  static inline ULONG FPUControl(WORD newcw, WORD mask)
   {
     static WORD fpw = _PC_64;
 
@@ -36,14 +36,34 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     }
 
     return fpw;
-  }
+  };
+
+#elif SE1_64BIT // [Cecil] Windows x64
+
+  // Simplified logic with overwriting
+  static inline ULONG FPUControl(ULONG newcw, ULONG mask)
+  {
+    static ULONG fpcw = _PC_64;
+
+    if (mask != 0) {
+      fpcw = newcw;
+    }
+
+    return fpcw;
+  };
+
+#else // [Cecil] Windows x86
+
+  // Use proper _control87()
+  #define FPUControl _control87
+
 #endif
 
 /* Get current precision setting of FPU. */
 enum FPUPrecisionType GetFPUPrecision(void)
 {
   // get control flags from FPU
-  ULONG fpcw = _control87( 0, 0);
+  ULONG fpcw = FPUControl(0, 0);
 
   // extract the precision from the flags
   switch(fpcw&_MCW_PC) {
@@ -82,7 +102,7 @@ void SetFPUPrecision(enum FPUPrecisionType fptNew)
     fpcw=_PC_24;
   };
   // set the FPU precission
-  _control87( fpcw, MCW_PC);
+  FPUControl(fpcw, MCW_PC);
 }
 
 /////////////////////////////////////////////////////////////////////
