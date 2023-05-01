@@ -488,16 +488,13 @@ CTString RemoveSubstring(const CTString &strFull, const CTString &strSub)
   CTString strFullL = strFull.ToLower();
   CTString strSubL = strSub.ToLower();
 
-  const char *pchFullL = strFullL.ConstData();
-  const char *pchSubL = strSubL.ConstData();
-  const char *pchFound = strstr(pchFullL, pchSubL);
+  const INDEX iOffset = strFullL.FindSubstr(strSubL);
   INDEX iLenSub = strSub.Length();
 
-  if (pchFound == NULL || iLenSub == 0) {
+  if (iOffset == -1 || iLenSub == 0) {
     return strFull;
   }
 
-  INDEX iOffset = pchFound-pchFullL;
   INDEX iLenFull = strFull.Length();
 
   CTString strLeft = strFull;

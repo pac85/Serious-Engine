@@ -44,7 +44,7 @@ CTString GetNextParam(void)
   // if the first char is quote
   if (_strCmd[0]=='"') {
     // find first next quote
-    const char *pchClosingQuote = strchr(_strCmd+1, '"');
+    const char *pchClosingQuote = _strCmd.FindChar('"', 1);
     // if not found
     if (pchClosingQuote==NULL) {
       // error in command line
@@ -122,7 +122,7 @@ void ParseCommandLine(CTString strCmd)
       cmd_strPassword = GetNextParam();
     } else if (strWord=="+connect") {
       cmd_strServer = GetNextParam();
-      const char *pcColon = strchr(cmd_strServer, ':');
+      const char *pcColon = cmd_strServer.FindChar(':');
       if (pcColon!=NULL) {
         CTString strServer;
         CTString strPort;

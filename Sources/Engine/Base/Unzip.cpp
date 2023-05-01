@@ -205,17 +205,6 @@ static CStaticStackArray<CZipHandle> _azhHandles;
 // filenames of all archives
 static CStaticStackArray<CTFileName> _afnmArchives;
 
-// convert slashes to backslashes in a file path
-void ConvertSlashes(char *p)
-{
-  while (*p!=0) {
-    if (*p=='/') {
-      *p = '\\';
-    }
-    p++;
-  }
-}
-
 // read directory of a zip archive and add all files in it to active set
 void ReadZIPDirectory_t(CTFileName *pfnmZip)
 {
@@ -316,12 +305,14 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
     // if the file is real file
     } else {
       ctFiles++;
-      // convert filename
-      ConvertSlashes(strBuffer);
       // create a new entry
       CZipEntry &ze = _azeFiles.Push();
       // remember the file's data
       ze.ze_fnm = CTString(strBuffer);
+
+      // Convert slashes
+      ze.ze_fnm.ReplaceChar('/', '\\');
+
       ze.ze_pfnmArchive = pfnmZip;
       ze.ze_slCompressedSize = fh.fh_slCompressedSize;
       ze.ze_slUncompressedSize = fh.fh_slUncompressedSize;

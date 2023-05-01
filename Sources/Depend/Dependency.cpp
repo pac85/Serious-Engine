@@ -21,8 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 void AdjustFilePath_t(CTFileName &fnm)
 {
   // if filename contains a colon or double backslash
-  if (strchr(fnm.ConstData(), ':') != NULL
-   || strstr(fnm.ConstData(), "\\\\") != NULL) {
+  if (fnm.FindChar(':') != NULL || fnm.FindSubstr("\\\\") != -1) {
     // it must be prefixed with application path
     fnm.RemoveApplicationPath_t();
   }
@@ -378,7 +377,7 @@ static void AddStringForTranslation(const CTString &str)
   INDEX ct = _atpPairs.Count();
   for(INDEX i=0; i<ct; i++) {
     // if it is that one
-    if (strcmp(_atpPairs[i].tp_strSrc.ConstData(), str.ConstData()) == 0) {
+    if (_atpPairs[i].tp_strSrc == str) {
       // just mark it as used
       _atpPairs[i].m_bUsed = TRUE;
       // don't search any more

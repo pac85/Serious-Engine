@@ -4732,20 +4732,6 @@ void CWorldEditorDoc::OnExportPlacements()
   }
 }
 
-CTFileName CorrectSlashes(const CTFileName &fnmFile)
-{
-  char afnmSlash[1024];
-  for(INDEX iChar=0; iChar<fnmFile.Length(); iChar++) {
-    afnmSlash[iChar] = fnmFile[iChar];
-    if(afnmSlash[iChar]=='\\') {
-      afnmSlash[iChar] = '/';
-    }
-  }
-  // end the string
-  afnmSlash[fnmFile.Length()] = 0;
-  return CTString(afnmSlash);
-}
-
 // Detects detail texture and replaces it with normal map texture
 CTFileName RemapDetailTexturePath(CTFileName &fnmFile)
 {
@@ -5163,7 +5149,7 @@ void ExportLayer_t(CWorldEditorDoc *pDoc, CEntity &en, ExportType etExportType, 
       // export first layer data
       CTFileName strPath;
       strPath = bpo.bpo_abptTextures[0].bpt_toTexture.GetName();
-      strPath = CorrectSlashes(strPath);
+      strPath.ReplaceChar('\\', '/');
       strPath = RemapDetailTexturePath(strPath);
       if(bFieldBrush) {
         strmAmf.FPrintF_t("        \"base color\" Color %d;\n", C_GREEN|128);
@@ -5181,13 +5167,13 @@ void ExportLayer_t(CWorldEditorDoc *pDoc, CEntity &en, ExportType etExportType, 
         strmAmf.FPrintF_t("        \"base color\" Color %d;\n", bpo.bpo_abptTextures[0].s.bpt_colColor);
         // export second layer data
         //strPath = bpo.bpo_abptTextures[1].bpt_toTexture.GetName();
-        //strPath = CorrectSlashes(strPath);
+        //strPath.ReplaceChar('\\', '/');
         //strPath = RemapDetailTexturePath(strPath);
         //strmAmf.FPrintF_t("        \"blend mask\" Texture \"%s\";\n", strPath);
         //strmAmf.FPrintF_t("        \"mask uvmap\" UVMap \"Texture 2\";\n");
         // export third layer data
         //strPath = bpo.bpo_abptTextures[2].bpt_toTexture.GetName();
-        //strPath = CorrectSlashes(strPath);
+        //strPath.ReplaceChar('\\', '/');
         //strPath = RemapDetailTexturePath(strPath);
         //strmAmf.FPrintF_t("        \"detail normalmap\" Texture \"%s\";\n", strPath);
         //strmAmf.FPrintF_t("        \"detail uvmap\" UVMap \"Texture 3\";\n");
@@ -5203,19 +5189,19 @@ void ExportLayer_t(CWorldEditorDoc *pDoc, CEntity &en, ExportType etExportType, 
       // export first layer data
       CTFileName strPath;
       strPath = bpo.bpo_abptTextures[0].bpt_toTexture.GetName();
-      strPath = CorrectSlashes(strPath);
+      strPath.ReplaceChar('\\', '/');
       strPath = RemapDetailTexturePath(strPath);
       strmAmf.FPrintF_t("        \"diffuse 1 texture\" Texture \"%s\";\n", strPath);
       strmAmf.FPrintF_t("        \"diffuse 1 uvmap\" UVMap \"Texture 1\";\n");
       // export second layer data
       strPath = bpo.bpo_abptTextures[1].bpt_toTexture.GetName();
-      strPath = CorrectSlashes(strPath);
+      strPath.ReplaceChar('\\', '/');
       strPath = RemapDetailTexturePath(strPath);
       strmAmf.FPrintF_t("        \"shade\" Texture \"%s\";\n", strPath);
       strmAmf.FPrintF_t("        \"shade uvmap\" UVMap \"Texture 2\";\n");
       // export third layer data
       strPath = bpo.bpo_abptTextures[2].bpt_toTexture.GetName();
-      strPath = CorrectSlashes(strPath);
+      strPath.ReplaceChar('\\', '/');
       strPath = RemapDetailTexturePath(strPath);
       strmAmf.FPrintF_t("        \"normal map 1\" Texture \"%s\";\n", strPath);
       strmAmf.FPrintF_t("        \"normal 1 uvmap\" UVMap \"Texture 3\";\n");
@@ -5556,7 +5542,8 @@ void CWorldEditorDoc::OnExportEntities()
           // file name
           if( pepProperty->ep_eptType == CEntityProperty::EPT_FILENAME || 
               pepProperty->ep_eptType == CEntityProperty::EPT_FILENAMENODEP) {
-            CTFileName fnmFile = CorrectSlashes(ENTITYPROPERTY( &en, pepProperty->ep_slOffset, CTFileName));
+            CTFileName fnmFile = ENTITYPROPERTY( &en, pepProperty->ep_slOffset, CTFileName);
+            fnmFile.ReplaceChar('\\', '/');
             strLine.PrintF("    \"%s\" = string(\"%s\");", pepProperty->ep_strName, fnmFile);
             strmFile.PutLine_t(strLine);
           }

@@ -221,7 +221,7 @@ CTString CCompMessage::GetLine(INDEX iLine)
   }
   // find end of line
   CTString strLine = strText;
-  char *pchEndOfLine = (char *)strchr(strLine.ConstData(), '\n');
+  char *pchEndOfLine = strLine.FindChar('\n');
   // if found
   if (pchEndOfLine!=NULL) {
     // cut there
