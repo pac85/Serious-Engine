@@ -73,6 +73,20 @@ public:
   INDEX FindSubstr(const CTString &strSub);
   /* Replace a substring in a string. */
   BOOL ReplaceSubstr(const CTString &strSub, const CTString &strNewSub);
+
+  // [Cecil] Find character in a string
+  inline char *FindChar(char ch, size_t iFrom = 0) {
+    return strchr(str_String + iFrom, ch);
+  };
+
+  // [Cecil] Find character in a constant string
+  inline const char *FindChar(char ch, size_t iFrom = 0) const {
+    return strchr(str_String + iFrom, ch);
+  };
+
+  // [Cecil] Replace specific character in the entire string
+  void ReplaceChar(char chOld, char chNew);
+
   /* Check if has given prefix */
   BOOL HasPrefix( const CTString &strPrefix) const;
   /* Remove given prefix string from this string */

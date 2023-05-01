@@ -152,6 +152,18 @@ BOOL CTString::ReplaceSubstr(const CTString &strSub, const CTString &strNewSub)
   return TRUE;
 }
 
+// [Cecil] Replace specific character in the entire string
+void CTString::ReplaceChar(char chOld, char chNew) {
+  char *str = str_String;
+
+  while (*str != '\0') {
+    if (*str == chOld) {
+      *str = chNew;
+    }
+    ++str;
+  }
+};
+
 /* Trim the string from left to contain at most given number of characters. */
 INDEX CTString::TrimLeft( INDEX ctCharacters)
 {
@@ -274,7 +286,7 @@ INDEX CTString::TrimSpacesRight(void)
 void CTString::OnlyFirstLine(void)
 {
   // get position of first line end
-  const char *pchNL = strchr(str_String, '\n');
+  const char *pchNL = FindChar('\n');
   // if none
   if (pchNL==NULL) {
     // do nothing
