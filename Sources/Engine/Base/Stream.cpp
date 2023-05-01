@@ -376,10 +376,9 @@ ULONG CTStream::GetStreamCRC32_t(void)
 // throws char *
 void CTStream::GetLine_t(char *strBuffer, SLONG slBufferSize, char cDelimiter /*='\n'*/ )
 {
-  // check parameters
-  ASSERT(strBuffer!=NULL && slBufferSize>0);
-  // check that the stream can be read
-  ASSERT(IsReadable());
+  // Check parameters and that the stream can be read
+  ASSERT(strBuffer != NULL && slBufferSize > 0 && IsReadable());
+
   // letters slider
   INDEX iLetters = 0;
   // test if EOF reached
@@ -392,26 +391,26 @@ void CTStream::GetLine_t(char *strBuffer, SLONG slBufferSize, char cDelimiter /*
     char c;
     Read_t(&c, 1);
 
-    if(AtEOF()) {
-      // cut off
-      strBuffer[ iLetters] = 0;
-      break;
+    // [Cecil] Just skip instead of entering the block when it's not that
+    if (c == '\r') continue;
+
+    strBuffer[iLetters] = c;
+
+    // Stop reading after the delimiter
+    if (strBuffer[iLetters] == cDelimiter) {
+      strBuffer[iLetters] = '\0';
+      return;
     }
 
-    // don't read "\r" characters but rather act like they don't exist
-    if( c != '\r') {
-      strBuffer[ iLetters] = c;
-      // stop reading when delimiter loaded
-      if( strBuffer[ iLetters] == cDelimiter) {
-        // convert delimiter to zero
-        strBuffer[ iLetters] = 0;
-        // jump over delimiter
-        //Seek_t(1, SD_CUR);
-        break;
-      }
-      // jump to next destination letter
-      iLetters++;
+    // Go to the next destination letter
+    iLetters++;
+
+    // [Cecil] Cut off after actually setting the character
+    if (AtEOF()) {
+      strBuffer[iLetters] = '\0';
+      return;
     }
+
     // test if maximum buffer lenght reached
     if( iLetters==slBufferSize) {
       return;
