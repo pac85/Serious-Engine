@@ -513,33 +513,33 @@ INDEX CTString::PrintF(const char *strFormat, ...)
 
 INDEX CTString::VPrintF(const char *strFormat, va_list arg)
 {
+  // [Cecil] 4 times more
+  static const ULONG ulAddSize = 1024;
 
-  static INDEX _ctBufferSize = 0;
-  static char *_pchBuffer = NULL;
+  // [Cecil] Local variables instead of static
+  INDEX ctBufferSize = ulAddSize;
+  char *pchBuffer = (char *)AllocMemory(ulAddSize);
 
-  // if buffer was not allocated yet
-  if (_ctBufferSize==0) {
-    // allocate it
-    _ctBufferSize = 256;
-    _pchBuffer = (char*)AllocMemory(_ctBufferSize);
-  }
-
-  // repeat
   INDEX iLen;
+
   FOREVER {
     // print to the buffer
-    iLen = _vsnprintf(_pchBuffer, _ctBufferSize, strFormat, arg);
+    iLen = _vsnprintf(pchBuffer, ctBufferSize, strFormat, arg);
     // if printed ok
     if (iLen!=-1) {
       // stop
       break;
     }
     // increase the buffer size
-    _ctBufferSize += 256;
-    GrowMemory((void**)&_pchBuffer, _ctBufferSize);
+    ctBufferSize += ulAddSize;
+    GrowMemory((void **)&pchBuffer, ctBufferSize);
   }
 
-  (*this) = _pchBuffer;
+  (*this) = pchBuffer;
+
+  // [Cecil] Free local buffer memory
+  FreeMemory(pchBuffer);
+
   return iLen;
 }
 
