@@ -4735,7 +4735,7 @@ void CWorldEditorDoc::OnExportPlacements()
 // Detects detail texture and replaces it with normal map texture
 CTFileName RemapDetailTexturePath(CTFileName &fnmFile)
 {
-  if(fnmFile.FindSubstr("/Detail/") >=0) {
+  if (fnmFile.Substr("/Detail/") != NULL) {
     return fnmFile.FileDir() + fnmFile.FileName() + "_NM.tex";
   }
   return fnmFile;

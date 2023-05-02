@@ -69,8 +69,20 @@ public:
   // strip decorations from the string
   CTString Undecorated(void) const;
 
-  /* Find index of a substring in a string (returns -1 if not found). */
-  INDEX FindSubstr(const CTString &strSub);
+  // [Cecil] Find substring in a string
+  inline const char *Substr(const char *strSub, size_t iFrom = 0) const {
+    return strstr(str_String + iFrom, strSub);
+  };
+
+  // [Cecil] Find index of a substring in a string (-1 if not found)
+  inline size_t FindSubstr(const char *strSub, size_t iFrom = 0) const {
+    const char *str = Substr(strSub, iFrom);
+
+    if (str == NULL) return -1;
+    
+    return str - str_String;
+  };
+
   /* Replace a substring in a string. */
   BOOL ReplaceSubstr(const CTString &strSub, const CTString &strNewSub);
 
@@ -82,6 +94,15 @@ public:
   // [Cecil] Find character in a constant string
   inline const char *FindChar(char ch, size_t iFrom = 0) const {
     return strchr(str_String + iFrom, ch);
+  };
+
+  // [Cecil] Find character position in a string (-1 if not found)
+  inline size_t FindCharIndex(char ch, size_t iFrom = 0) const {
+    const char *pch = FindChar(ch, iFrom);
+
+    if (pch == NULL) return -1;
+
+    return pch - str_String;
   };
 
   // [Cecil] Replace specific character in the entire string

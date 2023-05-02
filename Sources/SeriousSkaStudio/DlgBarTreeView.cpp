@@ -448,7 +448,7 @@ void CDlgBarTreeView::ChangeShaderOnSelectedSurfaces(CTString fnNewShader)
 {
   #pragma message(">> Remove: Warning if usage of Double sided shader")
   // TEMP 
-  if(fnNewShader.FindSubstr("DS")!=(-1)) {
+  if (fnNewShader.Substr("DS") != NULL) {
     theApp.ErrorMessage("Usage of double sided shader");
   }
 

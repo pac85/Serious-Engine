@@ -118,28 +118,12 @@ BOOL CTString::HasPrefix( const CTString &strPrefix) const
   return TRUE;
 }
 
-/* Find index of a substring in a string (returns -1 if not found). */
-INDEX CTString::FindSubstr(const CTString &strSub)
-{
-  INDEX ct = Length();
-  INDEX ctSub = strSub.Length();
-  for (INDEX i=0; i<ct-ctSub+1; i++) {
-    for (INDEX iSub=0; iSub<ctSub; iSub++) {
-      if ((*this)[i+iSub]!=strSub[iSub]) {
-        goto wrong;
-      }
-    }
-    return i;
-wrong:;
-  }
-  return -1;
-}
-
 /* Replace a substring in a string. */
 BOOL CTString::ReplaceSubstr(const CTString &strSub, const CTString &strNewSub)
 {
-  INDEX iPos = FindSubstr(strSub);
-  if (iPos<0) {
+  size_t iPos = FindSubstr(strSub);
+
+  if (iPos == -1) {
     return FALSE;
   }
 

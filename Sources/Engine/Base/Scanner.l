@@ -110,7 +110,7 @@ PARAMCONTENT	([^\ \n\";]|(\\\ ))
   TranscriptEsc(strParam);
   // insert the parameter in the command string
   CTString strParamNo = CTString(1, "%%%d", _ctCmdParam);
-  if (strParam.FindSubstr(strParamNo)!=-1) {
+  if (strParam.Substr(strParamNo) != NULL) {
     _pShell->ErrorF("Parameter substitution recursion detected!");
   } else {
     INDEX ctFound=0;

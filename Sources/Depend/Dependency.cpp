@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 void AdjustFilePath_t(CTFileName &fnm)
 {
   // if filename contains a colon or double backslash
-  if (fnm.FindChar(':') != NULL || fnm.FindSubstr("\\\\") != -1) {
+  if (fnm.FindChar(':') != NULL || fnm.Substr("\\\\") != NULL) {
     // it must be prefixed with application path
     fnm.RemoveApplicationPath_t();
   }

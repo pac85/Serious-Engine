@@ -116,10 +116,10 @@ void SubMain( int argc, char *argv[])
       strmSrc.GetLine_t(strLine);
 
       // try to find address marker in it
-      const INDEX iAddr = strLine.FindSubstr("$adr:");
+      const char *strAdr = strLine.Substr("$adr:");
 
       // if there is no marker
-      if (iAddr == -1) {
+      if (strAdr == NULL) {
         // just copy the line
         strmDst.PutLine_t(strLine.ConstData());
 
@@ -131,7 +131,6 @@ void SubMain( int argc, char *argv[])
         ULONG ulSegment=-1;
         ULONG ulOffset=-1;
 
-        const char *strAdr = strLine.ConstData() + iAddr;
         sscanf(strAdr, "$adr: %s %x:%x", strImage, &ulSegment, &ulOffset);
 
         // find the function
