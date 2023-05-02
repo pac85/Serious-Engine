@@ -272,7 +272,7 @@ BOOL MSJExceptionHandler::GetLogicalAddress(
     if ( !VirtualQuery( addr, &mbi, sizeof(mbi) ) )
         return FALSE;
 
-    DWORD hMod = (DWORD)mbi.AllocationBase;
+    DWORD_PTR hMod = (DWORD_PTR)mbi.AllocationBase;
 
     if ( !GetModuleFileNameA( (HMODULE)hMod, szModule, len ) )
         return FALSE;
@@ -285,7 +285,7 @@ BOOL MSJExceptionHandler::GetLogicalAddress(
 
     PIMAGE_SECTION_HEADER pSection = IMAGE_FIRST_SECTION( pNtHdr );
 
-    DWORD rva = (DWORD)addr - hMod; // RVA is offset from module load address
+    DWORD_PTR rva = (DWORD_PTR)addr - hMod; // RVA is offset from module load address
 
     // Iterate through the section table, looking for the one that encompasses
     // the linear address.
@@ -321,11 +321,23 @@ void MSJExceptionHandler::IntelStackWalk( PCONTEXT pContext )
 
     _tprintf( "Address   Frame     Logical addr  Module\n" );
 
-    DWORD pc = pContext->Eip;
-    PDWORD pFrame, pPrevFrame;
+    // [Cecil] Frame pointer type
+    #if SE1_64BIT
+      typedef PDWORD64 FramePtr_t;
+    #else
+      typedef PDWORD FramePtr_t;
+    #endif
 
-    pFrame = (PDWORD)pContext->Ebp;
+    FramePtr_t pFrame, pPrevFrame;
 
+    #if SE1_64BIT
+      DWORD64 pc = pContext->Rip;
+      pFrame = (FramePtr_t)pContext->Rbp;
+
+    #else
+      DWORD pc = pContext->Eip;
+      pFrame = (FramePtr_t)pContext->Ebp;
+    #endif
 
     for(INDEX iDepth=0; iDepth<100; iDepth++)
     {
@@ -348,9 +360,9 @@ void MSJExceptionHandler::IntelStackWalk( PCONTEXT pContext )
 
         pPrevFrame = pFrame;
 
-        pFrame = (PDWORD)pFrame[0]; // proceed to next higher frame on stack
+        pFrame = (FramePtr_t)pFrame[0]; // proceed to next higher frame on stack
 
-        if ( (DWORD)pFrame & 3 )    // Frame pointer must be aligned on a
+        if ((DWORD64)pFrame & 3 )   // Frame pointer must be aligned on a
             break;                  // DWORD boundary.  Bail if not so.
 
         if ( pFrame <= pPrevFrame )
