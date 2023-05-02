@@ -299,7 +299,7 @@ BOOL CDlgCreateAnimatedTexture::OnInitDialog()
       fileScript.Read_t( pchrFile, ulScriptFileSize);
       // copy script to edit ctrl
       m_strEditScript = pchrFile;
-      delete pchrFile;
+      delete[] pchrFile;
     }
     // catch errors
     catch( char *strError)
