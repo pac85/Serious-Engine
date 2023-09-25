@@ -991,7 +991,7 @@ expression
       if (ShellTypeIsSame($3.istType, $1->ss_istType)) {
 
 #define PUSHPARAMS \
-  memcpy(_alloca($3.ctBytes), _ubStack+_iStack-$3.ctBytes, $3.ctBytes);
+  memcpy(alloca($3.ctBytes), _ubStack+_iStack-$3.ctBytes, $3.ctBytes);
 
         // if void
         if (stResult.st_sttType==STT_VOID) {

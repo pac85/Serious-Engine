@@ -732,7 +732,7 @@ CNetworkStream::Result CNetworkStream::GetBlockBySequence(
     if (nsbInList.nsb_iSequenceNumber == iSequenceNumber) {
       // return it
       pnsbBlock = itnsbInList;
-      return R_OK;
+      return E_NSR_OK;
     }
     // if the block in list has older sequence
     if (nsbInList.nsb_iSequenceNumber < iSequenceNumber) {
@@ -747,12 +747,12 @@ CNetworkStream::Result CNetworkStream::GetBlockBySequence(
   if (bNewerFound) {
     // return that the block is missing (probably should be resent)
     pnsbBlock = NULL;
-    return R_BLOCKMISSING;
+    return E_NSR_BLOCKMISSING;
   // if no newer blocks were found
   } else {
     // we assume that the wanted block is not yet received
     pnsbBlock = NULL;
-    return R_BLOCKNOTRECEIVEDYET;
+    return E_NSR_BLOCKNOTRECEIVEDYET;
   }
 }
 

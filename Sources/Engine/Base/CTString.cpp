@@ -128,7 +128,7 @@ BOOL CTString::ReplaceSubstr(const CTString &strSub, const CTString &strNewSub)
   }
 
   CTString strPart1, strPart2;
-  Split(iPos, strPart1, strPart2);
+  Split((INDEX)iPos, strPart1, strPart2);
   strPart2.RemovePrefix(strSub);
 
   *this = strPart1+strNewSub+strPart2;

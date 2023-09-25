@@ -17,7 +17,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/AllocationArray.h>
 
 // needed for parser and scanner
-#define alloca _alloca
 extern void yyerror(char *s);
 extern int yyparse(void);
 

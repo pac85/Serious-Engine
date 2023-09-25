@@ -49,6 +49,13 @@ public:
 
   // Declare a symbol in the shell.
   void DeclareSymbol(const CTString &strDeclaration, void *pvValue);
+
+  // [Cecil] Declare symbol of any type
+  template<typename Type> __forceinline
+  void DeclareSymbol(const CTString &strDeclaration, Type *pValue) {
+    DeclareSymbol(strDeclaration, (void *)pValue);
+  };
+
   // Execute command(s).
   void Execute(const CTString &strCommands);
   // Save shell commands to restore persistent symbols to a script file

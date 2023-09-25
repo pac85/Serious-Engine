@@ -204,6 +204,8 @@ void MakeFatalError(void* pArgs)
   FatalError( "MakeFatalError()");
 }
 
+#if SE1_WIN
+
 // [Cecil] TODO: Check if this function works on x64
 extern void ReportGlobalMemoryStatus(void)
 {
@@ -258,6 +260,15 @@ static void MemoryInfo(void)
   CPrintF("Total used: %u bytes (%.2f MB) in %d blocks\n", slTotalUsed, slTotalUsed / 1024.0f / 1024.0f, ctUsed);
   CPrintF("Total free: %u bytes (%.2f MB) in %d blocks\n", slTotalFree, slTotalFree / 1024.0f / 1024.0f, ctFree);
 }
+
+#else
+
+// [Cecil] TODO: Implement this
+static void MemoryInfo(void) {
+  CPrintF("Not yet implemented!\n");
+};
+
+#endif // SE1_WIN
 
 // get help for a shell symbol
 extern CTString GetShellSymbolHelp_t(const CTString &strSymbol)
@@ -486,7 +497,7 @@ CTString RemoveSubstring(const CTString &strFull, const CTString &strSub)
   CTString strFullL = strFull.ToLower();
   CTString strSubL = strSub.ToLower();
 
-  const INDEX iOffset = strFullL.FindSubstr(strSubL);
+  const INDEX iOffset = (INDEX)strFullL.FindSubstr(strSubL);
   INDEX iLenSub = strSub.Length();
 
   if (iOffset == -1 || iLenSub == 0) {
@@ -839,7 +850,7 @@ void CShell::StorePersistentSymbols(const CTFileName &fnScript)
         continue;
       }
 
-      char *strUser = (ss.ss_ulFlags & SSF_USER)?"user ":"";
+      const char *strUser = (ss.ss_ulFlags & SSF_USER) ? "user " : "";
 
       // get its type
       ShellType &st = _shell_ast[ss.ss_istType];

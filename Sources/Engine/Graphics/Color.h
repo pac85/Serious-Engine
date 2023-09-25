@@ -139,9 +139,9 @@ __forceinline COLOR RGBToColor( UBYTE const ubR, UBYTE const ubG, UBYTE const ub
 }
 // convert CroTeam COLOR format to separate R,G and B color components
 __forceinline void ColorToRGB( COLOR const col, UBYTE &ubR, UBYTE &ubG, UBYTE &ubB) {
-  ubR = (col&CT_RMASK)>>CT_RSHIFT;
-  ubG = (col&CT_GMASK)>>CT_GSHIFT;
-  ubB = (col&CT_BMASK)>>CT_BSHIFT;
+  ubR = UBYTE((col & CT_RMASK) >> CT_RSHIFT);
+  ubG = UBYTE((col & CT_GMASK) >> CT_GSHIFT);
+  ubB = UBYTE((col & CT_BMASK) >> CT_BSHIFT);
 }
 // combine CroTeam COLOR format from separate R,G and B color components
 __forceinline COLOR RGBAToColor( UBYTE const ubR, UBYTE const ubG, UBYTE const ubB, UBYTE const ubA) {
@@ -150,10 +150,10 @@ __forceinline COLOR RGBAToColor( UBYTE const ubR, UBYTE const ubG, UBYTE const u
 }
 // separate CroTeam COLOR format to R,G and B color components
 __forceinline void ColorToRGBA( COLOR const col, UBYTE &ubR, UBYTE &ubG, UBYTE &ubB, UBYTE &ubA) {
-  ubR = (col&CT_RMASK)>>CT_RSHIFT;
-  ubG = (col&CT_GMASK)>>CT_GSHIFT;
-  ubB = (col&CT_BMASK)>>CT_BSHIFT;
-  ubA = (col&CT_AMASK)>>CT_ASHIFT;
+  ubR = UBYTE((col & CT_RMASK) >> CT_RSHIFT);
+  ubG = UBYTE((col & CT_GMASK) >> CT_GSHIFT);
+  ubB = UBYTE((col & CT_BMASK) >> CT_BSHIFT);
+  ubA = UBYTE((col & CT_AMASK) >> CT_ASHIFT);
 }
 
 // convert HSV components to CroTeam COLOR format

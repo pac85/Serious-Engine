@@ -302,9 +302,9 @@ void Quaternion<Type>::ToMatrix(Matrix<Type, 3, 3> &m) const
   Type yy = 2*q_y*q_y; Type yz = 2*q_y*q_z; Type zz = 2*q_z*q_z;
   Type wx = 2*q_w*q_x; Type wy = 2*q_w*q_y; Type wz = 2*q_w*q_z;
 
-  m(1,1) = 1.0 - Eps(yy+zz); m(1,2) = Eps(xy-wz);       m(1,3) = Eps(xz+wy);
-  m(2,1) = Eps(xy+wz);       m(2,2) = 1.0 - Eps(xx+zz); m(2,3) = Eps(yz-wx);
-  m(3,1) = Eps(xz-wy);       m(3,2) = Eps(yz+wx);       m(3,3) = 1.0 - Eps(xx+yy);
+  m(1,1) = (Type)1.0 - Eps(yy+zz); m(1,2) = Eps(xy-wz);             m(1,3) = Eps(xz+wy);
+  m(2,1) = Eps(xy+wz);             m(2,2) = (Type)1.0 - Eps(xx+zz); m(2,3) = Eps(yz-wx);
+  m(3,1) = Eps(xz-wy);             m(3,2) = Eps(yz+wx);             m(3,3) = (Type)1.0 - Eps(xx+yy);
 }
 
 // conversion from matrix
@@ -317,9 +317,9 @@ void Quaternion<Type>::FromMatrix(Matrix<Type, 3, 3> &m)
     if ( trace > 0.0 )
     {
         // |w| > 1/2, may as well choose w > 1/2
-        root = sqrt(trace+1.0);  // 2w
-        q_w = 0.5*root;
-        root = 0.5/root;  // 1/(4w)
+        root = sqrt(trace + (Type)1.0);  // 2w
+        q_w = (Type)0.5 * root;
+        root = (Type)0.5 / root;  // 1/(4w)
         q_x = (m(3,2)-m(2,3))*root;
         q_y = (m(1,3)-m(3,1))*root;
         q_z = (m(2,1)-m(1,2))*root;
@@ -336,10 +336,10 @@ void Quaternion<Type>::FromMatrix(Matrix<Type, 3, 3> &m)
         int j = next[i];
         int k = next[j];
 
-        root = sqrt(m(i+1,i+1)-m(j+1,j+1)-m(k+1,k+1)+1.0);
+        root = sqrt(m(i+1,i+1) - m(j+1,j+1) - m(k+1,k+1) + (Type)1.0);
         Type* quat[3] = { &q_x, &q_y, &q_z };
-        *quat[i] = 0.5*root;
-        root = 0.5/root;
+        *quat[i] = (Type)0.5 * root;
+        root = (Type)0.5 / root;
         q_w = (m(k+1,j+1)-m(j+1,k+1))*root;
         *quat[j] = (m(j+1,i+1)+m(i+1,j+1))*root;
         *quat[k] = (m(k+1,i+1)+m(i+1,k+1))*root;

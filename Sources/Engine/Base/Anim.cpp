@@ -250,7 +250,7 @@ INDEX FindFrameIndex( CListHead *pFrameFileList, const char *pFileName)
 	UWORD i=0;
 
 	FOREACHINLIST(CFileNameNode, cfnn_Node, *pFrameFileList, it) {
-		if( strcmpi(it->cfnn_FileName, pFileName) == 0)
+		if (stricmp(it->cfnn_FileName, pFileName) == 0)
 			return( i);
 		i++;
 	}
@@ -342,7 +342,7 @@ void CAnimData::LoadFromScript_t( CTStream *File, CListHead *pFrameFileList) // 
 				throw("Expecting key word \"SPEED\" after key word \"ANIMATION\".");
       }
 			_strupr( ld_line);
-			sscanf( ld_line, "SPEED %f", &poaOneAnim->oa_SecsPerFrame);
+			sscanf( ld_line, "SPEED %lf", &poaOneAnim->oa_SecsPerFrame);
 
       CDynamicArray<CTString> astrFrames;
       SLONG slLastPos;

@@ -60,7 +60,7 @@ private:
 // this file just defines TIMER_PROFILING as 1 or 0
 #include <Engine/Base/ProfilingEnabled.h>
 
-#endif ENGINE_INTERNAL
+#endif // ENGINE_INTERNAL
 
 /*
  * Class for gathering and reporting profiling information.

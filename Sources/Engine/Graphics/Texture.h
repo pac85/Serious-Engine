@@ -104,7 +104,7 @@ public:
 
   // sets new texture mex width and changes height remaining texture's aspect ratio
   inline void ChangeSize( MEX mexNewWidth) {
-    td_mexHeight = MEX( ((FLOAT)mexNewWidth)/td_mexWidth * td_mexHeight);
+    td_mexHeight = MEX(FLOAT(mexNewWidth) / FLOAT(td_mexWidth) * FLOAT(td_mexHeight));
     td_mexWidth  = mexNewWidth;
   };
 

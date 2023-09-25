@@ -37,16 +37,18 @@ inline Type Abs( const Type x)
   return ( x>=Type(0) ? x : -x );
 }
 
-template<class Type>
-inline Type Max( const Type a, const Type b)
+// [Cecil] Accept different types
+template<typename Type1, typename Type2>
+inline Type1 Max(const Type1 a, const Type2 b)
 {
-  return ( a<b ? b : a );
+  return (a < (Type1)b ? (Type1)b : a);
 }
 
-template<class Type>
-inline Type Min( const Type a, const Type b)
+// [Cecil] Accept different types
+template<typename Type1, typename Type2>
+inline Type1 Min(const Type1 a, const Type2 b)
 {
-  return ( a>b ? b : a );
+  return (a > (Type1)b ? (Type1)b : a);
 }
 
 // linear interpolation
@@ -76,22 +78,25 @@ inline void Swap( Type &a, Type &b)
   Type t=a; a=b;  b=t;
 } 
 
-template<class Type>
-inline Type ClampUp( const Type x, const Type uplimit)
+// [Cecil] Accept different types
+template<typename Type1, typename Type2>
+inline Type1 ClampUp(const Type1 x, const Type2 uplimit)
 {
-  return ( x<=uplimit ? x : uplimit );
+  return (x <= (Type1)uplimit ? x : (Type1)uplimit);
 }
 
-template<class Type>
-inline Type ClampDn( const Type x, const Type dnlimit)
+// [Cecil] Accept different types
+template<typename Type1, typename Type2>
+inline Type1 ClampDn(const Type1 x, const Type2 dnlimit)
 {
-  return ( x>=dnlimit ? x : dnlimit );
+  return (x >= (Type1)dnlimit ? x : (Type1)dnlimit);
 }
 
-template<class Type>
-inline Type Clamp( const Type x, const Type dnlimit, const Type uplimit)
+// [Cecil] Accept different types
+template<typename Type1, typename Type2, typename Type3>
+inline Type1 Clamp(const Type1 x, const Type2 dnlimit, const Type3 uplimit)
 {
-  return ( x>=dnlimit ? (x<=uplimit ? x : uplimit): dnlimit );
+  return (x >= (Type1)dnlimit ? (x <= (Type1)uplimit ? x : (Type1)uplimit) : (Type1)dnlimit);
 }
 
 /* 
@@ -158,7 +163,7 @@ inline SLONG FloatToInt( FLOAT f)
 
   return slRet;
 
-#elif (defined __GNUC__)
+#elif SE1_UNIX
   SLONG slRet;
 
   __asm__ __volatile__ (
@@ -202,10 +207,14 @@ inline SLONG FastLog2( SLONG x)
 
   return 0;
 
-#else
+#elif SE1_WIN
   ULONG r = 0;
   _BitScanReverse(&r, x);
   return r;
+
+#else
+  if (x == 0) return 0;
+  return 31 - (SLONG)__builtin_clz(x);
 #endif
 }
 
@@ -217,7 +226,7 @@ inline SLONG FastMaxLog2( SLONG x)
 #if (defined USE_PORTABLE_C)
   #error write me.
 
-#elif (defined _MSC_VER)
+#elif SE1_OLD_COMPILER || SE1_USE_ASM
   SLONG slRet;
   __asm {
     bsr   eax,D [x]
@@ -228,7 +237,7 @@ inline SLONG FastMaxLog2( SLONG x)
   }
   return slRet;
 
-#elif (defined __GNUC__)
+#elif SE1_UNIX
   SLONG slRet;
   __asm__ __volatile__ (
     "bsrl  (%%ebx), %%eax     \n\t"

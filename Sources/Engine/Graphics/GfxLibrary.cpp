@@ -1680,7 +1680,7 @@ void CGfxLibrary::ReduceShadows(void)
     FLOAT fRatio = (FLOAT)ulUsedShadowMemory / ulShadowCacheSize;
     ASSERT( fRatio>=1.0f);
     fRatio = ClampUp( fRatio/2.0f, 1.0f);
-    tmFlushDelay = Lerp( tmFlushDelay, 2.0f, fRatio);
+    tmFlushDelay = Lerp( tmFlushDelay, TIME(2.0), fRatio);
   }
 
   // loop thru cached shadowmaps list

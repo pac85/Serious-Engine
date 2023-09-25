@@ -161,6 +161,7 @@ public:
 
   /* Read an object from message. */
   inline CNetworkMessage &operator>>(float  &f) { Read( &f, sizeof( f)); return *this; }
+  inline CNetworkMessage &operator>>(double &d) { Read( &d, sizeof( d)); return *this; } // [Cecil]
   inline CNetworkMessage &operator>>(ULONG &ul) { Read(&ul, sizeof(ul)); return *this; }
   inline CNetworkMessage &operator>>(UWORD &uw) { Read(&uw, sizeof(uw)); return *this; }
   inline CNetworkMessage &operator>>(UBYTE &ub) { Read(&ub, sizeof(ub)); return *this; }
@@ -228,9 +229,9 @@ public:
 class CNetworkStream {
 public:
   enum Result {
-    R_OK = 1,
-    R_BLOCKMISSING,           // block is missing in the stream
-    R_BLOCKNOTRECEIVEDYET,    // block is not yet received
+    E_NSR_OK = 1,
+    E_NSR_BLOCKMISSING,           // block is missing in the stream
+    E_NSR_BLOCKNOTRECEIVEDYET,    // block is not yet received
   };
 public:
   CListHead ns_lhBlocks;   // list of blocks of this stream (higher sequences first)

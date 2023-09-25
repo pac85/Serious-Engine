@@ -231,7 +231,7 @@ void CSessionState::Start_t(INDEX ctLocalPlayers)
   // if this computer is server
   if (_pNetwork->IsServer()) {
     // initialize local client
-    _cmiComm.Client_Init_t(0UL);
+    _cmiComm.Client_Init_t((ULONG)0);
     // connect as main session state
     try {
       Start_AtServer_t();
@@ -1149,7 +1149,7 @@ void CSessionState::ProcessGameStream(void)
     CNetworkStreamBlock *pnsbBlock;
     CNetworkStream::Result res = ses_nsGameStream.GetBlockBySequence(iSequence, pnsbBlock);
     // if it is found
-    if (res==CNetworkStream::R_OK) {
+    if (res==CNetworkStream::E_NSR_OK) {
       // if recording a demo
       if (_pNetwork->ga_bDemoRec) {
         // try to
@@ -1188,12 +1188,12 @@ void CSessionState::ProcessGameStream(void)
       }
 
     // if it is not avaliable yet
-    } else if (res==CNetworkStream::R_BLOCKNOTRECEIVEDYET) {
+    } else if (res==CNetworkStream::E_NSR_BLOCKNOTRECEIVEDYET) {
       // finish
       _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SESSIONSTATE_PROCESSGAMESTREAM);
       return;
     // if it is missing
-    } else if (res==CNetworkStream::R_BLOCKMISSING) {
+    } else if (res==CNetworkStream::E_NSR_BLOCKMISSING) {
       
       // if it is a new sequence
       if (iSequence>ses_iMissingSequence) {

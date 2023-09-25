@@ -113,9 +113,9 @@ public:
     , ep_ulID            (ulID         )
     , ep_slOffset        (slOffset     )
     , ep_strName         (strName      )
+    , ep_ulFlags         (ulFlags      )
     , ep_chShortcut      (chShortcut   )
     , ep_colColor        (colColor     )
-    , ep_ulFlags         (ulFlags      )
   {};
   CEntityProperty(void) {};
 };
@@ -269,8 +269,11 @@ public:
   }
 
 inline ENGINE_API void ClearToDefault(FLOAT &f) { f = 0.0f; };
+inline ENGINE_API void ClearToDefault(DOUBLE &d) { d = 0.0; }; // [Cecil]
 inline ENGINE_API void ClearToDefault(INDEX &i) { i = 0; };
+#if SE1_WIN
 inline ENGINE_API void ClearToDefault(BOOL &b) { b = FALSE; };
+#endif
 inline ENGINE_API void ClearToDefault(CEntityPointer &pen) { pen = NULL; };
 inline ENGINE_API void ClearToDefault(CTString &str) { str = ""; };
 inline ENGINE_API void ClearToDefault(FLOATplane3D &pl) { pl = FLOATplane3D(FLOAT3D(0,1,0), 0); };

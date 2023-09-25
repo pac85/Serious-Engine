@@ -431,7 +431,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
 
   strmHFile.Create_t( fnFileName, CTStream::CM_TEXT);
   strcpy(line, strDefinePrefix.ConstData());
-  strupr(line);
+  _strupr(line);
   strDefinePrefix = CTString( line);
 
   sprintf( line, "// Animation names\n");

@@ -1312,6 +1312,8 @@ void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
 }
 
 // instantiate template classes implemented here for needed types
+#if SE1_WIN
+
 #pragma warning (disable: 4660) // if already instantiated by some class
 
 // remove templates
@@ -1332,3 +1334,5 @@ template FLOATbsptree3D;
 template FLOATbspcutter3D;
 
 #pragma warning (default: 4660)
+
+#endif // SE1_WIN

@@ -33,8 +33,8 @@ ENGINE_API void ReadTranslationTable_t(
   CDynamicArray<class CTranslationPair> &atpPairs, const CTFileName &fnmTable); // throw char *
 
 // translate a string
-ENGINE_API char * Translate(char *str, INDEX iOffset=0);
-ENGINE_API const char * TranslateConst(const char *str, INDEX iOffset=0);
+ENGINE_API char *Translate(const char *str, INDEX iOffset = 0);
+ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset = 0);
 
 // macro for inserting a string for translation into executables
 #define TRANS(str) Translate("ETRS" str, 4)

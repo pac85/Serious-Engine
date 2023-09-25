@@ -177,7 +177,7 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   // print status text
   setlocale(LC_ALL, "");
   CTString strDesc(0, "%s", pphi->phi_strDescription);
-  strupr(strDesc.Data());
+  _strupr(strDesc.Data());
   setlocale(LC_ALL, "C");
   CTString strPerc(0, "%3.0f%%", pphi->phi_fCompleted*100);
   //dpHook.PutText(strDesc, pixCharSizeI/2, pixSizeJ-pixBarSizeJ-2-pixCharSizeJ, C_GREEN|255);

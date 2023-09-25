@@ -420,11 +420,11 @@ void CServer::SendGameStreamBlocks(INDEX iClient)
     CNetworkStreamBlock *pnsbBlock;
     CNetworkStream::Result res = sso.sso_nsBuffer.GetBlockBySequence(iSequence, pnsbBlock);
     // if it is not found
-    if (res!=CNetworkStream::R_OK) {
+    if (res!=CNetworkStream::E_NSR_OK) {
       // if going upward
       if (iStep>0 ) {
 //        // if this block is missing
-//        && res==CNetworkStream::R_BLOCKMISSING
+//        && res==CNetworkStream::E_NSR_BLOCKMISSING
         // if none sent so far
         if (iBlocksOk<=0) {
           // give up
@@ -545,7 +545,7 @@ void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSe
     CNetworkStreamBlock *pnsbBlock;
     CNetworkStream::Result res = sso.sso_nsBuffer.GetBlockBySequence(iSequence, pnsbBlock);
     // if it is not found
-    if (res!=CNetworkStream::R_OK) {
+    if (res!=CNetworkStream::E_NSR_OK) {
       // tell the requesting session state to disconnect
       SendDisconnectMessage(iClient, TRANS("Gamestream synchronization lost"));
       return;
@@ -1525,7 +1525,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
         continue;
       }
       // if message is public or the client has some of destination players
-      if (ulTo==-1 || ulTo&MaskOfPlayersOnClient(iSession)) {
+      if (ulTo == (ULONG)-1 || ulTo & MaskOfPlayersOnClient(iSession)) {
         // send the message to that computer
         _pNetwork->SendToClient(iSession, nmOut);
       }
