@@ -20,11 +20,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Stream.h>
 #include <Engine/Network/NetworkMessage.h>
 
-typedef HRESULT __stdcall CoCreateGuid_t(UBYTE *pguid);
-
 // get a GUID from system
 static void GetGUID(UBYTE aub[16])
 {
+#if SE1_WIN
+  typedef HRESULT __stdcall CoCreateGuid_t(UBYTE *pguid);
+
   HINSTANCE hOle32Lib = NULL;
   CoCreateGuid_t *pCoCreateGuid = NULL;
 
@@ -55,6 +56,13 @@ static void GetGUID(UBYTE aub[16])
   } catch(char *strError) {
     FatalError(TRANS("Cannot make GUID for a player:\n%s"), strError);
   }
+
+#else
+  // [Cecil] Generate GUID at random
+  for (INDEX i = 0; i < 16; i++) {
+    aub[i] = UBYTE(rand() % 256);
+  }
+#endif
 }
 
 /*

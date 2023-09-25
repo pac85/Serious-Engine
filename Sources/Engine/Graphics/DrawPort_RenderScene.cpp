@@ -448,9 +448,7 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
   }
 
 #else
-  ULONG ulReverse = 0;
-  _BitScanReverse(&ulReverse, _ctGroupsCount);
-  _ctGroupsCount = 2 << ulReverse;
+  _ctGroupsCount = 2 << FastLog2(_ctGroupsCount);
 #endif
 
   // done with bining
