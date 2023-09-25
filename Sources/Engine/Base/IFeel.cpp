@@ -109,6 +109,8 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
   _pShell->DeclareSymbol("void inp_IFeelGainChange(INDEX);", &ifeel_GainChange);
   _pShell->DeclareSymbol("persistent user FLOAT inp_fIFeelGain post:inp_IFeelGainChange;", &ifeel_fGain);
   _pShell->DeclareSymbol("const user INDEX sys_bIFeelEnabled;", &ifeel_bEnabled);
+
+#if SE1_WIN
   IFeel_ChangeGain(ifeel_fGain);
 
   // load iFeel lib 
@@ -150,6 +152,11 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
   CPrintF("IFeel mouse '%s' initialized\n", IFeel_GetProductName().ConstData());
   ifeel_bEnabled = TRUE;
   return TRUE;
+
+#else
+  CPrintF("IFeel is unavailable on this platform.\n");
+  return FALSE;
+#endif // SE1_WIN
 }
 // delete imm ifeel device
 void IFeel_DeleteDevice()

@@ -23,6 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Win9x multimonitor enabling/disabling code, 
 // idea and original code courtesy of Christian Studer <cstuder@realtimesoft.com>
 // added dynamic function loading and exception throwing
+#if SE1_WIN
 
 #pragma comment(lib, "advapi32.lib")
 
@@ -135,6 +136,8 @@ void Mon_DisableEnable9x_t(BOOL bDisable)
   }
 }
 
+#endif // SE1_WIN
+
 void MonitorsOff(void)
 {
   extern BOOL _bDedicatedServer;
@@ -142,6 +145,7 @@ void MonitorsOff(void)
     return;
   }
 
+#if SE1_WIN
   // check for WinNT or Win2k
   BOOL bNT = FALSE;
   OSVERSIONINFO osv;
@@ -171,10 +175,15 @@ void MonitorsOff(void)
       CPrintF(TRANS("  Multimonitor support was allowed.\n"));
     }
   }
+
+#else
+  CPutString("Multimonitor is unavailable on this platform.\n");
+#endif // SE1_WIN
 }
 
 void MonitorsOn(void)
 {
+#if SE1_WIN
   // if multimon was disabled
   if (gfx_bMultiMonDisabled) {
     CPrintF(TRANS("Multimonitor support was disabled.\n"));
@@ -187,4 +196,8 @@ void MonitorsOn(void)
       CPrintF(TRANS(" error: %s\n"), strError);
     }
   }
+
+#else
+  CPutString("Multimonitor is unavailable on this platform.\n");
+#endif // SE1_WIN
 }
