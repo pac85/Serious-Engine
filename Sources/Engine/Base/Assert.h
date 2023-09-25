@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#ifdef _MSC_VER  /* rcg10042001 */
+#if SE1_WIN
 
 #ifdef __cplusplus
   extern "C" {
@@ -32,13 +32,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   }
 #endif
 
-#endif
+#elif SE1_UNIX
+  #include <assert.h>
+  #include <signal.h>
 
-
-#ifdef PLATFORM_UNIX  /* rcg10042001 */
-#include <assert.h>
-#include <signal.h>
-#define _assert(x, y, z) assert(0)
+  #define _assert(x, y, z) assert(0)
 #endif
 
 
@@ -71,11 +69,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /* End: Define _CRTIMP */
 
   // this breakpoint doesn't cause exceptions if not in debugger
-  #ifdef _MSC_VER /* rcg10042001 */
+  #if SE1_WIN
     #define SAFEBREAKPOINT try { Breakpoint(); } catch(...) {;}
-  #endif
-
-  #ifdef PLATFORM_UNIX /* rcg10042001 */
+  #elif SE1_UNIX
     #define SAFEBREAKPOINT raise(SIGTRAP)
   #endif
 

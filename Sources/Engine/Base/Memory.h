@@ -48,7 +48,7 @@ ENGINE_API extern BOOL AllMemoryFreed( void );
 ENGINE_API extern INDEX FindZero( UBYTE *pubMemory, INDEX iBytes);
 
 
-#ifdef _MSC_VER  /* rcg10042001 */
+#if SE1_WIN
 #ifndef NDEBUG
 
 // use debug version of operator new
@@ -69,7 +69,7 @@ ENGINE_API extern INDEX FindZero( UBYTE *pubMemory, INDEX iBytes);
 #define ReportLostMemory() ((void)0)
 
 #endif // NDEBUG
-#endif // _MSC_VER
+#endif // SE1_WIN
 
 #endif  /* include-once check. */
 

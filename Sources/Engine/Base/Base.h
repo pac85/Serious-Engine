@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * rcg10042001 In case these don't get defined in the project file, try to
  *   catch them here...
  */
-#ifdef _MSC_VER
+#if SE1_WIN
   #ifndef PRAGMA_ONCE
     #define PRAGMA_ONCE
   #endif
@@ -47,10 +47,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     #endif
   #endif
 
-#endif  // defined _MSC_VER
-
-
-#ifdef PLATFORM_UNIX  /* rcg10042001 */
+#elif SE1_UNIX
   #define ENGINE_API
 #endif
-

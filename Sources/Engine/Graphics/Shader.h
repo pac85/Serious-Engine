@@ -215,10 +215,10 @@ ENGINE_API void shaSetHazeColorArray(GFXColor *paHazeColors);
 // Is overbrightning enabled
 ENGINE_API BOOL shaOverBrightningEnabled(void);
 
-#if (defined _MSC_VER)
- #define DECLSPEC_DLLEXPORT _declspec (dllexport)
+#if SE1_WIN
+  #define DECLSPEC_DLLEXPORT __declspec(dllexport)
 #else
- #define DECLSPEC_DLLEXPORT
+  #define DECLSPEC_DLLEXPORT
 #endif
 
 #define SHADER_MAIN(name) \

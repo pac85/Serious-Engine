@@ -22,13 +22,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "gl_types.h"
 
 /* rcg10042001 wraped for platform. */
-#if (defined _MSC_VER)
-#define DLLFUNCTION(dll, output, name, inputs, params, required) \
-  extern output (__stdcall *p##name) inputs
-#elif (defined PLATFORM_UNIX)
-#define DLLFUNCTION(dll, output, name, inputs, params, required) \
-  extern output (*p##name) inputs
-  #define __stdcall
+#if SE1_WIN
+  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
+    extern output (__stdcall *p##name) inputs
+
+#elif SE1_UNIX
+  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
+    extern output (*p##name) inputs
+    #define __stdcall
+
 #else
   #error please define your platform here.
 #endif

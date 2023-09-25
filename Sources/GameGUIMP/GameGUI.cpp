@@ -100,7 +100,7 @@ void OnSelectPlayerAndControls(void)
   _GameGUI.OnSelectPlayerAndControls();
 }
 
-extern "C" _declspec(dllexport) struct GameGUI_interface *GAMEGUI_Create(void)
+extern "C" __declspec(dllexport) struct GameGUI_interface *GAMEGUI_Create(void)
 {
   _Interface.Initialize                 = ::Initialize                 ;
   _Interface.End                        = ::End                        ;
