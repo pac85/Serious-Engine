@@ -113,6 +113,12 @@
     <Filter Include="Header Files\GameAgent Headers">
       <UniqueIdentifier>{213d6870-6a86-43c8-b4be-01096c1ccddf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\OS">
+      <UniqueIdentifier>{53a459dc-b9ce-4496-a09a-b25ce3ad9eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OS Headers">
+      <UniqueIdentifier>{dc4431b4-d601-4946-b64b-cb31cceb9eeb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base\Anim.cpp">
@@ -709,6 +715,9 @@
     <ClCompile Include="GameAgent\GameAgent.cpp">
       <Filter>Source Files\GameAgent</Filter>
     </ClCompile>
+    <ClCompile Include="OS\DynamicLibraries.cpp">
+      <Filter>Source Files\OS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Anim.h">
@@ -1298,6 +1307,15 @@
     </ClInclude>
     <ClInclude Include="Base\ByteSwap.h">
       <Filter>Header Files\Base Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="OS\OS.h">
+      <Filter>Header Files\OS Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="OS\PlatformSpecific.h">
+      <Filter>Header Files\OS Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="OS\PlatformTypes.h">
+      <Filter>Header Files\OS Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,129 @@
+/* Copyright (c) 2023 Dreamy Cecil
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
+
+// [Cecil] This header defines specific features that may be missing from certain platforms
+#ifndef SE_INCL_PLATFORMSPECIFIC_H
+#define SE_INCL_PLATFORMSPECIFIC_H
+
+// Thread-local variables specifier
+#ifndef thread_local
+  #if SE1_WIN
+    #define thread_local __declspec(thread)
+  #elif __STDC_VERSION__ >= 201112L
+    #define thread_local _Thread_local
+  #else
+    #define thread_local __thread
+  #endif
+#endif // thread_local
+
+// Unix-specific
+#if SE1_UNIX
+
+// Internal
+#define __forceinline __attribute__((always_inline)) inline
+#define __stdcall
+#define __cdecl
+#define WINAPI
+
+#ifndef MAX_PATH
+  #ifdef MAXPATHLEN
+    #define MAX_PATH MAXPATHLEN
+  #else
+    #define MAX_PATH 256
+  #endif
+#endif
+
+#define _O_BINARY 0
+#define _O_RDONLY O_RDONLY
+#define _S_IWRITE S_IWRITE
+#define _S_IREAD  S_IREAD
+
+// Macros for Windows methods
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <stdarg.h>
+#include <ctype.h>
+#include <math.h>
+
+#define _snprintf snprintf
+#define _vsnprintf vsnprintf
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+
+#define _CrtCheckMemory() 1
+#define _mkdir(x) mkdir(x, S_IRWXU)
+#define _open open
+#define _close close
+#define _set_new_handler std::set_new_handler
+#define _finite isfinite
+
+inline void _strupr(char *str) {
+  if (str == NULL) return;
+
+  for (char *ptr = str; *ptr; ptr++) {
+    *ptr = (char)toupper(*ptr);
+  }
+};
+
+inline ULONG _rotl(ULONG ul, int bits) {
+  return (ul << bits) | (ul >> (-bits & 31));
+};
+
+// Windows reports
+inline void _RPT_do(const char *type, const char *fmt, ...)
+{
+#ifndef NDEBUG
+  va_list ap;
+  fprintf(stderr, "_RPT (%s): ", type);
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  va_end(ap);
+  fflush(stderr);
+#endif
+};
+
+#define _CRT_WARN "_CRT_WARN"
+#define _CRT_ERROR "_CRT_ERROR"
+#define _CRT_ASSER "_CRT_ASSERT"
+
+#define _RPT0(type, fmt)                 _RPT_do(type, fmt)
+#define _RPT1(type, fmt, a1)             _RPT_do(type, fmt, a1)
+#define _RPT2(type, fmt, a1, a2)         _RPT_do(type, fmt, a1, a2)
+#define _RPT3(type, fmt, a1, a2, a3)     _RPT_do(type, fmt, a1, a2, a3)
+#define _RPT4(type, fmt, a1, a2, a3, a4) _RPT_do(type, fmt, a1, a2, a3, a4)
+
+// Networking
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+#define closesocket close
+#define WSAGetLastError() (INDEX)errno
+
+typedef int SOCKET;
+typedef hostent HOSTENT;
+typedef sockaddr_in SOCKADDR_IN;
+typedef sockaddr    SOCKADDR;
+
+#endif // SE1_UNIX
+
+#endif // include-once check

@@ -23,59 +23,29 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Base.h>
 #include <Engine/Graphics/gl_types.h>
 
-typedef signed long  int    SLONG;
-typedef signed short int    SWORD;
-typedef signed char	        SBYTE;
-typedef signed int          SINT;
+// Unsigned integers
+typedef unsigned char  UBYTE;
+typedef unsigned short UWORD;
+typedef unsigned int   UINT;
 
-typedef unsigned long  int  ULONG;
-typedef unsigned short int  UWORD;
-typedef unsigned char       UBYTE;
-typedef unsigned int        UINT;
+// Signed integers
+typedef signed char	 SBYTE;
+typedef signed short SWORD;
+typedef signed int   SINT;
 
-// [Cecil] Platform-specific
+typedef int BOOL; // This is for TRUE/FALSE
+
+// [Cecil] 64-bit integers for the old compiler
 #if SE1_OLD_COMPILER
   typedef unsigned __int64 UQUAD;
   typedef   signed __int64 SQUAD;
-
 #else
-  #include <cstdint>
-
   typedef unsigned long long UQUAD;
   typedef   signed long long SQUAD;
 #endif
 
-#ifdef PLATFORM_UNIX  /* rcg10042001 */
-    #define __forceinline inline
-
-    #if (!defined MAX_PATH)
-      #define MAX_PATH 256
-    #endif
-
-    typedef long long  __int64;
-    typedef unsigned long  int  DWORD;
-    typedef signed long  int    LONG;
-
-    typedef void *HWND;  /* !!! FIXME this sucks. */
-    typedef void *HINSTANCE;  /* !!! FIXME this sucks. */
-    typedef void *HGLRC;  /* !!! FIXME this sucks. */
-    typedef ULONG COLORREF;  /* !!! FIXME this sucks. */
-
-    typedef struct
-    {
-        LONG x;
-        LONG y;
-    } POINT;
-
-    typedef struct
-    {
-        LONG left;
-        LONG top;
-        LONG right;
-        LONG bottom;
-    } RECT;
-#endif
-
+// [Cecil] Platform-specific types
+#include <Engine/OS/PlatformTypes.h>
 
 #define MAX_SLONG ((SLONG)0x7FFFFFFFL)
 #define MAX_SWORD ((SWORD)0x7FFF)
@@ -92,10 +62,6 @@ typedef unsigned int        UINT;
 #define MAX_ULONG ((ULONG)0xFFFFFFFFL)
 #define MAX_UWORD ((UWORD)0xFFFF)
 #define MAX_UBYTE ((UBYTE)0xFF)
-
-typedef int BOOL;		        // this is for TRUE/FALSE
-typedef long int RESULT;		// for error codes
-typedef long int INDEX;     // for indexed values and quantities
 
 #define FALSE 0
 #define TRUE  1
@@ -419,7 +385,7 @@ typedef BSPCutter<FLOAT, 3>          FLOATbspcutter3D;
 
 // general clearing functions
 template<class cType>
-inline void Clear(cType &t) { t.cType::Clear(); };
+inline void Clear(cType &t) { t.Clear(); };
 
 // specific clearing functions for built-in types
 inline void Clear(signed long int sli) {};

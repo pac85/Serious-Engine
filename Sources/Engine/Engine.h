@@ -44,8 +44,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #endif
 #endif // SE1_WIN
 
+// Engine base
 #include <Engine/Base/Base.h>
 #include <Engine/Base/Types.h>
+
+// [Cecil] OS-specific interface
+#include <Engine/OS/OS.h>
 
 // [Cecil] Byte swapping functions
 #include <Engine/Base/ByteSwap.h>
