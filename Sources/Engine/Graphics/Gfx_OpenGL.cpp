@@ -135,7 +135,7 @@ static void OGL_SetFunctionPointers_t(HINSTANCE hiOGL)
   // get gl function pointers
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name;  \
-    p##name = (output (__stdcall*) inputs) GetProcAddress( hi##dll, strName); \
+    p##name = (output (__stdcall *)inputs)OS::GetLibSymbol(hi##dll, strName); \
     if( required && p##name == NULL) FailFunction_t(strName);
   #include "gl_functions.h"
   #undef DLLFUNCTION
@@ -764,13 +764,13 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
 
   try
   { // if driver doesn't exists on disk
-    char strBuffer[_MAX_PATH+1];
+    char strBuffer[MAX_PATH+1];
     char *strDummy;
-    int iRes = SearchPathA(NULL, strDriverFileName.ConstData(), NULL, _MAX_PATH, strBuffer, &strDummy);
+    int iRes = SearchPathA(NULL, strDriverFileName.ConstData(), NULL, MAX_PATH, strBuffer, &strDummy);
     if( iRes==0) ThrowF_t(TRANS("OpenGL driver '%s' not present"), strDriverFileName);
 
     // load opengl library
-    gl_hiDriver = ::LoadLibraryA(strDriverFileName.ConstData());
+    gl_hiDriver = OS::LoadLib(strDriverFileName.ConstData());
     // if it cannot be loaded (although it is present on disk)
     if( gl_hiDriver==NONE) {
       // if it is 3dfx stand-alone driver
@@ -789,7 +789,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
   }
   catch( char *strError)
   { // didn't make it :(
-    if( gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
+    if( gl_hiDriver!=NONE) OS::FreeLib(gl_hiDriver);
     gl_hiDriver = NONE;
     CPrintF( TRANS("Error starting OpenGL: %s\n"), strError);
     SetErrorMode(iOldErrorMode);

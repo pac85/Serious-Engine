@@ -30,13 +30,13 @@ static void GetGUID(UBYTE aub[16])
 
   try {
     // load ole32
-    hOle32Lib = ::LoadLibraryA( "ole32.dll");
+    hOle32Lib = OS::LoadLib( "ole32.dll");
     if( hOle32Lib == NULL) {
       ThrowF_t(TRANS("Cannot load ole32.dll."));
     }
 
     // find GUID function
-    pCoCreateGuid = (CoCreateGuid_t*)GetProcAddress(hOle32Lib, "CoCreateGuid");
+    pCoCreateGuid = (CoCreateGuid_t *)OS::GetLibSymbol(hOle32Lib, "CoCreateGuid");
     if (pCoCreateGuid==NULL) {
       ThrowF_t(TRANS("Cannot find CoCreateGuid()."));
     }
@@ -50,7 +50,7 @@ static void GetGUID(UBYTE aub[16])
     }
 
     // free the ole32 library
-    FreeLibrary(hOle32Lib);
+    OS::FreeLib(hOle32Lib);
 
   } catch(char *strError) {
     FatalError(TRANS("Cannot make GUID for a player:\n%s"), strError);

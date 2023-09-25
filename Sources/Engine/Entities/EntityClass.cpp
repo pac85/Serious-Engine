@@ -91,7 +91,7 @@ void CEntityClass::Clear(void)
      * must stay avaliable, since they cannot be undeclared.
      */
     // free it
-    //BOOL bSuccess = FreeLibrary(ec_hiClassDLL);
+    //BOOL bSuccess = OS::FreeLib(ec_hiClassDLL);
     //ASSERT(bSuccess);
   }
   ec_pdecDLLClass = NULL;
@@ -226,7 +226,7 @@ void CEntityClass::ReleaseComponents(void)
  */
 HINSTANCE LoadDLL_t(const char *strFileName) // throw char *
 {
-  HINSTANCE hiDLL = ::LoadLibraryA(strFileName);
+  HINSTANCE hiDLL = OS::LoadLib(strFileName);
 
   // if the DLL can not be loaded
   if (hiDLL==NULL) {
@@ -293,11 +293,11 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   ec_fnmClassDLL = fnmDLL;
 
   // get the pointer to the DLL class structure
-  ec_pdecDLLClass = (CDLLEntityClass *)GetProcAddress(ec_hiClassDLL, (strClassName + "_DLLClass").ConstData());
+  ec_pdecDLLClass = (CDLLEntityClass *)OS::GetLibSymbol(ec_hiClassDLL, (strClassName + "_DLLClass").ConstData());
   // if class structure is not found
   if (ec_pdecDLLClass == NULL) {
     // free the library
-    BOOL bSuccess = FreeLibrary(ec_hiClassDLL);
+    BOOL bSuccess = OS::FreeLib(ec_hiClassDLL);
     ASSERT(bSuccess);
     ec_hiClassDLL = NULL;
     ec_fnmClassDLL.Clear();

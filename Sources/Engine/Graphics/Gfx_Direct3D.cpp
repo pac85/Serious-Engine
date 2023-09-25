@@ -372,7 +372,7 @@ extern void SetupIndexArray_D3D( INDEX ctIndices)
 BOOL CGfxLibrary::InitDriver_D3D(void)
 {
   // check for presence of DirectX 8
-  gl_hiDriver = LoadLibraryA( "D3D8.DLL");
+  gl_hiDriver = OS::LoadLib("D3D8.DLL");
   if( gl_hiDriver==NONE) {
     // not present - BUAHHAHAHAHAR :)
     CPrintF( "DX8 error: API not installed.\n");
@@ -382,11 +382,11 @@ BOOL CGfxLibrary::InitDriver_D3D(void)
 
   // query DX8 interface
   IDirect3D8* (WINAPI *pDirect3DCreate8)(UINT SDKVersion);
-  pDirect3DCreate8 = (IDirect3D8* (WINAPI *)(UINT SDKVersion))GetProcAddress( gl_hiDriver, "Direct3DCreate8");
+  pDirect3DCreate8 = (IDirect3D8* (WINAPI *)(UINT SDKVersion))OS::GetLibSymbol( gl_hiDriver, "Direct3DCreate8");
   if( pDirect3DCreate8==NULL) {
     // cannot init
     CPrintF( "DX8 error: Cannot get entry procedure address.\n");
-    FreeLibrary(gl_hiDriver);
+    OS::FreeLib(gl_hiDriver);
     gl_hiDriver = NONE;
     return FALSE; 
   }
@@ -396,7 +396,7 @@ BOOL CGfxLibrary::InitDriver_D3D(void)
   if( gl_pD3D==NULL) {
     // cannot start
     CPrintF( "DX8 error: Cannot be initialized.\n");
-    FreeLibrary(gl_hiDriver);
+    OS::FreeLib(gl_hiDriver);
     gl_hiDriver = NONE;
     return FALSE;
   }

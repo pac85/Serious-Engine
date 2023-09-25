@@ -117,7 +117,7 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
   if(_hLib!=NULL) return FALSE;
 
   UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-  _hLib = LoadLibraryA(fnmExpanded.ConstData());
+  _hLib = OS::LoadLib(fnmExpanded.ConstData());
   SetErrorMode(iOldErrorMode);
   if(_hLib==NULL)
   {
@@ -126,14 +126,14 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
   }
 
   // take func pointers
-  immCreateDevice = (BOOL(*)(HINSTANCE &hInstance, HWND &hWnd)) GetProcAddress(_hLib,"Imm_CreateDevice");
-  immDeleteDevice = (void(*)(void)) GetProcAddress(_hLib,"Imm_DeleteDevice");
-  immProductName = (BOOL(*)(char *strProduct,int iMaxCount)) GetProcAddress(_hLib,"Imm_GetProductName");
-  immLoadFile = (BOOL(*)(const char *fnFile))GetProcAddress(_hLib,"Imm_LoadFile");
-  immUnloadFile = (void(*)(void))GetProcAddress(_hLib,"immUnloadFile");
-  immPlayEffect = (void(*)(const char *pstrEffectName))GetProcAddress(_hLib,"Imm_PlayEffect");
-  immStopEffect = (void(*)(const char *pstrEffectName))GetProcAddress(_hLib,"Imm_StopEffect");
-  immChangeGain = (void(*)(const float fGain))GetProcAddress(_hLib,"Imm_ChangeGain");
+  immCreateDevice = (BOOL(*)(HINSTANCE &hInstance, HWND &hWnd))OS::GetLibSymbol(_hLib, "Imm_CreateDevice");
+  immDeleteDevice = (void(*)(void))OS::GetLibSymbol(_hLib, "Imm_DeleteDevice");
+  immProductName = (BOOL(*)(char *strProduct,int iMaxCount))OS::GetLibSymbol(_hLib, "Imm_GetProductName");
+  immLoadFile = (BOOL(*)(const char *fnFile))OS::GetLibSymbol(_hLib, "Imm_LoadFile");
+  immUnloadFile = (void(*)(void))OS::GetLibSymbol(_hLib, "Imm_UnLoadFile"); // [Cecil] Fixed symbol name
+  immPlayEffect = (void(*)(const char *pstrEffectName))OS::GetLibSymbol(_hLib, "Imm_PlayEffect");
+  immStopEffect = (void(*)(const char *pstrEffectName))OS::GetLibSymbol(_hLib, "Imm_StopEffect");
+  immChangeGain = (void(*)(const float fGain))OS::GetLibSymbol(_hLib, "Imm_ChangeGain");
 
   // create device
   if(immCreateDevice == NULL)
@@ -164,7 +164,7 @@ void IFeel_DeleteDevice()
   immStopEffect = NULL;
   immChangeGain = NULL;
 
-  if(_hLib != NULL) FreeLibrary(_hLib);
+  if(_hLib != NULL) OS::FreeLib(_hLib);
   _hLib = NULL;
 }
 // loads project file

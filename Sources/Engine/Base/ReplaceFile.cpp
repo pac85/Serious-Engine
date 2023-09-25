@@ -66,7 +66,7 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, cha
       ENGINEGUI_DLL_NAME, GetWindowsError(GetLastError()));
     return CTString("");
   }
-  FileRequester_t *pFileRequester = (FileRequester_t*)GetProcAddress(hGUI, 
+  FileRequester_t *pFileRequester = (FileRequester_t *)OS::GetLibSymbol(hGUI, 
     "?FileRequester@@YA?AVCTFileName@@PAD000@Z");
   if (pFileRequester==NULL) {
     WarningMessage(TRANS("Error in %s:\nFileRequester() function not found\nCannot replace files!"),

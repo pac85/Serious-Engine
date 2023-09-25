@@ -1418,7 +1418,7 @@ void CGfxLibrary::StopDisplayMode(void)
   }
 
   // free driver DLL
-  if( gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
+  if( gl_hiDriver!=NONE) OS::FreeLib(gl_hiDriver);
   gl_hiDriver = NONE;
 
   // reset some vars

@@ -61,7 +61,7 @@ static void AMP11_SetFunctionPointers_t(void) {
   // get amp11lib function pointers
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = "_" #name "@" #params;  \
-    p##name = (output (__stdcall*) inputs) GetProcAddress( _hAmp11lib, strName); \
+    p##name = (output (__stdcall *)inputs)OS::GetLibSymbol(_hAmp11lib, strName); \
     if(p##name == NULL) FailFunction_t(strName);
   #include "al_functions.h"
   #undef DLLFUNCTION
@@ -85,7 +85,7 @@ public:
 
 
 // ------------------------------------ Ogg Vorbis
-#include <vorbis\vorbisfile.h>  // we define needed stuff ourselves, and ignore the rest
+#include <vorbis/vorbisfile.h>  // we define needed stuff ourselves, and ignore the rest
 
 // vorbis vars
 extern BOOL _bOVEnabled = FALSE;
@@ -111,7 +111,7 @@ static void OV_SetFunctionPointers_t(void) {
   // get vo function pointers
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name ;  \
-    p##name = (output (__cdecl *) inputs) GetProcAddress( _hOV, strName); \
+    p##name = (output (__cdecl *)inputs)OS::GetLibSymbol(_hOV, strName); \
     if(p##name == NULL) FailFunction_t(strName);
   #include "ov_functions.h"
   #undef DLLFUNCTION
@@ -193,12 +193,7 @@ void CSoundDecoder::InitPlugins(void)
   try {
     // load vorbis
     if (_hOV==NULL) {
-#ifndef NDEBUG
-  #define VORBISLIB "libvorbisfile.dll"
-#else
-  #define VORBISLIB "libvorbisfile.dll"
-#endif
-      _hOV = ::LoadLibraryA(VORBISLIB);
+      _hOV = OS::LoadLib("libvorbisfile.dll");
     }
     if( _hOV == NULL) {
       ThrowF_t(TRANS("Cannot load libvorbisfile.dll."));
@@ -217,7 +212,7 @@ void CSoundDecoder::InitPlugins(void)
   try {
     // load amp11lib
     if (_hAmp11lib==NULL) {
-      _hAmp11lib = ::LoadLibraryA( "amp11lib.dll");
+      _hAmp11lib = OS::LoadLib("amp11lib.dll");
     }
     if( _hAmp11lib == NULL) {
       ThrowF_t(TRANS("Cannot load amp11lib.dll."));
@@ -243,7 +238,7 @@ void CSoundDecoder::EndPlugins(void)
   if (_bAMP11Enabled) {
     palEndLibrary();
     AMP11_ClearFunctionPointers();
-    FreeLibrary(_hAmp11lib);
+    OS::FreeLib(_hAmp11lib);
     _hAmp11lib = NULL;
     _bAMP11Enabled = FALSE;
   }
@@ -251,7 +246,7 @@ void CSoundDecoder::EndPlugins(void)
   // cleanup vorbis when not needed anymore
   if (_bOVEnabled) {
     OV_ClearFunctionPointers();
-    FreeLibrary(_hOV);
+    OS::FreeLib(_hOV);
     _hOV = NULL;
     _bOVEnabled = FALSE;
   }

@@ -166,12 +166,12 @@ void CObject3D::BatchLoading_t(BOOL bOn)
       REG_SetString("HKEY_LOCAL_MACHINE\\SOFTWARE\\X Dimension\\SeriousEngine\\Plugins\\LWO\\chkwrap", "1");
       REG_SetString("HKEY_LOCAL_MACHINE\\SOFTWARE\\X Dimension\\SeriousEngine\\Plugins\\LWO\\readUView", "1");
       // load the dll
-      _h3dExploration = LoadLibrary(EXPLORATION_LIBRRAY);
+      _h3dExploration = OS::LoadLib(EXPLORATION_LIBRRAY);
       // if library not opened
       if(_h3dExploration == NULL) {
         throw("3D Exploration dll not found !");
       }
-      _Init3d=(TInitExploration3D)GetProcAddress(_h3dExploration,"InitExploration3D");
+      _Init3d = (TInitExploration3D)OS::GetLibSymbol(_h3dExploration, "InitExploration3D");
       CTString strPlugins = _fnmApplicationPath+"Bin\\3DExplorationPlugins";
       e3_INIT init;
       memset(&init,0,sizeof(init));

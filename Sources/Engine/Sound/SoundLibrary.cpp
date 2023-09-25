@@ -242,7 +242,7 @@ static void ShutDown_dsound( CSoundLibrary &sl)
   }
   // free direct sound library
   if( _hInstDS != NULL) {
-    FreeLibrary(_hInstDS);
+    OS::FreeLib(_hInstDS);
     _hInstDS = NULL;
   }
   // free memory
@@ -435,13 +435,13 @@ static BOOL StartUp_dsound( CSoundLibrary &sl, BOOL bReport=TRUE)
   
   if( bReport) CPrintF(TRANS("Direct Sound initialization ...\n"));
   ASSERT( _hInstDS==NULL);
-  _hInstDS = LoadLibraryA( "dsound.dll");
+  _hInstDS = OS::LoadLib("dsound.dll");
   if( _hInstDS==NULL) {
     CPrintF( TRANS("  ! DirectSound error: Cannot load 'DSOUND.DLL'.\n"));
     return FALSE;
   }
   // get main procedure address
-  pDirectSoundCreate = (HRESULT(WINAPI *)(GUID FAR *, LPDIRECTSOUND FAR *, IUnknown FAR *))GetProcAddress( _hInstDS, "DirectSoundCreate");
+  pDirectSoundCreate = (HRESULT(WINAPI *)(GUID FAR *, LPDIRECTSOUND FAR *, IUnknown FAR *))OS::GetLibSymbol( _hInstDS, "DirectSoundCreate");
   if( pDirectSoundCreate==NULL) return DSFail( sl, TRANS("  ! DirectSound error: Cannot get procedure address.\n"));
 
   // init dsound

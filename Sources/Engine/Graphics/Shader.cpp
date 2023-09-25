@@ -791,7 +791,7 @@ void CShader::Clear(void)
   ShaderFunc = NULL;
   GetShaderDesc = NULL;
   // release dll
-  if(hLibrary!=NULL) FreeLibrary(hLibrary);
+  if(hLibrary!=NULL) OS::FreeLib(hLibrary);
 }
 
 // Count used memory
@@ -829,7 +829,7 @@ void CShader::Read_t(CTStream *istrFile)
   // set new error mode
   UINT iOldErrorMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   // load dll
-  hLibrary = LoadLibraryA(fnmExpanded.ConstData());
+  hLibrary = OS::LoadLib(fnmExpanded.ConstData());
   // return last error mode
   SetErrorMode(iOldErrorMode);
   // check if library has loaded
@@ -840,7 +840,7 @@ void CShader::Read_t(CTStream *istrFile)
     return;
   }
   // get pointer to shader render function
-  ShaderFunc = (void (*)(void))GetProcAddress(hLibrary, strShaderFunc.ConstData());
+  ShaderFunc = (void (*)(void))OS::GetLibSymbol(hLibrary, strShaderFunc.ConstData());
   // if error accured
   if(ShaderFunc==NULL)
   {
@@ -848,7 +848,7 @@ void CShader::Read_t(CTStream *istrFile)
     istrFile->Throw_t("GetProcAddress 'ShaderFunc' Error");
   }
   // get pointer to shader info function
-  GetShaderDesc = (void (*)(ShaderDesc &))GetProcAddress(hLibrary, strShaderInfo.ConstData());
+  GetShaderDesc = (void (*)(ShaderDesc &))OS::GetLibSymbol(hLibrary, strShaderInfo.ConstData());
   // if error accured
   if(GetShaderDesc==NULL) {
     // report error

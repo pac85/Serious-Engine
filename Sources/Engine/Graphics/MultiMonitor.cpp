@@ -55,21 +55,21 @@ void Mon_DisableEnable9x_t(BOOL bDisable)
 {
   // load user32
   if (_hUser32Lib==NULL) {
-    _hUser32Lib = ::LoadLibraryA( "user32.dll");
+    _hUser32Lib = OS::LoadLib("user32.dll");
     if( _hUser32Lib == NULL) {
       ThrowF_t(TRANS("Cannot load user32.dll."));
     }
   }
 
   if (_pEnumDisplayDevices==NULL) {
-    _pEnumDisplayDevices = (EnumDisplayDevices_t*)GetProcAddress(_hUser32Lib, "EnumDisplayDevicesA");
+    _pEnumDisplayDevices = (EnumDisplayDevices_t *)OS::GetLibSymbol(_hUser32Lib, "EnumDisplayDevicesA");
     if (_pEnumDisplayDevices==NULL) {
       ThrowF_t(TRANS("Cannot find EnumDisplayDevices()."));
     }
   }
 
   if (_pChangeDisplaySettingsEx==NULL) {
-    _pChangeDisplaySettingsEx = (ChangeDisplaySettingsEx_t*)GetProcAddress(_hUser32Lib, "ChangeDisplaySettingsExA");
+    _pChangeDisplaySettingsEx = (ChangeDisplaySettingsEx_t *)OS::GetLibSymbol(_hUser32Lib, "ChangeDisplaySettingsExA");
     if (_pChangeDisplaySettingsEx==NULL) {
       ThrowF_t(TRANS("Cannot find ChangeDisplaySettingsEx()."));
     }
