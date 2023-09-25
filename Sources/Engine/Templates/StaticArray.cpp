@@ -156,7 +156,7 @@ INDEX CStaticArray<Type>::Index(Type *ptMember) {
   ASSERT(UINT_PTR(ptMember) >= UINT_PTR(sa_Array)); // Error if behind the array pointer
 
   // Find the element
-  for (ULONG i = 0; i < sa_Count; i++)
+  for (INDEX i = 0; i < sa_Count; i++)
   {
     if (ptMember == &sa_Array[i]) {
       return i;

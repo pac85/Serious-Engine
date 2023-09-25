@@ -43,15 +43,15 @@ public:
 };
 
 // macro for implementing selecting features in a class
-#define IMPLEMENT_SELECTING(m_ulFlags)                  \
-  inline void Select(unsigned long ulFlag) {            \
-    m_ulFlags |= ulFlag;                                \
-  }                                                     \
-  inline void Deselect(unsigned long ulFlag) {          \
-    m_ulFlags &= ~ulFlag;                               \
-  }                                                     \
-  inline BOOL IsSelected(unsigned long ulFlag) const {  \
-    return m_ulFlags & ulFlag;                          \
+#define IMPLEMENT_SELECTING(m_ulFlags)         \
+  inline void Select(ULONG ulFlag) {           \
+    m_ulFlags |= ulFlag;                       \
+  }                                            \
+  inline void Deselect(ULONG ulFlag) {         \
+    m_ulFlags &= ~ulFlag;                      \
+  }                                            \
+  inline BOOL IsSelected(ULONG ulFlag) const { \
+    return (m_ulFlags & ulFlag) != 0;          \
   }
 
 

@@ -78,30 +78,30 @@ inline void CStaticStackArray<Type>::Delete(void) {
  */
 template<class Type>
 inline Type &CStaticStackArray<Type>::Push(void) {
-  sa_UsedCount++;
-  if (sa_UsedCount>CStaticArray<Type>::Count()) {
-    Expand(CStaticArray<Type>::Count()+sa_ctAllocationStep);
+  this->sa_UsedCount++;
+  if (this->sa_UsedCount > CStaticArray<Type>::Count()) {
+    this->Expand(CStaticArray<Type>::Count() + this->sa_ctAllocationStep);
   }
-  ASSERT(sa_UsedCount <= CStaticArray<Type>::Count());
-  return CStaticArray<Type>::operator[](sa_UsedCount-1);
+  ASSERT(this->sa_UsedCount <= CStaticArray<Type>::Count());
+  return CStaticArray<Type>::operator[](this->sa_UsedCount - 1);
 }
 template<class Type>
 inline Type *CStaticStackArray<Type>::Push(INDEX ct) {
-  sa_UsedCount+=ct;
-  while(sa_UsedCount>CStaticArray<Type>::Count()) {
-    Expand(CStaticArray<Type>::Count()+sa_ctAllocationStep);
+  this->sa_UsedCount += ct;
+  while(this->sa_UsedCount > CStaticArray<Type>::Count()) {
+    this->Expand(CStaticArray<Type>::Count() + this->sa_ctAllocationStep);
   }
-  ASSERT(sa_UsedCount <= CStaticArray<Type>::Count());
-  return &CStaticArray<Type>::operator[](sa_UsedCount-ct);
+  ASSERT(this->sa_UsedCount <= CStaticArray<Type>::Count());
+  return &CStaticArray<Type>::operator[](this->sa_UsedCount - ct);
 }
 
 /* Remove one object from top of stack and return it. */
 template<class Type>
 inline Type &CStaticStackArray<Type>::Pop(void)
 {
-  ASSERT(sa_UsedCount>0);
-  sa_UsedCount--;
-  return CStaticArray<Type>::operator[](sa_UsedCount);
+  ASSERT(this->sa_UsedCount > 0);
+  this->sa_UsedCount--;
+  return CStaticArray<Type>::operator[](this->sa_UsedCount);
 }
 /*
  * Remove objects higher than the given index from stack, but keep stack space.
@@ -109,15 +109,15 @@ inline Type &CStaticStackArray<Type>::Pop(void)
 template<class Type>
 inline void CStaticStackArray<Type>::PopUntil(INDEX iNewTop)
 {
-  ASSERT(iNewTop < sa_UsedCount);
-  sa_UsedCount = iNewTop+1;
+  ASSERT(iNewTop < this->sa_UsedCount);
+  this->sa_UsedCount = iNewTop+1;
 }
 /*
  * Remove all objects from stack, but keep stack space.
  */
 template<class Type>
 inline void CStaticStackArray<Type>::PopAll(void) {
-  sa_UsedCount = 0;
+  this->sa_UsedCount = 0;
 }
 
 /*
@@ -126,13 +126,13 @@ inline void CStaticStackArray<Type>::PopAll(void) {
 template<class Type>
 inline Type &CStaticStackArray<Type>::operator[](INDEX i) {
   ASSERT(this!=NULL);
-  ASSERT(i<sa_UsedCount);     // check bounds
+  ASSERT(i < this->sa_UsedCount);     // check bounds
   return CStaticArray<Type>::operator[](i);
 }
 template<class Type>
 inline const Type &CStaticStackArray<Type>::operator[](INDEX i) const {
   ASSERT(this!=NULL);
-  ASSERT(i<sa_UsedCount);     // check bounds
+  ASSERT(i < this->sa_UsedCount);     // check bounds
   return CStaticArray<Type>::operator[](i);
 }
 
@@ -142,7 +142,7 @@ inline const Type &CStaticStackArray<Type>::operator[](INDEX i) const {
 template<class Type>
 INDEX CStaticStackArray<Type>::Count(void) const {
   ASSERT(this!=NULL);
-  return sa_UsedCount;
+  return this->sa_UsedCount;
 }
 
 /*
@@ -152,7 +152,7 @@ template<class Type>
 INDEX CStaticStackArray<Type>::Index(Type *ptMember) {
   ASSERT(this!=NULL);
   INDEX i = CStaticArray<Type>::Index(ptMember);
-  ASSERTMSG(i<sa_UsedCount, "CStaticStackArray<>::Index(): Not a member of this array!");
+  ASSERTMSG(i < this->sa_UsedCount, "CStaticStackArray<>::Index(): Not a member of this array!");
   return i;
 }
 
@@ -163,13 +163,13 @@ template<class Type>
 CStaticStackArray<Type> &CStaticStackArray<Type>::operator=(const CStaticStackArray<Type> &arOriginal)
 {
   ASSERT(this!=NULL);
-  ASSERT(&arOriginal!=NULL);
-  ASSERT(this!=&arOriginal);
+  ASSERT(&arOriginal != NULL);
+  ASSERT(this != &arOriginal);
 
   // copy stack arrays
   CStaticArray<Type>::operator=(arOriginal);
   // copy used count
-  sa_UsedCount = arOriginal.sa_UsedCount;
+  this->sa_UsedCount = arOriginal.sa_UsedCount;
 
   return *this;
 }
@@ -180,8 +180,8 @@ template<class Type>
 void CStaticStackArray<Type>::MoveArray(CStaticStackArray<Type> &arOther)
 {
   ASSERT(this!=NULL);
-  ASSERT(&arOther!=NULL);
-  ASSERT(this!=&arOther);
+  ASSERT(&arOther != NULL);
+  ASSERT(this != &arOther);
 
   // clear previous contents
   Clear();
@@ -192,9 +192,9 @@ void CStaticStackArray<Type>::MoveArray(CStaticStackArray<Type> &arOther)
   }
   // move data from the other array into this one and clear the other one
   CStaticArray<Type>::MoveArray(arOther);
-  sa_UsedCount        = arOther.sa_UsedCount        ;
-  sa_ctAllocationStep = arOther.sa_ctAllocationStep ;
-  arOther.sa_UsedCount        = 0;
+  this->sa_UsedCount        = arOther.sa_UsedCount        ;
+  this->sa_ctAllocationStep = arOther.sa_ctAllocationStep ;
+  arOther.sa_UsedCount      = 0;
 }
 
 #endif  /* include-once check. */
