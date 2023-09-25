@@ -414,7 +414,7 @@ void CSeriousSkaStudioView::RenderView(CDrawPort *pdp)
     // set placement of model
     CPlacement3D pl;
     pl.pl_OrientationAngle = m_angModelAngle;
-    FLOAT fZPos = pDoc->m_fSpeedZ*fmod(_pTimer->GetLerpedCurrentTick(),pDoc->m_fLoopSecends);
+    FLOAT fZPos = pDoc->m_fSpeedZ * fmod((FLOAT)_pTimer->GetLerpedCurrentTick(), pDoc->m_fLoopSecends);
     pl.pl_PositionVector   = FLOAT3D(0.0f, 0.0f, -fZPos);
     RM_SetObjectPlacement(pl);
 

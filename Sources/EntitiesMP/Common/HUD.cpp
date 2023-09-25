@@ -163,7 +163,7 @@ struct AmmoInfo {
   INDEX ai_iAmmoAmmount;
   INDEX ai_iMaxAmmoAmmount;
   INDEX ai_iLastAmmoAmmount;
-  TIME  ai_tmAmmoChanged;
+  FLOAT ai_tmAmmoChanged;
   BOOL  ai_bHasWeapon;
 };
 
@@ -300,14 +300,14 @@ static void PrepareColorTransitions( COLOR colFine, COLOR colHigh, COLOR colMedi
 // calculates shake ammount and color value depanding on value change
 #define SHAKE_TIME (2.0f)
 static COLOR AddShaker( PIX const pixAmmount, INDEX const iCurrentValue, INDEX &iLastValue,
-                        TIME &tmChanged, FLOAT &fMoverX, FLOAT &fMoverY)
+                        FLOAT &tmChanged, FLOAT &fMoverX, FLOAT &fMoverY)
 {
   // update shaking if needed
   fMoverX = fMoverY = 0.0f;
   const TIME tmNow = _pTimer->GetLerpedCurrentTick();
   if( iCurrentValue != iLastValue) {
     iLastValue = iCurrentValue;
-    tmChanged  = tmNow;
+    tmChanged = (FLOAT)tmNow;
   } else {
     // in case of loading (timer got reseted)
     tmChanged = ClampUp( tmChanged, tmNow);

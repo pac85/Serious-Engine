@@ -3758,7 +3758,11 @@ void CRationalEntity::Copy(CEntity &enOther, ULONG ulFlags)
 void CRationalEntity::Read_t( CTStream *istr) // throw char *
 {
   CLiveEntity::Read_t(istr);
-  (*istr)>>en_timeTimer;
+
+  FLOAT fDummy;
+  *istr >> fDummy;
+  en_timeTimer = (TIME)fDummy;
+
   // if waiting for thinking
   if (en_timeTimer!=THINKTIME_NEVER) {
     // add to list of thinkers
@@ -3783,7 +3787,9 @@ void CRationalEntity::Write_t( CTStream *ostr) // throw char *
     // set dummy thinking time as a flag for later loading
     en_timeTimer = THINKTIME_NEVER;
   }
-  (*ostr)<<en_timeTimer;
+
+  *ostr << (FLOAT)en_timeTimer;
+
   // write the state stack
   (*ostr)<<en_stslStateStack.Count();
   for(INDEX iState=0; iState<en_stslStateStack.Count(); iState++) {

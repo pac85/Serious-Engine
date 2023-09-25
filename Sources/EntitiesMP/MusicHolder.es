@@ -42,13 +42,13 @@ event EChangeMusic {
 #define MUSIC_VOLUMEMIN   0.02f     // minimum volume (considered off)
 #define MUSIC_VOLUMEMAX   0.98f     // maximum volume (considered full)
 
-float FadeInFactor(TIME fFadeTime)
+FLOAT FadeInFactor(TIME fFadeTime)
 {
-  return (float) pow(MUSIC_VOLUMEMAX/MUSIC_VOLUMEMIN, 1/(fFadeTime/_pTimer->TickQuantum));
+  return (FLOAT)pow(DOUBLE(MUSIC_VOLUMEMAX / MUSIC_VOLUMEMIN), 1.0 / DOUBLE(fFadeTime / _pTimer->TickQuantum));
 }
-float FadeOutFactor(TIME fFadeTime)
+FLOAT FadeOutFactor(TIME fFadeTime)
 {
-  return (float) pow(MUSIC_VOLUMEMIN/MUSIC_VOLUMEMAX, 1/(fFadeTime/_pTimer->TickQuantum));
+  return (FLOAT)pow(DOUBLE(MUSIC_VOLUMEMIN / MUSIC_VOLUMEMAX), 1.0 / DOUBLE(fFadeTime / _pTimer->TickQuantum));
 }
 %}
 
