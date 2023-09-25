@@ -27,8 +27,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.cpp>
 #include <Engine/Templates/DynamicStackArray.cpp>
 
-template CDynamicArray<CShellSymbol>;
-
 // shell type used for undeclared symbols
 extern INDEX _shell_istUndeclared = -1;
 

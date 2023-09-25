@@ -28,8 +28,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.cpp>
 #include <Engine/Templates/StaticArray.cpp>
 
-template CDynamicArray<CBrush3D>;
-
 /*
  * Read from stream.
  */

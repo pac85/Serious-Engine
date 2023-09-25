@@ -38,8 +38,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Templates/StaticStackArray.cpp>
 
-template CStaticArray<CSoundListener>;
-
 #pragma comment(lib, "winmm.lib")
 
 // pointer to global sound library object

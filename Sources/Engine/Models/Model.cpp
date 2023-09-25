@@ -32,14 +32,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/Stock_CModelData.h>
 
-template CStaticArray<MappingSurface>;
-template CStaticArray<ModelPolygon>;
-template CStaticArray<ModelPolygonVertex>;
-template CStaticArray<ModelTextureVertex>;
-template CStaticArray<PolygonsPerPatch>;
-template CDynamicArray<CAttachedModelPosition>;
-
-
 extern UBYTE aubGouraudConv[16384];
 
 // model LOD biasing control

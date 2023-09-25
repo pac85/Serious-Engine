@@ -21,10 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicContainer.cpp>
 #include <Engine/Templates/StaticArray.cpp>
 
-template CStaticArray<CStatCounter>;
-template CStaticArray<CStatTimer>;
-template CStaticArray<CStatLabel>;
-
 // one globaly used stats report
 CStatForm _sfStats;
 

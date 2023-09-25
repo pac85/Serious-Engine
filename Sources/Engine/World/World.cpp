@@ -42,11 +42,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/Stock_CEntityClass.h>
 
-template CDynamicContainer<CEntity>;
-template CBrushPolygonSelection;
-template CBrushSectorSelection;
-template CEntitySelection;
-
 extern BOOL _bPortalSectorLinksPreLoaded;
 extern BOOL _bEntitySectorLinksPreLoaded;
 extern INDEX _ctPredictorEntities;

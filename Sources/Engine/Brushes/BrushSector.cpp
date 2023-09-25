@@ -31,8 +31,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/BSP.h>
 #include <Engine/Templates/BSP_internal.h>
 
-//template CDynamicArray<CBrushVertex>;
-
 CBrushSector::CBrushSector(const CBrushSector &c) 
 : bsc_bspBSPTree(*new DOUBLEbsptree3D)
 { 
