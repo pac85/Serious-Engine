@@ -362,8 +362,8 @@ static __forceinline void MixPixelMMX(ULONG &ulPixel, const SLONG slIntensity, c
 void CLayerMixer::AddAmbientPoint(void)
 {
   // prepare some local variables
-  __int64 mmDDL2oDU = _slDDL2oDU;
-  __int64 mmDDL2oDV = _slDDL2oDV;
+  SQUAD mmDDL2oDU = _slDDL2oDU;
+  SQUAD mmDDL2oDV = _slDDL2oDV;
   ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
@@ -516,8 +516,8 @@ skipPixel:
 void CLayerMixer::AddAmbientMaskPoint( UBYTE *pubMask, UBYTE ubMask)
 {
   // prepare some local variables
-  __int64 mmDDL2oDU = _slDDL2oDU;
-  __int64 mmDDL2oDV = _slDDL2oDV;
+  SQUAD mmDDL2oDU = _slDDL2oDU;
+  SQUAD mmDDL2oDV = _slDDL2oDV;
   ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
@@ -684,8 +684,8 @@ void CLayerMixer::AddDiffusionPoint(void)
   if( _slLightStep!=0) slMax1oL = (256<<8) / _slLightStep +256;
 
   // prepare some local variables
-  __int64 mmDDL2oDU = _slDDL2oDU;
-  __int64 mmDDL2oDV = _slDDL2oDV;
+  SQUAD mmDDL2oDU = _slDDL2oDU;
+  SQUAD mmDDL2oDV = _slDDL2oDV;
   ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
@@ -847,8 +847,8 @@ void CLayerMixer::AddDiffusionMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   if( _slLightStep!=0) slMax1oL = (256<<8) / _slLightStep +256;
 
   // prepare some local variables
-  __int64 mmDDL2oDU = _slDDL2oDU;
-  __int64 mmDDL2oDV = _slDDL2oDV;
+  SQUAD mmDDL2oDU = _slDDL2oDU;
+  SQUAD mmDDL2oDV = _slDDL2oDV;
   ULONG ulLightRGB = ByteSwap32(lm_colLight);
   _slLightMax<<=7;
   _slLightStep>>=1;
@@ -1195,7 +1195,7 @@ void CLayerMixer::AddOneLayerGradient( CGradientParameters &gp)
   FLOAT fStart = Clamp( fGr00-(fDGroDJ+fDGroDI)*0.5f, 0.0f, 1.0f);
 
 #if SE1_USE_ASM
-  __int64 mmRowAdv;
+  SQUAD mmRowAdv;
   SLONG fixGRow  = (fGr00 - (fDGroDJ + fDGroDI) * 0.5f) * 32767.0f; // 16:15
   SLONG slModulo = (lm_pixCanvasSizeU-lm_pixPolygonSizeU) * BYTES_PER_TEXEL;
   COLOR colStart = LerpColor( col0, col1, fStart);

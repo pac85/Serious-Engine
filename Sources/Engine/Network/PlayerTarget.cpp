@@ -134,7 +134,7 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
 
   // create a new action packet from last received packet and given delta
   plt_paPreLastAction = plt_paLastAction;
-  __int64 llTag = plt_paLastAction.pa_llCreated += paDelta.pa_llCreated;
+  SQUAD llTag = plt_paLastAction.pa_llCreated += paDelta.pa_llCreated;
   for (INDEX i=0; i<sizeof(CPlayerAction); i++) {
     ((UBYTE*)&plt_paLastAction)[i] ^= ((UBYTE*)&paDelta)[i];
   }
@@ -144,8 +144,8 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
   // if the player is local
   if (_pNetwork->IsPlayerLocal(plt_penPlayerEntity)) {
     // calculate latency
-    __int64 llmsNow = _pTimer->GetHighPrecisionTimer().GetMilliseconds();
-    __int64 llmsCreated = plt_paLastAction.pa_llCreated;
+    SQUAD llmsNow = _pTimer->GetHighPrecisionTimer().GetMilliseconds();
+    SQUAD llmsCreated = plt_paLastAction.pa_llCreated;
     fLatency = FLOAT(DOUBLE(llmsNow-llmsCreated)/1000.0f);
     if (plt_paLastAction.pa_llCreated==plt_paPreLastAction.pa_llCreated) {
       _pNetwork->AddNetGraphValue(NGET_REPLICATEDACTION, fLatency);

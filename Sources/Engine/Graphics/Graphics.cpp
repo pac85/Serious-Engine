@@ -38,7 +38,7 @@ extern INDEX tex_bProgressiveFilter; // filter mipmaps in creation time (not aft
 // returns number of mip-maps to skip from original texture
 INDEX ClampTextureSize( PIX pixClampSize, PIX pixClampDimension, PIX pixSizeU, PIX pixSizeV)
 {
-  __int64 pixMaxSize  = (__int64)pixSizeU * (__int64)pixSizeV;
+  SQUAD pixMaxSize  = (SQUAD)pixSizeU * (SQUAD)pixSizeV;
   PIX pixMaxDimension = Max( pixSizeU, pixSizeV);
   INDEX ctSkipMips    = 0;
   while( (pixMaxSize>pixClampSize || pixMaxDimension>pixClampDimension) && pixMaxDimension>1) {
@@ -190,7 +190,7 @@ void FlipBitmap( UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDE
 
 
 // makes one level lower mipmap (bilinear or nearest-neighbour with border preservance)
-static __int64 mmRounder = 0x0002000200020002;
+static SQUAD mmRounder = 0x0002000200020002;
 static void MakeOneMipmap( ULONG *pulSrcMipmap, ULONG *pulDstMipmap, PIX pixWidth, PIX pixHeight, BOOL bBilinear)
 {
   // some safety checks
@@ -463,7 +463,7 @@ DOUBLE CalcBitmapDeviation( ULONG *pulBitmap, PIX pixSize)
 {
   UBYTE ubR,ubG,ubB;
   ULONG ulSumR =0, ulSumG =0, ulSumB =0;
-__int64 mmSumR2=0, mmSumG2=0, mmSumB2=0;
+SQUAD mmSumR2=0, mmSumG2=0, mmSumB2=0;
 
   // calculate sum and sum^2
   for( INDEX iPix=0; iPix<pixSize; iPix++) {
@@ -513,12 +513,12 @@ static ULONG ulDither2[4][4] = {
 };
 
 
-static __int64 mmErrDiffMask=0;
-static __int64 mmW3 = 0x0003000300030003;
-static __int64 mmW5 = 0x0005000500050005;
-static __int64 mmW7 = 0x0007000700070007;
-static __int64 mmShifter = 0;
-static __int64 mmMask  = 0;
+static SQUAD mmErrDiffMask=0;
+static SQUAD mmW3 = 0x0003000300030003;
+static SQUAD mmW5 = 0x0005000500050005;
+static SQUAD mmW7 = 0x0007000700070007;
+static SQUAD mmShifter = 0;
+static SQUAD mmMask  = 0;
 static ULONG *pulDitherTable;
 
 // performs dithering of a 32-bit bipmap (can be in-place)
@@ -638,12 +638,12 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
   // x64 register simulation
   union uConv
   {
-    uint64_t val;
-    uint32_t dword[2];
-    uint16_t word[4];
-    int16_t  sWord[4];
-    uint8_t byte[8];
-    int8_t sByte[8];
+    UQUAD val;
+    ULONG dword[2];
+    UWORD word[4];
+    SWORD sWord[4];
+    UBYTE byte[8];
+    SBYTE sByte[8];
   };
 #endif
 
@@ -703,8 +703,8 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
       {
         auto& a = table[i];
         auto& b = table[i + 1];
-        a.val  = *((uint64_t*)&pulDitherTable[i * 2]);
-        b.val  = *((uint64_t*)&pulDitherTable[i * 2 + 2]);
+        a.val  = *((UQUAD *)&pulDitherTable[i * 2]);
+        b.val  = *((UQUAD *)&pulDitherTable[i * 2 + 2]);
         for (int j = 0; j < 4; j++)
         {
           a.word[j] >>= mmShifter;
@@ -715,8 +715,8 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
       }
 
       int tablePos = 0;
-      uint64_t* itSrc = (uint64_t*)pulSrc;
-      uint64_t* itDst = (uint64_t*)pulDst;
+      UQUAD *itSrc = (UQUAD *)pulSrc;
+      UQUAD *itDst = (UQUAD *)pulDst;
       for (int row = pixHeight; row; row--)
       {
         // So even and odd quads.. 2 texel each
@@ -744,13 +744,13 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
         if (width < 0)
         {
           // if width less than mul 4, move pointer back by width*4 bytes
-          itSrc = (uint64_t*)((char*)itSrc + width * 4);
-          itDst = (uint64_t*)((char*)itDst + width * 4);
+          itSrc = (UQUAD *)((char*)itSrc + width * 4);
+          itDst = (UQUAD *)((char*)itDst + width * 4);
         }
 
         // move pointer by slModulo bytes
-        itSrc = (uint64_t*)((char*)itSrc + slModulo);
-        itDst = (uint64_t*)((char*)itDst + slModulo);
+        itSrc = (UQUAD *)((char*)itSrc + slModulo);
+        itDst = (UQUAD *)((char*)itDst + slModulo);
       }
     #endif
 
@@ -918,10 +918,10 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
         // Store result to 2x2 window
         // paddusb
         uConv tmp7, tmp5, tmp3, tmp1;
-        tmp7.val = *(uint64_t*)(itDst + (even? 1 : -1));
-        tmp5.val = *(uint64_t*)(itDst + width);
-        tmp3.val = *(uint64_t*)(itDst + width + (even? -1 : 1));
-        tmp1.val = *(uint64_t*)(itDst + width + (even? 1 : -1));
+        tmp7.val = *(UQUAD *)(itDst + (even? 1 : -1));
+        tmp5.val = *(UQUAD *)(itDst + width);
+        tmp3.val = *(UQUAD *)(itDst + width + (even? -1 : 1));
+        tmp1.val = *(UQUAD *)(itDst + width + (even? 1 : -1));
 
         for (int i = 0; i < 8; i++)
         {
@@ -984,15 +984,15 @@ static INDEX aiFilters[6][3] = {
   {  1,  1,  1 }}; // 
 
 // temp for middle pixels, vertical/horizontal edges, and corners
-static __int64 mmMc,  mmMe,  mmMm;  // corner, edge, middle
-static __int64 mmEch, mmEm;  // corner-high, middle
+static SQUAD mmMc,  mmMe,  mmMm;  // corner, edge, middle
+static SQUAD mmEch, mmEm;  // corner-high, middle
 #define mmEcl mmMc  // corner-low
 #define mmEe  mmMe  // edge
-static __int64 mmCm;  // middle
+static SQUAD mmCm;  // middle
 #define mmCc mmMc  // corner
 #define mmCe mmEch // edge
-static __int64 mmInvDiv;
-static __int64 mmAdd = 0x0007000700070007;
+static SQUAD mmInvDiv;
+static SQUAD mmAdd = 0x0007000700070007;
 
 // temp rows for in-place filtering support
 static ULONG aulRows[2048];
@@ -1022,7 +1022,7 @@ static void GenerateConvolutionMatrix( INDEX iFilter)
   INDEX iEm  = iMm  + iMe;
   INDEX iCm  = iEch + iEm;
   // prepare divider
-  __int64 mm = ((__int64)ceil(65536.0f/(iMc*4+iMe*4+iMm))) & 0xFFFF;
+  SQUAD mm = ((SQUAD)ceil(65536.0f/(iMc*4+iMe*4+iMm))) & 0xFFFF;
   mmInvDiv   = (mm<<48) | (mm<<32) | (mm<<16) | mm;
   // prepare filter values
   mm = iMc  & 0xFFFF;  mmMc = (mm<<48) | (mm<<32) | (mm<<16) | mm;
@@ -1037,7 +1037,7 @@ static void GenerateConvolutionMatrix( INDEX iFilter)
 
 typedef SWORD ExtPix[4];
 
-static inline void extpix_fromi64(ExtPix &pix, const __int64 i64)
+static inline void extpix_fromi64(ExtPix &pix, const SQUAD i64)
 {
   //memcpy(pix, i64, sizeof (ExtPix));
   pix[0] = ((i64 >>  0) & 0xFFFF);

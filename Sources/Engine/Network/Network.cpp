@@ -1719,7 +1719,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
     {for( INDEX iClient=0; iClient<NET_MAXGAMECOMPUTERS; iClient++) {
       CSessionSocket &sso = ga_srvServer.srv_assoSessions[iClient];
       // reset message timer
-      sso.sso_tvMessageReceived = -1I64;
+      sso.sso_tvMessageReceived = SQUAD(-1);
       // reset sync timer
       sso.sso_tmLastSyncReceived = -1.0f;
     }}

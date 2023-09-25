@@ -196,7 +196,7 @@ CTextureData::CTextureData()
   td_ulFlags = NONE;
   td_mexWidth  = 0;
   td_mexHeight = 0;
-  td_tvLastDrawn = 0I64;
+  td_tvLastDrawn = SQUAD(0);
   td_iFirstMipLevel  = 0;
   td_ctFineMipLevels = 0;
 
@@ -1436,7 +1436,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
 void CTextureData::Unbind(void)
 {
   // reset mark
-  td_tvLastDrawn = 0I64;
+  td_tvLastDrawn = SQUAD(0);
 
   // only if bound
   if( td_ulObject==NONE) {
@@ -1492,7 +1492,7 @@ void CTextureData::Clear(void)
   td_ctFrames = 0;
   td_mexWidth  = 0;
   td_mexHeight = 0;
-  td_tvLastDrawn = 0I64;
+  td_tvLastDrawn = SQUAD(0);
   td_iFirstMipLevel  = 0;
   td_ctFineMipLevels = 0;
   td_pixBufferWidth  = 0;

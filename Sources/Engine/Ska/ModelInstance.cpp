@@ -160,7 +160,7 @@ INDEX CModelInstance::GetColisionBoxIndex(INDEX iBoxID)
 {
   INDEX ctcb = mi_cbAABox.Count();
   // for each existing box
-  for(INT icb=0;icb<ctcb;icb++) {
+  for (INDEX icb = 0; icb < ctcb; icb++) {
     ColisionBox &cb = mi_cbAABox[icb];
     // if this is searched box
     if(cb.GetID() == iBoxID) {

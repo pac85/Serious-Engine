@@ -21,12 +21,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 template CStaticArray<CProfileCounter>;
 template CStaticArray<CProfileTimer>;
 
-
-static inline __int64 ReadTSC_profile(void)
+static inline SQUAD ReadTSC_profile(void)
 {
 // [Cecil] Prioritize old compiler
 #if SE1_OLD_COMPILER || SE1_USE_ASM
-  __int64 mmRet;
+  SQUAD mmRet;
   __asm {
     rdtsc
     mov   dword ptr [mmRet+0],eax
@@ -78,14 +77,14 @@ void CProfileForm::CalibrateProfilingTimers(void)
 
 #define REPEATCOUNT 10000
   // measure how much it takes to start and stop timer
-  __int64 llMinStartStopTime(0x7fffffffffffffff);
+  SQUAD llMinStartStopTime(0x7fffffffffffffff);
   {for (INDEX i=0; i<REPEATCOUNT; i++) {
     pfCalibration.Reset();
     pfCalibration.StartTimer(ETI_TOTAL);
     pfCalibration.StartTimer(ETI_STARTSTOP);
     pfCalibration.StopTimer(ETI_STARTSTOP);
     pfCalibration.StopTimer(ETI_TOTAL);
-    __int64 llThisStartStopTime = pfCalibration.pf_aptTimers[ETI_STARTSTOP].
+    SQUAD llThisStartStopTime = pfCalibration.pf_aptTimers[ETI_STARTSTOP].
       pt_tvElapsed.tv_llValue;
     if (llThisStartStopTime<llMinStartStopTime) {
       llMinStartStopTime = llThisStartStopTime;
@@ -94,7 +93,7 @@ void CProfileForm::CalibrateProfilingTimers(void)
   _tvStartStopEpsilon = llMinStartStopTime;
 
   // measure how much it takes to start timer
-  __int64 llMinStartTime(0x7fffffffffffffff);
+  SQUAD llMinStartTime(0x7fffffffffffffff);
   {for (INDEX i=0; i<REPEATCOUNT; i++) {
     pfCalibration.Reset();
     pfCalibration.StartTimer(ETI_TOTAL);
@@ -103,7 +102,7 @@ void CProfileForm::CalibrateProfilingTimers(void)
     pfCalibration.StopTimer(ETI_START);
     pfCalibration.StopTimer(ETI_TOTAL);
     pfCalibration.StopTimer(ETI_DUMMY);
-    __int64 llThisStartTime = pfCalibration.pf_aptTimers[ETI_START].
+    SQUAD llThisStartTime = pfCalibration.pf_aptTimers[ETI_START].
       pt_tvElapsed.tv_llValue;
     if (llThisStartTime<llMinStartTime) {
       llMinStartTime = llThisStartTime;
@@ -112,7 +111,7 @@ void CProfileForm::CalibrateProfilingTimers(void)
   _tvStartEpsilon = llMinStartTime;
 
   // measure how much it takes to stop timer
-  __int64 llMinStopTime(0x7fffffffffffffff);
+  SQUAD llMinStopTime(0x7fffffffffffffff);
   {for (INDEX i=0; i<REPEATCOUNT; i++) {
     pfCalibration.Reset();
     pfCalibration.StartTimer(ETI_TOTAL);
@@ -121,7 +120,7 @@ void CProfileForm::CalibrateProfilingTimers(void)
     pfCalibration.StopTimer(ETI_DUMMY);
     pfCalibration.StopTimer(ETI_STOP);
     pfCalibration.StopTimer(ETI_TOTAL);
-    __int64 llThisStopTime = pfCalibration.pf_aptTimers[ETI_STOP].
+    SQUAD llThisStopTime = pfCalibration.pf_aptTimers[ETI_STOP].
       pt_tvElapsed.tv_llValue;
     if (llThisStopTime<llMinStopTime) {
       llMinStopTime = llThisStopTime;
@@ -160,7 +159,7 @@ CProfileForm::CProfileForm(
   FOREACHINSTATICARRAY(pf_aptTimers, CProfileTimer, itpt) {
     // clear the timer
     itpt->pt_tvElapsed.Clear();
-    itpt->pt_tvStarted.tv_llValue = -__int64(1);
+    itpt->pt_tvStarted.tv_llValue = -SQUAD(1);
     itpt->pt_ctAveraging = 0;
   }
 }
@@ -216,7 +215,7 @@ void CProfileForm::StopTimer_internal(INDEX iTimer)
   if (pf_ctRunningTimers==0) {
     pf_tvOverAllElapsed += tvNow-pf_tvOverAllStarted;
   }
-  IFDEBUG(pt.pt_tvStarted.tv_llValue = -__int64(1));
+  IFDEBUG(pt.pt_tvStarted.tv_llValue = -SQUAD(1));
   _tvCurrentProfilingEpsilon += _tvStopEpsilon;
 }
 
@@ -278,7 +277,7 @@ void CProfileForm::Reset(void)
   FOREACHINSTATICARRAY(pf_aptTimers, CProfileTimer, itpt) {
     // clear the timer
     itpt->pt_tvElapsed.Clear();
-    itpt->pt_tvStarted.tv_llValue = -__int64(1);
+    itpt->pt_tvStarted.tv_llValue = -SQUAD(1);
     itpt->pt_ctAveraging = 0;
   }
 }

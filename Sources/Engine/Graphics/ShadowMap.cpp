@@ -288,7 +288,7 @@ SLONG CShadowMap::Uncache( void)
   sm_iFirstCachedMipLevel = 31;
   sm_pulCachedShadowMap = NULL;
   sm_slMemoryUsed = 0;
-  sm_tvLastDrawn = 0I64;
+  sm_tvLastDrawn = SQUAD(0);
   sm_iRenderFrame = -1;
   sm_ulFlags = NONE;
   sm_tpLocal.Clear();
@@ -308,7 +308,7 @@ void CShadowMap::Clear()
   sm_pulDynamicShadowMap = NULL;
   sm_iFirstMipLevel = 0;
   sm_slMemoryUsed = 0;
-  sm_tvLastDrawn = 0I64;
+  sm_tvLastDrawn = SQUAD(0);
   sm_mexOffsetX = 0;
   sm_mexOffsetY = 0;
   sm_mexWidth  = 0;

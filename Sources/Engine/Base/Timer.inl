@@ -7,7 +7,7 @@
 /* Constructor from seconds. */
 inline CTimerValue::CTimerValue(double fSeconds)
 {
-  tv_llValue = __int64(fSeconds*_pTimer->tm_llPerformanceCounterFrequency);
+  tv_llValue = SQUAD(fSeconds * (DOUBLE)_pTimer->tm_llPerformanceCounterFrequency);
 }
 /* Clear timer value (set it to zero). */
 inline void CTimerValue::Clear(void)
@@ -44,11 +44,11 @@ inline BOOL CTimerValue::operator>=(const CTimerValue &tvOther) const {
   return tv_llValue>=tvOther.tv_llValue;
 }
 /* Get the timer value in seconds. - use for time spans only! */
-inline double CTimerValue::GetSeconds(void) {
-  return ((double)tv_llValue)/_pTimer->tm_llPerformanceCounterFrequency;
+inline DOUBLE CTimerValue::GetSeconds(void) {
+  return DOUBLE(tv_llValue) / DOUBLE(_pTimer->tm_llPerformanceCounterFrequency);
 };
 /* Get the timer value in milliseconds as integral value. */
-inline __int64 CTimerValue::GetMilliseconds(void) {
+inline SQUAD CTimerValue::GetMilliseconds(void) {
   return tv_llValue/(_pTimer->tm_llPerformanceCounterFrequency/1000);
 };
 

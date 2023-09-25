@@ -31,9 +31,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 class CTimerValue {
 public:
-  __int64 tv_llValue;       // 64 bit integer (MSVC specific!)
+  SQUAD tv_llValue;       // 64 bit integer (MSVC specific!)
   /* Constructor from quad integer. */
-  inline CTimerValue(__int64 llValue) : tv_llValue(llValue) {};
+  inline CTimerValue(SQUAD llValue) : tv_llValue(llValue) {};
 public:
   /* Constructor. */
   inline CTimerValue(void) {};
@@ -53,9 +53,9 @@ public:
   inline BOOL operator<=(const CTimerValue &tvOther) const;
   inline BOOL operator>=(const CTimerValue &tvOther) const;
   /* Get the timer value in seconds. - use for time spans only! */
-  inline double GetSeconds(void);
+  inline DOUBLE GetSeconds(void);
   /* Get the timer value in milliseconds as integral value. */
-  inline __int64 GetMilliseconds(void);
+  inline SQUAD GetMilliseconds(void);
 };
 // a base class for hooking on timer interrupt
 class CTimerHandler {
@@ -72,8 +72,8 @@ class ENGINE_API CTimer {
 // implementation:
 public:
 
-  __int64 tm_llPerformanceCounterFrequency; // frequency of Win32 performance counter
-  __int64 tm_llCPUSpeedHZ;  // CPU speed in HZ
+  SQUAD tm_llPerformanceCounterFrequency; // frequency of Win32 performance counter
+  SQUAD tm_llCPUSpeedHZ;  // CPU speed in HZ
 
   CTimerValue tm_tvLastTimeOnTime;  // last time when timer was on time
   TIME        tm_tmLastTickOnTime;  // last tick when timer was on time

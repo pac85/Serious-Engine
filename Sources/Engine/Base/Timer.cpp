@@ -28,11 +28,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Priority.inl>
 
 // Read the Pentium TimeStampCounter
-static inline __int64 ReadTSC(void)
+static inline SQUAD ReadTSC(void)
 {
 // [Cecil] Prioritize old compiler
 #if SE1_OLD_COMPILER || SE1_USE_ASM
-  __int64 mmRet;
+  SQUAD mmRet;
   __asm {
     rdtsc
     mov   dword ptr [mmRet+0],eax
@@ -138,10 +138,10 @@ void __stdcall CTimer_TimerFunc(UINT uID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR
 static INDEX _aiTries[MAX_MEASURE_TRIES];
 
 // Get processor speed in Hertz
-static __int64 GetCPUSpeedHz(void)
+static SQUAD GetCPUSpeedHz(void)
 {
   // get the frequency of the 'high' precision timer
-  __int64 llTimerFrequency;
+  SQUAD llTimerFrequency;
   BOOL bPerformanceCounterPresent = QueryPerformanceFrequency((LARGE_INTEGER*)&llTimerFrequency);
   // fail if the performance counter is not available on this system
   if( !bPerformanceCounterPresent) {
@@ -151,10 +151,10 @@ static __int64 GetCPUSpeedHz(void)
 
   INDEX iSpeed, iTry;
   INDEX ctTotalFaults=0;
-  __int64 llTimeLast, llTimeNow;
-  __int64 llCPUBefore, llCPUAfter; 
-  __int64 llTimeBefore, llTimeAfter;
-  __int64 llSpeedMeasured;
+  SQUAD llTimeLast, llTimeNow;
+  SQUAD llCPUBefore, llCPUAfter; 
+  SQUAD llTimeBefore, llTimeAfter;
+  SQUAD llSpeedMeasured;
 
   // try to measure 10 times
   INDEX iSet=0;
@@ -208,7 +208,7 @@ static __int64 GetCPUSpeedHz(void)
   if( !bFoundInReg) {
     // use measured
     CPrintF(TRANS("  CPU speed not found in registry, using calculated value\n\n"));
-    return (__int64)slSpeedRead*1000000;
+    return (SQUAD)slSpeedRead*1000000;
   // if found in registry
   } else {
     // if different than measured
@@ -216,10 +216,10 @@ static __int64 GetCPUSpeedHz(void)
     if( abs(slSpeedRead-slSpeedReg) > iTolerance) {
       // report warning and use registry value
       CPrintF(TRANS("  WARNING: calculated CPU speed different than stored in registry!\n\n"));
-      return (__int64)slSpeedReg*1000000;
+      return (SQUAD)slSpeedReg*1000000;
     }
     // use measured value
-    return (__int64)slSpeedRead*1000000;
+    return (SQUAD)slSpeedRead*1000000;
   }
 }
 

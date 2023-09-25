@@ -73,7 +73,7 @@ void CActionBuffer::AddAction(const CPlayerAction &pa)
 }
 
 // flush all actions up to given time tag
-void CActionBuffer::FlushUntilTime(__int64 llNewest)
+void CActionBuffer::FlushUntilTime(SQUAD llNewest)
 {
   // for each buffered action
   FORDELETELIST(CActionEntry, ae_ln, ab_lhActions, itae) {
@@ -123,7 +123,7 @@ void CActionBuffer::GetActionByIndex(INDEX i, CPlayerAction &pa)
 }
 
 // get last action older than given timetag
-CPlayerAction *CActionBuffer::GetLastOlderThan(__int64 llTime)
+CPlayerAction *CActionBuffer::GetLastOlderThan(SQUAD llTime)
 {
   CPlayerAction *ppa = NULL;
   FOREACHINLIST(CActionEntry, ae_ln, ab_lhActions, itae) {

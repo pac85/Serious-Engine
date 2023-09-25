@@ -101,8 +101,8 @@ static BOOL  _bFlatFill   = FALSE;
 static BOOL  _bHasBump    = FALSE;
 static SLONG _slLR=0, _slLG=0, _slLB=0;
 static SLONG _slAR=0, _slAG=0, _slAB=0;
-static const __int64 mmRounder = 0x007F007F007F007F;
-static const __int64 mmF000    = 0x00FF000000000000;
+static const SQUAD mmRounder = 0x007F007F007F007F;
+static const SQUAD mmF000    = 0x00FF000000000000;
 
 // viewer absolute and object space projection
 static FLOAT3D _vViewer;

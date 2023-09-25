@@ -1129,7 +1129,7 @@ static void RenderActiveBones(void)
   gfxSetViewMatrix(NULL);
   // for each renmodel
   INDEX ctrm = _aRenModels.Count();
-  for(INT irm=0;irm<ctrm;irm++) {
+  for (INDEX irm = 0; irm < ctrm; irm++) {
     RenModel &rm = _aRenModels[irm];
     RenderActiveBones(rm);
   }

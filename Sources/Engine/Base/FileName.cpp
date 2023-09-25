@@ -106,7 +106,7 @@ CTFileName CTFileName::NoExt() const
   return FileDir()+FileName();
 }
 
-static INDEX GetSlashPosition(const CHAR* pszString)
+static INDEX GetSlashPosition(const char *pszString)
 {
   for (INDEX iPos = 0; '\0' != *pszString; ++iPos, ++pszString) {
     if (('\\' == *pszString) || ('/' == *pszString)) {

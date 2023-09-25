@@ -47,7 +47,7 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam);
 class CServerRequest {
 public:
   ULONG sr_ulAddress;
-  USHORT sr_iPort;
+  UWORD sr_iPort;
   long long sr_tmRequestTime;
 
 public:

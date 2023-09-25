@@ -53,15 +53,15 @@ static SLONG slLeftVolume,  slRightVolume, slLeftFilter, slRightFilter;
 static SLONG slLastLeftSample, slLastRightSample, slSoundBufferSize;
 static FLOAT fSoundSampleRate, fPhase;
 static FLOAT fOfsDelta, fStep, fLeftStep, fRightStep, fLeftOfs, fRightOfs;
-static __int64 fixLeftOfs, fixRightOfs; // fixed integers 32:32
-static __int64 mmSurroundFactor, mmLeftStep, mmRightStep, mmVolumeGain;
+static SQUAD fixLeftOfs, fixRightOfs; // fixed integers 32:32
+static SQUAD mmSurroundFactor, mmLeftStep, mmRightStep, mmVolumeGain;
 static BOOL bNotLoop, bEndOfSound;
 
 static const FLOAT f65536 = 65536.0f;
 static const FLOAT f4G    = 4294967296.0f;
-static __int64 mmInvFactor   = 0x00007FFF00007FFF;
-static __int64 mmMaskLD      = 0x00000000FFFFFFFF;
-static __int64 mmUnsign2Sign = 0x8000800080008000;
+static SQUAD mmInvFactor   = 0x00007FFF00007FFF;
+static SQUAD mmMaskLD      = 0x00000000FFFFFFFF;
+static SQUAD mmUnsign2Sign = 0x8000800080008000;
 
 
 
@@ -392,12 +392,12 @@ loopEnd:
   // Initialize some local vars
   SLONG slLeftSample, slRightSample, slNextSample;
   SLONG *pslDstBuffer = (SLONG *)pvMixerBuffer;
-  fixLeftOfs = (__int64)(fLeftOfs * 65536.0f);
-  fixRightOfs = (__int64)(fRightOfs * 65536.0f);
-  __int64 fixLeftStep = (__int64)(fLeftStep * 65536.0f);
-  __int64 fixRightStep = (__int64)(fRightStep * 65536.0f);
-  __int64 fixSoundBufferSize = ((__int64)slSoundBufferSize) << 16;
-  mmSurroundFactor = (__int64)(SWORD)mmSurroundFactor;
+  fixLeftOfs = (SQUAD)(fLeftOfs * 65536.0f);
+  fixRightOfs = (SQUAD)(fRightOfs * 65536.0f);
+  SQUAD fixLeftStep = (SQUAD)(fLeftStep * 65536.0f);
+  SQUAD fixRightStep = (SQUAD)(fRightStep * 65536.0f);
+  SQUAD fixSoundBufferSize = ((SQUAD)slSoundBufferSize) << 16;
+  mmSurroundFactor = (SQUAD)(SWORD)mmSurroundFactor;
 
   SLONG slLeftVolTmp = slLeftVolume >> 16;
   SLONG slRightVolTmp = slRightVolume >> 16;
@@ -617,12 +617,12 @@ loopEnd:
   SLONG slLeftSample, slRightSample;
   SLONG slNextLeftSample, slNextRightSample; // [Cecil]
   SLONG *pslDstBuffer = (SLONG *)pvMixerBuffer;
-  fixLeftOfs = (__int64)(fLeftOfs * 65536.0f);
-  fixRightOfs = (__int64)(fRightOfs * 65536.0f);
-  __int64 fixLeftStep = (__int64)(fLeftStep * 65536.0f);
-  __int64 fixRightStep = (__int64)(fRightStep * 65536.0f);
-  __int64 fixSoundBufferSize = ((__int64)slSoundBufferSize) << 16;
-  mmSurroundFactor = (__int64)(SWORD)mmSurroundFactor;
+  fixLeftOfs = (SQUAD)(fLeftOfs * 65536.0f);
+  fixRightOfs = (SQUAD)(fRightOfs * 65536.0f);
+  SQUAD fixLeftStep = (SQUAD)(fLeftStep * 65536.0f);
+  SQUAD fixRightStep = (SQUAD)(fRightStep * 65536.0f);
+  SQUAD fixSoundBufferSize = ((SQUAD)slSoundBufferSize) << 16;
+  mmSurroundFactor = (SQUAD)(SWORD)mmSurroundFactor;
 
   SLONG slLeftVolTmp = slLeftVolume >> 16;
   SLONG slRightVolTmp = slRightVolume >> 16;
@@ -649,8 +649,8 @@ loopEnd:
     if (iCt <= 0 || bEndOfSound) break;
 
     // [Cecil] These nullify the lowest bit and fix distortion during doppler
-    const __int64 fixLeftShift = (fixLeftOfs >> 16) << 1;
-    const __int64 fixRightShift = (fixRightOfs >> 16) << 1;
+    const SQUAD fixLeftShift = (fixLeftOfs >> 16) << 1;
+    const SQUAD fixRightShift = (fixRightOfs >> 16) << 1;
 
     // Fetch one lineary interpolated sample on left channel
     slLeftSample = pswSrcBuffer[fixLeftShift + 0];
@@ -808,7 +808,7 @@ void MixSound( CSoundObject *pso)
   const FLOAT fMixBufSize = 65536*32767.0f / slMixerBufferSize;
   const SLONG slLeftGain  = FloatToInt( (fNewLeftVolume -fLeftVolume)  *fMixBufSize);
   const SLONG slRightGain = FloatToInt( (fNewRightVolume-fRightVolume) *fMixBufSize);
-  mmVolumeGain  = ((__int64)(slRightGain)<<32) | ((__int64)(slLeftGain)&0xFFFFFFFF);
+  mmVolumeGain  = ((SQUAD)(slRightGain)<<32) | ((SQUAD)(slLeftGain)&0xFFFFFFFF);
   // extrapolate back new volumes because of not enough precision in interpolation!
   // (otherwise we might hear occasional pucks)
   if( fNewLeftVolume >0.001f) fNewLeftVolume  = (slLeftVolume  + slLeftGain *slMixerBufferSize) /(65536*32767.0f);

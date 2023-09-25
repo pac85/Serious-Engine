@@ -33,13 +33,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define B  byte ptr
 
 
-static const __int64 mm1LO   = 0x0000000000000001;
-static const __int64 mm1HI   = 0x0000000100000000;
-static const __int64 mm1HILO = 0x0000000100000001;
-static const __int64 mm0001  = 0x0000000000000001;
-static const __int64 mm0010  = 0x0000000000010000;
-static const __int64 mm00M0  = 0x00000000FFFF0000;
-static __int64 mmBaseWidthShift=0, mmBaseWidth=0, mmBaseWidthMask=0, mmBaseHeightMask=0, mmBaseMasks=0, mmShift=0;
+static const SQUAD mm1LO   = 0x0000000000000001;
+static const SQUAD mm1HI   = 0x0000000100000000;
+static const SQUAD mm1HILO = 0x0000000100000001;
+static const SQUAD mm0001  = 0x0000000000000001;
+static const SQUAD mm0010  = 0x0000000000010000;
+static const SQUAD mm00M0  = 0x00000000FFFF0000;
+static SQUAD mmBaseWidthShift=0, mmBaseWidth=0, mmBaseWidthMask=0, mmBaseHeightMask=0, mmBaseMasks=0, mmShift=0;
 
 
 // speed table

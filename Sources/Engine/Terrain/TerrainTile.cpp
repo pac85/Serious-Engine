@@ -198,7 +198,7 @@ inline FLOAT GetHeight(INDEX ic,INDEX ir,INDEX iTileIndex)
   return (FLOAT)_ptrTerrain->tr_auwHeightMap[ivx];
 }
 
-BYTE GetVertexAlpha(INDEX ic,INDEX ir,INDEX iTileIndex,INDEX iLayer)
+UBYTE GetVertexAlpha(INDEX ic,INDEX ir,INDEX iTileIndex,INDEX iLayer)
 {
   CTerrainTile &tt = _ptrTerrain->tr_attTiles[iTileIndex];
   INDEX icHMap = ic + tt.tt_iOffsetX*_ptrTerrain->GetQuadsPerTileRow();
@@ -248,7 +248,7 @@ void CTerrainTile::AddVertex(INDEX ic, INDEX ir)
       CTerrainLayer &tl = _ptrTerrain->tr_atlLayers[itl];
       // Set vertex color
       GFXColor &col = ttl.tl_acColors.Push();
-      BYTE bAlpha = GetVertexAlpha(ic,ir,tt_iIndex,itl);
+      UBYTE bAlpha = GetVertexAlpha(ic,ir,tt_iIndex,itl);
       col.abgr = 0x00FFFFFF;
       col.a = bAlpha;
       // if this is normal layer
