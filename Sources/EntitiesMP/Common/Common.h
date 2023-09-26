@@ -135,6 +135,8 @@ struct EntityStats {
   INDEX es_ctAmmount;
   FLOAT es_fValue;
   INDEX es_iScore;
+
+  void Clear(void) {};
 };
 
 // statistics data for player stats management
@@ -217,8 +219,8 @@ DECL_DLL const char *PrintStack(CEntity *pen);
 // debris spawning
 DECL_DLL void Debris_Begin(
   EntityInfoBodyType Eeibt, 
-  enum DebrisParticlesType dptParticles,
-  enum BasicEffectType  betStain,
+  ULONG dptParticles, // [Cecil] 'DebrisParticlesType' -> 'ULONG'
+  ULONG betStain, // [Cecil] 'BasicEffectType' -> 'ULONG'
   FLOAT fEntitySize,             // entity size in meters
   const FLOAT3D &vSpeed,
   const FLOAT3D &vSpawnerSpeed,  // how fast was the entity moving
@@ -252,8 +254,8 @@ DECL_DLL CEntityPointer Debris_Spawn_Independent(
   ANGLE3D aRotation);
 DECL_DLL CEntityPointer Debris_Spawn_Template(
   EntityInfoBodyType eibt,
-  enum DebrisParticlesType dptParticles,
-  enum BasicEffectType betStain,
+  ULONG dptParticles, // [Cecil] 'DebrisParticlesType' -> 'ULONG'
+  ULONG betStain, // [Cecil] 'BasicEffectType' -> 'ULONG'
   class CModelHolder2 *penmhDestroyed,
   CEntity *penComponents,
   class CModelHolder2 *penmh2,
@@ -276,7 +278,7 @@ DECL_DLL void PrintCenterMessage(CEntity *penThis, CEntity *penTarget,
   const CTString &strMessage, TIME tmLength, enum MessageSound mssSound);
 
 // get name of a key item
-DECL_DLL const char *GetKeyName(enum KeyItemType kit);
+DECL_DLL const char *GetKeyName(ULONG kit); // [Cecil] 'KeyItemType' -> 'ULONG'
 
 // get session properties
 DECL_DLL inline const CSessionProperties *GetSP(void)

@@ -39,8 +39,8 @@ event ESpawnDebris {
   CTextureData *ptdSpec,          // specular texture
   CTextureData *ptdBump,          // bump texture
   INDEX iModelAnim,               // animation for debris model
-  enum DebrisParticlesType dptParticles,   // particles type
-  enum BasicEffectType  betStain, // stain left when touching brushes
+  ULONG dptParticles,             // particles type
+  ULONG betStain,                 // stain left when touching brushes
   COLOR colDebris,                // multiply color for debris
   BOOL bCustomShading,          // if debris uses custom shading
   ANGLE3D aShadingDirection,    // custom shading direction
@@ -256,12 +256,12 @@ procedures:
     }
 
     // set appearance
-    m_dptParticles = eSpawn.dptParticles;
+    m_dptParticles = (DebrisParticlesType)eSpawn.dptParticles;
     if(m_dptParticles==DPT_AFTERBURNER)
     {
       Particles_AfterBurner_Prepare(this);
     }
-    m_betStain = eSpawn.betStain;
+    m_betStain = (BasicEffectType)eSpawn.betStain;
     m_iBodyType = (INDEX)eSpawn.Eeibt;
     GetModelObject()->SetData(eSpawn.pmd);
     GetModelObject()->mo_toTexture.SetData(eSpawn.ptd);

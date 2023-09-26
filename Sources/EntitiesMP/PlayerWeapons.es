@@ -61,6 +61,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "EntitiesMP/Switch.h"
 #include "EntitiesMP/PlayerView.h"
 #include "EntitiesMP/PlayerAnimator.h"
+#include "EntitiesMP/ModelDestruction.h"
 #include "EntitiesMP/MovingBrush.h"
 #include "EntitiesMP/MessageHolder.h"
 #include "EntitiesMP/EnemyBase.h"

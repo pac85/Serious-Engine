@@ -19,13 +19,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "EntitiesMP/BackgroundViewer.h"
 #include "EntitiesMP/WorldSettingsController.h"
 // for error checking:
+#include "EntitiesMP/ModelHolder2.h"
 #include "EntitiesMP/SoundHolder.h"
 %}
 
-uses "EntitiesMP\FogMarker";
-uses "EntitiesMP\HazeMarker";
-uses "EntitiesMP\MirrorMarker";
-uses "EntitiesMP\GradientMarker";
+uses "EntitiesMP/FogMarker";
+uses "EntitiesMP/HazeMarker";
+uses "EntitiesMP/MirrorMarker";
+uses "EntitiesMP/GradientMarker";
 
 %{
 
@@ -705,7 +706,7 @@ void CWorldBase_OnWorldRender(CWorld *pwo)
   // get current tick
   TIME tmNow = _pTimer->GetLerpedCurrentTick();
   // wrap time to prevent texture coordinates to get unprecise
-  tmNow = fmod(tmNow, 600.0f); // (wrap every 10 minutes)
+  tmNow = fmod(tmNow, (TIME)600.0); // (wrap every 10 minutes)
 
 // transformations
   // right

@@ -16,9 +16,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 200
 %{
 #include "StdH.h"
+
+#include "EntitiesMP/ModelDestruction.h"
 %}
 
-uses "EntitiesMP/ModelDestruction";
 uses "EntitiesMP/AnimationChanger";
                
 enum LightType {

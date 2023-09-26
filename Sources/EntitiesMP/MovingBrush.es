@@ -16,11 +16,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 101
 %{
 #include "StdH.h"
+
+#include "EntitiesMP/ModelDestruction.h"
 %}
 
 uses "EntitiesMP/MovingBrushMarker";
 uses "EntitiesMP/SoundHolder";
-uses "EntitiesMP\MirrorMarker";
+uses "EntitiesMP/MirrorMarker";
 uses "EntitiesMP/Debris";
 
 event EHit {

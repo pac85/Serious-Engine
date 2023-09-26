@@ -16,6 +16,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 345
 %{
 #include "StdH.h"
+
+#include "EntitiesMP/ModelDestruction.h"
 %}
 
 uses "EntitiesMP/ModelHolder2";

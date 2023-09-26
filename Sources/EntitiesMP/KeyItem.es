@@ -48,7 +48,8 @@ event EKey {
 
 %{
 
-const char *GetKeyName(enum KeyItemType kit)
+// [Cecil] 'KeyItemType' -> 'ULONG'
+const char *GetKeyName(ULONG kit)
 {
   switch(kit) {
   case KIT_BOOKOFWISDOM     :  return TRANS("Book of wisdom"); break;

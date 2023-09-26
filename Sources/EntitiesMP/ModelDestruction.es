@@ -16,9 +16,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 217
 %{
 #include "StdH.h"
+
+#include "EntitiesMP/ModelHolder2.h"
 %}
 
-uses "EntitiesMP/ModelHolder2";
 uses "EntitiesMP/BasicEffects";
 uses "EntitiesMP/Debris";
 uses "EntitiesMP/BloodSpray";
@@ -184,7 +185,7 @@ functions:
     return (CModelHolder2 *)&*(&m_penModel0)[iModel];
   }
   // spawn debris for given model
-  void SpawnDebris(CModelHolder2 *penmhDestroyed)
+  void SpawnDebris(class CModelHolder2 *penmhDestroyed)
   {
     FLOATaabbox3D box;
     penmhDestroyed->GetBoundingBox(box);

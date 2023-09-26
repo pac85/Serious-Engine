@@ -986,8 +986,8 @@ const char *PrintStack(CEntity *pen)
  *                          DEBRIS                          *
  ************************************************************/
 EntityInfoBodyType _Eeibt;
-enum DebrisParticlesType _dptParticles;
-enum BasicEffectType  _betStain;
+ULONG _dptParticles; // [Cecil] 'DebrisParticlesType' -> 'ULONG'
+ULONG _betStain; // [Cecil] 'BasicEffectType' -> 'ULONG'
 FLOAT3D _vSpeed;
 FLOAT3D _vSpawnerSpeed;
 FLOAT _fEntitySize;
@@ -998,8 +998,8 @@ COLOR _colDebris;
 // debris spawning
 void Debris_Begin(
   EntityInfoBodyType Eeibt, 
-  enum DebrisParticlesType dptParticles,
-  enum BasicEffectType  betStain,
+  ULONG dptParticles,
+  ULONG betStain,
   FLOAT fEntitySize,                  // entity size in meters
   const FLOAT3D &vSpeed,
   const FLOAT3D &vSpawnerSpeed,       // how fast was the entity moving
@@ -1142,8 +1142,8 @@ CEntityPointer Debris_Spawn_Independent(
 
 CEntityPointer Debris_Spawn_Template(
   EntityInfoBodyType eibt,
-  enum DebrisParticlesType dptParticles,
-  enum BasicEffectType betStain,
+  ULONG dptParticles,
+  ULONG betStain,
   CModelHolder2 *penmhDestroyed,
   CEntity *penComponents,
   CModelHolder2 *penmhTemplate,

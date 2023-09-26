@@ -19,9 +19,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 204
 %{
 #include "StdH.h"
-%}
 
-uses "EntitiesMP/ModelDestruction";
+#include "EntitiesMP/ModelDestruction.h"
+%}
 
 class CSoundHolder : CRationalEntity {
 name      "SoundHolder";

@@ -16,10 +16,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 210
 %{
 #include "StdH.h"
+
+#include "EntitiesMP/ModelDestruction.h"
 #include "EntitiesMP/WorldSettingsController.h"
 %}
 
-uses "EntitiesMP/ModelDestruction";
 uses "EntitiesMP/AnimationChanger";
 uses "EntitiesMP/BloodSpray";
 
