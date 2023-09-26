@@ -19,10 +19,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
+#if SE1_WIN
+
 ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString);
 ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString);
 ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong);
 
+#endif // SE1_WIN
 
 #endif  /* include-once check. */
 

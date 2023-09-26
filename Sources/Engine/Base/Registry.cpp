@@ -14,6 +14,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "stdh.h"
+
+#if SE1_WIN
+
 #include <Engine/Base/CTString.h>
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/Registry.h>
@@ -127,3 +130,4 @@ ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString)
   return lRes==ERROR_SUCCESS;
 }
 
+#endif // SE1_WIN
