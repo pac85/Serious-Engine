@@ -11617,7 +11617,10 @@ void LimitFrameRate(void)
   // limit maximum frame rate
   wed_iMaxFPSActive   = ClampDn( (INDEX)wed_iMaxFPSActive,   1L);
   TIME tmWantedDelta  = 1.0f / wed_iMaxFPSActive;
-  if( tmCurrentDelta<tmWantedDelta) Sleep( (tmWantedDelta-tmCurrentDelta)*1000.0f);
+
+  if (tmCurrentDelta < tmWantedDelta) {
+    _pTimer->Suspend(ULONG((tmWantedDelta - tmCurrentDelta) * 1000.0f));
+  }
   
   // remember new time
   tvLast = _pTimer->GetHighPrecisionTimer();*/

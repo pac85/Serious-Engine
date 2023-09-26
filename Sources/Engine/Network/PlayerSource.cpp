@@ -68,7 +68,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
 
   for(TIME tmWait=0; 
       tmWait<net_tmConnectionTimeout*1000; 
-      Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+      _pTimer->Suspend(NET_WAITMESSAGE_DELAY), tmWait += NET_WAITMESSAGE_DELAY) {
     if (_pNetwork->ga_IsServer) {
       _pNetwork->TimerLoop();
     }

@@ -608,7 +608,7 @@ static BOOL StartUp_waveout( CSoundLibrary &sl, BOOL bReport=TRUE)
       // if more retries left
       } else {
         // wait a bit (probably sound-scheme is playing)
-        Sleep(int(snd_tmOpenFailDelay*1000));
+        _pTimer->Suspend(ULONG(snd_tmOpenFailDelay * 1000.0f));
       }
     }
   }

@@ -899,7 +899,7 @@ void CCommunicationInterface::Client_Close(void)
 
 	// dispatch remaining packets (keep trying for half a second - 10 attempts)
   for(TIME tmWait=0; tmWait<500;
-    Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+    _pTimer->Suspend(NET_WAITMESSAGE_DELAY), tmWait += NET_WAITMESSAGE_DELAY) {
     // if all packets are successfully sent, exit loop
 		if  ((cm_ciLocalClient.ci_pbOutputBuffer.pb_ulNumOfPackets == 0) 
 			&& (cm_ciLocalClient.ci_pbWaitAckBuffer.pb_ulNumOfPackets == 0)) {
@@ -1006,7 +1006,7 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
 			}
 		}
 
-    Sleep(iRefresh);
+    _pTimer->Suspend(iRefresh);
     CallProgressHook_t(FLOAT(iRetry%10)/10);
 	}
 	

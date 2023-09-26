@@ -692,7 +692,7 @@ ENGINE_API extern void SE_PretouchIfNeeded(void)
           ctFails++;
         }
         // for easier debugging (didn't help much, though)
-        //Sleep(5);  
+        //_pTimer->Suspend(5);
       }
 nextRegion:
       // advance to next region

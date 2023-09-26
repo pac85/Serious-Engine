@@ -272,7 +272,7 @@ void CSessionState::Start_AtServer_t(void)     // throw char *
   _pNetwork->SendToServerReliable(nmRegisterMainSessionState);
 
   for(TIME tmWait=0; tmWait<net_tmConnectionTimeout*1000; 
-      Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+      _pTimer->Suspend(NET_WAITMESSAGE_DELAY), tmWait += NET_WAITMESSAGE_DELAY) {
     _pNetwork->TimerLoop();
     if (_cmiComm.Client_Update() == FALSE) {
 			break;
@@ -436,7 +436,7 @@ void CSessionState::WaitStream_t(CTMemoryStream &strmMessage, const CTString &st
   _bRunNetUpdates = TRUE;
   // repeat until timed out
   for(TIME tmWait=0; tmWait<net_tmConnectionTimeout*1000;
-    Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+    _pTimer->Suspend(NET_WAITMESSAGE_DELAY), tmWait += NET_WAITMESSAGE_DELAY) {
     // update network connection sockets
     if (_cmiComm.Client_Update() == FALSE) {
 			break;

@@ -132,6 +132,9 @@ public:
 
   /* Get current timer value of high precision timer. */
   CTimerValue GetHighPrecisionTimer(void);
+
+  // [Cecil] Suspend current thread execution for some time (cross-platform replacement for Sleep() from Windows API)
+  void Suspend(ULONG ulMilliseconds);
 };
 
 // pointer to global timer object

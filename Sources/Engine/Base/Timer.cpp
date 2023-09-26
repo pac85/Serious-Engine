@@ -27,6 +27,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Base/Priority.inl>
 
+#if SE1_UNIX
+  #include <chrono>
+  #include <thread>
+#endif
+
 // Read the Pentium TimeStampCounter
 static inline SQUAD ReadTSC(void)
 {
@@ -188,7 +193,7 @@ static SQUAD GetCPUSpeedHz(void)
     }
     // done if no faults
     if( ctFaults==0) break;
-    Sleep(1000);
+    _pTimer->Suspend(1000);
   }
 
   // fail if couldn't readout CPU speed
@@ -271,10 +276,10 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
     INDEX iTry=1;
     for( ; iTry<=3; iTry++) {
       const TIME tmTickBefore = GetRealTimeTick();
-      Sleep(1000* iTry*3 *TickQuantum);
+      Suspend(1000 * iTry * 3 * TickQuantum);
       const TIME tmTickAfter = GetRealTimeTick();
       if( tmTickBefore!=tmTickAfter) break;
-      Sleep(1000*iTry);
+      Suspend(1000 * iTry);
     }
     // report fatal
     if( iTry>3) FatalError(TRANS("Problem with initializing multimedia timer - please try again."));
@@ -395,6 +400,15 @@ void CTimer::DisableLerp(void)
 // Get current timer value of high precision timer
 CTimerValue CTimer::GetHighPrecisionTimer(void) {
   return ReadTSC();
+};
+
+// [Cecil] Suspend current thread execution for some time (cross-platform replacement for Sleep() from Windows API)
+void CTimer::Suspend(ULONG ulMilliseconds) {
+#if SE1_WIN
+  ::Sleep(ulMilliseconds);
+#else
+  std::this_thread::sleep_for(std::chrono::milliseconds(ulMilliseconds));
+#endif
 };
 
 // convert a time value to a printable string (hh:mm:ss)

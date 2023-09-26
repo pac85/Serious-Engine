@@ -232,7 +232,7 @@ void CServer::Stop(void)
       break;
     } else {
       _cmiComm.Server_Update();
-      Sleep(100);
+      _pTimer->Suspend(100);
     }
   }
 
