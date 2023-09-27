@@ -222,13 +222,11 @@ void CControls::Load_t( CTFileName fnFile)
       achrIfInverted[ 0] = 0;
       char achrIfRelative[ 1024];
       achrIfRelative[ 0] = 0;
-      char achrIfSmooth[ 1024];
-      achrIfSmooth[ 0] = 0;
       achrActionName[ 0] = 0;
       FLOAT fSensitivity = 50;
       FLOAT fDeadZone = 0;
       sscanf( achrLine, "%*[^\"]\"%1024[^\"]\"%*[^\"]\"%1024[^\"]\" %g %g %1024s %1024s",
-              achrActionName, achrAxis, &fSensitivity, &fDeadZone, achrIfInverted, achrIfRelative, achrIfSmooth);
+              achrActionName, achrAxis, &fSensitivity, &fDeadZone, achrIfInverted, achrIfRelative);
       // find action axis
       INDEX iActionAxisNo = -1;
       {for( INDEX iAxis=0; iAxis<AXIS_ACTIONS_CT; iAxis++){
