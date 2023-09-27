@@ -25,6 +25,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif // _MSC_VER > 1000
 
+// [Cecil] Predefine these types for D3D8
+#define POINTER_32 __ptr32
+#define POINTER_64 __ptr64
+
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
 #include <afxwin.h>         // MFC core and standard components

@@ -32,6 +32,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // [Cecil] Windows-specific
 #if SE1_WIN
+  // Predefine these types for D3D8
+  #define POINTER_32 __ptr32
+  #define POINTER_64 __ptr64
+
   #include <conio.h>
   #include <crtdbg.h>
   #include <winsock2.h>

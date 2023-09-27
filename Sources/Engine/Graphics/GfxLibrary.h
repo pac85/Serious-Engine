@@ -20,8 +20,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #ifdef SE1_D3D
-#include <d3d8.h>
+  // Undefine 'new' operator in debug
+  #ifndef NDEBUG
+    #undef new
+  #endif
+
+  #include <d3d8.h>
+
+  // Redefine 'new' operator in debug
+  #ifndef NDEBUG
+    #define new DEBUG_NEW_CT
+  #endif
+
+#else
+  #include <d3d8_disabled.h>
 #endif // SE1_D3D
+
 #include <Engine/Base/Timer.h>
 #include <Engine/Base/CTString.h>
 #include <Engine/Base/Lists.h>
@@ -130,7 +144,6 @@ public:
   INDEX gl_ctDriverChanges;        // count of driver changes
   ULONG gl_ulFlags;
 
-#ifdef SE1_D3D
   // DirectX info
   LPDIRECT3D8       gl_pD3D;       // used to create the D3DDevice
   LPDIRECT3DDEVICE8 gl_pd3dDevice; // rendering device
@@ -142,7 +155,7 @@ public:
   LPDIRECT3DVERTEXBUFFER8 gl_pd3dCol[GFX_MAXLAYERS];
   LPDIRECT3DVERTEXBUFFER8 gl_pd3dTex[GFX_MAXLAYERS];
   LPDIRECT3DINDEXBUFFER8  gl_pd3dIdx;
-#endif // SE1_D3D
+
   INDEX gl_ctVertices, gl_ctIndices;  // size of buffers
   INDEX gl_ctColBuffers, gl_ctTexBuffers; // number of color and texture buffers (for multi-pass rendering)
   INDEX gl_ctMaxStreams;              // maximum number of streams

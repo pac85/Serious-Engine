@@ -13,6 +13,10 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+// [Cecil] Predefine these types for D3D8
+#define POINTER_32 __ptr32
+#define POINTER_64 __ptr64
+
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #include <commdlg.h>
 

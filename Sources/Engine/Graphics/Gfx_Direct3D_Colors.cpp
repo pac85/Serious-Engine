@@ -17,7 +17,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #ifdef SE1_D3D
 
+// Undefine 'new' operator in debug
+#ifndef NDEBUG
+  #undef new
+#endif
+
 #include <d3dx8tex.h>
+
+// Redefine 'new' operator in debug
+#ifndef NDEBUG
+  #define new DEBUG_NEW_CT
+#endif
+
 #pragma comment(lib, "d3dx8.lib")
 
 #include <Engine/Graphics/GfxLibrary.h>
