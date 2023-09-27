@@ -3605,7 +3605,8 @@ void CWorldEditorDoc::OnSelectByClassImportant()
 
 void CWorldEditorDoc::OnCrossroadForN() 
 {
-  if( m_iMode == VERTEX_MODE)
+  // [Cecil] Open vertex snappping dialog only if any vertices are selected
+  if (m_iMode == VERTEX_MODE && m_selVertexSelection.GetFirstInSelection() != NULL)
   {
     CDlgSnapVertex dlg;
     dlg.DoModal();
