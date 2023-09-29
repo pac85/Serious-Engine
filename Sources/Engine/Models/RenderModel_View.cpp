@@ -279,9 +279,9 @@ static void PrepareSurfaceElements( ModelMipInfo &mmi, MappingSurface &ms)
     ModelPolygon &mp = mmi.mmpi_Polygons[ ms.ms_aiPolygons[iipo]];
     {for( INDEX ivx=2; ivx<mp.mp_PolygonVertices.Count(); ivx++) {
       Triangle &tri = _atri[iTriangle++];
-      tri.i0 = mp.mp_PolygonVertices[0    ].mpv_ptvTextureVertex->mtv_iSurfaceVx;
-      tri.i1 = mp.mp_PolygonVertices[ivx-1].mpv_ptvTextureVertex->mtv_iSurfaceVx;
-      tri.i2 = mp.mp_PolygonVertices[ivx-0].mpv_ptvTextureVertex->mtv_iSurfaceVx;
+      tri.i0 = mp.mp_PolygonVertices[      0].GetTexVertex()->mtv_iSurfaceVx;
+      tri.i1 = mp.mp_PolygonVertices[ivx - 1].GetTexVertex()->mtv_iSurfaceVx;
+      tri.i2 = mp.mp_PolygonVertices[ivx - 0].GetTexVertex()->mtv_iSurfaceVx;
     }}
   }}
 
@@ -561,9 +561,9 @@ static void PrepareModelMipForRendering( CModelData &md, INDEX iMip)
     for( iipo=0; iipo<ppp.ppp_iPolygons.Count(); iipo++) {
       ModelPolygon &mp = mmi.mmpi_Polygons[ ppp.ppp_iPolygons[iipo]];
       for( INDEX ivx=2; ivx<mp.mp_PolygonVertices.Count(); ivx++) {
-        ppp.ppp_auwElements[iel++] = mp.mp_PolygonVertices[0    ].mpv_ptvTextureVertex->mtv_iSurfaceVx;
-        ppp.ppp_auwElements[iel++] = mp.mp_PolygonVertices[ivx-1].mpv_ptvTextureVertex->mtv_iSurfaceVx;
-        ppp.ppp_auwElements[iel++] = mp.mp_PolygonVertices[ivx-0].mpv_ptvTextureVertex->mtv_iSurfaceVx;
+        ppp.ppp_auwElements[iel++] = mp.mp_PolygonVertices[      0].GetTexVertex()->mtv_iSurfaceVx;
+        ppp.ppp_auwElements[iel++] = mp.mp_PolygonVertices[ivx - 1].GetTexVertex()->mtv_iSurfaceVx;
+        ppp.ppp_auwElements[iel++] = mp.mp_PolygonVertices[ivx - 0].GetTexVertex()->mtv_iSurfaceVx;
       }
     }
   }

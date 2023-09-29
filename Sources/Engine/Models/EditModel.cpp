@@ -1523,10 +1523,8 @@ void CEditModel::AddMipModel(	CObject3D *pO3D)
 			 */
 			ULONG trans_vtx_idx = pO3D->ob_aoscSectors[0].osc_aovxVertices[ aesv[ mpvct].esv_MipGlobalIndex].ovx_Tag;
 
-			pmp->mp_PolygonVertices[ j].mpv_ptvTransformedVertex =
-				&edm_md.md_TransformedVertices[ (INDEX) trans_vtx_idx ]; // remapped ptr to transformed vertex
-			pmp->mp_PolygonVertices[ j].mpv_ptvTextureVertex =
-				&pmmpi->mmpi_TextureVertices[ aesv[ mpvct].esv_TextureVertexRemap];	// ptr to unique vertex in surface
+			pmp->mp_PolygonVertices[j].SetTransVertex(&edm_md, trans_vtx_idx); // remapped ptr to transformed vertex
+			pmp->mp_PolygonVertices[j].SetTexVertex(pmmpi, aesv[mpvct].esv_TextureVertexRemap); // ptr to unique vertex in surface
 			mpvct ++;
 		}
 	}
@@ -1943,14 +1941,14 @@ void CEditModel::DrawWireSurface( CDrawPort *pDP, INDEX iCurrentMip, INDEX iCurr
     struct ModelPolygon *pPoly = &edm_md.md_MipInfos[iCurrentMip].mmpi_Polygons[iPoly];
     if( pPoly->mp_Surface == iCurrentSurface)
     { // readout poly vertices
-      f3dTr0(1) = (FLOAT)pPoly->mp_PolygonVertices[0].mpv_ptvTextureVertex->mtv_UV(1);
-      f3dTr0(2) = (FLOAT)pPoly->mp_PolygonVertices[0].mpv_ptvTextureVertex->mtv_UV(2);
+      f3dTr0(1) = (FLOAT)pPoly->mp_PolygonVertices[0].GetTexVertex()->mtv_UV(1);
+      f3dTr0(2) = (FLOAT)pPoly->mp_PolygonVertices[0].GetTexVertex()->mtv_UV(2);
       f3dTr0(3) = 0.0f;
-      f3dTr1(1) = (FLOAT)pPoly->mp_PolygonVertices[1].mpv_ptvTextureVertex->mtv_UV(1);
-      f3dTr1(2) = (FLOAT)pPoly->mp_PolygonVertices[1].mpv_ptvTextureVertex->mtv_UV(2);
+      f3dTr1(1) = (FLOAT)pPoly->mp_PolygonVertices[1].GetTexVertex()->mtv_UV(1);
+      f3dTr1(2) = (FLOAT)pPoly->mp_PolygonVertices[1].GetTexVertex()->mtv_UV(2);
       f3dTr1(3) = 0.0f;
-      f3dTr2(1) = (FLOAT)pPoly->mp_PolygonVertices[2].mpv_ptvTextureVertex->mtv_UV(1);
-      f3dTr2(2) = (FLOAT)pPoly->mp_PolygonVertices[2].mpv_ptvTextureVertex->mtv_UV(2);
+      f3dTr2(1) = (FLOAT)pPoly->mp_PolygonVertices[2].GetTexVertex()->mtv_UV(1);
+      f3dTr2(2) = (FLOAT)pPoly->mp_PolygonVertices[2].GetTexVertex()->mtv_UV(2);
       f3dTr2(3) = 0.0f;
 
       // determine line visibility
@@ -1967,8 +1965,8 @@ void CEditModel::DrawWireSurface( CDrawPort *pDP, INDEX iCurrentMip, INDEX iCurr
       // draw lines
       PIX pixX0, pixY0, pixX1, pixY1;
       for( INDEX iVtx=0; iVtx<pPoly->mp_PolygonVertices.Count()-1; iVtx++) {
-        pVtx0 = pPoly->mp_PolygonVertices[iVtx+0].mpv_ptvTextureVertex;
-        pVtx1 = pPoly->mp_PolygonVertices[iVtx+1].mpv_ptvTextureVertex;
+        pVtx0 = pPoly->mp_PolygonVertices[iVtx + 0].GetTexVertex();
+        pVtx1 = pPoly->mp_PolygonVertices[iVtx + 1].GetTexVertex();
         pixX0 = (PIX)(pVtx0->mtv_UV(1) * fMagnifyFactor) - offx;
         pixY0 = (PIX)(pVtx0->mtv_UV(2) * fMagnifyFactor) - offy;
         pixX1 = (PIX)(pVtx1->mtv_UV(1) * fMagnifyFactor) - offx;
@@ -1976,7 +1974,7 @@ void CEditModel::DrawWireSurface( CDrawPort *pDP, INDEX iCurrentMip, INDEX iCurr
         pDP->DrawLine( pixX0, pixY0, pixX1, pixY1, clrWire|CT_OPAQUE, ulLineType);
       }
       // draw last line
-      pVtx0 = pPoly->mp_PolygonVertices[0].mpv_ptvTextureVertex;
+      pVtx0 = pPoly->mp_PolygonVertices[0].GetTexVertex();
       pixX0 = (PIX)(pVtx0->mtv_UV(1) * fMagnifyFactor) - offx;
       pixY0 = (PIX)(pVtx0->mtv_UV(2) * fMagnifyFactor) - offy;
       pDP->DrawLine( pixX0, pixY0, pixX1, pixY1, clrWire|CT_OPAQUE, ulLineType);
@@ -2001,14 +1999,14 @@ void CEditModel::DrawFilledSurface( CDrawPort *pDP, INDEX iCurrentMip, INDEX iCu
     struct ModelPolygon *pPoly = &edm_md.md_MipInfos[iCurrentMip].mmpi_Polygons[iPoly];
     if( pPoly->mp_Surface == iCurrentSurface)
     { // readout poly vertices
-      f3dTr0(1) = (FLOAT)pPoly->mp_PolygonVertices[0].mpv_ptvTextureVertex->mtv_UV(1);
-      f3dTr0(2) = (FLOAT)pPoly->mp_PolygonVertices[0].mpv_ptvTextureVertex->mtv_UV(2);
+      f3dTr0(1) = (FLOAT)pPoly->mp_PolygonVertices[0].GetTexVertex()->mtv_UV(1);
+      f3dTr0(2) = (FLOAT)pPoly->mp_PolygonVertices[0].GetTexVertex()->mtv_UV(2);
       f3dTr0(3) = 0.0f;
-      f3dTr1(1) = (FLOAT)pPoly->mp_PolygonVertices[1].mpv_ptvTextureVertex->mtv_UV(1);
-      f3dTr1(2) = (FLOAT)pPoly->mp_PolygonVertices[1].mpv_ptvTextureVertex->mtv_UV(2);
+      f3dTr1(1) = (FLOAT)pPoly->mp_PolygonVertices[1].GetTexVertex()->mtv_UV(1);
+      f3dTr1(2) = (FLOAT)pPoly->mp_PolygonVertices[1].GetTexVertex()->mtv_UV(2);
       f3dTr1(3) = 0.0f;
-      f3dTr2(1) = (FLOAT)pPoly->mp_PolygonVertices[2].mpv_ptvTextureVertex->mtv_UV(1);
-      f3dTr2(2) = (FLOAT)pPoly->mp_PolygonVertices[2].mpv_ptvTextureVertex->mtv_UV(2);
+      f3dTr2(1) = (FLOAT)pPoly->mp_PolygonVertices[2].GetTexVertex()->mtv_UV(1);
+      f3dTr2(2) = (FLOAT)pPoly->mp_PolygonVertices[2].GetTexVertex()->mtv_UV(2);
       f3dTr2(3) = 0.0f;
 
       // determine poly visibility
@@ -2019,12 +2017,12 @@ void CEditModel::DrawFilledSurface( CDrawPort *pDP, INDEX iCurrentMip, INDEX iCu
 
       // draw traingle(s) fan
       pDP->InitTexture( NULL);
-      pVtx0 = pPoly->mp_PolygonVertices[0].mpv_ptvTextureVertex;
+      pVtx0 = pPoly->mp_PolygonVertices[0].GetTexVertex();
       PIX pixX0 = (PIX)(pVtx0->mtv_UV(1) * fMagnifyFactor) - offx;
       PIX pixY0 = (PIX)(pVtx0->mtv_UV(2) * fMagnifyFactor) - offy;
       for( INDEX iVtx=1; iVtx<pPoly->mp_PolygonVertices.Count()-1; iVtx++) {
-        pVtx1 = pPoly->mp_PolygonVertices[iVtx+0].mpv_ptvTextureVertex;
-        pVtx2 = pPoly->mp_PolygonVertices[iVtx+1].mpv_ptvTextureVertex;
+        pVtx1 = pPoly->mp_PolygonVertices[iVtx + 0].GetTexVertex();
+        pVtx2 = pPoly->mp_PolygonVertices[iVtx + 1].GetTexVertex();
         PIX pixX1 = (PIX)(pVtx1->mtv_UV(1) * fMagnifyFactor) - offx;
         PIX pixY1 = (PIX)(pVtx1->mtv_UV(2) * fMagnifyFactor) - offy;
         PIX pixX2 = (PIX)(pVtx2->mtv_UV(1) * fMagnifyFactor) - offx;
@@ -2324,7 +2322,7 @@ void CEditModel::CalculatePatchesPerPolygon(void)
             MEXaabbox2D boxMapping;
             for( INDEX iVertex=0; iVertex<pMP->mp_PolygonVertices.Count(); iVertex++)
             {
-              ModelTextureVertex *pMTV = pMP->mp_PolygonVertices[iVertex].mpv_ptvTextureVertex;
+              ModelTextureVertex *pMTV = pMP->mp_PolygonVertices[iVertex].GetTexVertex();
               // calculate bounding box of mapping coordinates
               boxMapping |= MEXaabbox2D(pMTV->mtv_UV);
             }

@@ -103,8 +103,8 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
         INDEX ivx1=0;
         {for( INDEX ivx=0; ivx<mpPolygon.mp_PolygonVertices.Count(); ivx++)
         {
-          TransformedVertexData &tvd0 = *mpPolygon.mp_PolygonVertices[ivx0].mpv_ptvTransformedVertex;
-          TransformedVertexData &tvd1 = *mpPolygon.mp_PolygonVertices[ivx1].mpv_ptvTransformedVertex;
+          TransformedVertexData &tvd0 = *mpPolygon.mp_PolygonVertices[ivx0].GetTransVertex();
+          TransformedVertexData &tvd1 = *mpPolygon.mp_PolygonVertices[ivx1].GetTransVertex();
           FLOAT fd0 = fFrontClipDistance-tvd0.tvd_fZ;
           FLOAT fd1 = fFrontClipDistance-tvd1.tvd_fZ;
           // if first vertex is in
@@ -337,10 +337,10 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
       else
       {
         // draw all triangles as a triangle fan
-        PolyVertex2D &pvx0 = mpPolygon.mp_PolygonVertices[0].mpv_ptvTransformedVertex->tvd_pv2;
+        PolyVertex2D &pvx0 = mpPolygon.mp_PolygonVertices[0].GetTransVertex()->tvd_pv2;
         {for( INDEX ivx=1; ivx<mpPolygon.mp_PolygonVertices.Count()-1; ivx++) {
-          PolyVertex2D &pvx1 = mpPolygon.mp_PolygonVertices[ivx+0].mpv_ptvTransformedVertex->tvd_pv2;
-          PolyVertex2D &pvx2 = mpPolygon.mp_PolygonVertices[ivx+1].mpv_ptvTransformedVertex->tvd_pv2;
+          PolyVertex2D &pvx1 = mpPolygon.mp_PolygonVertices[ivx + 0].GetTransVertex()->tvd_pv2;
+          PolyVertex2D &pvx2 = mpPolygon.mp_PolygonVertices[ivx + 1].GetTransVertex()->tvd_pv2;
           DrawTriangle_Mask( _pubMask, _slMaskWidth, _slMaskHeight, &pvx0, &pvx1, &pvx2, bTransparency);
         }}
         _pfModelProfile.IncrementCounter(CModelProfile::PCI_MASK_TRIANGLES, mpPolygon.mp_PolygonVertices.Count()-2);
@@ -472,9 +472,9 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     ModelPolygon &mp = *itmp;
     ulRenderFlags = mmiMip.mmpi_MappingSurfaces[mp.mp_Surface].ms_ulRenderingFlags;
     // get first three of polygon's transformed vertices
-    const TransformedVertexData &tvd0 = *mp.mp_PolygonVertices[0].mpv_ptvTransformedVertex;
-    const TransformedVertexData &tvd1 = *mp.mp_PolygonVertices[1].mpv_ptvTransformedVertex;
-    const TransformedVertexData &tvd2 = *mp.mp_PolygonVertices[2].mpv_ptvTransformedVertex;
+    const TransformedVertexData &tvd0 = *mp.mp_PolygonVertices[0].GetTransVertex();
+    const TransformedVertexData &tvd1 = *mp.mp_PolygonVertices[1].GetTransVertex();
+    const TransformedVertexData &tvd2 = *mp.mp_PolygonVertices[2].GetTransVertex();
 
     // calculate polygon normal with front plane clipping
     FLOAT fD1X = tvd2.tvd_fX - tvd1.tvd_fX;
@@ -519,7 +519,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     if( mp.mp_slVisibility != VISIBLE_NOT) {
       // for all vertices
       {for( INDEX ivx=0; ivx<mp.mp_PolygonVertices.Count(); ivx++) {
-        const TransformedVertexData &tvd = *mp.mp_PolygonVertices[ivx].mpv_ptvTransformedVertex;
+        const TransformedVertexData &tvd = *mp.mp_PolygonVertices[ivx].GetTransVertex();
         // if vertex is clipped to near plane
         if( tvd.tvd_bClipped) {
           // mark that the polygon needs clipping

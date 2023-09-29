@@ -473,19 +473,30 @@ ModelTextureVertex::ModelTextureVertex(void)
 //------------------------------------------ WRITE
 void ModelPolygonVertex::Write_t( CTStream *pFile)  // throw char *
 {
-  (*pFile) << (INDEX) mpv_ptvTransformedVertex;
-  (*pFile) << (INDEX) mpv_ptvTextureVertex;
+  // [Cecil] Write indices instead of pointers
+  *pFile << mpv_iTransformedVertex;
+  *pFile << mpv_iTextureVertex;
 }
 //------------------------------------------ READ
 void ModelPolygonVertex::Read_t( CTStream *pFile) // throw char *
 {
-  INDEX itmp;
-
-  (*pFile) >> itmp;
-  mpv_ptvTransformedVertex = (struct TransformedVertexData *) itmp;
-  (*pFile) >> itmp;
-  mpv_ptvTextureVertex = (ModelTextureVertex *) itmp;
+  // [Cecil] Read into indices instead of pointers
+  *pFile >> mpv_iTransformedVertex;
+  *pFile >> mpv_iTextureVertex;
 }
+
+// [Cecil] Set transformed vertex data from a model data array
+void ModelPolygonVertex::SetTransVertex(CModelData *md, INDEX iVtx) {
+  mpv_ptvTransformedVertex = &md->md_TransformedVertices[iVtx];
+  mpv_iTransformedVertex = iVtx;
+};
+
+// [Cecil] Set model texture vertex from a model data array
+void ModelPolygonVertex::SetTexVertex(ModelMipInfo *mmpi, INDEX iVtx) {
+  mpv_ptvTextureVertex = &mmpi->mmpi_TextureVertices[iVtx];
+  mpv_iTextureVertex = iVtx;
+};
+
 //--------------------------------------------------------------------------------------------
 //------------------------------------------ WRITE
 void ModelPolygon::Write_t( CTStream *pFile) // throw char *
@@ -750,8 +761,8 @@ void CModelData::LinkDataForSurfaces(BOOL bFirstMip)
       for( INDEX iVertex = 0; iVertex<pMMI->mmpi_Polygons[iPolygon].mp_PolygonVertices.Count(); iVertex++)
       {
         ModelPolygonVertex *pmpvPolygonVertex = &pMMI->mmpi_Polygons[iPolygon].mp_PolygonVertices[iVertex];
-        INDEX iTransformed = md_TransformedVertices.Index( pmpvPolygonVertex->mpv_ptvTransformedVertex);
-        pmpvPolygonVertex->mpv_ptvTextureVertex->mtv_iTransformedVertex = iTransformed;
+        INDEX iTransformed = md_TransformedVertices.Index(pmpvPolygonVertex->GetTransVertex());
+        pmpvPolygonVertex->GetTexVertex()->mtv_iTransformedVertex = iTransformed;
       }
     }}
 
@@ -813,8 +824,7 @@ void CModelData::LinkDataForSurfaces(BOOL bFirstMip)
         for( INDEX iVertex=0; iVertex<mpPolygon.mp_PolygonVertices.Count(); iVertex++)
         {
           // get texture vertex
-          ModelTextureVertex *ptv =
-            mpPolygon.mp_PolygonVertices[ iVertex].mpv_ptvTextureVertex;
+          ModelTextureVertex *ptv = mpPolygon.mp_PolygonVertices[iVertex].GetTexVertex();
           // if it is not added yet
           if( !cmtvInSurface.IsMember( ptv))
           {
@@ -1012,7 +1022,8 @@ void ModelMipInfo::Read_t(CTStream *pFile,
  */
 void CModelData::PtrsToIndices()
 {
-  INDEX i, j;
+  // [Cecil] Obsolete due to new index fields
+  /*size_t i, j;
 
   for( i=0; i<md_MipCt; i++)
   {
@@ -1025,17 +1036,17 @@ void CModelData::PtrsToIndices()
           if( it2.Current().mpv_ptvTransformedVertex == &md_TransformedVertices[ j])
             break;
         }
-        it2.Current().mpv_ptvTransformedVertex = (struct TransformedVertexData *) j;
+        it2.Current().mpv_ptvTransformedVertex = (TransformedVertexData *)j;
 
         for( j=0; j<md_MipInfos[ i].mmpi_TextureVertices.Count(); j++)
         {
           if( it2.Current().mpv_ptvTextureVertex == &md_MipInfos[ i].mmpi_TextureVertices[ j])
             break;
         }
-        it2.Current().mpv_ptvTextureVertex = (ModelTextureVertex *) j;
+        it2.Current().mpv_ptvTextureVertex = (ModelTextureVertex *)j;
       }
     }
-  }
+  }*/
 }
 
 //--------------------------------------------------------------------------------------------
@@ -1052,11 +1063,10 @@ void CModelData::IndicesToPtrs()
     {
       FOREACHINSTATICARRAY(it1.Current().mp_PolygonVertices, ModelPolygonVertex, it2)
       {
-        struct ModelPolygonVertex * pMPV = &it2.Current();
-        j = (INDEX) it2.Current().mpv_ptvTransformedVertex;
-        it2.Current().mpv_ptvTransformedVertex = &md_TransformedVertices[ j];
-        j = (INDEX) it2.Current().mpv_ptvTextureVertex;
-        it2.Current().mpv_ptvTextureVertex = &md_MipInfos[ i].mmpi_TextureVertices[ j];
+        // [Cecil] Find pointers to structures using read indices
+        ModelPolygonVertex &mpv = it2.Current();
+        mpv.SetTransVertex(this, mpv.GetTransIndex());
+        mpv.SetTexVertex(&md_MipInfos[i], mpv.GetTexIndex());
       }
     }
   }
@@ -2252,7 +2262,7 @@ void CModelObject::ColorizeRegion( CDrawPort *pDP, CProjection3D *pProjection, P
 {
   struct ModelPolygon *pPoly;
   CModelData *pMD = (CModelData *) GetData();
-  struct TransformedVertexData *pTransformedVertice;
+  const TransformedVertexData *pTransformedVertice;
   PIX pixDPHeight = pDP->GetHeight();
   // project vertices for given mip model
   ProjectFrameVertices( pProjection, mo_iLastRenderMipLevel);
@@ -2261,7 +2271,7 @@ void CModelObject::ColorizeRegion( CDrawPort *pDP, CProjection3D *pProjection, P
     pPoly = &pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_Polygons[ j];
     for( INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
     {
-      pTransformedVertice = pPoly->mp_PolygonVertices[ i].mpv_ptvTransformedVertex;
+      pTransformedVertice = pPoly->mp_PolygonVertices[i].GetTransVertex();
       PIXaabbox2D ptBox = PIXaabbox2D( PIX2D( (SWORD) pTransformedVertice->tvd_TransformedPoint(1),
                                        pixDPHeight - (SWORD) pTransformedVertice->tvd_TransformedPoint(2)));
       if( !((box & ptBox).IsEmpty()) )
@@ -2293,7 +2303,7 @@ void CModelObject::ApplySurfaceToPolygonsInRegion( CDrawPort *pDP, CProjection3D
   ProjectFrameVertices( pProjection, mo_iLastRenderMipLevel);
 
   struct ModelPolygon *pPoly;
-  struct TransformedVertexData *pTransformedVertice;
+  const TransformedVertexData *pTransformedVertice;
   CModelData *pMD = (CModelData *) GetData();
   PIX pixDPHeight = pDP->GetHeight();
 
@@ -2302,7 +2312,7 @@ void CModelObject::ApplySurfaceToPolygonsInRegion( CDrawPort *pDP, CProjection3D
     pPoly = &pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_Polygons[ j];
     for( INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
     {
-      pTransformedVertice = pPoly->mp_PolygonVertices[ i].mpv_ptvTransformedVertex;
+      pTransformedVertice = pPoly->mp_PolygonVertices[i].GetTransVertex();
       PIXaabbox2D ptBox = PIXaabbox2D( PIX2D( (SWORD) pTransformedVertice->tvd_TransformedPoint(1),
                                        pixDPHeight - (SWORD) pTransformedVertice->tvd_TransformedPoint(2)));
       if( !((box & ptBox).IsEmpty()) )
@@ -2436,16 +2446,16 @@ struct ModelPolygon *CModelObject::PolygonHitModelData(CModelData *pMD,
       // get next vertex index (first is i)
       INDEX next = (i+1) % pPoly->mp_PolygonVertices.Count();
       // add edge to intersection object
-      Intersector.AddEdge( pPoly->mp_PolygonVertices[ i].mpv_ptvTransformedVertex->tvd_TransformedPoint(1),
-                         pPoly->mp_PolygonVertices[ i].mpv_ptvTransformedVertex->tvd_TransformedPoint(2),
-                         pPoly->mp_PolygonVertices[ next].mpv_ptvTransformedVertex->tvd_TransformedPoint(1),
-                         pPoly->mp_PolygonVertices[ next].mpv_ptvTransformedVertex->tvd_TransformedPoint(2));
+      Intersector.AddEdge(pPoly->mp_PolygonVertices[i].GetTransVertex()->tvd_TransformedPoint(1),
+                          pPoly->mp_PolygonVertices[i].GetTransVertex()->tvd_TransformedPoint(2),
+                          pPoly->mp_PolygonVertices[next].GetTransVertex()->tvd_TransformedPoint(1),
+                          pPoly->mp_PolygonVertices[next].GetTransVertex()->tvd_TransformedPoint(2));
     }
     if( Intersector.IsIntersecting())
     {
-      FLOAT3D f3dTr0 = pPoly->mp_PolygonVertices[ 0].mpv_ptvTransformedVertex->tvd_TransformedPoint;
-      FLOAT3D f3dTr1 = pPoly->mp_PolygonVertices[ 1].mpv_ptvTransformedVertex->tvd_TransformedPoint;
-      FLOAT3D f3dTr2 = pPoly->mp_PolygonVertices[ 2].mpv_ptvTransformedVertex->tvd_TransformedPoint;
+      FLOAT3D f3dTr0 = pPoly->mp_PolygonVertices[0].GetTransVertex()->tvd_TransformedPoint;
+      FLOAT3D f3dTr1 = pPoly->mp_PolygonVertices[1].GetTransVertex()->tvd_TransformedPoint;
+      FLOAT3D f3dTr2 = pPoly->mp_PolygonVertices[2].GetTransVertex()->tvd_TransformedPoint;
       FLOATplane3D fplPlane = FLOATplane3D( f3dTr0, f3dTr1, f3dTr2);
 
       FLOAT3D f3dHitted3DPoint = FLOAT3D(0,0,0);

@@ -145,12 +145,52 @@ struct ENGINE_API ModelTextureVertex {
   FLOAT3D mtv_vU, mtv_vV;                         // bump directions
 };
 
+struct ENGINE_API TransformedVertexData {
+  FLOAT3D tvd_TransformedPoint; // for transformed point vector
+  PolyVertex2D tvd_pv2;         // vertex structure for software
+  FLOAT tvd_fX, tvd_fY, tvd_fZ; // view space original coords
+  FLOAT tvd_fU, tvd_fV;         // texture mapping temp vars for clipping purposes
+  BOOL  tvd_bClipped;           // is clipped to near clip plane or screen boundaries?
+};
+
 struct ENGINE_API ModelPolygonVertex
 {
-	struct TransformedVertexData *mpv_ptvTransformedVertex; // buffer where vertices really rotate
-	struct ModelTextureVertex *mpv_ptvTextureVertex;		// needed by modeler to calculate U,V
-	void Read_t( CTStream *istrFile);   // throw char *
-	void Write_t( CTStream *ostrFile);  // throw char *
+  private:
+    TransformedVertexData *mpv_ptvTransformedVertex; // buffer where vertices really rotate
+    INDEX mpv_iTransformedVertex; // [Cecil] Index of the vertex in model data
+
+    ModelTextureVertex *mpv_ptvTextureVertex; // needed by modeler to calculate U,V
+    INDEX mpv_iTextureVertex; // [Cecil] Index of the texture vertex in model data
+
+  public:
+    void Read_t( CTStream *istrFile);   // throw char *
+    void Write_t( CTStream *ostrFile);  // throw char *
+
+    // [Cecil] Get transformed vertex data
+    inline TransformedVertexData *GetTransVertex(void) const {
+      return mpv_ptvTransformedVertex;
+    };
+
+    // [Cecil] Get index of transformed vertex data
+    inline INDEX GetTransIndex(void) const {
+      return mpv_iTransformedVertex;
+    };
+
+    // [Cecil] Set transformed vertex data from model data
+    void SetTransVertex(class CModelData *md, INDEX iVtx);
+
+    // [Cecil] Get model texture vertex
+    inline ModelTextureVertex *GetTexVertex(void) const {
+      return mpv_ptvTextureVertex;
+    };
+
+    // [Cecil] Get index of model texture vertex
+    inline INDEX GetTexIndex(void) const {
+      return mpv_iTextureVertex;
+    };
+
+    // [Cecil] Set model texture vertex from a model mip
+    void SetTexVertex(struct ModelMipInfo *mmpi, INDEX iVtx);
 };
 
 #define	SC_ALLWAYS_ON (1UL << 30)
@@ -160,7 +200,7 @@ struct ENGINE_API ModelPolygon
 {
 	ModelPolygon();                                 // constructor
 	~ModelPolygon();                                // destructor
-	CStaticArray<struct ModelPolygonVertex> mp_PolygonVertices;	// this polygon's vertices
+	CStaticArray<ModelPolygonVertex> mp_PolygonVertices;	// this polygon's vertices
 	ULONG mp_RenderFlags;														// flags which define rendering of this polygon
 	ULONG mp_ColorAndAlpha;							      			// color and global alpha for this polygon
 	INDEX mp_Surface;																// in which surface this polygon belongs
@@ -219,15 +259,6 @@ struct ENGINE_API PolygonsPerPatch
   CStaticArray<UWORD> ppp_auwElements; // elements for drawing
   inline ~PolygonsPerPatch() { Clear();};
   inline void Clear() { ppp_iPolygons.Clear();};
-};
-
-/* rcg 10042001 removed anonymous structs, dangerous union. */
-struct ENGINE_API TransformedVertexData {
-  FLOAT3D tvd_TransformedPoint;                   // for transformed point vector
-  PolyVertex2D tvd_pv2;         // vertex structure for software
-  FLOAT tvd_fX, tvd_fY, tvd_fZ; // view space original coords
-  FLOAT tvd_fU, tvd_fV;         // texture mapping temp vars for clipping purposes
-  BOOL  tvd_bClipped;           // is clipped to near clip plane or screen boundaries?
 };
 
 class ENGINE_API CModelCollisionBox {
