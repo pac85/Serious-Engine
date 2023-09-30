@@ -112,7 +112,7 @@ void CDependencyList::ExtractDependencies()
     if( file_handle == -1)
     {
       // if file is not available remove it from list
-      //FatalError( "File %s can't be opened!", (CTString&)(_fnmApplicationPath + fnFileName));
+      //FatalError("File %s can't be opened!", (_fnmApplicationPath + fnFileName).ConstData());
       printf("warning, cannot open: %s (referenced from %s)\n", fnFileName.ConstData(), pdi->di_fnParent.ConstData());
       delete pdi;
     }
@@ -133,7 +133,7 @@ void CDependencyList::ExtractDependencies()
       // read file
       if( _read( file_handle, pFileInMemory, ulSize) != ulSize)
       {
-        FatalError( "Fatal error ocured while reading file: %s.", (CTString&)pdi->di_fnFileName);
+        FatalError("Fatal error ocured while reading file: %s.", pdi->di_fnFileName.ConstData());
       }
       if(file_handle!=-1) {
         _close(file_handle);
@@ -245,8 +245,7 @@ void CDependencyList::Substract( CDependencyList &dlToSubstract)
         // if file to substract is newer than this one
         else if( itThis->IsOlder( *itOther))
         {
-          FatalError( "File \"%s\" is newer in substracting dependency file.",
-                      (CTString&)itThis->di_fnFileName);
+          FatalError("File \"%s\" is newer in substracting dependency file.", itThis->di_fnFileName.ConstData());
         }
       }
     }
@@ -268,7 +267,7 @@ void CDependencyList::ImportASCII( CTFileName fnAsciiFile)
   }
   catch( char *pError)
   {
-    FatalError( "Error opening file %s. Error: %s.", (CTString&)fnAsciiFile, pError);
+    FatalError("Error opening file %s. Error: %s.", fnAsciiFile.ConstData(), pError);
   }
 
   // loop loading lines until EOF reached ("catched")
@@ -352,7 +351,7 @@ void CDependencyList::ExportASCII_t( CTFileName fnAsciiFile)
   }
   catch( char *pError)
   {
-    FatalError( "Error creating file %s. Error: %s.", (CTString&)fnAsciiFile, pError);
+    FatalError("Error creating file %s. Error: %s.", fnAsciiFile.ConstData(), pError);
   }
 
   // for all members in depend list

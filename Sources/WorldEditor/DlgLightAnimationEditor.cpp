@@ -64,7 +64,7 @@ CDlgLightAnimationEditor::CDlgLightAnimationEditor(CWnd* pParent /*=NULL*/)
   try {
     adDefault.Save_t( fnDefaultAnimation);
   } catch( char *pError) {
-    FatalError( "Unable to save default animation: \"%s\", %s", (CTString&)fnDefaultAnimation, pError);
+    FatalError("Unable to save default animation: \"%s\", %s", fnDefaultAnimation.ConstData(), pError);
   }
 
   // try to load animation that was last edited
@@ -84,7 +84,7 @@ CDlgLightAnimationEditor::CDlgLightAnimationEditor(CWnd* pParent /*=NULL*/)
     }
     catch( char *pError2)
     {
-      FatalError( "Unable to save and obtain default animation: \"%s\", %s", (CTString&)fnDefaultAnimation, pError2);
+      FatalError("Unable to save and obtain default animation: \"%s\", %s", fnDefaultAnimation.ConstData(), pError2);
     }
   }
 

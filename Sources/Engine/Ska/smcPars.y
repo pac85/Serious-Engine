@@ -234,7 +234,7 @@ mesh
 : k_MESH k_TFNM c_string ';'
 {
   // add mesh to current model instance
-  _yy_mi->AddMesh_t((CTString)$3);
+  _yy_mi->AddMesh_t(CTString($3));
 }
  opt_textures
 ;
@@ -243,7 +243,7 @@ skeleton
 : k_SKELETON k_TFNM c_string ';'
 {
   // add skeleton to current model instance
-  _yy_mi->AddSkeleton_t((CTString)$3);
+  _yy_mi->AddSkeleton_t(CTString($3));
 }
 ;
 animset_header
@@ -260,7 +260,7 @@ animset
 : k_TFNM c_string ';'
 {
   // add animset to curent model instnce 
-  _yy_mi->AddAnimSet_t((CTString)$2);
+  _yy_mi->AddAnimSet_t(CTString($2));
 }
 ;
 
@@ -299,7 +299,7 @@ texture
 : c_string k_TFNM c_string ';' 
 {
   // add texture to current model instance
-  _yy_mi->AddTexture_t((CTString)$3,$1,NULL);
+  _yy_mi->AddTexture_t(CTString($3), $1, NULL);
 }
 ;
 float_const

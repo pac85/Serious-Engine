@@ -1306,7 +1306,7 @@ void CMainFrame::StartApplication( CTString strApplicationToRun)
   // if process creation was not successful
   if( !bSuccess)
   {
-    WarningMessage( "WorldEditor was unable to run \"%s\"", (CTString&)fnApplicationToRun);
+    WarningMessage("WorldEditor was unable to run \"%s\"", fnApplicationToRun.ConstData());
   }
 }
 

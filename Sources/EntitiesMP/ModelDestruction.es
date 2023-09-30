@@ -135,9 +135,9 @@ functions:
     if(ct==0) {
       ((CTString&)m_strDescription).PrintF("(%g): no more", m_fHealth);
     } else if(ct==1) {
-      ((CTString&)m_strDescription).PrintF("(%g): %s", m_fHealth, m_penModel0->GetName());
+      ((CTString&)m_strDescription).PrintF("(%g): %s", m_fHealth, m_penModel0->GetName().ConstData());
     } else if (TRUE) {
-      ((CTString&)m_strDescription).PrintF("(%g): %s,...(%d)", m_fHealth, m_penModel0->GetName(), ct);
+      ((CTString&)m_strDescription).PrintF("(%g): %s,...(%d)", m_fHealth, m_penModel0->GetName().ConstData(), ct);
     }
     return m_strDescription;
   }

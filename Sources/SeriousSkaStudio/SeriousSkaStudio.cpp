@@ -164,9 +164,9 @@ BOOL CSeriousSkaStudioApp::SubInitInstance()
   // (re)set default display mode
   _pGfx->ResetDisplayMode(GAT_OGL);
 
-  CTFileName fnGroundTexture = (CTString)"Models\\Editor\\Floor.tex";
-  // CTFileName fnGroundTexture = (CTString)"ModelsSka\\Enemies\\Grunt\\SoldierAnim.tex";
-  // CTFileName fnGroundTexture = (CTString)"Models\\Enemies\\ElementalLava\\Lava04FX.tex";
+  CTFileName fnGroundTexture = CTString("Models\\Editor\\Floor.tex");
+  //CTFileName fnGroundTexture = CTString("ModelsSka\\Enemies\\Grunt\\SoldierAnim.tex");
+  //CTFileName fnGroundTexture = CTString("Models\\Enemies\\ElementalLava\\Lava04FX.tex");
   try
   {
     toGroundTexture.SetData_t(fnGroundTexture);

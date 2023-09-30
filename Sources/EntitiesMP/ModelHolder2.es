@@ -616,7 +616,7 @@ functions:
     try {
       m_aoLightAnimation.SetData_t(m_fnmLightAnimation);
     } catch (char *strError) {
-      WarningMessage(TRANS("Cannot load '%s': %s"), (CTString&)m_fnmLightAnimation, strError);
+      WarningMessage(TRANS("Cannot load '%s': %s"), m_fnmLightAnimation.ConstData(), strError);
       m_fnmLightAnimation = "";
     }
     if (m_aoLightAnimation.GetData()!=NULL) {
@@ -624,10 +624,10 @@ functions:
     }
 
     if (m_penDestruction==NULL) {
-      m_strDescription.PrintF("%s,%s undestroyable", (CTString&)m_fnModel.FileName(), (CTString&)m_fnTexture.FileName());
+      m_strDescription.PrintF("%s,%s undestroyable", m_fnModel.FileName().ConstData(), m_fnTexture.FileName().ConstData());
     } else {
-      m_strDescription.PrintF("%s,%s -> %s", (CTString&)m_fnModel.FileName(), (CTString&)m_fnTexture.FileName(),
-        m_penDestruction->GetName());
+      m_strDescription.PrintF("%s,%s -> %s", m_fnModel.FileName().ConstData(), m_fnTexture.FileName().ConstData(),
+        m_penDestruction->GetName().ConstData());
     }
 
     return;

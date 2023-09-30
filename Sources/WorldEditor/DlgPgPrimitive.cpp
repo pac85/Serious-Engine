@@ -564,14 +564,14 @@ BOOL CDlgPgPrimitive::OnInitDialog()
           itPrim->pihb_vfpPrimitive.vfp_iSlicesPerHeight);
          if( itPrim->pihb_vfpPrimitive.vfp_fnDisplacement != "")
          {
-           strDescription.PrintF( "%s, Displ.: \"%s\", Amp. %g", strDescription,
-             (CTString&)(itPrim->pihb_vfpPrimitive.vfp_fnDisplacement.FileName()+
-             itPrim->pihb_vfpPrimitive.vfp_fnDisplacement.FileExt()),
+           strDescription.PrintF("%s, Displ.: \"%s\", Amp. %g", strDescription.ConstData(),
+             (itPrim->pihb_vfpPrimitive.vfp_fnDisplacement.FileName() +
+             itPrim->pihb_vfpPrimitive.vfp_fnDisplacement.FileExt()).ConstData(),
              itPrim->pihb_vfpPrimitive.vfp_fAmplitude);
          }
          else
          {
-           strDescription.PrintF( "%s, No displacement picture", strDescription);
+           strDescription.PrintF("%s, No displacement picture", strDescription.ConstData());
          }
         break;
       }

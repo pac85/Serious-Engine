@@ -61,7 +61,7 @@ CTString IFeel_GetProductName()
 CTString IFeel_GetProjectFileName()
 {
   CTString strIFeelTable;
-  CTFileName fnIFeelTable = (CTString)"Data\\IFeel.txt";
+  CTFileName fnIFeelTable = CTString("Data\\IFeel.txt");
   CTString strDefaultProjectFile = "Data\\Default.ifr";
   // get product name
   CTString strProduct = IFeel_GetProductName();
@@ -115,7 +115,7 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
 
   // load iFeel lib 
   CTFileName fnmExpanded;
-  ExpandFilePath(EFP_READ | EFP_NOZIPS,(CTString)IFEEL_DLL_NAME,fnmExpanded);
+  ExpandFilePath(EFP_READ | EFP_NOZIPS, CTString(IFEEL_DLL_NAME), fnmExpanded);
   if(_hLib!=NULL) return FALSE;
 
   UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);

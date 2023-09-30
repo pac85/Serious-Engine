@@ -69,10 +69,10 @@ functions:
   {
     if (m_penTarget1!=NULL && m_penTarget2!=NULL) {
       ((CTString&)m_strDescription).PrintF("->%s,%s", 
-        m_penTarget1->GetName(), m_penTarget2->GetName());
+        m_penTarget1->GetName().ConstData(), m_penTarget2->GetName().ConstData());
     } else if (m_penTarget1!=NULL) {
       ((CTString&)m_strDescription).PrintF("->%s", 
-        m_penTarget1->GetName());
+        m_penTarget1->GetName().ConstData());
     } else {
       ((CTString&)m_strDescription).PrintF("-><none>");
     }

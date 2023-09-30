@@ -193,9 +193,8 @@ void CZipHandle::Clear(void)
 void CZipHandle::ThrowZLIBError_t(int ierr, const CTString &strDescription)
 {
   ThrowF_t(TRANS("(%s/%s) %s - ZLIB error: %s - %s"), 
-    (const CTString&)*zh_zeEntry.ze_pfnmArchive, 
-    (const CTString&)zh_zeEntry.ze_fnm,
-    strDescription, GetZlibError(ierr), zh_zstream.msg);
+    zh_zeEntry.ze_pfnmArchive->ConstData(), zh_zeEntry.ze_fnm.ConstData(),
+    strDescription.ConstData(), GetZlibError(ierr).ConstData(), zh_zstream.msg);
 }
 
 // all files in all active zip archives
@@ -326,7 +325,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
         ze.ze_bStored = FALSE;
       } else {
         ThrowF_t(TRANS("%s/%s: Only 'deflate' compression is supported"),
-          (CTString&)*ze.ze_pfnmArchive, ze.ze_fnm);
+          ze.ze_pfnmArchive->ConstData(), ze.ze_fnm.ConstData());
       }
     }
   }
@@ -539,7 +538,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   // if not found
   if (pze==NULL) {
     // fail
-    ThrowF_t(TRANS("File not found: %s"), (const CTString&)fnm);
+    ThrowF_t(TRANS("File not found: %s"), fnm.ConstData());
   }
 
   // for each existing handle
@@ -572,8 +571,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
     // clear the handle
     zh.Clear();
     // fail
-    ThrowF_t(TRANS("Cannot open '%s': %s"), (const CTString&)*pze->ze_pfnmArchive,
-      strerror(errno));
+    ThrowF_t(TRANS("Cannot open '%s': %s"), pze->ze_pfnmArchive->ConstData(), strerror(errno));
   }
   // seek to the local header of the entry
   fseek(zh.zh_fFile, zh.zh_zeEntry.ze_slDataOffset, SEEK_SET);
@@ -583,8 +581,8 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   // if this is not the expected sig
   if (slSig!=SIGNATURE_LFH) {
     // fail
-    ThrowF_t(TRANS("%s/%s: Wrong signature for 'local file header'"), 
-      (CTString&)*zh.zh_zeEntry.ze_pfnmArchive, zh.zh_zeEntry.ze_fnm);
+    ThrowF_t(TRANS("%s/%s: Wrong signature for 'local file header'"),
+      zh.zh_zeEntry.ze_pfnmArchive->ConstData(), zh.zh_zeEntry.ze_fnm.ConstData());
   }
   // read the header
   LocalFileHeader lfh;

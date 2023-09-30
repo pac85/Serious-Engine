@@ -188,10 +188,9 @@ void CEditModel::LoadModelAnimationData_t( CTStream *pFile, const FLOATmatrix3D 
     CFileNameNode &fnnFileNameNode = itFr.Current();
     if( ProgresRoutines.SetProgressState != NULL) ProgresRoutines.SetProgressState(iO3D);
 		OB3D.Clear();
-    OB3D.LoadAny3DFormat_t( CTString(itFr->cfnn_FileName), mStretch);
+    OB3D.LoadAny3DFormat_t(CTString(itFr->cfnn_FileName), mStretch);
     if( edm_md.md_VerticesCt != OB3D.ob_aoscSectors[0].osc_aovxVertices.Count()) {
-			ThrowF_t( "File %s, one of animation frame files has wrong number of points.", 
-        (CTString)fnnFileNameNode.cfnn_FileName);
+			ThrowF_t("File %s, one of animation frame files has wrong number of points.", fnnFileNameNode.cfnn_FileName);
 		}
     if(bOrigin)
     {
@@ -489,7 +488,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
   {
     char achrUpper[ 256];
     strcpy(achrUpper, itam->am_strName.ConstData());
-    strupr(achrUpper);
+    _strupr(achrUpper);
     sprintf(line, "#define %s_ATTACHMENT_%s %d\n", strDefinePrefix.ConstData(), achrUpper, iAttachingPlcement);
     strmHFile.Write_t( line, strlen( line));
     iAttachingPlcement++;
@@ -2869,7 +2868,7 @@ void CEditModel::SetCollisionBoxDimensionEquality( INDEX iNewDimEqType)
         // only triangles are supported!
         ASSERT( opo.opo_PolygonEdges.Count() == 3);  
         if( opo.opo_PolygonEdges.Count() != 3) {
-  			  ThrowF_t( "Non-triangle polygon encountered in model file %s !", (CTString)itFr->cfnn_FileName);
+  			  ThrowF_t("Non-triangle polygon encountered in model file %s !", itFr->cfnn_FileName);
         }
 
         CObjectPolygonEdge &ope0 = opo.opo_PolygonEdges[0];

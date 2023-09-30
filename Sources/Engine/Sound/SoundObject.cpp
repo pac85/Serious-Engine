@@ -321,7 +321,7 @@ void CSoundObject::SetOffset( FLOAT fOffset)
   // safety check
   ASSERT( fOffset>=0);
   if( fOffset<0) {
-    CPrintF( "BUG: Trying to set negative offset (%.2g) in sound '%s' !\n", fOffset, (CTString&)psoTail->so_pCsdLink->GetName());
+    CPrintF("BUG: Trying to set negative offset (%.2g) in sound '%s' !\n", fOffset, psoTail->so_pCsdLink->GetName().ConstData());
     fOffset = 0.0f;
   }
 

@@ -723,7 +723,7 @@ void RenderMessagePicture(CDrawPort *pdp)
   // if failed
   } catch(char *strError) {
     // report error
-    CPrintF("Cannot load '%s':\n%s\n", (CTString&)cm.cm_fnmPicture, strError);
+    CPrintF("Cannot load '%s':\n%s\n", cm.cm_fnmPicture.ConstData(), strError);
     // do nothing
     return;
   }

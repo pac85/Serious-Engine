@@ -72,7 +72,7 @@ CTerrain::CTerrain()
 
   // TEMP
   try {
-    tr_ptdDetailMap = _pTextureStock->Obtain_t((CTString)"Textures\\Detail\\Crumples04.tex");
+    tr_ptdDetailMap = _pTextureStock->Obtain_t(CTString("Textures\\Detail\\Crumples04.tex"));
   } catch(char *) {
   }
 
@@ -1503,7 +1503,7 @@ void CTerrain::GenerateTerrainTopMap()
 void CTerrain::AddDefaultLayer_t(void)
 {
   // Add one layer using default texture, but do not refresh terrain 
-  CTerrainLayer &tl = AddLayer_t((CTString)"Textures\\Editor\\Default.TEX", LT_NORMAL, FALSE);
+  CTerrainLayer &tl = AddLayer_t(CTString("Textures\\Editor\\Default.TEX"), LT_NORMAL, FALSE);
   // fill this layer
   tl.ResetLayerMask(255);
 }

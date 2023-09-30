@@ -135,7 +135,7 @@ CTFileName CEngineGUI::CreateTexture(CTFileName fnTexFileToRecreate/*=CTString("
         }
         else
         {
-          WarningMessage( "Cannot find source for recreating texture: \"%s\"", (CTString&)fnTexFileToRecreate);
+          WarningMessage("Cannot find source for recreating texture: \"%s\"", fnTexFileToRecreate.ConstData());
         }
       }
       // reload the texture

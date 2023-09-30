@@ -69,7 +69,7 @@ void CCompMessageID::NewMessage(const CTFileName &fnm)
   } else if (strName.Matches("*messages\\statistics*")) {
     cmi_cmtType = CMT_STATISTICS;
   } else {
-    CPrintF("Unknown message type: %s\n", (const CTString&) fnm);
+    CPrintF("Unknown message type: %s\n", fnm.ConstData());
     cmi_cmtType = CMT_INFORMATION;
   }
   // mark as unread

@@ -56,8 +56,7 @@ procedures:
 
     m_strDescription.PrintF("%s: %s (%g)", 
       MusicType_enum.NameForValue((INDEX)m_mtType),
-      (CTString&)m_fnMusic.FileName(),
-      m_fVolume);
+      m_fnMusic.FileName().ConstData(), m_fVolume);
 
     // wait for game to start
     autowait(0.1f);

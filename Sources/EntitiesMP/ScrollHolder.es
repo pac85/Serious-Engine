@@ -53,7 +53,7 @@ components:
 
 functions:
   const CTString &GetDescription(void) const {
-    ((CTString&)m_strDescription).PrintF("%s", m_fnmMessage.FileName());
+    ((CTString&)m_strDescription).PrintF("%s", m_fnmMessage.FileName().ConstData());
     return m_strDescription;
   }
 

@@ -63,8 +63,7 @@ CDlgCreateNormalTexture::CDlgCreateNormalTexture( CTFileName fnInputFile, CWnd* 
     if (iiImageInfo.GetGfxFileInfo_t( m_fnSourceFileName)==UNSUPPORTED_FILE)
     {
       // throw error
-      ThrowF_t("File '%s' has unsupported file format", 
-        (CTString&)(_fnmApplicationPath+m_fnSourceFileName));
+      ThrowF_t("File '%s' has unsupported file format", (_fnmApplicationPath + m_fnSourceFileName).ConstData());
     }
     // get dimensions
     m_pixSourceWidth  = iiImageInfo.ii_Width;
@@ -72,9 +71,9 @@ CDlgCreateNormalTexture::CDlgCreateNormalTexture( CTFileName fnInputFile, CWnd* 
     // test if dimensions are at power of 2
     if( (((1<<((int)Log2(m_pixSourceWidth)))  != m_pixSourceWidth)) ||
         (((1<<((int)Log2(m_pixSourceHeight))) != m_pixSourceHeight))) {
-      ThrowF_t( "Picture %s has wrong dimensions (%d,%d).\n"
-                "Both width and height must be at power of 2.",
-                (CTString&)m_fnSourceFileName, m_pixSourceWidth, m_pixSourceHeight);
+      ThrowF_t("Picture %s has wrong dimensions (%d,%d).\n"
+               "Both width and height must be at power of 2.",
+               m_fnSourceFileName.ConstData(), m_pixSourceWidth, m_pixSourceHeight);
     }
   }
   catch(char *err_str)

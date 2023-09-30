@@ -666,7 +666,7 @@ shader_name
   SurfaceShader &SurfShader = _assSurfaceShaders[_iShaderSurfIndex];
   SurfShader.ss_iSurfaceID = ska_GetIDFromStringTable($2);
   // set shader fn
-  SurfShader.fnShaderName = (CTString)$6
+  SurfShader.fnShaderName = CTString($6)
 };
 
 shader_textures

@@ -798,7 +798,7 @@ void CTextureData::Read_t( CTStream *inFile)
         CTFileName fnTex = inFile->GetDescription();
         if( fnTex == fnBaseTexture) {
           // generate exception
-          ThrowF_t( TRANS("Texture \"%s\" has same name as its base texture."), (CTString&)fnTex);
+          ThrowF_t(TRANS("Texture \"%s\" has same name as its base texture."), fnTex.ConstData());
         } else {
           // obtain base texture
           td_ptdBaseTexture = _pTextureStock->Obtain_t( fnBaseTexture);
@@ -881,8 +881,8 @@ void CTextureData::Read_t( CTStream *inFile)
     }
     else
     {
-      ThrowF_t( TRANS("Unrecognisable chunk ID (\"%s\") found while reading texture \"%s\"."),
-                (char*)idChunk, (CTString&)inFile->GetDescription() );
+      ThrowF_t(TRANS("Unrecognisable chunk ID (\"%s\") found while reading texture \"%s\"."),
+               (char *)idChunk, inFile->GetDescription().ConstData());
     }
   }
   // until we didn't reach end of file
@@ -1013,7 +1013,7 @@ void CTextureData::Write_t( CTStream *outFile)   // throw char *
   if( td_ptdBaseTexture != NULL) {
     CTFileName fnTex = outFile->GetDescription();
     if( fnTex == td_ptdBaseTexture->GetName()) {
-      ThrowF_t( TRANS("Texture \"%s\" has same name as its base texture."), (CTString&)fnTex);
+      ThrowF_t(TRANS("Texture \"%s\" has same name as its base texture."), fnTex.ConstData());
     }
   }
 

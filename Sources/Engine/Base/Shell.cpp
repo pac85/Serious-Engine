@@ -786,10 +786,10 @@ void CShell::SetValue(const CTString &strName, const CTString &strValue)
     *(CTString*)pss->ss_pvValue = strValue;
     break;
   case STT_INDEX:
-    ((CTString&)strValue).ScanF("%d", (INDEX*)pss->ss_pvValue);
+    strValue.ScanF("%d", (INDEX *)pss->ss_pvValue);
     break;
   case STT_FLOAT:
-    ((CTString&)strValue).ScanF("%g", (FLOAT*)pss->ss_pvValue);
+    strValue.ScanF("%g", (FLOAT *)pss->ss_pvValue);
     break;
   default:
     ASSERT(FALSE);

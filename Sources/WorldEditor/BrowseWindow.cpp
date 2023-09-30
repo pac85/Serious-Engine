@@ -985,7 +985,7 @@ void CBrowseWindow::OpenDirectory( CVirtualTreeNode *pVTNDir)
           if( it->vtn_fnItem.FileExt() == ".tex")
           {
             // use base name and dimension for desription
-            it->vtn_strName = (CTString&)it->vtn_fnItem+" "+it->vtn_pTextureData->GetDescription();
+            it->vtn_strName = it->vtn_fnItem + " " + it->vtn_pTextureData->GetDescription();
           }
           // else description is just item's file name
           else

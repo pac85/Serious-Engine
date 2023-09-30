@@ -127,10 +127,10 @@ functions:
   void CreateTestModelInstance()
   {
     try {
-      m_miTest.AddMesh_t((CTString)"ModelsSKA\\Test\\Arm\\Arm.bm");
-      m_miTest.AddSkeleton_t((CTString)"ModelsSKA\\Test\\Arm\\Arm.bs");
-      m_miTest.AddAnimSet_t((CTString)"ModelsSKA\\Test\\Arm\\Arm.ba");
-      m_miTest.AddTexture_t((CTString)"ModelsSKA\\Test\\Arm\\Objects\\Arm.tex","Arm",NULL);
+      m_miTest.AddMesh_t(CTString("ModelsSKA\\Test\\Arm\\Arm.bm"));
+      m_miTest.AddSkeleton_t(CTString("ModelsSKA\\Test\\Arm\\Arm.bs"));
+      m_miTest.AddAnimSet_t(CTString("ModelsSKA\\Test\\Arm\\Arm.ba"));
+      m_miTest.AddTexture_t(CTString("ModelsSKA\\Test\\Arm\\Objects\\Arm.tex"), "Arm", NULL);
       m_miTest.AddColisionBox("Default",FLOAT3D(-0.5f,0.0f,-0.5f),FLOAT3D(0.5f,2.0f,0.5f));
     } catch (char *strErr) {
       FatalError(strErr);
@@ -145,19 +145,19 @@ functions:
     CModelInstance *pmi = GetModelInstance();
     try{
       // setup grunt solider
-      pmi->AddMesh_t((CTString)"ModelsSKA\\Enemies\\Grunt\\Grunt.bm");
-      pmi->AddSkeleton_t((CTString)"ModelsSKA\\Enemies\\Grunt\\Grunt.bs");
-      pmi->AddAnimSet_t((CTString)"ModelsSKA\\Enemies\\Grunt\\Grunt.ba");
-      pmi->AddTexture_t((CTString)"ModelsSKA\\Enemies\\Grunt\\Soldier.tex","Grunt",NULL);
+      pmi->AddMesh_t(CTString("ModelsSKA\\Enemies\\Grunt\\Grunt.bm"));
+      pmi->AddSkeleton_t(CTString("ModelsSKA\\Enemies\\Grunt\\Grunt.bs"));
+      pmi->AddAnimSet_t(CTString("ModelsSKA\\Enemies\\Grunt\\Grunt.ba"));
+      pmi->AddTexture_t(CTString("ModelsSKA\\Enemies\\Grunt\\Soldier.tex"), "Grunt", NULL);
       pmi->AddColisionBox("Default",FLOAT3D(-0.5f,0.0f,-0.5f),FLOAT3D(0.5f,2.0f,0.5f));
       
       // setup weapon
       CModelInstance *pmiFlamer = CreateModelInstance("Flamer");
-      pmiFlamer->AddMesh_t((CTString)"ModelsSKA\\Weapons\\Flamer\\Flamer.bm");
-      pmiFlamer->AddSkeleton_t((CTString)"ModelsSKA\\Weapons\\Flamer\\Flamer.bs");
-      pmiFlamer->AddAnimSet_t((CTString)"ModelsSKA\\Weapons\\Flamer\\Flamer.ba");
-      pmiFlamer->AddTexture_t((CTString)"ModelsSKA\\Weapons\\Flamer\\Flamer.tex","Flamer",NULL);
-      pmiFlamer->AddTexture_t((CTString)"ModelsSKA\\Enemies\\Grunt\\Lava04FX.tex","Lava04FX",NULL);
+      pmiFlamer->AddMesh_t(CTString("ModelsSKA\\Weapons\\Flamer\\Flamer.bm"));
+      pmiFlamer->AddSkeleton_t(CTString("ModelsSKA\\Weapons\\Flamer\\Flamer.bs"));
+      pmiFlamer->AddAnimSet_t(CTString("ModelsSKA\\Weapons\\Flamer\\Flamer.ba"));
+      pmiFlamer->AddTexture_t(CTString("ModelsSKA\\Weapons\\Flamer\\Flamer.tex"), "Flamer", NULL);
+      pmiFlamer->AddTexture_t(CTString("ModelsSKA\\Enemies\\Grunt\\Lava04FX.tex"), "Lava04FX", NULL);
       // Set flamer offset
       pmiFlamer->SetOffsetRot(ANGLE3D(0,0,180));
       // Attach flamer to grunt

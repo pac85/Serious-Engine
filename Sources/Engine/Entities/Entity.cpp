@@ -2368,8 +2368,7 @@ void CEntity::SetModel(const CTFileName &fnmModel)
       en_pmoModelObject->SetData_t(fnmDefault);
     // if failed
     } catch(char *strErrorDefault) {
-      FatalError(TRANS("Cannot load default model '%s':\n%s"),
-        (CTString&)fnmDefault, strErrorDefault);
+      FatalError(TRANS("Cannot load default model '%s':\n%s"), fnmDefault.ConstData(), strErrorDefault);
     }
   }
   UpdateSpatialRange();
@@ -2431,8 +2430,7 @@ BOOL CEntity::SetSkaModel(const CTString &fnmModel)
       en_pmiModelInstance = ParseSmcFile_t(fnmDefault);
     // if failed
     } catch(char *strErrorDefault) {
-      FatalError(TRANS("Cannot load default model '%s':\n%s"),
-        (CTString&)fnmDefault, strErrorDefault);
+      FatalError(TRANS("Cannot load default model '%s':\n%s"), fnmDefault.ConstData(), strErrorDefault);
     }
     // set colision info for default model
     SetSkaColisionInfo();
@@ -2488,8 +2486,7 @@ void CEntity::SetModelMainTexture(const CTFileName &fnmTexture)
       en_pmoModelObject->mo_toTexture.SetData_t(fnmDefault);
     // if failed
     } catch(char *strErrorDefault) {
-      FatalError(TRANS("Cannot load default texture '%s':\n%s"),
-        (CTString&)fnmDefault, strErrorDefault);
+      FatalError(TRANS("Cannot load default texture '%s':\n%s"), fnmDefault.ConstData(), strErrorDefault);
     }
   }
 }
@@ -2955,8 +2952,7 @@ void CEntity::PlaySound(CSoundObject &so, const CTFileName &fnmSound, SLONG slPl
       so.Play_t(fnmDefault, slPlayType);
     // if failed
     } catch(char *strErrorDefault) {
-      FatalError(TRANS("Cannot load default sound '%s':\n%s"),
-        (CTString&)fnmDefault, strErrorDefault);
+      FatalError(TRANS("Cannot load default sound '%s':\n%s"), fnmDefault.ConstData(), strErrorDefault);
     }
   }
 }

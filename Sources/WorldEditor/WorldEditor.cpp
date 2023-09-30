@@ -576,13 +576,10 @@ BOOL CWorldEditorApp::SubInitInstance()
     // load registry from the ini file
     CTString strCommand;
     strCommand.PrintF("regedit.exe -s \"%s%s\"",
-      (const CTString&)_fnmApplicationPath,
-      (const CTString&)CTString("Data\\Defaults\\WorldEditor.reg"));
+      _fnmApplicationPath.ConstData(), "Data\\Defaults\\WorldEditor.reg");
     system(strCommand);
 /*    _spawnlp(_P_WAIT, "regedit.exe", 
-      "-s",
-      (const CTString&)(_fnmApplicationPath+CTString("Data\\Defaults\\WorldEditor.reg")),
-      NULL);
+      "-s", (_fnmApplicationPath + "Data\\Defaults\\WorldEditor.reg").ConstData(), NULL);
     */
   }
 
@@ -2362,7 +2359,7 @@ void CWorldEditorApp::OnConvertWorlds()
       }
       else
       {
-        ThrowF_t( "Unsupported file format: %s", (CTString&)fnmExt);
+        ThrowF_t("Unsupported file format: %s", fnmExt.ConstData());
       }
     }
 
@@ -2376,7 +2373,7 @@ void CWorldEditorApp::OnConvertWorlds()
           bConvertError = TRUE;
         }
         // report error to file
-        strReport.PrintF( "File: %s\nHad error: %s\n", (CTString)fnmFile, strError);
+        strReport.PrintF("File: %s\nHad error: %s\n", fnmFile.ConstData(), strError);
 
         fsErrorFile.PutString_t( strReport);
         fsErrorFile.PutLine_t( "-----------------------------------------------");

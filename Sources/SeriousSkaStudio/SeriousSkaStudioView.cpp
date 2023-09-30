@@ -1346,8 +1346,8 @@ void CSeriousSkaStudioView::OnAddMeshlod()
   }
   strMeshList += "}\n";
 
-  CTFileName fnMeshList = (CTString)"Temp/mesh.aml";
-  CTFileName fnMeshBin = (CTString)"Temp/mesh.bm";
+  CTFileName fnMeshList = CTString("Temp/mesh.aml");
+  CTFileName fnMeshBin = CTString("Temp/mesh.bm");
 
   CMesh mshTemp;
   try
@@ -1436,8 +1436,8 @@ void CSeriousSkaStudioView::OnAddSkeletonlod()
   }
   strSkeletonList += "}\n";
 
-  CTFileName fnSklList = (CTString)"Temp/skeleton.asl";
-  CTFileName fnSklBin = (CTString)"Temp/skeleton.bs";
+  CTFileName fnSklList = CTString("Temp/skeleton.asl");
+  CTFileName fnSklBin = CTString("Temp/skeleton.bs");
   CSkeleton slTemp;
 
   try
@@ -1535,8 +1535,8 @@ void CSeriousSkaStudioView::OnAddAnimation()
   }
   strAnimSet += "}\n";
 
-  CTFileName fnAnimSetList = (CTString)"Temp/animset.aal";
-  CTFileName fnAnimSetBin = (CTString)"Temp/animset.ba";
+  CTFileName fnAnimSetList = CTString("Temp/animset.aal");
+  CTFileName fnAnimSetBin = CTString("Temp/animset.ba");
   CAnimSet asTemp;
 
   try
@@ -1676,7 +1676,7 @@ void CSeriousSkaStudioView::OnCreateAddTexture()
 {
 	CSeriousSkaStudioDoc *pDoc = GetDocument();
   CMainFrame* pMainFrame = STATIC_DOWNCAST(CMainFrame, AfxGetMainWnd());
-  CTFileName fn = (CTString)pMainFrame->CreateTexture();
+  CTFileName fn = pMainFrame->CreateTexture();
   if(fn!="") {
     AddTexture(fn);
     pDoc->MarkAsChanged();

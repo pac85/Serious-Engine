@@ -123,7 +123,7 @@ void InitStreams(void)
     LoadStringVar(CTString("DefaultMod.txt"), _fnmMod);
   }
 
-  CPrintF(TRANS("Current mod: %s\n"), _fnmMod==""?TRANS("<none>"):(CTString&)_fnmMod);
+  CPrintF(TRANS("Current mod: %s\n"), _fnmMod == "" ? TRANS("<none>") : _fnmMod.ConstData());
   // if there is a mod active
   if (_fnmMod!="") {
     // load mod's include/exclude lists
@@ -825,7 +825,7 @@ void CTStream::DictionaryPreload_t(void)
         fnm.fnm_pserPreloaded = _pModelStock->Obtain_t(fnm);
       }
     } catch (char *strError) {
-      CPrintF( TRANS("Cannot preload %s: %s\n"), (CTString&)fnm, strError);
+      CPrintF(TRANS("Cannot preload %s: %s\n"), fnm.ConstData(), strError);
     }
   }
 }
@@ -886,8 +886,7 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
   // if current thread has not enabled stream handling
   if (!_bThreadCanHandleStreams) {
     // error
-    ::ThrowF_t(TRANS("Cannot open file `%s', stream handling is not enabled for this thread"),
-      (CTString&)fnFileName);
+    ::ThrowF_t(TRANS("Cannot open file `%s', stream handling is not enabled for this thread"), fnFileName.ConstData());
   }
 
   // check parameters
@@ -931,8 +930,7 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
   // if openning operation was not successfull
   if(fstrm_pFile == NULL && fstrm_iZipHandle==-1) {
     // throw exception
-    Throw_t(TRANS("Cannot open file `%s' (%s)"), (CTString&)fnmFullFileName,
-      strerror(errno));
+    Throw_t(TRANS("Cannot open file `%s' (%s)"), fnmFullFileName.ConstData(), strerror(errno));
   }
 
   // if file opening was successfull, set stream description to file name
@@ -955,8 +953,7 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   // if current thread has not enabled stream handling
   if (!_bThreadCanHandleStreams) {
     // error
-    ::ThrowF_t(TRANS("Cannot create file `%s', stream handling is not enabled for this thread"),
-      (CTString&)fnFileNameAbsolute);
+    ::ThrowF_t(TRANS("Cannot create file `%s', stream handling is not enabled for this thread"), fnFileNameAbsolute.ConstData());
   }
 
   CTFileName fnmFullFileName;

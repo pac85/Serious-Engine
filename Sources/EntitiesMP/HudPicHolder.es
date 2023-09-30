@@ -52,7 +52,7 @@ components:
 
 functions:
   const CTString &GetDescription(void) const {
-    ((CTString&)m_strDescription).PrintF("%s", m_fnmPicture.FileName());
+    (CTString&)m_strDescription = m_fnmPicture.FileName();
     return m_strDescription;
   }
 

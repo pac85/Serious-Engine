@@ -2409,7 +2409,7 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
     try {
       // save screen shot as TGA
       iiImageInfo.SaveTGA_t( fnmScreenShot);
-      if( dem_iAnimFrame<0) CPrintF( TRANS("screen shot: %s\n"), (CTString&)fnmScreenShot);
+      if (dem_iAnimFrame < 0) CPrintF(TRANS("screen shot: %s\n"), fnmScreenShot.ConstData());
     }
     // if failed
     catch (char *strError) {

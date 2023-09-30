@@ -557,7 +557,7 @@ functions:
   const CTString &GetDescription(void) const {
     ((CTString&)m_strDescription).PrintF("-><none>");
     if (m_penMarker!=NULL) {
-      ((CTString&)m_strDescription).PrintF("->%s", m_penMarker->GetName());
+      ((CTString&)m_strDescription).PrintF("->%s", m_penMarker->GetName().ConstData());
     }
     return m_strDescription;
   }

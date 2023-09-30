@@ -318,8 +318,7 @@ BOOL CDlgCreateAnimatedTexture::OnInitDialog()
       if (iiImageInfo.GetGfxFileInfo_t(m_fnSourceFileName)==UNSUPPORTED_FILE)
       {
         // throw error
-        ThrowF_t("File '%s' has unsupported file format", 
-          (CTString&)(_fnmApplicationPath+m_fnSourceFileName));
+        ThrowF_t("File '%s' has unsupported file format", (_fnmApplicationPath + m_fnSourceFileName).ConstData());
       }
       // get dimensions
       m_pixSourceWidth = iiImageInfo.ii_Width;

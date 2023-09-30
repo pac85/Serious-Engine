@@ -117,7 +117,7 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
 
     include_stack_ptr++;
     yy_switch_to_buffer(yy_create_buffer( yyin, YY_BUF_SIZE ));
-    strCurentFileName = (CTString)strFileName;
+    strCurentFileName = CTString(strFileName);
     // try to remove app path from source file name
     try { strCurentFileName.RemoveApplicationPath_t(); }
     catch(char *){}

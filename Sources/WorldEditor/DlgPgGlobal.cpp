@@ -82,9 +82,7 @@ void CDlgPgGlobal::DoDataExchange(CDataExchange* pDX)
 
     if( theApp.m_ptdActiveTexture != NULL)
     {
-      m_strTextureInfo = 
-        (CTString&)theApp.m_ptdActiveTexture->GetName()+" "+
-        theApp.m_ptdActiveTexture->GetDescription();
+      m_strTextureInfo = theApp.m_ptdActiveTexture->GetName() + " " + theApp.m_ptdActiveTexture->GetDescription();
     }
   }
 

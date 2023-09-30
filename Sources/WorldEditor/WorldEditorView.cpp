@@ -5995,7 +5995,7 @@ void CWorldEditorView::EditCopy( BOOL bAlternative)
     try
     {
       // save world into clipboard file
-      pDoc->m_woWorld.Save_t( (CTString)"Temp\\ClipboardWorld.wld");
+      pDoc->m_woWorld.Save_t(CTString("Temp\\ClipboardWorld.wld"));
     }
     catch( char *strError)
     {
@@ -6059,7 +6059,7 @@ void CWorldEditorView::OnEditPaste()
     try
     {
       // load clipboard entity World
-      woEntityClipboard.Load_t( (CTString)"Temp\\ClipboardEntityWorld.wld");
+      woEntityClipboard.Load_t(CTString("Temp\\ClipboardEntityWorld.wld"));
     }
     catch( char *err_str)
     {
@@ -6117,13 +6117,13 @@ void CWorldEditorView::OnEditPaste()
   else if( theApp.m_ctLastCopyType == CT_WORLD)
   {
     // load world from clipboard file and start template CSG
-    pDoc->StartTemplateCSG( plPaste, (CTString)"Temp\\ClipboardWorld.wld");
+    pDoc->StartTemplateCSG(plPaste, CTString("Temp\\ClipboardWorld.wld"));
   }
   // if last copy operation was with selected sectors
   else if( theApp.m_ctLastCopyType == CT_SECTOR)
   {
     // load world from sectors clipboard file and start template CSG
-    pDoc->StartTemplateCSG( plPaste, (CTString)"Temp\\ClipboardSectorWorld.wld");
+    pDoc->StartTemplateCSG(plPaste, CTString("Temp\\ClipboardSectorWorld.wld"));
   }
 }
 
@@ -9198,7 +9198,7 @@ void CWorldEditorView::OnEditPasteAlternative()
     CWorldEditorDoc* pDoc = GetDocument();
     CPlacement3D plPaste = GetMouseInWorldPlacement();
     // load world from clipboard file and start template CSG
-    pDoc->StartTemplateCSG( plPaste, (CTString)"Temp\\ClipboardEntityWorld.wld");
+    pDoc->StartTemplateCSG(plPaste, CTString("Temp\\ClipboardEntityWorld.wld"));
     // update all views
     pDoc->UpdateAllViews( NULL);
   }
