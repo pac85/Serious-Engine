@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="UserMacros">
-    <BinDir>$(SolutionDir)Bin\$(Configuration).$(PlatformShortName)\</BinDir>
-    <ObjDir>$(SolutionDir)Obj\$(Configuration).$(PlatformShortName)\$(ProjectName)\</ObjDir>
+    <SE1Platform Condition="'$(PlatformShortName)'=='x86'  Or '$(PlatformShortName)'=='Win32'">x86</SE1Platform>
+    <SE1Platform Condition="'$(PlatformShortName)'!='x86' And '$(PlatformShortName)'!='Win32'">x64</SE1Platform>
+    <FullConfigurationName>$(Configuration).$(SE1Platform)</FullConfigurationName>
 
-    <DX8LibPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Lib\;</DX8LibPath>
-    <DX8InclPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Include\;</DX8InclPath>
+    <BinDir>$(SolutionDir)Bin\$(FullConfigurationName)\</BinDir>
+    <ObjDir>$(SolutionDir)Obj\$(FullConfigurationName)\$(ProjectName)\</ObjDir>
+
+    <DX8LibPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Lib\</DX8LibPath>
+    <DX8InclPath>$(SolutionDir)..\Tools.Win32\Libraries\DX8SDK\Include\</DX8InclPath>
 
     <SE1Exe>$(BinDir);$(SolutionDir)..\Tools.Win32;</SE1Exe>
     <SE1Incl>$(SolutionDir);$(SolutionDir)ThirdParty\;$(ProjectDir);$(DX8InclPath);</SE1Incl>
