@@ -175,7 +175,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       case CEntityProperty::EPT_FILENAME: {
         // skip FILENAME
         CTFileName fnmDummy;
-        istrm>>fnmDummy;
+        istrm.ReadFileName(fnmDummy);
         break;
                                           }
       // if it is FILENAMENODEP
@@ -305,7 +305,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       // if it is FILENAME
       case CEntityProperty::EPT_FILENAME:
         // read FILENAME
-        istrm>>PROPERTY(pepProperty->ep_slOffset, CTFileName);
+        istrm.ReadFileName(PROPERTY(pepProperty->ep_slOffset, CTFileName));
         if (PROPERTY(pepProperty->ep_slOffset, CTFileName)=="") {
           break;
         }
@@ -478,7 +478,7 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
       // if it is FILENAME
       case CEntityProperty::EPT_FILENAME:
         // write FILENAME
-        ostrm<<PROPERTY(epProperty.ep_slOffset, CTFileName);
+        ostrm.WriteFileName(PROPERTY(epProperty.ep_slOffset, CTFileName));
         break;
       // if it is FILENAMENODEP
       case CEntityProperty::EPT_FILENAMENODEP:

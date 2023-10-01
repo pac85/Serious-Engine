@@ -342,7 +342,7 @@ void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
 
   // Read terrain layer texture
   (*istrFile).ExpectID_t("TLTX");  // 'Terrain layer texture'
-  (*istrFile)>>fn;
+  istrFile->ReadFileName(fn);
   // Add texture to layer
   SetLayerTexture_t(fn);  
   // Read terrain layer mask
@@ -443,8 +443,7 @@ void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
 void CTerrainLayer::Write_t( CTStream *ostrFile)
 {
   (*ostrFile).WriteID_t("TLTX"); // 'Terrain layer texture'
-  const CTFileName &fn = tl_ptdTexture->GetName();
-  (*ostrFile)<<fn;
+  ostrFile->WriteFileName(tl_ptdTexture->GetName());
   // write terrain layer mask
   (*ostrFile).WriteID_t("TLMA"); // 'Terrain layer mask'
   (*ostrFile)<<tl_iMaskWidth;

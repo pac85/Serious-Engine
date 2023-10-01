@@ -70,7 +70,7 @@ void CThumbnailSettings::Read_t( CTStream *strFile)
 	*strFile>>ts_PaperColor;
 	*strFile>>ts_InkColor;
 	*strFile>>ts_IsWinBcgTexture;
-	*strFile>>ts_WinBcgTextureName;
+  strFile->ReadFileName(ts_WinBcgTextureName);
   ts_RenderPrefs.Read_t( strFile);
 }
 
@@ -88,7 +88,7 @@ void CThumbnailSettings::Write_t( CTStream *strFile)
 	*strFile<<ts_PaperColor;
 	*strFile<<ts_InkColor;
 	*strFile<<ts_IsWinBcgTexture;
-	*strFile<<ts_WinBcgTextureName;
+  strFile->WriteFileName(ts_WinBcgTextureName);
   ts_RenderPrefs.Write_t( strFile);
 }
 
@@ -618,7 +618,7 @@ void CAttachedModel::Read_t( CTStream *pstrmFile) // throw char *
   *pstrmFile >> am_strName;
   // this data is used no more
   CTFileName fnModel, fnDummy;
-  *pstrmFile >> fnModel;
+  pstrmFile->ReadFileName(fnModel);
   
   // new attached model format has saved index of animation
   if( pstrmFile->PeekID_t() == CChunkID("AMAN"))
@@ -628,7 +628,7 @@ void CAttachedModel::Read_t( CTStream *pstrmFile) // throw char *
   }
   else
   {
-    *pstrmFile >> fnDummy; // ex model's texture
+    pstrmFile->ReadFileName(fnDummy); // ex model's texture
   }
 
   try
@@ -653,7 +653,7 @@ void CAttachedModel::Write_t( CTStream *pstrmFile) // throw char *
 {
   *pstrmFile << am_bVisible;
   *pstrmFile << am_strName;
-  *pstrmFile << am_moAttachedModel.GetName();
+  pstrmFile->WriteFileName(am_moAttachedModel.GetName());
 
   // new attached model format has saved index of animation
   pstrmFile->WriteID_t( CChunkID("AMAN"));
@@ -678,7 +678,7 @@ void CAttachedSound::Read_t(CTStream *strFile)
 {
   *strFile>>as_bLooping;
   *strFile>>as_bPlaying;
-  *strFile>>as_fnAttachedSound;
+  strFile->ReadFileName(as_fnAttachedSound);
   *strFile>>as_fDelay;
 }
 
@@ -686,7 +686,7 @@ void CAttachedSound::Write_t(CTStream *strFile)
 {
   *strFile<<as_bLooping;
   *strFile<<as_bPlaying;
-  *strFile<<as_fnAttachedSound;
+  strFile->WriteFileName(as_fnAttachedSound);
   *strFile<<as_fDelay;
 }
 
@@ -707,7 +707,7 @@ void CEditModel::Read_t( CTStream *pFile) // throw char *
 
   for( i=0; i<iWorkingTexturesCt; i++)
   {
-    *pFile >> fnFileName;
+    pFile->ReadFileName(fnFileName);
     try
     {
       AddTexture_t( fnFileName, edm_md.md_Width, edm_md.md_Height);
@@ -730,7 +730,7 @@ void CEditModel::Read_t( CTStream *pFile) // throw char *
       if( ((1UL << i) & ulOldExistingPatches) != 0)
       {
         CTFileName fnPatchName;
-        *pFile >> fnPatchName;
+        pFile->ReadFileName(fnPatchName);
       }
     }
   }
@@ -820,19 +820,19 @@ void CEditModel::Read_t( CTStream *pFile) // throw char *
   // --- specular texture
   try {
     pFile->ExpectID_t( CChunkID( "FXTS"));
-    *pFile >> edm_fnSpecularTexture;
+    pFile->ReadFileName(edm_fnSpecularTexture);
   } catch( char *strError) { (void) strError; }
 
   // --- reflection texture
   try {
     pFile->ExpectID_t( CChunkID( "FXTR"));
-    *pFile >> edm_fnReflectionTexture;
+    pFile->ReadFileName(edm_fnReflectionTexture);
   } catch( char *strError) { (void) strError; }
 
   // --- bump texture
   try {
     pFile->ExpectID_t( CChunkID( "FXTB"));
-    *pFile >> edm_fnBumpTexture;
+    pFile->ReadFileName(edm_fnBumpTexture);
   } catch( char *strError) { (void) strError; }
 }
 
@@ -845,7 +845,7 @@ void CEditModel::Write_t( CTStream *pFile) // throw char *
 
   FOREACHINLIST( CTextureDataInfo, tdi_ListNode, edm_WorkingSkins, it)
   {
-    *pFile << it->tdi_FileName;
+    pFile->WriteFileName(it->tdi_FileName);
   }
 
   // CEditModel class has no patches in new patch data format
@@ -875,13 +875,13 @@ void CEditModel::Write_t( CTStream *pFile) // throw char *
   // save names of effect textures
   // --- specular texture
   pFile->WriteID_t( CChunkID( "FXTS"));
-  *pFile << edm_fnSpecularTexture;
+  pFile->WriteFileName(edm_fnSpecularTexture);
   // --- reflection texture
   pFile->WriteID_t( CChunkID( "FXTR"));
-  *pFile << edm_fnReflectionTexture;
+  pFile->WriteFileName(edm_fnReflectionTexture);
   // --- bump texture
   pFile->WriteID_t( CChunkID( "FXTB"));
-  *pFile << edm_fnBumpTexture;
+  pFile->WriteFileName(edm_fnBumpTexture);
 }
 //----------------------------------------------------------------------------------------------
 /*

@@ -81,7 +81,7 @@ void CFontData::Read_t( CTStream *inFile) // throw char *
 
   // read the filename of the corresponding texture file.
   inFile->ExpectID_t( CChunkID("FTTF"));
-  *inFile >> fd_fnTexture;
+  inFile->ReadFileName(fd_fnTexture);
   // read maximum width and height of all letters
   *inFile >> fd_pixCharWidth;
   *inFile >> fd_pixCharHeight;
@@ -107,7 +107,7 @@ void CFontData::Write_t( CTStream *outFile) // throw char *
   ASSERT( fd_ptdTextureData != NULL);
   // write the filename of the corresponding texture file
   outFile->WriteID_t( CChunkID("FTTF"));
-  *outFile << fd_fnTexture;
+  outFile->WriteFileName(fd_fnTexture);
   // write max letter width and height of all letters
   *outFile << fd_pixCharWidth;
   *outFile << fd_pixCharHeight;

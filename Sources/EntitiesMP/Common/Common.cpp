@@ -36,7 +36,7 @@ void CCompMessageID::Clear(void)
 
 void CCompMessageID::Read_t(CTStream &strm)    // throw char *
 {
-  strm>>cmi_fnmFileName;
+  strm.ReadFileName(cmi_fnmFileName);
   strm>>(INDEX&)cmi_cmtType;
   strm>>(INDEX&)cmi_bRead;
   cmi_ulHash = cmi_fnmFileName.GetHash();
@@ -44,7 +44,7 @@ void CCompMessageID::Read_t(CTStream &strm)    // throw char *
 
 void CCompMessageID::Write_t(CTStream &strm)   // throw char *
 {
-  strm<<cmi_fnmFileName;
+  strm.WriteFileName(cmi_fnmFileName);
   strm<<(INDEX&)cmi_cmtType;
   strm<<(INDEX&)cmi_bRead;
 }

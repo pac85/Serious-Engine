@@ -80,7 +80,7 @@ CSoundObject::CSoundObject()
   so_pCsdLink = NULL;
   so_psdcDecoder = NULL;
   so_penEntity = NULL;
-  so_slFlags = 0;
+  so_slFlags = SOF_NONE;
 
   // clear sound settings
   so_spNew.sp_fLeftVolume   = 1.0f;
@@ -360,7 +360,7 @@ void CSoundObject::Stop(void)
 }
 void CSoundObject::Stop_internal(void)
 {
-  // sound is stoped
+  // sound is stopped
   so_slFlags &= ~(SOF_PLAY|SOF_PREPARE|SOF_PAUSED);
 
   // destroy decoder if exists
@@ -459,7 +459,7 @@ void CSoundObject::Update3DEffects(void)
     ASSERT(fDistanceFactor>=0 && fDistanceFactor<=+1);
 
     // calculate volumetric influence
-    // NOTE: decoded sounds must be threated as volumetric
+    // NOTE: decoded sounds must be treated as volumetric
     FLOAT fNonVolumetric = 1.0f;
     FLOAT fNonVolumetricAdvanced = 1.0f;
     if( (so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder!=NULL) {
@@ -629,7 +629,7 @@ void CSoundObject::Read_t(CTStream *pistr)  // throw char *
 
   // load file name
   CTFileName  fnmSound;
-  *pistr >> fnmSound;
+  pistr->ReadFileName(fnmSound);
 
   // load object preferences
   *pistr >> iDroppedOut;
@@ -673,11 +673,7 @@ void CSoundObject::Write_t(CTStream *pistr) // throw char *
   int iDroppedOut=0;
 
   // save file name
-  if (so_pCsdLink!=NULL) {
-    *pistr << (so_pCsdLink->GetName());
-  } else {
-    *pistr << CTFILENAME("");
-  }
+  pistr->WriteFileName(so_pCsdLink != NULL ? so_pCsdLink->GetName() : CTString(""));
 
   // save object preferences
   *pistr << iDroppedOut;

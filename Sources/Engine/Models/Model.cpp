@@ -258,7 +258,7 @@ void CModelPatch::Read_t(CTStream *strFile)
 {
   *strFile >> mp_strName;
   CTFileName fnPatchTexture;
-  *strFile >> fnPatchTexture;
+  strFile->ReadFileName(fnPatchTexture);
   try
   {
     mp_toTexture.SetData_t( fnPatchTexture);
@@ -274,7 +274,7 @@ void CModelPatch::Read_t(CTStream *strFile)
 void CModelPatch::Write_t(CTStream *strFile)
 {
   *strFile << mp_strName;
-  *strFile << mp_toTexture.GetName();
+  strFile->WriteFileName(mp_toTexture.GetName());
   *strFile << mp_mexPosition;
   *strFile << mp_fStretch;
 }
@@ -1055,9 +1055,7 @@ void CModelData::PtrsToIndices()
  */
 void CModelData::IndicesToPtrs()
 {
-  INDEX i, j;
-
-  for( i=0; i<md_MipCt; i++)
+  for (INDEX i = 0; i < md_MipCt; i++)
   {
     FOREACHINSTATICARRAY(md_MipInfos[ i].mmpi_Polygons, ModelPolygon, it1)
     {
@@ -1460,7 +1458,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
       if( ((1UL << iPatch) & ulOldExistingPatches) != 0)
       {
         CTFileName fnPatchName;
-        *pFile >> fnPatchName;
+        pFile->ReadFileName(fnPatchName);
         try
         {
           md_mpPatches[ iPatch].mp_toTexture.SetData_t( fnPatchName);
@@ -2798,22 +2796,22 @@ void CModelObject::AutoSetTextures(void)
       {
         CChunkID idDummy = strmIni.GetID_t();
         strmIni >> ctDiffuseTextures;
-        strmIni >> fnDiffuse;
+        strmIni.ReadFileName(fnDiffuse);
       }
       else if( id == CChunkID("FXTR"))
       {
         CChunkID idDummy = strmIni.GetID_t();
-        strmIni >> fnReflection;
+        strmIni.ReadFileName(fnReflection);
       }
       else if( id == CChunkID("FXTS"))
       {
         CChunkID idDummy = strmIni.GetID_t();
-        strmIni >> fnSpecular;
+        strmIni.ReadFileName(fnSpecular);
       }
       else if( id == CChunkID("FXTB"))
       {
         CChunkID idDummy = strmIni.GetID_t();
-        strmIni >> fnBump;
+        strmIni.ReadFileName(fnBump);
       }
       else
       {
@@ -2864,7 +2862,7 @@ void CModelObject::AutoSetAttachments(void)
           strmIni >> bVisible;
           strmIni >> strName;
           // this data is used no more
-          strmIni >> fnModel;
+          strmIni.ReadFileName(fnModel);
 
           INDEX iAnimation = 0;
           // new attached model format has saved index of animation
@@ -2875,7 +2873,7 @@ void CModelObject::AutoSetAttachments(void)
           }
           else
           {
-            strmIni >> fnDummy; // ex model's texture
+            strmIni.ReadFileName(fnDummy); // ex model's texture
           }
 
           if( bVisible)

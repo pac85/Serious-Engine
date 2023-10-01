@@ -193,9 +193,9 @@ public:
   inline CTStream &operator<<(const BOOL   &b) { Write_t( &b, sizeof( b)); return *this; } // throw char *
 #endif
 
-  // CTFileName reading/writing
-  ENGINE_API friend CTStream &operator>>(CTStream &strmStream, CTFileName &fnmFileName);
-  ENGINE_API friend CTStream &operator<<(CTStream &strmStream, const CTFileName &fnmFileName);
+  // [Cecil] Serialize strings as filenames using special methods instead of friend operators
+  void ReadFileName(CTString &fnmFileName);
+  void WriteFileName(const CTString &fnmFileName);
 
   /* Put a line of text into stream. */
   virtual void PutLine_t(const char *strBuffer); // throw char *

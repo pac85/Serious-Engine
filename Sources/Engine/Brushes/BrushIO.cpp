@@ -230,7 +230,7 @@ void CBrushMip::Read_new_t( CTStream *pistrm) // throw char *
 void CBrushPolygonTexture::Read_t( CTStream &strm) // throw char *
 {
   CTFileName fnmTexture;
-  strm>>fnmTexture;
+  strm.ReadFileName(fnmTexture);
   SetTextureWithPossibleReplacing_t(bpt_toTexture, fnmTexture);
   // gather CRC of that texture
   if (bpt_toTexture.GetData()!=NULL) {
@@ -245,7 +245,7 @@ void CBrushPolygonTexture::Read_t( CTStream &strm) // throw char *
 }
 void CBrushPolygonTexture::Write_t( CTStream &strm)  // throw char *
 {
-  strm<<bpt_toTexture.GetName();
+  strm.WriteFileName(bpt_toTexture.GetName());
   strm.Write_t(&bpt_mdMapping, sizeof(bpt_mdMapping));
   strm<<s.bpt_ubScroll;
   strm<<s.bpt_ubBlend;
@@ -496,10 +496,10 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
     } else {
       // read textures
       CTFileName fnmTexture;
-      (*pistrm)>>fnmTexture;
+      pistrm->ReadFileName(fnmTexture);
       SetTextureWithPossibleReplacing_t(bpo.bpo_abptTextures[0].bpt_toTexture, fnmTexture);
       CTFileName fnmHyperTexture;
-      (*pistrm)>>fnmHyperTexture;
+      pistrm->ReadFileName(fnmHyperTexture);
       SetTextureWithPossibleReplacing_t(bpo.bpo_abptTextures[1].bpt_toTexture, fnmHyperTexture);
       // read polygon color
       (*pistrm)>>bpo.bpo_colColor;

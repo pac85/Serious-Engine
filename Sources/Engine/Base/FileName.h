@@ -62,11 +62,6 @@ public:
   inline const CTFileName &GetName(void) { return *this; };
 
   void ReadFromText_t(CTStream &strmStream, const CTString &strKeyword=""); // throw char *
-
-  /* Read from stream. */
-  ENGINE_API friend CTStream &operator>>(CTStream &strmStream, CTFileName &fnmFileName);
-  /* Write to stream. */
-  ENGINE_API friend CTStream &operator<<(CTStream &strmStream, const CTFileName &fnmFileName);
 };
 
 // macro for defining a literal filename in code (EFNM = exe-filename)

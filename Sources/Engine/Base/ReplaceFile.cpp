@@ -186,7 +186,7 @@ void ReadTextureObject_t(CTStream &strm, CTextureObject &to)
 {
   // read model texture data filename
   CTFileName fnTexture;
-  strm>>fnTexture;
+  strm.ReadFileName(fnTexture);
   // try to load texture
   for(;;) {
     try {
@@ -212,7 +212,7 @@ void SkipTextureObject_t(CTStream &strm)
 {
   // skip texture filename
   CTFileName fnDummy;
-  strm>>fnDummy;
+  strm.ReadFileName(fnDummy);
   // skip texture object
   CTextureObject toDummy;
   toDummy.Read_t(&strm);
@@ -221,11 +221,8 @@ void WriteTextureObject_t(CTStream &strm, CTextureObject &to)
 {
   // write model texture filename
   CTextureData *ptd = (CTextureData *)to.GetData();
-  if (ptd!=NULL) {
-    strm<<ptd->GetName();
-  } else {
-    strm<<CTFileName(CTString(""));
-  }
+  strm.WriteFileName(ptd != NULL ? ptd->GetName() : CTString(""));
+
   // write texture anim object
   to.Write_t(&strm);
 }
@@ -235,7 +232,7 @@ void ReadModelObject_t(CTStream &strm, CModelObject &mo)
 {
   // read model data filename
   CTFileName fnModel;
-  strm>>fnModel;
+  strm.ReadFileName(fnModel);
   // try to load model
   for(;;) {
     try {
@@ -303,7 +300,7 @@ void SkipModelObject_t(CTStream &strm)
   CTFileName fnDummy;
   CModelObject moDummy;
   // skip model data filename
-  strm>>fnDummy;
+  strm.ReadFileName(fnDummy);
   // skip model object
   moDummy.Read_t(&strm);
 
@@ -344,11 +341,8 @@ void WriteModelObject_t(CTStream &strm, CModelObject &mo)
 {
   // write model data filename
   CAnimData *pad = (CAnimData *)mo.GetData();
-  if (pad!=NULL) {
-    strm<<pad->GetName();
-  } else {
-    strm<<CTFileName(CTString(""));
-  }
+  strm.WriteFileName(pad != NULL ? pad->GetName() : CTString(""));
+
   // write model anim object
   mo.Write_t(&strm);
 
@@ -388,7 +382,7 @@ void WriteMeshInstances_t(CTStream &strm, CModelInstance &mi)
     CTFileName fnMesh = mshi.mi_pMesh->GetName();
     strm.WriteID_t("MESH");
     // write binary mesh file name
-    strm<<fnMesh;
+    strm.WriteFileName(fnMesh);
 
     strm.WriteID_t("MITS");
     // write texture instances for this mesh instance
@@ -402,7 +396,7 @@ void WriteMeshInstances_t(CTStream &strm, CModelInstance &mi)
       CTFileName fnTex = ptd->GetName();
       CTString strTexID = ska_GetStringFromTable(ti.GetID());
       strm.WriteID_t("TITX");
-      strm<<fnTex;
+      strm.WriteFileName(fnTex);
       strm<<strTexID;
     }
   }
@@ -416,8 +410,7 @@ void WriteSkeleton_t(CTStream &strm, CModelInstance &mi)
   strm.WriteID_t("SKEL");
   strm<<bHasSkeleton;
   if(bHasSkeleton) {
-    CTFileName fnSkeleton = pSkeleton->GetName();
-    strm<<fnSkeleton;
+    strm.WriteFileName(pSkeleton->GetName());
   }
 }
 
@@ -430,9 +423,8 @@ void WriteAnimSets(CTStream &strm, CModelInstance &mi)
   // for each animset in model instance
   for(INDEX ias=0;ias<ctas;ias++) {
     CAnimSet &as = mi.mi_aAnimSet[ias];
-    CTFileName fnAnimSet = as.GetName();
     // write animset binary file name
-    strm<<fnAnimSet;
+    strm.WriteFileName(as.GetName());
   }
 }
 void WriteColisionBoxes(CTStream &strm, CModelInstance &mi)
@@ -557,7 +549,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
     MeshInstance &mshi = mi.mi_aMeshInst[imshi];
     CTFileName fnMesh;
     // read binary mesh file name
-    strm>>fnMesh;
+    strm.ReadFileName(fnMesh);
     mshi.mi_pMesh = _pMeshStock->Obtain_t(fnMesh);
 
     // read texture instances for this mesh instance
@@ -570,7 +562,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
 
       CTFileName fnTex;
       CTString strTexID;
-      strm>>fnTex;
+      strm.ReadFileName(fnTex);
       strm>>strTexID;
 
       ti.SetName(strTexID);
@@ -585,7 +577,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   strm>>bHasSkeleton;
   if(bHasSkeleton) {
     CTFileName fnSkeleton;
-    strm>>fnSkeleton;
+    strm.ReadFileName(fnSkeleton);
     mi.mi_psklSkeleton = _pSkeletonStock->Obtain_t(fnSkeleton);
   }
 
@@ -595,7 +587,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   for(INDEX ias=0;ias<ctas;ias++) {
     // read animset binary file name
     CTFileName fnAnimSet;
-    strm>>fnAnimSet;
+    strm.ReadFileName(fnAnimSet);
     CAnimSet *pas = _pAnimSetStock->Obtain_t(fnAnimSet);
     mi.mi_aAnimSet.Add(pas);
   }
@@ -681,7 +673,7 @@ void ReadMeshInstances_t(CTStream &strm, CModelInstance &mi)
 
     strm.ExpectID_t("MESH");
     // read binary mesh file name
-    strm>>fnMesh;
+    strm.ReadFileName(fnMesh);
     mshi.mi_pMesh = _pMeshStock->Obtain_t(fnMesh);
 
     // read texture instances for this mesh instance
@@ -695,7 +687,7 @@ void ReadMeshInstances_t(CTStream &strm, CModelInstance &mi)
       strm.ExpectID_t("TITX");  // texture instance texture
       CTFileName fnTex;
       CTString strTexID;
-      strm>>fnTex;
+      strm.ReadFileName(fnTex);
       strm>>strTexID;
 
       ti.SetName(strTexID);
@@ -714,7 +706,7 @@ void ReadSkeleton_t(CTStream &strm, CModelInstance &mi)
   strm>>bHasSkeleton;
   if(bHasSkeleton) {
     CTFileName fnSkeleton;
-    strm>>fnSkeleton;
+    strm.ReadFileName(fnSkeleton);
     mi.mi_psklSkeleton = _pSkeletonStock->Obtain_t(fnSkeleton);
   }
 }
@@ -729,7 +721,7 @@ void ReadAnimSets_t(CTStream &strm, CModelInstance &mi)
   for(INDEX ias=0;ias<ctas;ias++) {
     // read animset binary file name
     CTFileName fnAnimSet;
-    strm>>fnAnimSet;
+    strm.ReadFileName(fnAnimSet);
     CAnimSet *pas = _pAnimSetStock->Obtain_t(fnAnimSet);
     mi.mi_aAnimSet.Add(pas);
   }
@@ -870,7 +862,7 @@ void ReadAnimObject_t(CTStream &strm, CAnimObject &ao)
 {
   // read anim data filename
   CTFileName fnAnim;
-  strm>>fnAnim;
+  strm.ReadFileName(fnAnim);
   // try to load anim
   for(;;) {
     try {
@@ -898,7 +890,7 @@ void SkipAnimObject_t(CTStream &strm)
   CTFileName fnDummy;
   CAnimObject aoDummy;
   // skip anim data filename
-  strm>>fnDummy;
+  strm.ReadFileName(fnDummy);
   // skip anim object
   aoDummy.Read_t(&strm);
 }
@@ -907,11 +899,8 @@ void WriteAnimObject_t(CTStream &strm, CAnimObject &ao)
 {
   // write anim data filename
   CAnimData *pad = (CAnimData *)ao.GetData();
-  if (pad!=NULL) {
-    strm<<pad->GetName();
-  } else {
-    strm<<CTFileName(CTString(""));
-  }
+  strm.WriteFileName(pad != NULL ? pad->GetName() : CTString(""));
+
   // write anim object
   ao.Write_t(&strm);
 }

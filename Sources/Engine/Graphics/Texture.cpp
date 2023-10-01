@@ -791,7 +791,7 @@ void CTextureData::Read_t( CTStream *inFile)
     {
       CTFileName fnBaseTexture;
       // read file name of base texture
-      *inFile >> fnBaseTexture;
+      inFile->ReadFileName(fnBaseTexture);
       // if there is base texture, obtain it
       if( fnBaseTexture != "") {
         // must not be the same as base texture
@@ -877,7 +877,7 @@ void CTextureData::Read_t( CTStream *inFile)
     else if( idChunk == CChunkID("DTLT"))
     { // skip chunk (this is here only for compatibility reasons)
       CTFileName fnTmp;
-      *inFile >> fnTmp;
+      inFile->ReadFileName(fnTmp);
     }
     else
     {
@@ -1107,7 +1107,7 @@ void CTextureData::Write_t( CTStream *outFile)   // throw char *
   { // write chunk containing base texture file name
     outFile->WriteID_t( CChunkID("BAST"));
     // write file name of base texture
-    *outFile << td_ptdBaseTexture->GetName();
+    outFile->WriteFileName(td_ptdBaseTexture->GetName());
   }
 }
 

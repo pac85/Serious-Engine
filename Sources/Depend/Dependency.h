@@ -45,11 +45,11 @@ public:
     return( diOther.di_fnFileName == di_fnFileName);};
   // read and write opertaions
   inline void Read_t( CTStream *istrFile) {
-    *istrFile >> di_fnFileName;
+    istrFile->ReadFileName(di_fnFileName);
     istrFile->Read_t( &di_tTime, sizeof( time_t));
   };
 	inline void Write_t( CTStream *ostrFile) const {
-    *ostrFile << di_fnFileName;
+    ostrFile->WriteFileName(di_fnFileName);
     ostrFile->Write_t( &di_tTime, sizeof( time_t));
   };
 };

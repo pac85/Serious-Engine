@@ -611,7 +611,8 @@ void CTStream::DictionaryWriteBegin_t(const CTFileName &fnmImportFrom, SLONG slI
     CopyDictionary(strmOther);
     // write dictionary importing data
     WriteID_t("DIMP");  // dictionary import
-    *this<<fnmImportFrom<<slImportOffset;
+    WriteFileName(fnmImportFrom);
+    *this << slImportOffset;
     // remember how many filenames were imported
     strm_ctDictionaryImported = strm_afnmDictionary.Count();
   }
@@ -649,7 +650,7 @@ void CTStream::DictionaryWriteEnd_t(void)
   // for each filename
   for(INDEX iFileName=strm_ctDictionaryImported; iFileName<ctFileNames; iFileName++) {
     // write it to disk
-    *this<<strm_afnmDictionary[iFileName];
+    WriteFileName(strm_afnmDictionary[iFileName]);
   }
   WriteID_t("DEND");  // dictionary end
 
@@ -694,7 +695,7 @@ void CTStream::ReadDictionary_intenal_t(SLONG slOffset)
     // for each filename
     for(INDEX iFileName=ctFileNamesOld; iFileName<ctFileNamesOld+ctFileNamesNew; iFileName++) {
       // read it
-      *this>>strm_afnmDictionary[iFileName];
+      ReadFileName(strm_afnmDictionary[iFileName]);
     }
   }
   ExpectID_t("DEND");  // dictionary end
@@ -727,7 +728,8 @@ SLONG CTStream::DictionaryReadBegin_t(void)
     // read dictionary importing data
     ExpectID_t("DIMP");  // dictionary import
     CTFileName fnmImportFrom;
-    *this>>fnmImportFrom>>slImportOffset;
+    ReadFileName(fnmImportFrom);
+    *this >> slImportOffset;
 
     // open that file
     CTFileStream strmOther;

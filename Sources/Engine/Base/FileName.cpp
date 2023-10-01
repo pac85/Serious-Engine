@@ -182,62 +182,55 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
   return bIsRelative;
 }
 
-/*
- * Read from stream.
- */
- CTStream &operator>>(CTStream &strmStream, CTFileName &fnmFileName)
+// [Cecil] Read string as a filename from a stream
+void CTStream::ReadFileName(CTString &fnmFileName)
 {
   // if dictionary is enabled
-  if (strmStream.strm_dmDictionaryMode == CTStream::DM_ENABLED) {
+  if (strm_dmDictionaryMode == CTStream::DM_ENABLED) {
     // read the index in dictionary
     INDEX iFileName;
-    strmStream>>iFileName;
+    *this >> iFileName;
     // get that file from the dictionary
-    fnmFileName = strmStream.strm_afnmDictionary[iFileName];
+    fnmFileName = strm_afnmDictionary[iFileName];
 
   // if dictionary is processing or not active
   } else {
     char strTag[] = "_FNM"; strTag[0] = 'D';  // must create tag at run-time!
     // skip dependency catcher header
-    strmStream.ExpectID_t(strTag);    // data filename
+    ExpectID_t(strTag);
+
     // read the string
-    strmStream>>(CTString &)fnmFileName;
-    fnmFileName.fnm_pserPreloaded = NULL;
+    *this >> fnmFileName;
   }
+};
 
-  return strmStream;
-}
-
-/*
- * Write to stream.
- */
- CTStream &operator<<(CTStream &strmStream, const CTFileName &fnmFileName)
+// [Cecil] Write string as a filename into a stream
+void CTStream::WriteFileName(const CTString &fnmFileName)
 {
   // if dictionary is enabled
-  if (strmStream.strm_dmDictionaryMode == CTStream::DM_ENABLED) {
+  if (strm_dmDictionaryMode == CTStream::DM_ENABLED) {
     // try to find the filename in dictionary
-    CTFileName *pfnmExisting = strmStream.strm_ntDictionary.Find(fnmFileName);
+    CTFileName *pfnmExisting = strm_ntDictionary.Find(fnmFileName);
     // if not existing
     if (pfnmExisting==NULL) {
       // add it
-      pfnmExisting = &strmStream.strm_afnmDictionary.Push();
+      pfnmExisting = &strm_afnmDictionary.Push();
       *pfnmExisting = fnmFileName;
-      strmStream.strm_ntDictionary.Add(pfnmExisting);
+      strm_ntDictionary.Add(pfnmExisting);
     }
     // write its index
-    strmStream<<strmStream.strm_afnmDictionary.Index(pfnmExisting);
+    *this << strm_afnmDictionary.Index(pfnmExisting);
 
   // if dictionary is processing or not active
   } else {
     char strTag[] = "_FNM"; strTag[0] = 'D';  // must create tag at run-time!
     // write dependency catcher header
-    strmStream.WriteID_t(strTag);     // data filename
-    // write the string
-    strmStream<<(CTString &)fnmFileName;
-  }
+    WriteID_t(strTag);
 
-  return strmStream;
-}
+    // write the string
+    *this << fnmFileName;
+  }
+};
 
 void CTFileName::ReadFromText_t(CTStream &strmStream,
                                 const CTString &strKeyword) // throw char *

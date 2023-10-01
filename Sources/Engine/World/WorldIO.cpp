@@ -316,8 +316,12 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
     (*istr)>>strBackgroundTexture;   // saved as string to bypass dependency catcher
     // skip the 6 dummy texture names used for dependencies
     CTFileName fnmDummy;
-    (*istr)>>fnmDummy>>fnmDummy>>fnmDummy
-           >>fnmDummy>>fnmDummy>>fnmDummy;
+    istr->ReadFileName(fnmDummy);
+    istr->ReadFileName(fnmDummy);
+    istr->ReadFileName(fnmDummy);
+    istr->ReadFileName(fnmDummy);
+    istr->ReadFileName(fnmDummy);
+    istr->ReadFileName(fnmDummy);
   }
 
   // if backdrop image data is saved here
@@ -364,7 +368,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   // for each entity class
   {for(INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
     // load filename
-    (*istr)>>cecClasses[iEntityClass];
+    istr->ReadFileName(cecClasses[iEntityClass]);
   }}
 
   /* NOTE: Entities must be loaded in two passes, since all entities must be created
@@ -478,7 +482,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   // for each entity class
   {for(INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
     // load filename
-    (*istr)>>cecClasses[iEntityClass];
+    istr->ReadFileName(cecClasses[iEntityClass]);
   }}
 
   /* NOTE: Entities must be loaded in two passes, since all entities must be created
@@ -611,7 +615,8 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
     // read entity class and entity placement
     CTFileName fnmClass;
     CPlacement3D plPlacement;
-    (*istr)>>fnmClass>>plPlacement;
+    istr->ReadFileName(fnmClass);
+    *istr >> plPlacement;
     // create an entity of that class
     CEntity *penNew = CreateEntity_t(plPlacement, fnmClass);
     // adjust id if needed
@@ -772,7 +777,9 @@ void CWorld::WriteState_t( CTStream *ostr, BOOL bImportDictionary /* = FALSE */)
   {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
     CEntity &en = *iten;
     // write the id, class and its placement
-    (*ostr)<<en.en_ulID<<en.en_pecClass->GetName()<<en.en_plPlacement;
+    *ostr << en.en_ulID;
+    ostr->WriteFileName(en.en_pecClass->GetName());
+    *ostr << en.en_plPlacement;
   }}
   // for each entity
   {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {

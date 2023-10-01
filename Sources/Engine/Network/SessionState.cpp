@@ -348,7 +348,7 @@ void CSessionState::Start_AtClient_t(INDEX ctLocalPlayers)     // throw char *
     strmMessage>>ses_strMOTD;
     // get info for creating default state
     CTFileName fnmWorld;
-    strmMessage>>fnmWorld;
+    strmMessage.ReadFileName(fnmWorld);
     ULONG ulSpawnFlags;
     strmMessage>>ulSpawnFlags;
     UBYTE aubProperties[NET_MAXSESSIONPROPERTIES];
@@ -1637,7 +1637,7 @@ void CSessionState::ReadWorldAndState_t(CTStream *pstr)   // throw char *
   ASSERT(!bNeedsReinit);
 
   // read world filename from stream
-  (*pstr)>>_pNetwork->ga_fnmWorld;
+  pstr->ReadFileName(_pNetwork->ga_fnmWorld);
 
   if (CTFileName(pstr->GetDescription()).FileExt()==".dem" &&
     GetFileTimeStamp_t(pstr->GetDescription())<=GetFileTimeStamp_t(_pNetwork->ga_fnmWorld)) {
@@ -1779,7 +1779,7 @@ void CSessionState::WriteWorldAndState_t(CTStream *pstr)   // throw char *
   _pNetwork->WriteVersion_t(*pstr);
 
   // write world filename to stream
-  (*pstr)<<_pNetwork->ga_fnmWorld;
+  pstr->WriteFileName(_pNetwork->ga_fnmWorld);
 
   // write world situation
   _pNetwork->ga_World.LockAll();
