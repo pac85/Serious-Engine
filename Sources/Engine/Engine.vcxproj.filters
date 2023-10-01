@@ -718,6 +718,9 @@
     <ClCompile Include="OS\DynamicLibraries.cpp">
       <Filter>Source Files\OS</Filter>
     </ClCompile>
+    <ClCompile Include="OS\FileSystem.cpp">
+      <Filter>Source Files\OS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Anim.h">
@@ -1315,6 +1318,9 @@
       <Filter>Header Files\OS Headers</Filter>
     </ClInclude>
     <ClInclude Include="OS\PlatformTypes.h">
+      <Filter>Header Files\OS Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="OS\FileSystem.h">
       <Filter>Header Files\OS Headers</Filter>
     </ClInclude>
   </ItemGroup>

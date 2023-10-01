@@ -41,7 +41,6 @@ public:
 };
 
 extern CDynamicStackArray<CTFileName> _afnmNoCRC;
-extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnm);
 
 #ifndef SE_INCL_CRCTABLE_CPP
 #define SE_INCL_CRCTABLE_CPP

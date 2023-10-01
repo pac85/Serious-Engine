@@ -395,6 +395,7 @@
     <ClCompile Include="Graphics\TextureRender.cpp" />
     <ClCompile Include="Graphics\ViewPort.cpp" />
     <ClCompile Include="OS\DynamicLibraries.cpp" />
+    <ClCompile Include="OS\FileSystem.cpp" />
     <ClCompile Include="Sound\SoundData.cpp" />
     <ClCompile Include="Sound\SoundDecoder.cpp" />
     <ClCompile Include="Sound\SoundLibrary.cpp" />
@@ -715,6 +716,7 @@
     <ClInclude Include="Graphics\TextureEffects.h" />
     <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Graphics\ViewPort.h" />
+    <ClInclude Include="OS\FileSystem.h" />
     <ClInclude Include="OS\OS.h" />
     <ClInclude Include="OS\PlatformSpecific.h" />
     <ClInclude Include="OS\PlatformTypes.h" />

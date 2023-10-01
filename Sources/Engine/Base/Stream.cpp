@@ -100,8 +100,12 @@ static BOOL LoadFileList(CDynamicStackArray<CTFileName> &afnm, const CTFileName 
   }
 }
 
-extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnm)
+// [Cecil] Makes a string copy of the path to match
+BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, CTString fnm)
 {
+  // [Cecil] Fix slashes for consistency
+  fnm.ReplaceChar('/', '\\');
+
   for(INDEX i=0; i<afnm.Count(); i++) {
     if (fnm.Matches(afnm[i]) || fnm.HasPrefix(afnm[i])) {
       return TRUE;
@@ -109,6 +113,31 @@ extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileNa
   }
   return FALSE;
 }
+
+// [Cecil] Load ZIP packages under an absolute directory that match a filename mask
+static void LoadPackages(const CTString &strDirectory, const CTString &strMatchFiles) {
+  FileSystem::Search search;
+  CTString fnmBasePath = (strDirectory + strMatchFiles);
+
+#if !SE1_WIN
+  // Fix path slashes
+  fnmBasePath.ReplaceChar('\\', '/');
+#endif
+
+  // Find first file in the directory
+  BOOL bOK = search.FindFirst(fnmBasePath.ConstData());
+
+  while (bOK) {
+    const char *strFile = search.GetName();
+
+    // Add file to the active set if the name matches the mask
+    if (FileSystem::PathMatches(strFile, strMatchFiles)) {
+      UNZIPAddArchive(strDirectory + strFile);
+    }
+
+    bOK = search.FindNext();
+  }
+};
 
 static CTFileName _fnmApp;
 
@@ -155,67 +184,23 @@ void InitStreams(void)
   CPrintF(TRANS("Loading group files...\n"));
 
   // for each group file in base directory
-  struct _finddata_t c_file;
-  INT_PTR hFile;
-  hFile = _findfirst((_fnmApplicationPath + "*.gro").ConstData(), &c_file);
-  BOOL bOK = (hFile!=-1);
-  while(bOK) {
-    if (CTString(c_file.name).Matches("*.gro")) {
-      // add it to active set
-      UNZIPAddArchive(_fnmApplicationPath+c_file.name);
-    }
-    bOK = _findnext(hFile, &c_file)==0;
-  }
-  _findclose( hFile );
+  LoadPackages(_fnmApplicationPath, "*.gro");
 
   // if there is a mod active
   if (_fnmMod!="") {
     // for each group file in mod directory
-    struct _finddata_t c_file;
-    INT_PTR hFile;
-    hFile = _findfirst((_fnmApplicationPath + _fnmMod + "*.gro").ConstData(), &c_file);
-    BOOL bOK = (hFile!=-1);
-    while(bOK) {
-      if (CTString(c_file.name).Matches("*.gro")) {
-        // add it to active set
-        UNZIPAddArchive(_fnmApplicationPath+_fnmMod+c_file.name);
-      }
-      bOK = _findnext(hFile, &c_file)==0;
-    }
-    _findclose( hFile );
+    LoadPackages(_fnmApplicationPath + _fnmMod, "*.gro");
   }
 
   // if there is a CD path
   if (_fnmCDPath!="") {
     // for each group file on the CD
-    struct _finddata_t c_file;
-    INT_PTR hFile;
-    hFile = _findfirst((_fnmCDPath + "*.gro").ConstData(), &c_file);
-    BOOL bOK = (hFile!=-1);
-    while(bOK) {
-      if (CTString(c_file.name).Matches("*.gro")) {
-        // add it to active set
-        UNZIPAddArchive(_fnmCDPath+c_file.name);
-      }
-      bOK = _findnext(hFile, &c_file)==0;
-    }
-    _findclose( hFile );
+    LoadPackages(_fnmCDPath, "*.gro");
 
     // if there is a mod active
     if (_fnmMod!="") {
       // for each group file in mod directory
-      struct _finddata_t c_file;
-      INT_PTR hFile;
-      hFile = _findfirst((_fnmCDPath + _fnmMod + "*.gro").ConstData(), &c_file);
-      BOOL bOK = (hFile!=-1);
-      while(bOK) {
-        if (CTString(c_file.name).Matches("*.gro")) {
-          // add it to active set
-          UNZIPAddArchive(_fnmCDPath+_fnmMod+c_file.name);
-        }
-        bOK = _findnext(hFile, &c_file)==0;
-      }
-      _findclose( hFile );
+      LoadPackages(_fnmCDPath + _fnmMod, "*.gro");
     }
   }
 

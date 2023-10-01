@@ -348,6 +348,9 @@ public:
   virtual BOOL IsSeekable(void);
 };
 
+// [Cecil] Exported from the engine; makes a string copy of the path to match
+ENGINE_API BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, CTString fnm);
+
 // Test if a file exists.
 ENGINE_API BOOL FileExists(const CTFileName &fnmFile);
 // Test if a file exists for writing. 

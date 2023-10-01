@@ -79,6 +79,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Registry.h>
 #include <Engine/Base/IFeel.h>
 
+// [Cecil] File system interface
+#include <Engine/OS/FileSystem.h>
+
 #include <Engine/Entities/EntityClass.h>
 #include <Engine/Entities/EntityCollision.h>
 #include <Engine/Entities/EntityProperties.h>

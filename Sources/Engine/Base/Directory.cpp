@@ -18,16 +18,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/Unzip.h>
 #include <Engine/Templates/DynamicStackArray.cpp>
-#include <io.h>
 
 extern CDynamicStackArray<CTFileName> _afnmBaseBrowseInc;
 extern CDynamicStackArray<CTFileName> _afnmBaseBrowseExc;
-
-class CDirToRead {
-public:
-  CListNode dr_lnNode;
-  CTString dr_strDir;
-};
 
 int qsort_CompareCTFileName(const void *elem1, const void *elem2 )
 {
@@ -36,23 +29,24 @@ int qsort_CompareCTFileName(const void *elem1, const void *elem2 )
   return strcmp(fnm1.ConstData(), fnm2.ConstData());
 }
 
-extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnm);
-
-void FillDirList_internal(const CTFileName &fnmBasePath,
-  CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnmDir, const CTString &strPattern, BOOL bRecursive,
+void FillDirList_internal(CTFileName fnmBasePath,
+  CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnmDir, CTString strPattern, BOOL bRecursive,
   CDynamicStackArray<CTFileName> *pafnmInclude, CDynamicStackArray<CTFileName> *pafnmExclude)
 {
+#if !SE1_WIN
+  // [Cecil] Fix path slashes
+  fnmBasePath.ReplaceChar('\\', '/');
+#endif
+
   // add the directory to list of directories to search
   CListHead lhDirs;
-  CDirToRead *pdrFirst = new CDirToRead;
-  pdrFirst->dr_strDir = fnmDir;
-  lhDirs.AddTail(pdrFirst->dr_lnNode);
+  new FileSystem::DirToRead(fnmDir, lhDirs);
 
   // while the list of directories is not empty
   while (!lhDirs.IsEmpty()) {
     // take the first one
-    CDirToRead *pdr = LIST_HEAD(lhDirs, CDirToRead, dr_lnNode);
-    CTFileName fnmDir = pdr->dr_strDir;
+    FileSystem::DirToRead *pdr = LIST_HEAD(lhDirs, FileSystem::DirToRead, lnInList);
+    CTString fnmDir = pdr->strDir;
     delete pdr;
 
     // if the dir is not allowed
@@ -63,38 +57,35 @@ void FillDirList_internal(const CTFileName &fnmBasePath,
     }
     
     // start listing the directory
-    struct _finddata_t c_file; INT_PTR hFile;
-    hFile = _findfirst((fnmBasePath + fnmDir + "*").ConstData(), &c_file);
-    
-    // for each file in the directory
-    for (
-      BOOL bFileExists = hFile!=-1; 
-      bFileExists; 
-      bFileExists = _findnext( hFile, &c_file )==0) {
+    FileSystem::Search search;
+    BOOL bOK = search.FindFirst((fnmBasePath + fnmDir + "*").ConstData());
 
-      // if dummy dir (this dir, parent dir, or any dir starting with '.')
-      if (c_file.name[0]=='.') {
-        // skip it
+    // for each file in the directory
+    while (bOK) {
+      // Skip dummy directories (including parent) and files
+      if (search.IsDummy()) {
+        bOK = search.FindNext();
         continue;
       }
 
       // get the file's filepath
-      CTFileName fnm = fnmDir+c_file.name;
+      CTString fnm = fnmDir + search.GetName();
 
       // if it is a directory
-      if (c_file.attrib&_A_SUBDIR) {
-        // if recursive reading
+      if (FileSystem::IsDirectory((fnmBasePath + fnm).ConstData())) {
+        // Search directories recursively
         if (bRecursive) {
-          // add it to the list of directories to search
-          CDirToRead *pdrNew = new CDirToRead;
-          pdrNew->dr_strDir = fnm+"\\";
-          lhDirs.AddTail(pdrNew->dr_lnNode);
+          new FileSystem::DirToRead(fnm + "\\", lhDirs);
         }
-      // if it matches the pattern
-      } else if (strPattern=="" || fnm.Matches(strPattern)) {
-        // add that file
-        afnm.Push() = fnm;
+
+      // Simply add the file if it matches the pattern
+      } else {
+        if (strPattern == "" || FileSystem::PathMatches(fnm, strPattern)) {
+          afnm.Push() = fnm;
+        }
       }
+
+      bOK = search.FindNext();
     }
   }
 }
@@ -143,9 +134,8 @@ ENGINE_API void MakeDirList(
       }
     }
 
-    // if doesn't match pattern
-    if (strPattern!="" && !fnm.Matches(strPattern)) {
-      // skip it
+    // Skip if doesn't match the pattern
+    if (strPattern != "" && !FileSystem::PathMatches(fnm, strPattern)) {
       continue;
     }
 
