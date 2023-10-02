@@ -17,6 +17,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "FileSystem.h"
 
+#if !SE1_WIN
+  #include <sys/stat.h>
+#endif
+
 FileSystem::Search::Search()
 {
 #if SE1_WIN
@@ -101,8 +105,8 @@ BOOL FileSystem::Exists(const char *strFilename)
   return FALSE;
 
 #else
-  stat s;
-  return (stat(fname, &s) != -1);
+  struct stat s;
+  return (stat(strFilename, &s) != -1);
 #endif
 };
 
@@ -114,8 +118,8 @@ BOOL FileSystem::IsDirectory(const char *strFilename)
   return (dwAttrib != -1 && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 
 #else
-  stat s;
-  if (stat(fname, &s) == -1) return FALSE;
+  struct stat s;
+  if (stat(strFilename, &s) == -1) return FALSE;
 
   return (S_ISDIR(s.st_mode) ? TRUE : FALSE);
 #endif
