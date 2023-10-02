@@ -350,14 +350,19 @@ CTStream &operator>>(CTStream &strmStream, CTString &strString)
   return strmStream;
 }
 
-
-void CTString::ReadFromText_t(CTStream &strmStream,
-                              const CTString &strKeyword="") // throw char *
+// [Cecil] Read filename flag
+void CTString::ReadFromText_t(CTStream &strmStream, const CTString &strKeyword, BOOL bFileName)
 {
   ASSERT(IsValid());
 
   // keyword must be present
   strmStream.ExpectKeyword_t(strKeyword);
+
+  // [Cecil] Expect dependency keyword before the filename
+  if (bFileName) {
+    char strTag[] = "_FNM "; strTag[0] = 'T'; // must create tag at run-time!
+    strmStream.ExpectKeyword_t(strTag);
+  }
 
   // read the string from the file
   char str[1024];
@@ -431,7 +436,7 @@ void CTString::ReadUntilEOF_t(CTStream &strmFile)  // throw char *
 }
 
 
-void CTString::Load_t(const class CTFileName &fnmFile)  // throw char *
+void CTString::Load_t(const CTString &fnmFile)  // throw char *
 {
   ASSERT(IsValid());
 
@@ -444,7 +449,7 @@ void CTString::Load_t(const class CTFileName &fnmFile)  // throw char *
 }
 
 
-void CTString::LoadKeepCRLF_t(const class CTFileName &fnmFile)  // throw char *
+void CTString::LoadKeepCRLF_t(const CTString &fnmFile)  // throw char *
 {
   ASSERT(IsValid());
 
@@ -466,7 +471,7 @@ void CTString::LoadKeepCRLF_t(const class CTFileName &fnmFile)  // throw char *
 }
 
 /* Save an entire string into a text file. */
-void CTString::Save_t(const class CTFileName &fnmFile)  // throw char *
+void CTString::Save_t(const CTString &fnmFile)  // throw char *
 {
   // open the file for writing
   CTFileStream strmFile;
@@ -474,7 +479,7 @@ void CTString::Save_t(const class CTFileName &fnmFile)  // throw char *
   // save the string to the file
   strmFile.PutString_t(str_String);
 }
-void CTString::SaveKeepCRLF_t(const class CTFileName &fnmFile)  // throw char *
+void CTString::SaveKeepCRLF_t(const CTString &fnmFile)  // throw char *
 {
   // open the file for writing
   CTFileStream strmFile;
@@ -693,7 +698,7 @@ BOOL CTString::Matches(const char *strOther) const
 
 
 // variable management functions
-void CTString::LoadVar(const class CTFileName &fnmFile)
+void CTString::LoadVar(const CTString &fnmFile)
 {
   try {
     CTString str;
@@ -704,7 +709,7 @@ void CTString::LoadVar(const class CTFileName &fnmFile)
   }
 }
 
-void CTString::SaveVar(const class CTFileName &fnmFile)
+void CTString::SaveVar(const CTString &fnmFile)
 {
   try {
     Save_t(fnmFile);

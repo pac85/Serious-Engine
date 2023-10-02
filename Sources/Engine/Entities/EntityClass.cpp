@@ -274,7 +274,7 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
 {
   // read the dll filename and class name from the stream
   CTFileName fnmDLL;
-  fnmDLL.ReadFromText_t(*istr, "Package: ");
+  fnmDLL.ReadFromText_t(*istr, "Package: ", TRUE);
   CTString strClassName;
   strClassName.ReadFromText_t(*istr, "Class: ");
 

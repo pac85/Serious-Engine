@@ -26,46 +26,40 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Get directory part of a filename.
  */
-CTFileName CTFileName::FileDir() const
+CTString CTString::FileDir() const
 {
   ASSERT(IsValid());
 
   // make a temporary copy of string
-  CTFileName strPath(*this);
+  CTString strPath(*this);
   // find last backlash in it
   char *pPathBackSlash = strrchr(strPath.Data(), '\\');
   // if there is no backslash
   if( pPathBackSlash == NULL) {
     // return emptystring as directory
-    return( CTFileName(""));
+    return "";
   }
   // set end of string after where the backslash was
-  pPathBackSlash[1] = 0;
+  pPathBackSlash[1] = '\0';
   // return a copy of temporary string
   return strPath;
-}
-
-CTFileName &CTFileName::operator=(const char *strCharString)
-{
-  ASSERTALWAYS( "Use CTFILENAME for conversion from char *!");
-  return *this;
 }
 
 /*
  * Get name part of a filename.
  */
-CTFileName CTFileName::FileName() const
+CTString CTString::FileName() const
 {
   ASSERT(IsValid());
 
   // make a temporary copy of string
-  CTFileName strPath(*this);
+  CTString strPath(*this);
   // find last dot in it
   char *pDot = strrchr(strPath.Data(), '.');
   // if there is a dot
   if( pDot != NULL) {
     // set end of string there
-    pDot[0] = 0;
+    pDot[0] = '\0';
   }
 
   // find last backlash in what's left
@@ -76,13 +70,13 @@ CTFileName CTFileName::FileName() const
     return strPath;
   }
   // return a copy of temporary string, starting after the backslash
-  return( CTFileName( pBackSlash+1));
+  return CTString(pBackSlash + 1);
 }
 
 /*
  * Get extension part of a filename.
  */
-CTFileName CTFileName::FileExt() const
+CTString CTString::FileExt() const
 {
   ASSERT(IsValid());
 
@@ -91,13 +85,13 @@ CTFileName CTFileName::FileExt() const
   // if there is no dot
   if( pExtension == NULL) {
     // return no extension
-    return( CTFileName(""));
+    return "";
   }
   // return a copy of the extension part, together with the dot
-  return( CTFileName( pExtension));
+  return pExtension;
 }
 
-CTFileName CTFileName::NoExt() const
+CTString CTString::NoExt() const
 {
   return FileDir()+FileName();
 }
@@ -115,7 +109,7 @@ static INDEX GetSlashPosition(const char *pszString)
 /*
  * Set path to the absolute path, taking \.. and /.. into account.
  */
-void CTFileName::SetAbsolutePath(void)
+void CTString::SetAbsolutePath(void)
 {
   // Collect path parts
   CTString strRemaining(*this);
@@ -170,9 +164,9 @@ void CTFileName::SetAbsolutePath(void)
 /*
  * Remove application path from a file name and returns TRUE if it's a relative path.
  */
-BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
+BOOL CTString::RemoveApplicationPath_t(void) // throws char *
 {
-  CTFileName fnmApp = _fnmApplicationPath;
+  CTString fnmApp = _fnmApplicationPath;
   fnmApp.SetAbsolutePath();
   // remove the path string from beginning of the string
   BOOL bIsRelative = RemovePrefix(fnmApp);
@@ -210,7 +204,7 @@ void CTStream::WriteFileName(const CTString &fnmFileName)
   // if dictionary is enabled
   if (strm_dmDictionaryMode == CTStream::DM_ENABLED) {
     // try to find the filename in dictionary
-    CTFileName *pfnmExisting = strm_ntDictionary.Find(fnmFileName);
+    CTString *pfnmExisting = strm_ntDictionary.Find(fnmFileName);
     // if not existing
     if (pfnmExisting==NULL) {
       // add it
@@ -231,23 +225,3 @@ void CTStream::WriteFileName(const CTString &fnmFileName)
     *this << fnmFileName;
   }
 };
-
-void CTFileName::ReadFromText_t(CTStream &strmStream,
-                                const CTString &strKeyword) // throw char *
-{
-  ASSERT(IsValid());
-
-  char strTag[] = "_FNM "; strTag[0] = 'T';  // must create tag at run-time!
-  // keyword must be present
-  strmStream.ExpectKeyword_t(strKeyword);
-  // after the user keyword, dependency keyword must be present
-  strmStream.ExpectKeyword_t(strTag);
-
-  // read the string from the file
-  char str[1024];
-  strmStream.GetLine_t(str, sizeof(str));
-  fnm_pserPreloaded = NULL;
-
-  // copy it here
-  (*this) = CTString( (const char *)str);
-}

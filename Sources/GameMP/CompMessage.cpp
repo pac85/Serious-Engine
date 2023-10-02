@@ -62,7 +62,7 @@ void CCompMessage::Load_t(void)
     cm_itImage = IT_STATISTICS;
   } else if (strImage=="picture") {
     cm_itImage = IT_PICTURE;
-    cm_fnmPicture.ReadFromText_t(strm);
+    cm_fnmPicture.ReadFromText_t(strm, "", TRUE);
   } else if (strImage=="model") {
     cm_itImage = IT_MODEL;
     cm_strModel.ReadFromText_t(strm, "");

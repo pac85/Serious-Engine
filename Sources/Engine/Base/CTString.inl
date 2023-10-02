@@ -26,15 +26,13 @@ ENGINE_API CTString::CTString(const CTString &strOriginal)
   str_String = StringDuplicate(strOriginal.str_String);
 }
 
-/*
- * Constructor from character string.
- */
-ENGINE_API CTString::CTString( const char *strCharString)
+// [Cecil] Constructor from character string with optional offset for insertion in binary files
+ENGINE_API CTString::CTString(const char *strCharString, INDEX i)
 {
   ASSERT(strCharString!=NULL);
 
   // make string duplicate
-  str_String = StringDuplicate( strCharString);
+  str_String = StringDuplicate(strCharString + i);
 }
 
 /* Constructor with formatting. */

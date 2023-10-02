@@ -276,7 +276,6 @@ class CSurfaceType;
 class CTCriticalSection;
 class CTextureData;
 class CTextureObject;
-class CTFileName;
 class CTFileStream;
 class CTMemoryStream;
 class CTSingleLock;

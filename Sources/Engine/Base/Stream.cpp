@@ -665,6 +665,7 @@ void CTStream::DictionaryWriteEnd_t(void)
   strm_dmDictionaryMode = DM_NONE;
   strm_ntDictionary.Clear();
   strm_afnmDictionary.Clear();
+  strm_cserPreloaded.Clear(); // [Cecil]
 
   // return to end of dictionary
   SetPos_t(slContinue);
@@ -775,25 +776,20 @@ void CTStream::DictionaryReadEnd_t(void)
     strm_dmDictionaryMode = DM_NONE;
     strm_ntDictionary.Clear();
 
-    // for each filename
-    INDEX ctFileNames = strm_afnmDictionary.Count();
-    for(INDEX iFileName=0; iFileName<ctFileNames; iFileName++) {
-      CTFileName &fnm = strm_afnmDictionary[iFileName];
-      // if not preloaded
-      if (fnm.fnm_pserPreloaded==NULL) {
-        // skip
-        continue;
-      }
-      // free preloaded instance
-      CTString strExt = fnm.FileExt();
-      if (strExt==".tex") {
-        _pTextureStock->Release((CTextureData*)fnm.fnm_pserPreloaded);
-      } else if (strExt==".mdl") {
-        _pModelStock->Release((CModelData*)fnm.fnm_pserPreloaded);
+    // [Cecil] Free all preloaded instances
+    FOREACHINDYNAMICCONTAINER(strm_cserPreloaded, CSerial, itser) {
+      CSerial *pser = itser;
+      CTString strExt = pser->GetName().FileExt();
+
+      if (strExt == ".tex") {
+        _pTextureStock->Release((CTextureData *)pser);
+      } else if (strExt == ".mdl") {
+        _pModelStock->Release((CModelData *)pser);
       }
     }
 
     strm_afnmDictionary.Clear();
+    strm_cserPreloaded.Clear(); // [Cecil]
   }
 }
 void CTStream::DictionaryPreload_t(void)
@@ -807,9 +803,9 @@ void CTStream::DictionaryPreload_t(void)
     CallProgressHook_t(FLOAT(iFileName)/ctFileNames);
     try {
       if (strExt==".tex") {
-        fnm.fnm_pserPreloaded = _pTextureStock->Obtain_t(fnm);
+        strm_cserPreloaded.Add(_pTextureStock->Obtain_t(fnm));
       } else if (strExt==".mdl") {
-        fnm.fnm_pserPreloaded = _pModelStock->Obtain_t(fnm);
+        strm_cserPreloaded.Add(_pModelStock->Obtain_t(fnm));
       }
     } catch (char *strError) {
       CPrintF(TRANS("Cannot preload %s: %s\n"), fnm.ConstData(), strError);
@@ -833,6 +829,7 @@ CTStream::~CTStream(void)
 {
   strm_ntDictionary.Clear();
   strm_afnmDictionary.Clear();
+  strm_cserPreloaded.Clear(); // [Cecil]
 
   delete &strm_ntDictionary;
 }
@@ -1007,6 +1004,7 @@ void CTFileStream::Close(void)
   strm_dmDictionaryMode = DM_NONE;
   strm_ntDictionary.Clear();
   strm_afnmDictionary.Clear();
+  strm_cserPreloaded.Clear(); // [Cecil]
   strm_slDictionaryPos=0;
 }
 

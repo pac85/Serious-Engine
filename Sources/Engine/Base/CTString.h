@@ -33,8 +33,8 @@ public:
   inline CTString(void);
   /* Copy constructor. */
   inline CTString(const CTString &strOriginal);
-  /* Constructor from character string. */
-  inline CTString(const char *pString);
+  // [Cecil] Constructor from character string with optional offset for insertion in binary files
+  inline CTString(const char *strCharString, INDEX i = 0);
   /* Constructor with formatting. */
   inline CTString(INDEX iDummy, const char *strFormat, ...);
   /* Destructor. */
@@ -156,17 +156,18 @@ public:
 
   /* Read from stream. */
   ENGINE_API friend CTStream &operator>>(CTStream &strmStream, CTString &strString);
-  void ReadFromText_t(CTStream &strmStream, const CTString &strKeyword); // throw char *
+  // [Cecil] Read filename flag
+  void ReadFromText_t(CTStream &strmStream, const CTString &strKeyword, BOOL bFileName = FALSE);
   /* Write to stream. */
   ENGINE_API friend CTStream &operator<<(CTStream &strmStream, const CTString &strString);
 
   /* Load an entire text file into a string. */
-  void Load_t(const class CTFileName &fnmFile);  // throw char *
-  void LoadKeepCRLF_t(const class CTFileName &fnmFile);  // throw char *
+  void Load_t(const CTString &fnmFile);  // throw char *
+  void LoadKeepCRLF_t(const CTString &fnmFile);  // throw char *
   void ReadUntilEOF_t(CTStream &strmStream);  // throw char *
   /* Save an entire string into a text file. */
-  void Save_t(const class CTFileName &fnmFile);  // throw char *
-  void SaveKeepCRLF_t(const class CTFileName &fnmFile);  // throw char *
+  void Save_t(const CTString &fnmFile);  // throw char *
+  void SaveKeepCRLF_t(const CTString &fnmFile);  // throw char *
 
   // Print formatted to a string
   INDEX PrintF(const char *strFormat, ...);
@@ -175,10 +176,37 @@ public:
   INDEX ScanF(const char *strFormat, ...) const;
 
   // variable management functions
-  void LoadVar(const CTFileName &fnmFile);
-  void SaveVar(const CTFileName &fnmFile);
+  void LoadVar(const CTString &fnmFile);
+  void SaveVar(const CTString &fnmFile);
+
+// [Cecil] Migrated methods from CTFileName
+public:
+
+  // Get directory part of a filename
+  CTString FileDir(void) const;
+  // Get name part of a filename
+  CTString FileName(void) const;
+  // Get extension part of a filename
+  CTString FileExt(void) const;
+  // Get path and file name without extension
+  CTString NoExt(void) const;
+  // Set path to the absolute path, taking \.. and /.. into account
+  void SetAbsolutePath(void);
+  // Remove application path from a file name
+  BOOL RemoveApplicationPath_t(void);
+
+  // Filename is its own name (used for storing in nametable)
+  inline const CTString &GetName(void) const {
+    return *this;
+  };
 };
 
+// [Cecil] Alias for compatibility
+typedef CTString CTFileName;
+
+// [Cecil] Migrated macros for defining a literal filename in code (EFNM = EXE filename)
+#define CTFILENAME(string) CTString("EFNM" string, 4)
+#define DECLARE_CTFILENAME(name, string) CTString name("EFNM" string, 4)
 
 // general variable functions
 ENGINE_API void LoadStringVar( const CTFileName &fnmVar, CTString &strVar);

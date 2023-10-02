@@ -813,7 +813,7 @@ void CShader::Read_t(CTStream *istrFile)
   CTString strShaderFunc;
   CTString strShaderInfo;
 
-  fnmDLL.ReadFromText_t(*istrFile, "Package: ");
+  fnmDLL.ReadFromText_t(*istrFile, "Package: ", TRUE);
   strShaderFunc.ReadFromText_t(*istrFile, "Name: ");
   strShaderInfo.ReadFromText_t(*istrFile, "Info: ");
 
