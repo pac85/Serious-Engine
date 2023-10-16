@@ -19,9 +19,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Translation.h>
 
 #include <Engine/Base/ErrorReporting.h>
-#include <new.h>
 
-extern FLOAT _bCheckAllAllocations = FALSE;
+#if SE1_WIN
+  #include <new.h>
+#else
+  #include <new>
+#endif
+
+FLOAT _bCheckAllAllocations = FALSE;
+
+#if SE1_WIN
 
 /*
  * Declarations for setting up the 'new_handler'.
@@ -53,6 +60,16 @@ int NewHandler(size_t size)
   return 0;
 }
 
+#else
+
+void NewHandler(void)
+{
+  // terminate program
+  FatalError(TRANS("Not enough memory!"));
+};
+
+#endif
+
 /* Static class used for initializing memory handlers. */
 static class CMemHandlerInit {
 public:
@@ -65,7 +82,9 @@ CMemHandlerInit::CMemHandlerInit(void)
   // set our not-enough-memory handler
   _set_new_handler(NewHandler);
   // make malloc use that handler
+#if SE1_WIN
   _set_new_mode(1);
+#endif
 }
 
 #undef AllocMemory
@@ -86,7 +105,8 @@ void *AllocMemory(size_t memsize)
   return pmem;
 }
 
-#ifndef NDEBUG
+#if SE1_WIN && !defined(NDEBUG)
+
 void *_debug_AllocMemory(size_t memsize, int iType, const char *strFile, int iLine)
 {
   void *pmem;
@@ -103,7 +123,8 @@ void *_debug_AllocMemory(size_t memsize, int iType, const char *strFile, int iLi
   }
   return pmem;
 }
-#endif
+
+#endif // SE1_WIN && !defined(NDEBUG)
 
 void *AllocMemoryAligned(size_t memsize, SLONG slAlignPow2)
 {
