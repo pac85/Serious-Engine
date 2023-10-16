@@ -54,6 +54,7 @@ extern INDEX wed_bUseBaseForReplacement;
 
 static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, char *pFilter)
 {
+#if SE1_WIN
   typedef CTFileName FileRequester_t(
     char *pchrTitle, 
     char *pchrFilters,
@@ -75,6 +76,11 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, cha
   }
 
   return pFileRequester( achrTitle, pFilter, "Replace file directory", achrSelectedFile);
+
+#else
+  // [Cecil] TODO: Make sure this function has a purpose on anything but Windows
+  return CTString("");
+#endif
 }
 
 BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,

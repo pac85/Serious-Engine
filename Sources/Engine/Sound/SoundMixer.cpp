@@ -144,7 +144,7 @@ copyLoop:
 
 #else
   WORD *dst = (WORD *)pDstBuffer;
-  WORD *src = (WORD *)(((UINT8 *)pvMixerBuffer) + slSrcOffset);
+  WORD *src = (WORD *)(((UBYTE *)pvMixerBuffer) + slSrcOffset);
 
   SLONG max = slBytes / 4;
 

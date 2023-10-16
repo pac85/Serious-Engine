@@ -26,8 +26,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SKELETON_VERSION  6
 #define SKELETON_ID       "SKEL"
 
-CStaticArray<struct SkeletonBone> _aSortArray;
-INDEX ctSortBones;
+static CStaticArray<SkeletonBone> _aSortArray;
+static INDEX ctSortBones;
 
 CSkeleton::CSkeleton()
 {

@@ -14,7 +14,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "stdh.h"
-#include <tchar.h>
+
 #include <Engine/Graphics/MultiMonitor.h>
 #include <Engine/Base/Console.h>
 #include <Engine/Base/ErrorReporting.h>
@@ -25,6 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // added dynamic function loading and exception throwing
 #if SE1_WIN
 
+#include <tchar.h>
 #pragma comment(lib, "advapi32.lib")
 
 extern INDEX gfx_bDisableMultiMonSupport;

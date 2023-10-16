@@ -45,12 +45,12 @@ struct SortArray
   CStaticArray<struct VertexLocator> sa_aMorphMapList;
 };
 
-CStaticArray <struct SortArray> _aSortArray;
-CStaticArray <INDEX> _aiOptimizedIndex;
-CStaticArray <INDEX> _aiSortedIndex;
+static CStaticArray<SortArray> _aSortArray;
+static CStaticArray<INDEX> _aiOptimizedIndex;
+static CStaticArray<INDEX> _aiSortedIndex;
 
-MeshLOD *pMeshLOD;// curent mesh lod (for quick sort)
-MeshLOD mshOptimized;
+static MeshLOD *pMeshLOD; // curent mesh lod (for quick sort)
+static MeshLOD mshOptimized;
 
 CMesh::CMesh()
 {
