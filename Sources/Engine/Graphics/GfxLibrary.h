@@ -72,8 +72,10 @@ struct CTVERTEX {
   ULONG ulColor;   // color
   FLOAT fU,fV;     // texture coordinates
 };
-#define D3DFVF_CTVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 
+#ifdef SE1_D3D
+  #define D3DFVF_CTVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
+#endif
 
 // Gfx API type 
 enum GfxAPIType
@@ -207,16 +209,15 @@ private:
   void EndDriver_OGL(void);
   void TestExtension_OGL( ULONG ulFlag, const char *strName); // if exist, add OpenGL extension to flag and list
   void AddExtension_OGL(  ULONG ulFlag, const char *strName); // unconditionally add OpenGL extension to flag and list
-#if SE1_WIN
   BOOL CreateContext_OGL( HDC hdc);
   BOOL SetupPixelFormat_OGL( HDC hdc, BOOL bReport=FALSE);
-#endif
   void InitContext_OGL(void);
   BOOL SetCurrentViewport_OGL( CViewPort *pvp);
   void UploadPattern_OGL( ULONG ulPatternEven); 
   void SwapBuffers_OGL( CViewPort *pvpToSwap);
 
   // Direct3D specific
+#ifdef SE1_D3D
   BOOL InitDriver_D3D(void);
   void EndDriver_D3D(void);
   BOOL InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth eColorDepth);
@@ -224,6 +225,7 @@ private:
   BOOL SetCurrentViewport_D3D( CViewPort *pvp);
   void UploadPattern_D3D( ULONG ulPatternEven);
   void SwapBuffers_D3D( CViewPort *pvpToSwap);
+#endif
 
 public:
 
