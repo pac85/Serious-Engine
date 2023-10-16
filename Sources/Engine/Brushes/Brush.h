@@ -370,8 +370,8 @@ public:
   /* Calculate bounding box of this polygon. */
   void CalculateBoundingBox(void);
   /* Create a BSP polygon from this polygon. */
-  void CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo);
-  void CreateBSPPolygonNonPrecise(BSPPolygon<DOUBLE, 3> &bspo);
+  void CreateBSPPolygon(BSPPolygon &bspo);
+  void CreateBSPPolygonNonPrecise(BSPPolygon &bspo);
   /* Create shadow map for the polygon. */
   void MakeShadowMap(CWorld *pwoWorld, BOOL bDoDirectionalLights);
   /* Initialize shadow map for the polygon. */

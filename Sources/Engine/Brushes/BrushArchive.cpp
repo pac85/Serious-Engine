@@ -143,7 +143,7 @@ void CBrushArchive::LinkPortalsAndSectors(void)
                 }
                 // create a BSP polygon from the brush polygon
                 CBrushPolygon        &brpo2 = *itbpo2;
-                BSPPolygon<DOUBLE, 3> bspo2;
+                BSPPolygon bspo2;
                 brpo2.CreateBSPPolygonNonPrecise(bspo2);
                 // split the polygon with the BSP of the sector
                 DOUBLEbspcutter3D bcCutter(bspo2, *itbsc1->bsc_bspBSPTree.bt_pbnRoot);

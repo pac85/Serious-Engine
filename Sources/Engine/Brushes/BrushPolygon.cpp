@@ -73,7 +73,7 @@ void CBrushPolygon::CalculateBoundingBox(void)
 
 
 /* Create a BSP polygon from this polygon. */
-void CBrushPolygon::CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo)
+void CBrushPolygon::CreateBSPPolygon(BSPPolygon &bspo)
 {
   ASSERT(GetFPUPrecision()==FPT_53BIT);
   CBrushPolygon &brpo = *this;
@@ -90,13 +90,13 @@ void CBrushPolygon::CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo)
   bspo.bpo_abedPolygonEdges.Lock();
   {for(INDEX iEdge=0; iEdge<ctEdges; iEdge++){
     CBrushPolygonEdge &brped = brpo.bpo_abpePolygonEdges[iEdge];
-    BSPEdge<DOUBLE, 3>  &bed = bspo.bpo_abedPolygonEdges[iEdge];
+    BSPEdge &bed = bspo.bpo_abedPolygonEdges[iEdge];
     // create the bsp edge in the bsp polygon
     brped.GetVertexCoordinatesPreciseAbsolute(bed.bed_vVertex0, bed.bed_vVertex1);
   }}
   bspo.bpo_abedPolygonEdges.Unlock();
 }
-void CBrushPolygon::CreateBSPPolygonNonPrecise(BSPPolygon<DOUBLE, 3> &bspo)
+void CBrushPolygon::CreateBSPPolygonNonPrecise(BSPPolygon &bspo)
 {
   CBrushPolygon &brpo = *this;
 
@@ -119,7 +119,7 @@ void CBrushPolygon::CreateBSPPolygonNonPrecise(BSPPolygon<DOUBLE, 3> &bspo)
   bspo.bpo_abedPolygonEdges.Lock();
   {for(INDEX iEdge=0; iEdge<ctEdges; iEdge++){
     CBrushPolygonEdge &brped = brpo.bpo_abpePolygonEdges[iEdge];
-    BSPEdge<DOUBLE, 3>  &bed = bspo.bpo_abedPolygonEdges[iEdge];
+    BSPEdge &bed = bspo.bpo_abedPolygonEdges[iEdge];
     // create the offseted bsp edge in the bsp polygon
     FLOAT3D v0, v1;
     brped.GetVertexCoordinatesAbsolute(v0, v1);

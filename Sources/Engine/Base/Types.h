@@ -316,13 +316,13 @@ template<class Type> class OBBox;
 template<class Type> class Quaternion;
 template<int iInt, int iFrac> class FixInt;
 
-template<class Type, int iDimensions> class BSPVertex;
-template<class Type, int iDimensions> class BSPVertexContainer;
-template<class Type, int iDimensions> class BSPEdge;
-template<class Type, int iDimensions> class BSPNode;
-template<class Type, int iDimensions> class BSPPolygon;
-template<class Type, int iDimensions> class BSPTree;
-template<class Type, int iDimensions> class BSPCutter;
+class BSPVertex;
+class BSPVertexContainer;
+class BSPEdge;
+class BSPNode;
+class BSPPolygon;
+class BSPTree;
+class BSPCutter;
 
 typedef FixInt<16,16>           FIX16_16;
 
@@ -366,25 +366,21 @@ typedef Quaternion<FLOAT>       FLOATquat3D;
 typedef Quaternion<DOUBLE>      DOUBLEquat3D;
 
 // BSP types
-typedef BSPVertex<DOUBLE, 3>          DOUBLEbspvertex3D;
-typedef BSPVertexContainer<DOUBLE, 3> DOUBLEbspvertexcontainer3D;
-typedef BSPEdge<DOUBLE, 3>            DOUBLEbspedge3D;
-typedef BSPNode<DOUBLE, 3>            DOUBLEbspnode3D;
-typedef BSPPolygon<DOUBLE, 3>         DOUBLEbsppolygon3D;
-typedef BSPTree<DOUBLE, 3>            DOUBLEbsptree3D;
-typedef BSPCutter<DOUBLE, 3>          DOUBLEbspcutter3D;
-
-typedef BSPVertex<FLOAT, 3>          FLOATbspvertex3D;
-typedef BSPVertexContainer<FLOAT, 3> FLOATbspvertexcontainer3D;
-typedef BSPEdge<FLOAT, 3>            FLOATbspedge3D;
-typedef BSPNode<FLOAT, 3>            FLOATbspnode3D;
-typedef BSPPolygon<FLOAT, 3>         FLOATbsppolygon3D;
-typedef BSPTree<FLOAT, 3>            FLOATbsptree3D;
-typedef BSPCutter<FLOAT, 3>          FLOATbspcutter3D;
+typedef BSPVertex          DOUBLEbspvertex3D;
+typedef BSPVertexContainer DOUBLEbspvertexcontainer3D;
+typedef BSPEdge            DOUBLEbspedge3D;
+typedef BSPNode            DOUBLEbspnode3D;
+typedef BSPPolygon         DOUBLEbsppolygon3D;
+typedef BSPTree            DOUBLEbsptree3D;
+typedef BSPCutter          DOUBLEbspcutter3D;
 
 // general clearing functions
 template<class cType>
 inline void Clear(cType &t) { t.Clear(); };
+
+// [Cecil] Clear pointer of any type
+template<class cType>
+inline void Clear(cType *pt) {};
 
 // specific clearing functions for built-in types
 inline void Clear(signed long int sli) {};

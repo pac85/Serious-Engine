@@ -138,15 +138,15 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
       ((pen->en_ulFlags&ENF_ZONING) || pen->en_RenderType==CEntity::RT_FIELDBRUSH) ) {
       // create an array of bsp polygons for sector polygons
       INDEX ctPolygons = bsc_abpoPolygons.Count();
-      CDynamicArray< BSPPolygon<DOUBLE, 3> > arbpoPolygons;
+      CDynamicArray<BSPPolygon> arbpoPolygons;
       arbpoPolygons.New(ctPolygons);
 
       // for all polygons in this sector
       arbpoPolygons.Lock();
       {for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++){
         // create a BSP polygon from the brush polygon
-        CBrushPolygon         &brpo = bsc_abpoPolygons[iPolygon];
-        BSPPolygon<DOUBLE, 3> &bspo = arbpoPolygons[iPolygon];
+        CBrushPolygon &brpo = bsc_abpoPolygons[iPolygon];
+        BSPPolygon &bspo = arbpoPolygons[iPolygon];
         brpo.CreateBSPPolygon(bspo);
       }}
       arbpoPolygons.Unlock();

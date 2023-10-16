@@ -29,18 +29,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 // epsilon value used for BSP cutting
-//#define BSP_EPSILON ((Type) 0.015625)       // 1/2^6 ~= 1.5 cm
-#define BSP_EPSILON Type((1.0/65536.0)*4*mth_fCSGEpsilon) // 1/2^16
-//#define BSP_EPSILON Type(0.00390625) // 1/2^8
+//#define BSP_EPSILON ((DOUBLE) 0.015625)       // 1/2^6 ~= 1.5 cm
+#define BSP_EPSILON DOUBLE((1.0/65536.0)*4*mth_fCSGEpsilon) // 1/2^16
+//#define BSP_EPSILON DOUBLE(0.00390625) // 1/2^8
 //#define EPSILON (1.0f/8388608.0f) // 1/2^23
 //#define EPSILON 0.0009765625f // 1/2^10
 //#define EPSILON 0.03125f    // 1/2^5
 //#define EPSILON 0.00390625f // 1/2^8
 
-template <class Type>
-inline BOOL EpsilonEq(const Type &a, const Type &b) { return Abs(a-b)<=BSP_EPSILON; };
-template <class Type>
-inline BOOL EpsilonNe(const Type &a, const Type &b) { return Abs(a-b)> BSP_EPSILON; };
+template <class DOUBLE>
+inline BOOL EpsilonEq(const DOUBLE &a, const DOUBLE &b) { return Abs(a-b)<=BSP_EPSILON; };
+template <class DOUBLE>
+inline BOOL EpsilonNe(const DOUBLE &a, const DOUBLE &b) { return Abs(a-b)> BSP_EPSILON; };
 
 /////////////////////////////////////////////////////////////////////
 // BSP vertex
@@ -48,10 +48,9 @@ inline BOOL EpsilonNe(const Type &a, const Type &b) { return Abs(a-b)> BSP_EPSIL
 /*
  * Assignment operator with coordinates only.
  */
-template<class Type, int iDimensions>
-BSPVertex<Type, iDimensions> &BSPVertex<Type, iDimensions>::operator=(const Vector<Type, iDimensions> &vCoordinates)
+BSPVertex &BSPVertex::operator=(const DOUBLE3D &vCoordinates)
 {
-  *(Vector<Type, iDimensions> *)this = vCoordinates;
+  *(DOUBLE3D *)this = vCoordinates;
   return *this;
 }
 
@@ -61,13 +60,11 @@ BSPVertex<Type, iDimensions> &BSPVertex<Type, iDimensions>::operator=(const Vect
 /*
  * Default constructor.
  */
-template<class Type, int iDimensions>
-BSPVertexContainer<Type, iDimensions>::BSPVertexContainer(void)
+BSPVertexContainer::BSPVertexContainer(void)
 {
 }
 
-template<class Type, int iDimensions>
-void BSPVertexContainer<Type, iDimensions>::AddVertex(const Vector<Type, iDimensions> &vPoint)
+void BSPVertexContainer::AddVertex(const DOUBLE3D &vPoint)
 {
   bvc_aVertices.Push() = vPoint;
 }
@@ -75,8 +72,7 @@ void BSPVertexContainer<Type, iDimensions>::AddVertex(const Vector<Type, iDimens
 /*
  * Initialize for a direction.
  */
-template<class Type, int iDimensions>
-void BSPVertexContainer<Type, iDimensions>::Initialize(const Vector<Type, iDimensions> &vDirection)
+void BSPVertexContainer::Initialize(const DOUBLE3D &vDirection)
 {
   bvc_vDirection = vDirection;
 
@@ -85,8 +81,8 @@ void BSPVertexContainer<Type, iDimensions>::Initialize(const Vector<Type, iDimen
 
   // find largest axis of direction vector
   INDEX iMaxAxis = 0;
-  Type tMaxAxis = (Type)0;//vDirection(1);
-  for( INDEX iAxis=1; iAxis<=iDimensions; iAxis++) {
+  DOUBLE tMaxAxis = (DOUBLE)0;//vDirection(1);
+  for( INDEX iAxis=1; iAxis<=3; iAxis++) {
     if( Abs(vDirection(iAxis)) > Abs(tMaxAxis) ) {
       tMaxAxis = vDirection(iAxis);
       iMaxAxis = iAxis;
@@ -106,25 +102,23 @@ void BSPVertexContainer<Type, iDimensions>::Initialize(const Vector<Type, iDimen
 /*
  * Unnitialize.
  */
-template<class Type, int iDimensions>
-void BSPVertexContainer<Type, iDimensions>::Uninitialize(void)
+void BSPVertexContainer::Uninitialize(void)
 {
   // delete array of vertices
   bvc_aVertices.Delete();
   // destroy axis index and sign
   bvc_iMaxAxis = -1;
-  bvc_tMaxAxisSign = (Type)0;
+  bvc_tMaxAxisSign = (DOUBLE)0;
 }
 
 static INDEX qsort_iCompareAxis;
 
-template<class Type, int iDimensions>
 class CVertexComparator {
 public:
   /*
    * Compare two vertices.
    */
-  static inline int CompareVertices(const Vector<Type, iDimensions> &vx0, const Vector<Type, iDimensions> &vx1, INDEX iAxis)
+  static inline int CompareVertices(const DOUBLE3D &vx0, const DOUBLE3D &vx1, INDEX iAxis)
   {
          if (vx0(iAxis)<vx1(iAxis)) return -1;
     else if (vx0(iAxis)>vx1(iAxis)) return 1;
@@ -136,22 +130,21 @@ public:
    */
   static int qsort_CompareVertices_plus( const void *pvVertex0, const void *pvVertex1)
   {
-    BSPVertex<Type, iDimensions> &vx0 = *(BSPVertex<Type, iDimensions> *)pvVertex0;
-    BSPVertex<Type, iDimensions> &vx1 = *(BSPVertex<Type, iDimensions> *)pvVertex1;
+    BSPVertex &vx0 = *(BSPVertex *)pvVertex0;
+    BSPVertex &vx1 = *(BSPVertex *)pvVertex1;
     return +CompareVertices(vx0, vx1, qsort_iCompareAxis);
   }
   static int qsort_CompareVertices_minus( const void *pvVertex0, const void *pvVertex1)
   {
-    BSPVertex<Type, iDimensions> &vx0 = *(BSPVertex<Type, iDimensions> *)pvVertex0;
-    BSPVertex<Type, iDimensions> &vx1 = *(BSPVertex<Type, iDimensions> *)pvVertex1;
+    BSPVertex &vx0 = *(BSPVertex *)pvVertex0;
+    BSPVertex &vx1 = *(BSPVertex *)pvVertex1;
     return -CompareVertices(vx0, vx1, qsort_iCompareAxis);
   }
 };
 /*
  * Sort vertices in this container along the largest axis of container direction.
  */
-template<class Type, int iDimensions>
-void BSPVertexContainer<Type, iDimensions>::Sort(void)
+void BSPVertexContainer::Sort(void)
 {
   // if there are no vertices, or the container is not line
   if (bvc_aVertices.Count()==0 || IsPlannar()) {
@@ -166,15 +159,15 @@ void BSPVertexContainer<Type, iDimensions>::Sort(void)
   if (bvc_tMaxAxisSign>0) {
     // sort them normally
     if (bvc_aVertices.Count()>0) {
-      qsort(&bvc_aVertices[0], bvc_aVertices.Count(), sizeof(BSPVertex<Type, iDimensions>),
-        CVertexComparator<Type, iDimensions>::qsort_CompareVertices_plus);
+      qsort(&bvc_aVertices[0], bvc_aVertices.Count(), sizeof(BSPVertex),
+        CVertexComparator::qsort_CompareVertices_plus);
     }
   // if it is negative
   } else {
     // sort them inversely
     if (bvc_aVertices.Count()>0) {
-      qsort(&bvc_aVertices[0], bvc_aVertices.Count(), sizeof(BSPVertex<Type, iDimensions>),
-          CVertexComparator<Type, iDimensions>::qsort_CompareVertices_minus);
+      qsort(&bvc_aVertices[0], bvc_aVertices.Count(), sizeof(BSPVertex),
+          CVertexComparator::qsort_CompareVertices_minus);
     }
   }
 }
@@ -182,8 +175,7 @@ void BSPVertexContainer<Type, iDimensions>::Sort(void)
 /*
  * Elliminate paired vertices.
  */
-template<class Type, int iDimensions>
-void BSPVertexContainer<Type, iDimensions>::ElliminatePairedVertices(void)
+void BSPVertexContainer::ElliminatePairedVertices(void)
 {
   // if there are no vertices, or the container is not line
   if (bvc_aVertices.Count()==0 || IsPlannar()) {
@@ -192,18 +184,18 @@ void BSPVertexContainer<Type, iDimensions>::ElliminatePairedVertices(void)
   }
 
   // initially, last vertices are far away
-  Type tLastInside;  tLastInside  = (Type)32000;
-  BSPVertex<Type, iDimensions> *pbvxLastInside  = NULL;
+  DOUBLE tLastInside;  tLastInside  = (DOUBLE)32000;
+  BSPVertex *pbvxLastInside  = NULL;
 
   // for all vertices in container
   for (INDEX iVertex=0; iVertex<bvc_aVertices.Count(); iVertex++) {
-    BSPVertex<Type, iDimensions> &bvx = bvc_aVertices[iVertex];    // reference to this vertex
-    Type t = bvx(bvc_iMaxAxis);                 // coordinate along max. axis
+    BSPVertex &bvx = bvc_aVertices[iVertex];    // reference to this vertex
+    DOUBLE t = bvx(bvc_iMaxAxis);                 // coordinate along max. axis
 
     // if last inside vertex is next to this one
     if ( EpsilonEq(t, tLastInside) ) {
       // last vertex is far away
-      tLastInside  = (Type)32000;
+      tLastInside  = (DOUBLE)32000;
       IFDEBUG(pbvxLastInside = NULL);
 
     // otherwise
@@ -218,8 +210,7 @@ void BSPVertexContainer<Type, iDimensions>::ElliminatePairedVertices(void)
 /*
  * Create edges from vertices in one container -- must be sorted before.
  */
-template<class Type, int iDimensions>
-void BSPVertexContainer<Type, iDimensions>::CreateEdges(CDynamicArray<BSPEdge<Type, iDimensions> > &abed, size_t ulEdgeTag)
+void BSPVertexContainer::CreateEdges(CDynamicArray<BSPEdge> &abed, size_t ulEdgeTag)
 {
   // if there are no vertices, or the container is not line
   if (bvc_aVertices.Count()==0 || IsPlannar()) {
@@ -229,11 +220,11 @@ void BSPVertexContainer<Type, iDimensions>::CreateEdges(CDynamicArray<BSPEdge<Ty
 
   // initially, edge is inactive
   BOOL bActive = FALSE;
-  BSPEdge<Type, iDimensions> *pbed = NULL;
+  BSPEdge *pbed = NULL;
 
   // for all vertices in container
   for (INDEX iVertex=0; iVertex<bvc_aVertices.Count(); iVertex++) {
-    BSPVertex<Type, iDimensions> &bvx = bvc_aVertices[iVertex];    // reference to this vertex
+    BSPVertex &bvx = bvc_aVertices[iVertex];    // reference to this vertex
 
     // if edge is inactive
     if (!bActive) {
@@ -259,18 +250,16 @@ void BSPVertexContainer<Type, iDimensions>::CreateEdges(CDynamicArray<BSPEdge<Ty
 /*
  * Constructor with two vectors.
  */
-template<class Type, int iDimensions>
-BSPEdge<Type, iDimensions>::BSPEdge(const Vector<Type, iDimensions> &vVertex0, const Vector<Type, iDimensions> &vVertex1, size_t ulTag)
+BSPEdge::BSPEdge(const DOUBLE3D &vVertex0, const DOUBLE3D &vVertex1, size_t ulTag)
   : bed_vVertex0(vVertex0)
   , bed_vVertex1(vVertex1)
   , bed_ulEdgeTag(ulTag)
 {}
 
 // remove all edges marked for removal
-template<class Type, int iDimensions>
-void BSPEdge<Type, iDimensions>::RemoveMarkedBSPEdges(CDynamicArray<BSPEdge<Type, iDimensions> > &abed)
+void BSPEdge::RemoveMarkedBSPEdges(CDynamicArray<BSPEdge> &abed)
 {
-  typedef BSPEdge<Type, iDimensions> edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
+  typedef BSPEdge edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
   // conut edges left
   INDEX ctEdgesLeft = 0;
   {FOREACHINDYNAMICARRAY(abed, edge_t, itbed) {
@@ -279,7 +268,7 @@ void BSPEdge<Type, iDimensions>::RemoveMarkedBSPEdges(CDynamicArray<BSPEdge<Type
     }
   }}
   // make a copy of array without removed edges
-  CDynamicArray<BSPEdge<Type, iDimensions> > abed2;
+  CDynamicArray<BSPEdge> abed2;
   abed2.New(ctEdgesLeft);
   abed2.Lock();
   INDEX iedNew = 0;
@@ -297,10 +286,9 @@ void BSPEdge<Type, iDimensions>::RemoveMarkedBSPEdges(CDynamicArray<BSPEdge<Type
 }
 
 // optimize a polygon made out of BSP edges using tag information
-template<class Type, int iDimensions>
-void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iDimensions> > &abed)
+void BSPEdge::OptimizeBSPEdges(CDynamicArray<BSPEdge > &abed)
 {
-  typedef BSPEdge<Type, iDimensions> edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
+  typedef BSPEdge edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
 
   // if there are no edges
   if (abed.Count()==0) {
@@ -381,10 +369,9 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
 /*
  * Add an edge to the polygon.
  */
-template<class Type, int iDimensions>
-inline void BSPPolygon<Type, iDimensions>::AddEdge(const Vector<Type, iDimensions> &vPoint0, const Vector<Type, iDimensions> &vPoint1, size_t ulTag)
+inline void BSPPolygon::AddEdge(const DOUBLE3D &vPoint0, const DOUBLE3D &vPoint1, size_t ulTag)
 {
-  *bpo_abedPolygonEdges.New() = BSPEdge<Type, iDimensions>(vPoint0, vPoint1, ulTag);
+  *bpo_abedPolygonEdges.New() = BSPEdge(vPoint0, vPoint1, ulTag);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -393,8 +380,7 @@ inline void BSPPolygon<Type, iDimensions>::AddEdge(const Vector<Type, iDimension
 /*
  * Recursive destructor.
  */
-template<class Type, int iDimensions>
-void BSPNode<Type, iDimensions>::DeleteBSPNodeRecursively(void)
+void BSPNode::DeleteBSPNodeRecursively(void)
 {
   // delete sub-trees first, before deleting this node
   if (bn_pbnFront!=NULL) {
@@ -409,8 +395,7 @@ void BSPNode<Type, iDimensions>::DeleteBSPNodeRecursively(void)
 /*
  * Constructor for a leaf node.
  */
-template<class Type, int iDimensions>
-BSPNode<Type, iDimensions>::BSPNode(enum BSPNodeLocation bnl)
+BSPNode::BSPNode(enum BSPNodeLocation bnl)
   : bn_bnlLocation(bnl)
   , bn_pbnFront(NULL)
   , bn_pbnBack(NULL)
@@ -421,10 +406,9 @@ BSPNode<Type, iDimensions>::BSPNode(enum BSPNodeLocation bnl)
 /*
  * Constructor for a branch node.
  */
-template<class Type, int iDimensions>
-BSPNode<Type, iDimensions>::BSPNode(const Plane<Type, iDimensions> &plSplitPlane, size_t ulPlaneTag,
-                 BSPNode<Type, iDimensions> &bnFront, BSPNode<Type, iDimensions> &bnBack)
-  : Plane<Type, iDimensions>(plSplitPlane)
+BSPNode::BSPNode(const DOUBLEplane3D &plSplitPlane, size_t ulPlaneTag,
+                 BSPNode &bnFront, BSPNode &bnBack)
+  : DOUBLEplane3D(plSplitPlane)
   , bn_pbnFront(&bnFront)
   , bn_pbnBack(&bnBack)
   , bn_bnlLocation(BNL_BRANCH)
@@ -435,16 +419,15 @@ BSPNode<Type, iDimensions>::BSPNode(const Plane<Type, iDimensions> &plSplitPlane
 /*
  * Constructor for cloning a bsp (sub)tree.
  */
-template<class Type, int iDimensions>
-BSPNode<Type, iDimensions>::BSPNode(BSPNode<Type, iDimensions> &bnRoot)
-  : Plane<Type, iDimensions>(bnRoot)                             // copy the plane
+BSPNode::BSPNode(BSPNode &bnRoot)
+  : DOUBLEplane3D(bnRoot)                     // copy the plane
   , bn_bnlLocation(bnRoot.bn_bnlLocation)     // copy the location
   , bn_ulPlaneTag(bnRoot.bn_ulPlaneTag)       // copy the plane tag
 {
   // if this has a front child
   if (bnRoot.bn_pbnFront != NULL) {
     // clone front sub tree
-    bn_pbnFront = new BSPNode<Type, iDimensions>(*bnRoot.bn_pbnFront);
+    bn_pbnFront = new BSPNode(*bnRoot.bn_pbnFront);
   // otherwise
   } else {
     // no front sub tree
@@ -454,7 +437,7 @@ BSPNode<Type, iDimensions>::BSPNode(BSPNode<Type, iDimensions> &bnRoot)
   // if this has a back child
   if (bnRoot.bn_pbnBack != NULL) {
     // clone back sub tree
-    bn_pbnBack  = new BSPNode<Type, iDimensions>(*bnRoot.bn_pbnBack);
+    bn_pbnBack  = new BSPNode(*bnRoot.bn_pbnBack);
   // otherwise
   } else {
     // no back sub tree
@@ -463,8 +446,7 @@ BSPNode<Type, iDimensions>::BSPNode(BSPNode<Type, iDimensions> &bnRoot)
 }
 
 /* Test if a sphere is inside, outside, or intersecting. (Just a trivial rejection test) */
-template<class Type, int iDimensions>
-FLOAT BSPNode<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vSphereCenter, Type tSphereRadius) const
+FLOAT BSPNode::TestSphere(const DOUBLE3D &vSphereCenter, DOUBLE tSphereRadius) const
 {
   // if this is an inside node
   if (bn_bnlLocation == BNL_INSIDE) {
@@ -478,7 +460,7 @@ FLOAT BSPNode<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vS
   } else {
     ASSERT(bn_bnlLocation == BNL_BRANCH);
     // test the sphere against the split plane
-    Type tCenterDistance = PointDistance(vSphereCenter);
+    DOUBLE tCenterDistance = PointDistance(vSphereCenter);
     // if the sphere is in front of the plane
     if (tCenterDistance > +tSphereRadius) {
       // recurse down the front node
@@ -514,8 +496,7 @@ FLOAT BSPNode<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vS
   }
 }
 /* Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) */
-template<class Type, int iDimensions>
-FLOAT BSPNode<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
+FLOAT BSPNode::TestBox(const OBBox<DOUBLE> &box) const
 {
   // if this is an inside node
   if (bn_bnlLocation == BNL_INSIDE) {
@@ -529,7 +510,7 @@ FLOAT BSPNode<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
   } else {
     ASSERT(bn_bnlLocation == BNL_BRANCH);
     // test the box against the split plane
-    Type tTest = box.TestAgainstPlane(*this);
+    DOUBLE tTest = box.TestAgainstPlane(*this);
     // if the sphere is in front of the plane
     if (tTest>0) {
       // recurse down the front node
@@ -566,12 +547,11 @@ FLOAT BSPNode<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
 }
 
 // find minimum/maximum parameters of points on a line that are inside - recursive
-template<class Type, int iDimensions>
-void BSPNode<Type, iDimensions>::FindLineMinMax(
-  BSPLine<Type, iDimensions> &bl, 
-  const Vector<Type, iDimensions> &v0,
-  const Vector<Type, iDimensions> &v1,
-  Type t0, Type t1)
+void BSPNode::FindLineMinMax(
+  BSPLine &bl, 
+  const DOUBLE3D &v0,
+  const DOUBLE3D &v1,
+  DOUBLE t0, DOUBLE t1)
 {
   // if this is an inside node
   if (bn_bnlLocation == BNL_INSIDE) {
@@ -587,8 +567,8 @@ void BSPNode<Type, iDimensions>::FindLineMinMax(
   } else {
     ASSERT(bn_bnlLocation == BNL_BRANCH);
     // test the points against the split plane
-    Type tD0 = PointDistance(v0);
-    Type tD1 = PointDistance(v1);
+    DOUBLE tD0 = PointDistance(v0);
+    DOUBLE tD1 = PointDistance(v1);
     // if both are front
     if (tD0>=0 && tD1>=0) {
       // recurse down the front node
@@ -602,9 +582,9 @@ void BSPNode<Type, iDimensions>::FindLineMinMax(
     // if on different sides
     } else {
       // find split point
-      Type tFraction = tD0/(tD0-tD1);
-      Vector<Type, iDimensions> vS = v0+(v1-v0)*tFraction;
-      Type tS = t0+(t1-t0)*tFraction;
+      DOUBLE tFraction = tD0/(tD0-tD1);
+      DOUBLE3D vS = v0+(v1-v0)*tFraction;
+      DOUBLE tS = t0+(t1-t0)*tFraction;
       // if first is front
       if (tD0>=0) {
         // recurse first part down the front node
@@ -630,8 +610,7 @@ void BSPNode<Type, iDimensions>::FindLineMinMax(
 /*
  * Constructor for splitting a polygon with a BSP tree.
  */
-template<class Type, int iDimensions>
-BSPCutter<Type, iDimensions>::BSPCutter(BSPPolygon<Type, iDimensions> &bpoPolygon, BSPNode<Type, iDimensions> &bnRoot)
+BSPCutter::BSPCutter(BSPPolygon &bpoPolygon, BSPNode &bnRoot)
 {
   // cut the polygon with entire tree
   CutPolygon(bpoPolygon, bnRoot);
@@ -640,16 +619,14 @@ BSPCutter<Type, iDimensions>::BSPCutter(BSPPolygon<Type, iDimensions> &bpoPolygo
 /*
  * Destructor.
  */
-template<class Type, int iDimensions>
-BSPCutter<Type, iDimensions>::~BSPCutter(void)
+BSPCutter::~BSPCutter(void)
 {
 }
 
 /*
  * Cut a polygon with a BSP tree.
  */
-template<class Type, int iDimensions>
-void BSPCutter<Type, iDimensions>::CutPolygon(BSPPolygon<Type, iDimensions> &bpoPolygon, BSPNode<Type, iDimensions> &bn)
+void BSPCutter::CutPolygon(BSPPolygon &bpoPolygon, BSPNode &bn)
 {
   // if the polygon has no edges
   if (bpoPolygon.bpo_abedPolygonEdges.Count()==0) {
@@ -669,11 +646,11 @@ void BSPCutter<Type, iDimensions>::CutPolygon(BSPPolygon<Type, iDimensions> &bpo
 
   // if this node is a branch
   } else if (bn.bn_bnlLocation == BNL_BRANCH) {
-    BSPPolygon<Type, iDimensions> bpoFront;   // part of polygon in front of this splitter
-    BSPPolygon<Type, iDimensions> bpoBack;    // part of polygon behind this splitter
+    BSPPolygon bpoFront;   // part of polygon in front of this splitter
+    BSPPolygon bpoBack;    // part of polygon behind this splitter
 
     // split the polygon with split plane of this node
-    BOOL bOnPlane = SplitPolygon(bpoPolygon, (Plane<Type, iDimensions> &)bn, bn.bn_ulPlaneTag, bpoFront, bpoBack);
+    BOOL bOnPlane = SplitPolygon(bpoPolygon, (DOUBLEplane3D &)bn, bn.bn_ulPlaneTag, bpoFront, bpoBack);
 
     // if the polygon is not on the split plane
     if (!bOnPlane) {
@@ -684,11 +661,11 @@ void BSPCutter<Type, iDimensions>::CutPolygon(BSPPolygon<Type, iDimensions> &bpo
 
     // if the polygon is on the split plane
     } else {
-      BSPNode<Type, iDimensions> *pbnFront;  // front node (relative to the polygon orientation)
-      BSPNode<Type, iDimensions> *pbnBack;   // back node (relative to the polygon orientation)
+      BSPNode *pbnFront;  // front node (relative to the polygon orientation)
+      BSPNode *pbnBack;   // back node (relative to the polygon orientation)
 
       // check the direction of the polygon with the front direction of the split plane
-      Type tDirection = (Vector<Type, iDimensions> &)bpoPolygon%(Vector<Type, iDimensions> &)bn;
+      DOUBLE tDirection = (DOUBLE3D &)bpoPolygon%(DOUBLE3D &)bn;
       // if the directions are same
       if (tDirection > +BSP_EPSILON) {
         // make nodes relative to polygon same as relative to the split plane
@@ -707,19 +684,19 @@ void BSPCutter<Type, iDimensions>::CutPolygon(BSPPolygon<Type, iDimensions> &bpo
       }
 
       // cut it with front part of bsp
-      BSPCutter<Type, iDimensions> bcFront(bpoPolygon, *pbnFront);
+      BSPCutter bcFront(bpoPolygon, *pbnFront);
       // there must be no on-border parts
       ASSERT(bcFront.bc_abedBorderInside.Count()==0 && bcFront.bc_abedBorderOutside.Count()==0);
 
       // make a polygon from parts that are inside in front part of BSP
-      BSPPolygon<Type, iDimensions> bpoInsideFront((Plane<Type, iDimensions> &)bpoPolygon, bcFront.bc_abedInside, bpoPolygon.bpo_ulPlaneTag);
+      BSPPolygon bpoInsideFront((DOUBLEplane3D &)bpoPolygon, bcFront.bc_abedInside, bpoPolygon.bpo_ulPlaneTag);
       // cut them with back part of bsp
-      BSPCutter<Type, iDimensions> bcBackInsideFront(bpoInsideFront, *pbnBack);
+      BSPCutter bcBackInsideFront(bpoInsideFront, *pbnBack);
 
       // make a polygon from parts that are outside in front part of BSP
-      BSPPolygon<Type, iDimensions> bpoOutsideFront((Plane<Type, iDimensions> &)bpoPolygon, bcFront.bc_abedOutside, bpoPolygon.bpo_ulPlaneTag);
+      BSPPolygon bpoOutsideFront((DOUBLEplane3D &)bpoPolygon, bcFront.bc_abedOutside, bpoPolygon.bpo_ulPlaneTag);
       // cut them with back part of bsp
-      BSPCutter<Type, iDimensions> bcBackOutsideFront(bpoOutsideFront, *pbnBack);
+      BSPCutter bcBackOutsideFront(bpoOutsideFront, *pbnBack);
 
       // add parts that are inside both in front and back to inside part
       bc_abedInside.MoveArray(bcBackInsideFront.bc_abedInside);
@@ -740,22 +717,21 @@ void BSPCutter<Type, iDimensions>::CutPolygon(BSPPolygon<Type, iDimensions> &bpo
  * Split a polygon with a plane.
  * -- returns FALSE if polygon is laying on the plane
  */
-template<class Type, int iDimensions>
-BOOL BSPCutter<Type, iDimensions>::SplitPolygon(BSPPolygon<Type, iDimensions> &bpoPolygon, const Plane<Type, iDimensions> &plSplitPlane, size_t ulPlaneTag,
-  BSPPolygon<Type, iDimensions> &bpoFront, BSPPolygon<Type, iDimensions> &bpoBack)
+BOOL BSPCutter::SplitPolygon(BSPPolygon &bpoPolygon, const DOUBLEplane3D &plSplitPlane, size_t ulPlaneTag,
+  BSPPolygon &bpoFront, BSPPolygon &bpoBack)
 {
-  (Plane<Type, iDimensions> &)bpoFront = (Plane<Type, iDimensions> &)bpoPolygon;
+  (DOUBLEplane3D &)bpoFront = (DOUBLEplane3D &)bpoPolygon;
   bpoFront.bpo_ulPlaneTag = bpoPolygon.bpo_ulPlaneTag;
-  (Plane<Type, iDimensions> &)bpoBack = (Plane<Type, iDimensions> &)bpoPolygon;
+  (DOUBLEplane3D &)bpoBack = (DOUBLEplane3D &)bpoPolygon;
   bpoBack.bpo_ulPlaneTag = bpoPolygon.bpo_ulPlaneTag;
 
   // calculate the direction of split line
-  Vector<Type, iDimensions> vSplitDirection = ((Vector<Type, iDimensions> &)plSplitPlane) * (Vector<Type, iDimensions> &)bpoPolygon;
+  DOUBLE3D vSplitDirection = ((DOUBLE3D &)plSplitPlane) * (DOUBLE3D &)bpoPolygon;
 
   // if the polygon is parallel with the split plane
   if (vSplitDirection.Length() < +BSP_EPSILON) {
     // calculate the distance of the polygon from the split plane
-    Type fDistance = plSplitPlane.PlaneDistance(bpoPolygon);
+    DOUBLE fDistance = plSplitPlane.PlaneDistance(bpoPolygon);
 
     // if the polygon is in front of plane
     if (fDistance > +BSP_EPSILON) {
@@ -780,11 +756,11 @@ BOOL BSPCutter<Type, iDimensions>::SplitPolygon(BSPPolygon<Type, iDimensions> &b
   // if the polygon is not parallel with the split plane
   } else {
     // initialize front and back vertex containers
-    BSPVertexContainer<Type, iDimensions> bvcFront, bvcBack;
+    BSPVertexContainer bvcFront, bvcBack;
     bvcFront.Initialize(vSplitDirection);
     bvcBack.Initialize(-vSplitDirection);
 
-    typedef BSPEdge<Type, iDimensions> edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
+    typedef BSPEdge edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
     // for each edge in polygon
     {FOREACHINDYNAMICARRAY(bpoPolygon.bpo_abedPolygonEdges, edge_t, itbed) {
       // split the edge
@@ -811,16 +787,15 @@ BOOL BSPCutter<Type, iDimensions>::SplitPolygon(BSPPolygon<Type, iDimensions> &b
 /*
  * Split an edge with a plane.
  */
-template<class Type, int iDimensions>
-void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vPoint0, const Vector<Type, iDimensions> &vPoint1, size_t ulEdgeTag,
-    const Plane<Type, iDimensions> &plSplitPlane,
-    BSPPolygon<Type, iDimensions> &bpoFront, BSPPolygon<Type, iDimensions> &bpoBack,
-    BSPVertexContainer<Type, iDimensions> &bvcFront, BSPVertexContainer<Type, iDimensions> &bvcBack)
+void BSPCutter::SplitEdge(const DOUBLE3D &vPoint0, const DOUBLE3D &vPoint1, size_t ulEdgeTag,
+    const DOUBLEplane3D &plSplitPlane,
+    BSPPolygon &bpoFront, BSPPolygon &bpoBack,
+    BSPVertexContainer &bvcFront, BSPVertexContainer &bvcBack)
 {
 
   // calculate point distances from clip plane
-  Type tDistance0 = plSplitPlane.PointDistance(vPoint0);
-  Type tDistance1 = plSplitPlane.PointDistance(vPoint1);
+  DOUBLE tDistance0 = plSplitPlane.PointDistance(vPoint0);
+  DOUBLE tDistance1 = plSplitPlane.PointDistance(vPoint1);
 
   /* ---- first point behind plane ---- */
   if (tDistance0 < -BSP_EPSILON) {
@@ -834,7 +809,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
     // if first is back, second front
     } else if (tDistance1 > +BSP_EPSILON) {
       // calculate intersection coordinates
-      Vector<Type, iDimensions> vPointMid = vPoint0-(vPoint0-vPoint1)*tDistance0/(tDistance0-tDistance1);
+      DOUBLE3D vPointMid = vPoint0-(vPoint0-vPoint1)*tDistance0/(tDistance0-tDistance1);
       // add front part to front node
       bpoFront.AddEdge(vPointMid, vPoint1, ulEdgeTag);
       // add back part to back node
@@ -856,7 +831,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
     // if first is front, second back
     if (tDistance1 < -BSP_EPSILON) {
       // calculate intersection coordinates
-      Vector<Type, iDimensions> vPointMid = vPoint1-(vPoint1-vPoint0)*tDistance1/(tDistance1-tDistance0);
+      DOUBLE3D vPointMid = vPoint1-(vPoint1-vPoint0)*tDistance1/(tDistance1-tDistance0);
       // add front part to front node
       bpoFront.AddEdge(vPoint0, vPointMid, ulEdgeTag);
       // add back part to back node
@@ -899,7 +874,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
     // if both are on the plane
     } else {
       // check the direction of the edge with the front direction of the splitter
-      Type tDirection = (vPoint1-vPoint0)%bvcFront.bvc_vDirection;
+      DOUBLE tDirection = (vPoint1-vPoint0)%bvcFront.bvc_vDirection;
       // if the directions are same
       if (tDirection > +BSP_EPSILON) {
         // add the whole edge to front node
@@ -921,7 +896,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
       // if the directions are indeterminate
       } else {
         // that must mean that there is no edge in fact
-        //ASSERT(Type(vPoint1-vPoint0) < 2*BSP_EPSILON); //!!!!
+        //ASSERT(DOUBLE(vPoint1-vPoint0) < 2*BSP_EPSILON); //!!!!
       }
     }
   }
@@ -933,8 +908,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
 /*
  * Default constructor.
  */
-template<class Type, int iDimensions>
-BSPTree<Type, iDimensions>::BSPTree(void)
+BSPTree::BSPTree(void)
 {
   bt_pbnRoot = NULL;
 }
@@ -942,8 +916,7 @@ BSPTree<Type, iDimensions>::BSPTree(void)
 /*
  * Destructor.
  */
-template<class Type, int iDimensions>
-BSPTree<Type, iDimensions>::~BSPTree(void)
+BSPTree::~BSPTree(void)
 {
   Destroy();
 }
@@ -951,8 +924,7 @@ BSPTree<Type, iDimensions>::~BSPTree(void)
 /*
  * Constructor with array of polygons oriented inwards.
  */
-template<class Type, int iDimensions>
-BSPTree<Type, iDimensions>::BSPTree(CDynamicArray<BSPPolygon<Type, iDimensions> > &abpoPolygons)
+BSPTree::BSPTree(CDynamicArray<BSPPolygon > &abpoPolygons)
 {
   bt_pbnRoot = NULL;
   Create(abpoPolygons);
@@ -961,27 +933,26 @@ BSPTree<Type, iDimensions>::BSPTree(CDynamicArray<BSPPolygon<Type, iDimensions> 
 /*
  * Create bsp-subtree from array of polygons oriented inwards.
  */
-template<class Type, int iDimensions>
-BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicArray<BSPPolygon<Type, iDimensions> > &abpoPolygons)
+BSPNode *BSPTree::CreateSubTree(CDynamicArray<BSPPolygon > &abpoPolygons)
 {
   // local declarations, to fix macro expansion in FOREACHINDYNAMICARRAY
-  typedef BSPEdge<Type, iDimensions> edge_t;
-  typedef BSPPolygon<Type, iDimensions> polygon_t;
+  typedef BSPEdge edge_t;
+  typedef BSPPolygon polygon_t;
   ASSERT(abpoPolygons.Count()>=1);
 
   // use first polygon as splitter
   abpoPolygons.Lock();
-  BSPPolygon<Type, iDimensions> bpoSplitter = abpoPolygons[0];
+  BSPPolygon bpoSplitter = abpoPolygons[0];
   abpoPolygons.Unlock();
   // tags must be valid
   ASSERT(bpoSplitter.bpo_ulPlaneTag!=-1);
 
   // create two new polygon arrays - back and front
-  CDynamicArray<BSPPolygon<Type, iDimensions> > abpoFront, abpoBack;
+  CDynamicArray<BSPPolygon > abpoFront, abpoBack;
 
   // for each polygon in this array
   {FOREACHINDYNAMICARRAY(abpoPolygons, polygon_t, itbpo) {
-    BSPPolygon<Type, iDimensions> bpoFront, bpoBack;
+    BSPPolygon bpoFront, bpoBack;
 
     // tags must be valid
     ASSERT(itbpo->bpo_ulPlaneTag!=-1);
@@ -992,7 +963,7 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
     }
 
     // split it by the plane of splitter polygon
-    BOOL bOnPlane = BSPCutter<Type, iDimensions>::SplitPolygon(itbpo.Current(),
+    BOOL bOnPlane = BSPCutter::SplitPolygon(itbpo.Current(),
       bpoSplitter, bpoSplitter.bpo_ulPlaneTag, bpoFront, bpoBack);
 
     // if the polygon is not coplanar with the splitter
@@ -1001,17 +972,17 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
       // if there are some parts that are front
       if (bpoFront.bpo_abedPolygonEdges.Count()>0) {
         // create a polygon in front array and add all inside parts to it
-        BSPPolygon<Type, iDimensions> *pbpo = abpoFront.New(1);
+        BSPPolygon *pbpo = abpoFront.New(1);
         pbpo->bpo_abedPolygonEdges.MoveArray(bpoFront.bpo_abedPolygonEdges);
-        *(Plane<Type, iDimensions> *)pbpo = itbpo.Current();
+        *(DOUBLEplane3D *)pbpo = itbpo.Current();
         pbpo->bpo_ulPlaneTag = itbpo->bpo_ulPlaneTag;
       }
       // if there are some parts that are back
       if (bpoBack.bpo_abedPolygonEdges.Count()>0) {
         // create a polygon in back array and add all outside parts to it
-        BSPPolygon<Type, iDimensions> *pbpo = abpoBack.New(1);
+        BSPPolygon *pbpo = abpoBack.New(1);
         pbpo->bpo_abedPolygonEdges.MoveArray(bpoBack.bpo_abedPolygonEdges);
-        *(Plane<Type, iDimensions> *)pbpo = itbpo.Current();
+        *(DOUBLEplane3D *)pbpo = itbpo.Current();
         pbpo->bpo_ulPlaneTag = itbpo->bpo_ulPlaneTag;
       }
     }
@@ -1020,7 +991,7 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
   // free this array (to not consume too much memory)
   abpoPolygons.Clear();
 
-  BSPNode<Type, iDimensions> *pbnFront, *pbnBack;
+  BSPNode *pbnFront, *pbnBack;
   // if there is some polygon in front array
   if (abpoFront.Count()>0) {
     // create front subtree using front array
@@ -1028,7 +999,7 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
   // otherwise
   } else {
     // make front node an inside leaf node
-    pbnFront = new BSPNode<Type, iDimensions>(BNL_INSIDE);
+    pbnFront = new BSPNode(BNL_INSIDE);
   }
 
   // if there is some polygon in back array
@@ -1038,20 +1009,19 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
   // otherwise
   } else {
     // make back node an outside leaf node
-    pbnBack = new BSPNode<Type, iDimensions>(BNL_OUTSIDE);
+    pbnBack = new BSPNode(BNL_OUTSIDE);
   }
 
   // make a splitter node with the front and back nodes
-  return new BSPNode<Type, iDimensions>(bpoSplitter, bpoSplitter.bpo_ulPlaneTag, *pbnFront, *pbnBack);
+  return new BSPNode(bpoSplitter, bpoSplitter.bpo_ulPlaneTag, *pbnFront, *pbnBack);
 }
 
 /*
  * Create bsp-tree from array of polygons oriented inwards.
  */
-template<class Type, int iDimensions>
-void BSPTree<Type, iDimensions>::Create(CDynamicArray<BSPPolygon<Type, iDimensions> > &abpoPolygons)
+void BSPTree::Create(CDynamicArray<BSPPolygon > &abpoPolygons)
 {
-  typedef BSPPolygon<Type, iDimensions> polygon_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
+  typedef BSPPolygon polygon_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
 
   // free eventual existing tree
   Destroy();
@@ -1065,8 +1035,7 @@ void BSPTree<Type, iDimensions>::Create(CDynamicArray<BSPPolygon<Type, iDimensio
 /*
  * Destroy bsp-tree.
  */
-template<class Type, int iDimensions>
-void BSPTree<Type, iDimensions>::Destroy(void)
+void BSPTree::Destroy(void)
 {
   // if tree is in array
   if (bt_abnNodes.Count()>0) {
@@ -1082,16 +1051,14 @@ void BSPTree<Type, iDimensions>::Destroy(void)
 }
 
 /* Test if a sphere could touch any of inside nodes. (Just a trivial rejection test) */
-template<class Type, int iDimensions>
-FLOAT BSPTree<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vSphereCenter, Type tSphereRadius) const
+FLOAT BSPTree::TestSphere(const DOUBLE3D &vSphereCenter, DOUBLE tSphereRadius) const
 {
   if (bt_pbnRoot==NULL) return FALSE;
   // just start recursive testing at root node
   return bt_pbnRoot->TestSphere(vSphereCenter, tSphereRadius);
 }
 /* Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) */
-template<class Type, int iDimensions>
-FLOAT BSPTree<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
+FLOAT BSPTree::TestBox(const OBBox<DOUBLE> &box) const
 {
   if (bt_pbnRoot==NULL) return FALSE;
   // just start recursive testing at root node
@@ -1099,20 +1066,19 @@ FLOAT BSPTree<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
 }
 
 // find minimum/maximum parameters of points on a line that are inside
-template<class Type, int iDimensions>
-void BSPTree<Type, iDimensions>::FindLineMinMax(
-  const Vector<Type, iDimensions> &v0,
-  const Vector<Type, iDimensions> &v1,
-  Type &tMin,
-  Type &tMax) const
+void BSPTree::FindLineMinMax(
+  const DOUBLE3D &v0,
+  const DOUBLE3D &v1,
+  DOUBLE &tMin,
+  DOUBLE &tMax) const
 {
   // init line
-  BSPLine<Type, iDimensions> bl;
-  bl.bl_tMin = UpperLimit(Type(0));
-  bl.bl_tMax = LowerLimit(Type(0));
+  BSPLine bl;
+  bl.bl_tMin = UpperLimit(DOUBLE(0));
+  bl.bl_tMax = LowerLimit(DOUBLE(0));
 
   // recursively split it
-  bt_pbnRoot->FindLineMinMax(bl, v0, v1, Type(0), Type(1));
+  bt_pbnRoot->FindLineMinMax(bl, v0, v1, DOUBLE(0), DOUBLE(1));
 
   // return the min/max
   tMin = bl.bl_tMin;
@@ -1121,8 +1087,7 @@ void BSPTree<Type, iDimensions>::FindLineMinMax(
 
 static INDEX _ctNextIndex;
 /* Move one subtree to array. */
-template<class Type, int iDimensions>
-void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *pbnSubtree)
+void BSPTree::MoveSubTreeToArray(BSPNode *pbnSubtree)
 {
   // if this is no node
   if (pbnSubtree==NULL) {
@@ -1134,11 +1099,11 @@ void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *
   MoveSubTreeToArray(pbnSubtree->bn_pbnBack);
 
   // get the node in array
-  BSPNode<Type, iDimensions> &bnInArray = bt_abnNodes[_ctNextIndex];
+  BSPNode &bnInArray = bt_abnNodes[_ctNextIndex];
   _ctNextIndex--;
 
   // copy properties to the array node
-  (Plane<Type, iDimensions>&)bnInArray = (Plane<Type, iDimensions>&)*pbnSubtree;
+  (DOUBLEplane3D&)bnInArray = (DOUBLEplane3D&)*pbnSubtree;
   bnInArray.bn_bnlLocation = pbnSubtree->bn_bnlLocation;
   bnInArray.bn_ulPlaneTag = pbnSubtree->bn_ulPlaneTag;
   // let plane tag hold pointer to node in array
@@ -1148,18 +1113,17 @@ void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *
   if (pbnSubtree->bn_pbnFront==NULL) {
     bnInArray.bn_pbnFront = NULL;
   } else {
-    bnInArray.bn_pbnFront = (BSPNode<Type, iDimensions>*)pbnSubtree->bn_pbnFront->bn_ulPlaneTag;
+    bnInArray.bn_pbnFront = (BSPNode*)pbnSubtree->bn_pbnFront->bn_ulPlaneTag;
   }
   if (pbnSubtree->bn_pbnBack==NULL) {
     bnInArray.bn_pbnBack = NULL;
   } else {
-    bnInArray.bn_pbnBack = (BSPNode<Type, iDimensions>*)pbnSubtree->bn_pbnBack->bn_ulPlaneTag;
+    bnInArray.bn_pbnBack = (BSPNode*)pbnSubtree->bn_pbnBack->bn_ulPlaneTag;
   }
 }
 
 /* Count nodes in subtree. */
-template<class Type, int iDimensions>
-INDEX BSPTree<Type, iDimensions>::CountNodes(BSPNode<Type, iDimensions> *pbnSubtree)
+INDEX BSPTree::CountNodes(BSPNode *pbnSubtree)
 {
   if (pbnSubtree==NULL) {
     return 0;
@@ -1171,8 +1135,7 @@ INDEX BSPTree<Type, iDimensions>::CountNodes(BSPNode<Type, iDimensions> *pbnSubt
 }
 
 /* Move all nodes to array. */
-template<class Type, int iDimensions>
-void BSPTree<Type, iDimensions>::MoveNodesToArray(void)
+void BSPTree::MoveNodesToArray(void)
 {
   // if there is no tree
   if (bt_pbnRoot == NULL) {
@@ -1197,8 +1160,7 @@ void BSPTree<Type, iDimensions>::MoveNodesToArray(void)
 }
 
 /* Read/write entire bsp tree to disk. */
-template<class Type, int iDimensions>
-void BSPTree<Type, iDimensions>::Read_t(CTStream &strm) // throw char *
+void BSPTree::Read_t(CTStream &strm) // throw char *
 {
   // free eventual existing tree
   Destroy();
@@ -1213,21 +1175,21 @@ void BSPTree<Type, iDimensions>::Read_t(CTStream &strm) // throw char *
   INDEX ctNodes;
   strm>>ctNodes;
 
-  // Cannot do sizeof(BSPNode<Type, iDimensions>) because of pointers with varying size depending on the platform
+  // Cannot do sizeof(BSPNode) because of pointers with varying size depending on the platform
   const size_t sizeOfBSPNode =
     sizeof(enum BSPNodeLocation) +
     sizeof(INDEX) + // front index
     sizeof(INDEX) + // back index
     sizeof(ULONG) + // plane tag
-    sizeof(Plane<Type, iDimensions>);
+    sizeof(DOUBLEplane3D);
 
   ASSERT(slSize == (SLONG)(sizeof(INDEX) + ctNodes * sizeOfBSPNode));
   bt_abnNodes.New(ctNodes);
   // for each node
   for(INDEX iNode=0; iNode<ctNodes; iNode++) {
-    BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
+    BSPNode &bn = bt_abnNodes[iNode];
     // read it from disk
-    strm.Read_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
+    strm.Read_t(&(DOUBLEplane3D&)bn, sizeof(DOUBLEplane3D));
     strm>>(INDEX&)bn.bn_bnlLocation;
 
     INDEX iFront;
@@ -1262,18 +1224,17 @@ void BSPTree<Type, iDimensions>::Read_t(CTStream &strm) // throw char *
   }
 }
 
-template<class Type, int iDimensions>
-void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
+void BSPTree::Write_t(CTStream &strm) // throw char *
 {
   INDEX ctNodes = bt_abnNodes.Count();
 
-  // Cannot do sizeof(BSPNode<Type, iDimensions>) because of pointers with varying size depending on the platform
+  // Cannot do sizeof(BSPNode) because of pointers with varying size depending on the platform
   const size_t sizeOfBSPNode =
     sizeof(enum BSPNodeLocation) +
     sizeof(INDEX) + // front index
     sizeof(INDEX) + // back index
     sizeof(ULONG) + // plane tag
-    sizeof(Plane<Type, iDimensions>);
+    sizeof(DOUBLEplane3D);
 
   // calculate size of chunk to write
   SLONG slSize = sizeof(INDEX) + ctNodes * sizeOfBSPNode;
@@ -1284,9 +1245,9 @@ void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
   strm<<ctNodes;
   // for each node
   for(INDEX iNode=0; iNode<ctNodes; iNode++) {
-    BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
+    BSPNode &bn = bt_abnNodes[iNode];
     // write it to disk
-    strm.Write_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
+    strm.Write_t(&(DOUBLEplane3D&)bn, sizeof(DOUBLEplane3D));
     strm<<(INDEX&)bn.bn_bnlLocation;
 
     INDEX iFront;
@@ -1310,29 +1271,3 @@ void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
   // write end id for checking
   strm.WriteID_t("BSPE");  // bsp end
 }
-
-// instantiate template classes implemented here for needed types
-#if SE1_WIN
-
-#pragma warning (disable: 4660) // if already instantiated by some class
-
-// remove templates
-template DOUBLEbspvertex3D;
-template DOUBLEbspvertexcontainer3D;
-template DOUBLEbspedge3D;
-template DOUBLEbspnode3D;
-template DOUBLEbsppolygon3D;
-template DOUBLEbsptree3D;
-template DOUBLEbspcutter3D;
-
-template FLOATbspvertex3D;
-template FLOATbspvertexcontainer3D;
-template FLOATbspedge3D;
-template FLOATbspnode3D;
-template FLOATbsppolygon3D;
-template FLOATbsptree3D;
-template FLOATbspcutter3D;
-
-#pragma warning (default: 4660)
-
-#endif // SE1_WIN
