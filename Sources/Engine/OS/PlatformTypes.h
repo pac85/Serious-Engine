@@ -17,7 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_PLATFORMTYPES_H
 #define SE_INCL_PLATFORMTYPES_H
 
-#if SE1_WIN // Windows OS
+#if SE1_WIN
 
 typedef unsigned long int ULONG;
 typedef   signed long int SLONG;
@@ -25,7 +25,7 @@ typedef   signed long int SLONG;
 typedef long int RESULT; // For error codes
 typedef long int INDEX;  // For indexed values and quantities
 
-#elif SE1_UNIX // Unix OS
+#elif SE1_UNIX
 
 // 32-bit types
 typedef unsigned int ULONG;
@@ -55,13 +55,16 @@ typedef UINT_PTR DWORD_PTR;
 
 // [Cecil] TODO: Make sure these are properly used
 typedef void *HWND;
+typedef void *HANDLE;
 typedef void *HINSTANCE;
+typedef void *HMODULE;
+typedef void *HDC;
 typedef void *HGLRC;
 
 typedef struct {
   LONG x;
   LONG y;
-} POINT;
+} POINT, *LPPOINT;
 
 typedef struct {
   LONG left;
@@ -73,6 +76,16 @@ typedef struct {
 // WAV format
 #define WAVE_FORMAT_PCM 0x0001
 
-#endif
+typedef struct {
+  SWORD wFormatTag;
+  WORD  nChannels;
+  DWORD nSamplesPerSec;
+  WORD  wBitsPerSample;
+  WORD  nBlockAlign;
+  DWORD nAvgBytesPerSec;
+  WORD  cbSize;
+} WAVEFORMATEX;
+
+#endif // SE1_UNIX
 
 #endif // include-once check
