@@ -478,19 +478,19 @@ FLOAT RM_TestRayCastHit( CModelInstance &mi, FLOATmatrix3D &mRotation, FLOAT3D &
 				MeshSurface &mshsurf = mshlod.mlod_aSurfaces[isurf];
 				INDEX cttri = mshsurf.msrf_aTriangles.Count();
 				for (int itri=0; itri<cttri;itri++) {
-					Vector<FLOAT,3> vVertex0(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].x,
-  															   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].y,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].z);
+					FLOAT3D vVertex0(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].x,
+													 _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].y,
+													 _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].z);
 
-					Vector<FLOAT,3> vVertex1(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].x,
-					 											   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].y,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].z);
+					FLOAT3D vVertex1(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].x,
+													 _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].y,
+													 _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].z);
 
-					Vector<FLOAT,3> vVertex2(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].x,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].y,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].z);
+					FLOAT3D vVertex2(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].x,
+													 _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].y,
+													 _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].z);
 
-					Plane <float,3> plTriPlane(vVertex0,vVertex1,vVertex2);
+					FLOATplane3D plTriPlane(vVertex0,vVertex1,vVertex2);
 					FLOAT fDistance0 = plTriPlane.PointDistance(vOrigin);
 					FLOAT fDistance1 = plTriPlane.PointDistance(vTarget);
 

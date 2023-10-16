@@ -192,7 +192,7 @@ public:
 /* We must declare dummy clear functions for external classes that
  * get stored in dynamic stack arrays.
  */
-inline void Clear(Vector<float,2> &dummy) {};
+inline void Clear(FLOAT2D &dummy) {};
 
 /*
  * Model that is to be rendered in this frame.
