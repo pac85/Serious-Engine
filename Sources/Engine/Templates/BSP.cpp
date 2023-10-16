@@ -247,15 +247,6 @@ void BSPVertexContainer::CreateEdges(CDynamicArray<BSPEdge> &abed, size_t ulEdge
 /////////////////////////////////////////////////////////////////////
 // BSP edge
 
-/*
- * Constructor with two vectors.
- */
-BSPEdge::BSPEdge(const DOUBLE3D &vVertex0, const DOUBLE3D &vVertex1, size_t ulTag)
-  : bed_vVertex0(vVertex0)
-  , bed_vVertex1(vVertex1)
-  , bed_ulEdgeTag(ulTag)
-{}
-
 // remove all edges marked for removal
 void BSPEdge::RemoveMarkedBSPEdges(CDynamicArray<BSPEdge> &abed)
 {
