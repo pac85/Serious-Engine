@@ -103,7 +103,7 @@ BOOL CMGEdit::OnKeyDown(int iVKey)
   }
 
   // finish editing?
-  BOOL bShift = GetKeyState(VK_SHIFT) & 0x8000;
+  const BOOL bShift = OS::GetKeyState(VK_SHIFT) & 0x8000;
   switch (iVKey) {
   case VK_UP: case VK_DOWN:
   case VK_RETURN:  case VK_LBUTTON: *mg_pstrToChange = mg_strText;  Clear(); OnStringChanged();  break;

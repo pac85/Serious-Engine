@@ -526,7 +526,7 @@ void CGame::ConsoleKeyDown( MSG msg)
     // do nothing
     return;
   }
-  BOOL bShift = GetKeyState(VK_SHIFT) & 0x8000;
+  const BOOL bShift = OS::GetKeyState(VK_SHIFT) & 0x8000;
   switch( msg.wParam) {
   case VK_RETURN:  Key_Return();      break;
   case VK_UP:      Key_ArrowUp();     break;

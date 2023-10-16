@@ -784,7 +784,7 @@ void CInput::EnableInput(HWND hwnd)
   OffsetRect(&rectClient, pt.x, pt.y);
 
   // remember mouse pos
-  GetCursorPos( &inp_ptOldMousePos);
+  OS::GetCursorPos(&inp_ptOldMousePos);
   // set mouse clip region
   ClipCursor(&rectClient);
   // determine screen center position
@@ -792,7 +792,7 @@ void CInput::EnableInput(HWND hwnd)
   inp_slScreenCenterY = (rectClient.top + rectClient.bottom) / 2;
 
   // clear mouse from screen
-  while (ShowCursor(FALSE) >= 0);
+  while (OS::ShowCursor(FALSE) >= 0);
   // save system mouse settings
   SystemParametersInfo(SPI_GETMOUSE, 0, &inp_mscMouseSettings, 0);
   // set new mouse speed
@@ -841,7 +841,7 @@ void CInput::EnableInput(HWND hwnd)
         iVirt = VK_MENU;
       }
       // is state is pressed
-      if (GetAsyncKeyState(iVirt)&0x8000) {
+      if (OS::GetAsyncKeyState(iVirt) & 0x8000) {
         // mark it as pressed
         _abKeysPressed[iKID] = 0xFF;
       }
@@ -872,7 +872,7 @@ void CInput::DisableInput( void)
   SetCursorPos( inp_ptOldMousePos.x, inp_ptOldMousePos.y);
 
   // show mouse on screen
-  while (ShowCursor(TRUE) < 0);
+  while (OS::ShowCursor(TRUE) < 0);
   // set system mouse settings
   SystemParametersInfo(SPI_SETMOUSE, 0, &inp_mscMouseSettings, 0);
 
@@ -928,7 +928,7 @@ void CInput::GetInput(BOOL bPreScan)
             iVirt = VK_MENU;
           }
           // is state is pressed
-          if (GetAsyncKeyState(iVirt)&0x8000) {
+          if (OS::GetAsyncKeyState(iVirt) & 0x8000) {
             // mark it as pressed
             inp_ubButtonsBuffer[iKID] = 0xFF;
           }
@@ -947,7 +947,7 @@ void CInput::GetInput(BOOL bPreScan)
 
   // read mouse position
   POINT pntMouse;
-  if( GetCursorPos( &pntMouse))
+  if (OS::GetCursorPos(&pntMouse))
   {
     FLOAT fDX = FLOAT( SLONG(pntMouse.x) - inp_slScreenCenterX);
     FLOAT fDY = FLOAT( SLONG(pntMouse.y) - inp_slScreenCenterY);

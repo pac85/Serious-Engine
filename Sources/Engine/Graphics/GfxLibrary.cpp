@@ -335,7 +335,7 @@ LRESULT CALLBACK LowLevelKeyboardProc (INT nCode, WPARAM wParam, LPARAM lParam)
       case HC_ACTION:
       {
           // Check to see if the CTRL key is pressed
-          bControlKeyDown = GetAsyncKeyState (VK_CONTROL) >> ((sizeof(SHORT) * 8) - 1);
+          bControlKeyDown = OS::GetAsyncKeyState(VK_CONTROL) >> ((sizeof(SHORT) * 8) - 1);
           
           // Disable CTRL+ESC
           if (pkbhs->vkCode == VK_ESCAPE && bControlKeyDown)

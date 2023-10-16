@@ -206,8 +206,8 @@ void UpdateInputEnabledState(void)
 
   // input should be enabled if application is active
   // and no menu is active and no console is active
-  BOOL bShouldBeEnabled = (!IsIconic(_hwndMain) && !bMenuActive && _pGame->gm_csConsoleState==CS_OFF
-                       && (_pGame->gm_csComputerState==CS_OFF || _pGame->gm_csComputerState==CS_ONINBACKGROUND))
+  BOOL bShouldBeEnabled = (!OS::IsIconic(_hwndMain) && !bMenuActive && _pGame->gm_csConsoleState == CS_OFF
+                       && (_pGame->gm_csComputerState == CS_OFF || _pGame->gm_csComputerState == CS_ONINBACKGROUND))
                        || _bDefiningKey;
 
   // if should be turned off
@@ -248,7 +248,7 @@ void LimitFrameRate(void)
   sam_iMaxFPSActive   = ClampDn( (INDEX)sam_iMaxFPSActive,   1L);
   sam_iMaxFPSInactive = ClampDn( (INDEX)sam_iMaxFPSInactive, 1L);
   INDEX iMaxFPS = sam_iMaxFPSActive;
-  if( IsIconic(_hwndMain)) iMaxFPS = sam_iMaxFPSInactive;
+  if (OS::IsIconic(_hwndMain)) iMaxFPS = sam_iMaxFPSInactive;
   if(_pGame->gm_CurrentSplitScreenCfg==CGame::SSC_DEDICATED) {
     iMaxFPS = ClampDn(iMaxFPS, 60L); // never go very slow if dedicated server
   }
@@ -704,7 +704,7 @@ void DoGame(void)
   }
 
   // redraw the view
-  if( !IsIconic(_hwndMain) && pdp!=NULL && pdp->Lock())
+  if (!OS::IsIconic(_hwndMain) && pdp != NULL && pdp->Lock())
   {
     if( _gmRunningGameMode!=GM_NONE && !bMenuActive ) {
       // handle pretouching of textures and shadowmaps
@@ -826,7 +826,7 @@ void QuitScreenLoop(void)
     _pSound->UpdateSounds();
     // while there are any messages in the message queue
     MSG msg;
-    while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+    while (OS::Message::Peek(&msg, NULL, 0, 0, PM_REMOVE)) {
       // if it is not a keyboard or mouse message
       if(msg.message==WM_LBUTTONDOWN||
          msg.message==WM_RBUTTONDOWN||
@@ -857,15 +857,15 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
   {
     // while there are any messages in the message queue
     MSG msg;
-    while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE)) {
+    while (OS::Message::Peek(&msg, NULL, 0, 0, PM_REMOVE)) {
       // if it is not a mouse message
       if( !(msg.message>=WM_MOUSEFIRST && msg.message<=WM_MOUSELAST) ) {
         // if not system key messages
         if( !(msg.message==WM_KEYDOWN && msg.wParam==VK_F10
             ||msg.message==WM_SYSKEYDOWN)) {
           // dispatch it
-          TranslateMessage(&msg);
-          DispatchMessage(&msg);
+          OS::Message::Translate(&msg);
+          OS::Message::Dispatch(&msg);
         }
       }
 
@@ -925,7 +925,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
       }
 
       // toggle full-screen on alt-enter
-      if( msg.message==WM_SYSKEYDOWN && msg.wParam==VK_RETURN && !IsIconic(_hwndMain)) {
+      if (msg.message == WM_SYSKEYDOWN && msg.wParam == VK_RETURN && !OS::IsIconic(_hwndMain)) {
         StartNewMode( (GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
                       (enum DisplayDepth)sam_iDisplayDepth, !sam_bFullScreenActive);
       }
@@ -1155,8 +1155,8 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
     // get real cursor position
     if( _pGame->gm_csComputerState!=CS_OFF && _pGame->gm_csComputerState!=CS_ONINBACKGROUND) {
       POINT pt;
-      ::GetCursorPos(&pt);
-      ::ScreenToClient(_hwndMain, &pt);
+      OS::GetCursorPos(&pt);
+      OS::ScreenToClient(_hwndMain, &pt);
       _pGame->ComputerMouseMove(pt.x, pt.y);
     }
 

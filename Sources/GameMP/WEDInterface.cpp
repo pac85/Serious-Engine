@@ -107,19 +107,19 @@ void CGame::QuickTest(const CTFileName &fnMapName,
   {
     // while there are any messages in the message queue
     MSG msg;
-    while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE)) {
+    while (OS::Message::Peek( &msg, NULL, 0, 0, PM_REMOVE)) {
       // if it is not a mouse message
       if( !(msg.message>=WM_MOUSEFIRST && msg.message<=WM_MOUSELAST)) {
         // if not system key messages
         if( !(msg.message==WM_KEYDOWN && msg.wParam==VK_F10
             ||msg.message==WM_SYSKEYDOWN)) {
           // dispatch it
-          TranslateMessage(&msg);
+          OS::Message::Translate(&msg);
         }
         // if paint message
         if( msg.message==WM_PAINT) {
           // dispatch it
-          DispatchMessage(&msg);
+          OS::Message::Dispatch(&msg);
         }
       }
 
@@ -205,8 +205,8 @@ void CGame::QuickTest(const CTFileName &fnMapName,
     // get real cursor position
     if (_pGame->gm_csComputerState != CS_OFF) {
       POINT pt;
-      ::GetCursorPos(&pt);
-      ::ScreenToClient(pvp->vp_hWnd, &pt);
+      OS::GetCursorPos(&pt);
+      OS::ScreenToClient(pvp->vp_hWnd, &pt);
       ComputerMouseMove(pt.x, pt.y);
     }
     UpdatePauseState();

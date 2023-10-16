@@ -20,14 +20,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Compatibility with multiple platforms
 #include <Engine/OS/PlatformSpecific.h>
 
-// Unix compatibility
-#if SE1_UNIX
-  typedef void *HINSTANCE;
-  typedef void *HMODULE;
-#endif
+// Non-Windows OS
+#if !SE1_WIN
 
-class OS {
+#define LOWORD(x) (x & 0xFFFF)
+#define HIWORD(x) ((x >> 16) & 0xFFFF)
+
+#endif // !SE1_WIN
+
+class ENGINE_API OS {
+  // Dynamic library methods
   public:
+
     // Load library
     static HMODULE LoadLib(const char *strLibrary);
 
@@ -36,6 +40,27 @@ class OS {
 
     // Hook library symbol
     static void *GetLibSymbol(HMODULE hLib, const char *strSymbol);
+
+  // Cross-platform reimplementations of methods from Windows API
+  public:
+
+    struct ENGINE_API Message {
+      // PeekMessage()
+      static BOOL Peek(MSG *lpMsg, void *hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
+
+      // TranslateMessage();
+      static void Translate(const MSG *lpMsg);
+
+      // DispatchMessage();
+      static void Dispatch(const MSG *lpMsg);
+    };
+
+    static BOOL IsIconic(void *hWnd);
+    static UWORD GetKeyState(int vKey);
+    static UWORD GetAsyncKeyState(int vKey);
+    static BOOL GetCursorPos(LPPOINT lpPoint);
+    static BOOL ScreenToClient(void *hWnd, LPPOINT lpPoint);
+    static int ShowCursor(BOOL bShow);
 };
 
 #endif // include-once check

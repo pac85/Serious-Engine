@@ -396,6 +396,7 @@
     <ClCompile Include="Graphics\ViewPort.cpp" />
     <ClCompile Include="OS\DynamicLibraries.cpp" />
     <ClCompile Include="OS\FileSystem.cpp" />
+    <ClCompile Include="OS\WindowsAPI.cpp" />
     <ClCompile Include="Sound\SoundData.cpp" />
     <ClCompile Include="Sound\SoundDecoder.cpp" />
     <ClCompile Include="Sound\SoundLibrary.cpp" />

@@ -721,6 +721,9 @@
     <ClCompile Include="OS\FileSystem.cpp">
       <Filter>Source Files\OS</Filter>
     </ClCompile>
+    <ClCompile Include="OS\WindowsAPI.cpp">
+      <Filter>Source Files\OS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Anim.h">

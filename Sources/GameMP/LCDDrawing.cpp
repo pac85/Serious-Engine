@@ -211,10 +211,10 @@ extern void LCDDrawPointer(PIX pixI, PIX pixJ)
   CDisplayMode dmCurrent;
   _pGfx->GetCurrentDisplayMode(dmCurrent);
   if (dmCurrent.IsFullScreen()) {
-    while (ShowCursor(FALSE) >= 0);
+    while (OS::ShowCursor(FALSE) >= 0);
   } else {
     if (!_pInput->IsInputEnabled()) {
-      while (ShowCursor(TRUE) < 0);
+      while (OS::ShowCursor(TRUE) < 0);
     }
     return;
   }

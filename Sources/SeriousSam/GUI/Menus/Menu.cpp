@@ -534,8 +534,8 @@ void MenuUpdateMouseFocus(void)
 {
   // get real cursor position
   POINT pt;
-  GetCursorPos(&pt);
-  ScreenToClient(_hwndMain, &pt);
+  OS::GetCursorPos(&pt);
+  OS::ScreenToClient(_hwndMain, &pt);
   extern INDEX sam_bWideScreen;
   extern CDrawPort *pdp;
   if( sam_bWideScreen) {

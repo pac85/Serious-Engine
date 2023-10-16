@@ -326,7 +326,7 @@ void CMGServerList::OnMouseOver(PIX pixI, PIX pixJ)
   mg_pixMouseI = pixI;
   mg_pixMouseJ = pixJ;
 
-  if (!(GetKeyState(VK_LBUTTON) & 0x8000)) {
+  if (!(OS::GetKeyState(VK_LBUTTON) & 0x8000)) {
     mg_pixDragJ = -1;
   }
 
