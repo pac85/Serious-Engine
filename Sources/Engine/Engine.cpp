@@ -285,6 +285,10 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   _pAnimSetStock     = new CStock_CAnimSet;
   _pShaderStock      = new CStock_CShader;
 
+  // init main shell
+  _pShell = new CShell;
+  _pShell->Initialize();
+
   _pTimer = new CTimer;
   _pGfx   = new CGfxLibrary;
   _pSound = new CSoundLibrary;
@@ -331,10 +335,6 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
     CPrintF(TRANS("Error getting OS info: %s\n"), GetWindowsError(GetLastError()) );
   }
   CPrintF("\n");
-
-  // init main shell
-  _pShell = new CShell;
-  _pShell->Initialize();
 
   // report CPU
   CPrintF(TRANS("Detecting CPU...\n"));
