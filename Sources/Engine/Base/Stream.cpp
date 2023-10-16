@@ -18,8 +18,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <io.h>
-#include <DbgHelp.h>
+
+#if SE1_WIN
+  #include <io.h>
+  #include <DbgHelp.h>
+#endif
+
 #include <Engine/Base/Protection.h>
 
 #include <Engine/Base/Stream.h>
@@ -258,6 +262,8 @@ void CTStream::DisableStreamHandling(void)
   _plhOpenedStreams = NULL;
 }
 
+#if SE1_WIN
+
 int CTStream::ExceptionFilter(DWORD dwCode, _EXCEPTION_POINTERS *pExceptionInfoPtrs)
 {
   // If the exception is not a page fault, exit.
@@ -303,6 +309,8 @@ void CTStream::ExceptionFatalError(void)
   FatalError(GetWindowsError(GetLastError()).ConstData());
 }
 
+#endif // SE1_WIN
+
 /*
  * Throw an exception of formatted string.
  */
@@ -317,6 +325,7 @@ void CTStream::Throw_t(char *strFormat, ...)  // throws char *
   va_list arg;
   va_start(arg, strFormat); // variable arguments start after this argument
   _vsnprintf(strBuffer, slBufferSize, strFormatBuffer, arg);
+  va_end(arg);
   throw strBuffer;
 }
 
@@ -368,7 +377,7 @@ void CTStream::GetLine_t(char *strBuffer, SLONG slBufferSize, char cDelimiter /*
   INDEX iLetters = 0;
   // test if EOF reached
   if(AtEOF()) {
-    ThrowF_t(TRANS("EOF reached, file %s"), strm_strStreamDescription);
+    ThrowF_t(TRANS("EOF reached, file %s"), strm_strStreamDescription.ConstData());
   }
   // get line from istream
   FOREVER
@@ -455,6 +464,7 @@ void CTStream::FPrintF_t(const char *strFormat, ...) // throw char *
   va_list arg;
   va_start(arg, strFormat); // variable arguments start after this argument
   _vsnprintf(strBuffer, slBufferSize, strFormat, arg);
+  va_end(arg);
   // print the buffer
   PutString_t(strBuffer);
 }
@@ -493,11 +503,13 @@ void CTStream::ExpectID_t(const CChunkID &cidExpected) // throws char *
 void CTStream::ExpectKeyword_t(const CTString &strKeyword) // throw char *
 {
   // check that the keyword is present
-  for (INDEX iKeywordChar = 0; iKeywordChar < strKeyword.Length(); iKeywordChar++) {
+  const INDEX ctChars = strKeyword.Length();
+
+  for (INDEX iKeywordChar = 0; iKeywordChar < ctChars; iKeywordChar++) {
     SBYTE chKeywordChar;
     (*this)>>chKeywordChar;
     if (chKeywordChar!=strKeyword[iKeywordChar]) {
-      ThrowF_t(TRANS("Expected keyword %s not found"), strKeyword);
+      ThrowF_t(TRANS("Expected keyword %s not found"), strKeyword.ConstData());
     }
   }
 }
@@ -892,7 +904,7 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
       fstrm_iZipHandle = UNZIPOpen_t(fnmFullFileName);
       fstrm_slZipSize = UNZIPGetSize(fstrm_iZipHandle);
       // load the file from the zip in the buffer
-      fstrm_pubZipBuffer = (UBYTE*)VirtualAlloc(NULL, fstrm_slZipSize, MEM_COMMIT, PAGE_READWRITE);
+      fstrm_pubZipBuffer = new UBYTE[fstrm_slZipSize];
       UNZIPReadBlock_t(fstrm_iZipHandle, (UBYTE*)fstrm_pubZipBuffer, 0, fstrm_slZipSize);
     // if it is a physical file
     } else if (iFile==EFP_FILE) {
@@ -994,7 +1006,7 @@ void CTFileStream::Close(void)
     UNZIPClose(fstrm_iZipHandle);
     fstrm_iZipHandle = -1;
 
-    VirtualFree(fstrm_pubZipBuffer, 0, MEM_RELEASE);
+    delete[] fstrm_pubZipBuffer;
 
     _ulVirtuallyAllocatedSpace -= fstrm_slZipSize;
     //CPrintF("Freed virtual memory with size ^c00ff00%d KB^C (now %d KB)\n", (fstrm_slZipSize / 1000), (_ulVirtuallyAllocatedSpace / 1000));
@@ -1131,7 +1143,7 @@ CTMemoryStream::CTMemoryStream(void)
   // add this newly created memory stream into opened stream list
   _plhOpenedStreams->AddTail( strm_lnListNode);
   // allocate amount of memory needed to hold maximum allowed file length (when saving)
-  mstrm_pubBuffer = (UBYTE*)VirtualAlloc(NULL, _ulMaxLenghtOfSavingFile, MEM_COMMIT, PAGE_READWRITE);
+  mstrm_pubBuffer = new UBYTE[_ulMaxLenghtOfSavingFile];
   mstrm_pubBufferEnd = mstrm_pubBuffer + _ulMaxLenghtOfSavingFile;
   mstrm_pubBufferMax = mstrm_pubBuffer;
 }
@@ -1149,7 +1161,7 @@ CTMemoryStream::CTMemoryStream(void *pvBuffer, SLONG slSize,
   }
 
   // allocate amount of memory needed to hold maximum allowed file length (when saving)
-  mstrm_pubBuffer = (UBYTE*)VirtualAlloc(NULL, _ulMaxLenghtOfSavingFile, MEM_COMMIT, PAGE_READWRITE);
+  mstrm_pubBuffer = new UBYTE[_ulMaxLenghtOfSavingFile];
   mstrm_pubBufferEnd = mstrm_pubBuffer + _ulMaxLenghtOfSavingFile;
   mstrm_pubBufferMax = mstrm_pubBuffer + slSize;
   // copy given block of memory into memory file
@@ -1178,7 +1190,7 @@ CTMemoryStream::CTMemoryStream(void *pvBuffer, SLONG slSize,
 CTMemoryStream::~CTMemoryStream(void)
 {
   ASSERT(mstrm_ctLocked==0);
-  VirtualFree(mstrm_pubBuffer, 0, MEM_RELEASE);
+  delete[] mstrm_pubBuffer;
   // remove memory stream from list of curently opened streams
   strm_lnListNode.Remove();
 }

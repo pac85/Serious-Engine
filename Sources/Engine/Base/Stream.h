@@ -42,8 +42,8 @@ ENGINE_API extern ULONG _ulMaxLengthOfSavingFile;
   }; CTStream::DisableStreamHandling();
 
 #else
-  #define CTSTREAM_BEGIN
-  #define CTSTREAM_END ;
+  #define CTSTREAM_BEGIN CTStream::EnableStreamHandling();
+  #define CTSTREAM_END   CTStream::DisableStreamHandling();
 #endif
 
 /*
@@ -132,10 +132,10 @@ public:
 #if SE1_WIN /* rcg10042001 !!! FIXME */
   /* Static function to filter exceptions and intercept access violation */
   static int ExceptionFilter(DWORD dwCode, _EXCEPTION_POINTERS *pExceptionInfoPtrs);
-#endif
 
   /* Static function to report fatal exception error. */
   static void ExceptionFatalError(void);
+#endif
 
   /* Default constructor. */
   CTStream(void);
