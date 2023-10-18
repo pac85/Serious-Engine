@@ -26,8 +26,9 @@ This is a fork of Croteam's Serious Engine 1.10 that aims to provide code that i
 - `LWSkaExporter` - Exporter of SKA models in ASCII format for use in LightWave
 - `GameAgent` - Custom master server emulator written in Python
 - `libogg`, `libvorbis` - Third party libraries used for playing OGG-encoded ingame music (see http://www.vorbis.com/ for more information)
+- `zlib` - Third party static library for working with ZIP archives (see https://zlib.net/ for more information)
 
-These have been modified to run correctly under the recent versions of Windows. (Tested: Win7 x64, Win8 x64, Win8.1 x64)
+These have been modified to run correctly under the recent versions of Windows. (Tested: Win7 x64, Win8 x64, Win8.1 x64, Win10 x64)
 
 # Building
 
@@ -37,15 +38,14 @@ Once you've installed **Visual Studio** and (optionally) DirectX8 SDK, you can b
 
 # Optional features
 
-DirectX support is disabled by default. If you need DirectX support you'll have to download DirectX8 SDK (headers & libraries) ( https://www.microsoft.com/en-us/download/details.aspx?id=6812 ) and then define a `SE1_D3D` macro for all projects in the solution (you can do it by defining it in the `SE1GenericPreproc` property inside `Sources/Properties/Common.props`). You will also need to make sure the DirectX8 headers and libraries are located in the following folders (make the folder structure if it doesn't exist):
-- `Tools.Win32/Libraries/DX8SDK/Include/`
-- `Tools.Win32/Libraries/DX8SDK/Lib/`
+These features are disabled by default but can be enabled if you wish to extend the capabilities of your Serious Engine build.
 
-MP3 playback is disabled by default. If you need this feature, you will have to copy `amp11lib.dll` into the 'Bin' directory (and 'Bin/Debug' in Debug mode). The `amp11lib.dll` library is distributed with older versions of **Serious Sam Classic: The First Encounter**.
-
-3D Exploration support is disabled in the open source version of Serious Engine 1 due to copyright issues. If you need to create new models, you will have to either use editing tools from any of the original games, or write your own code for 3D object import/export.
-
-IFeel support is disabled in the open source version of Serious Engine 1 due to copyright issues. If you need IFeel support, you will have to copy `IFC22.dll` and `ImmWrapper.dll` from the original games into the `Bin` folder.
+- **DirectX:** Download DirectX8 SDK (headers & libraries) ( https://www.microsoft.com/en-us/download/details.aspx?id=6812 ) and then define a `SE1_D3D` macro for all projects in the solution (you can do it by adding it to the `SE1GenericPreproc` property inside `Sources/Properties/Common.props`). You will also need to make sure the DirectX8 headers and libraries are located in the following folders (make the folder structure if it doesn't exist):
+  - `Tools.Win32/Libraries/DX8SDK/Include/`
+  - `Tools.Win32/Libraries/DX8SDK/Lib/`
+- **MP3 playback:** Copy `amp11lib.dll` library into the 'Bin' directory (and 'Bin/Debug' in Debug mode) that used to be distributed with older versions of **Serious Sam Classic: The First Encounter**.
+- **3D Exploration**: Support is disabled due to copyright issues. If you need to create new models, you will have to either use editing tools from any of the original games, or write your own code for 3D object import/export.
+- **IFeel:** Support is disabled due to copyright issues. If you need IFeel support, you will have to copy `IFC22.dll` and `ImmWrapper.dll` from the original games into the `Bin` folder.
 
 # Running
 
@@ -66,6 +66,6 @@ Serious Engine is licensed under the GNU GPL v2 (see `LICENSE` file).
 
 Some of the code included with the engine sources under `Sources/ThirdParty` is not licensed under the GNU GPL v2:
 
-- zlib (located in `zlib`) by Jean-loup Gailly and Mark Adler
-- LightWave SDK (located in `LWSkaExporter/SDK`) by NewTek Inc.
-- libogg & libvorbis (located in `libogg` and `libvorbis`) by Xiph.Org Foundation
+- **zlib** (located in `zlib`) by Jean-loup Gailly and Mark Adler
+- **LightWave SDK** (located in `LWSkaExporter/SDK`) by NewTek Inc.
+- **libogg** & **libvorbis** (located in `libogg` and `libvorbis`) by Xiph.Org Foundation
