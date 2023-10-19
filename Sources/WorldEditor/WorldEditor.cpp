@@ -1526,7 +1526,7 @@ void CValuesForPrimitive::Write_t(CTStream &strmFile)
   strmFile << vfp_iBottomShape;
 
   strmFile << vfp_fAmplitude;
-  strmFile << vfp_fnDisplacement;
+  strmFile.WriteFileName(vfp_fnDisplacement);
   strmFile << vfp_fMipStart;
   strmFile << vfp_fMipStep;
 }
@@ -1590,7 +1590,7 @@ void CValuesForPrimitive::Read_t(CTStream &strmFile)
   strmFile >> vfp_iBottomShape;
 
   strmFile >> vfp_fAmplitude;
-  strmFile >> vfp_fnDisplacement;
+  strmFile.ReadFileName(vfp_fnDisplacement);
   if( cidVersion == CChunkID(VALUES_FOR_PRIMITIVE_VERSION3))
   {
     strmFile >> vfp_fMipStart;

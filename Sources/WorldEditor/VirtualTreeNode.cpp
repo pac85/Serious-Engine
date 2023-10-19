@@ -86,7 +86,7 @@ void CVirtualTreeNode::Read_t( CTStream *pFile, CVirtualTreeNode* pParent)
   {
     pFile->Read_t( &vtn_bSelected, sizeof(BOOL));       // Item's selection bit
     *pFile >> vtn_strName;
-    *pFile >> vtn_fnItem;
+    pFile->ReadFileName(vtn_fnItem);
   }
 }
 
@@ -109,7 +109,7 @@ void CVirtualTreeNode::Write_t( CTStream *pFile)
   {
     pFile->Write_t( &vtn_bSelected, sizeof(BOOL));
     *pFile << vtn_strName;
-    *pFile << vtn_fnItem;
+    pFile->WriteFileName(vtn_fnItem);
   }
 }
 

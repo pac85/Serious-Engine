@@ -149,7 +149,7 @@ void LoadSurface(CTFileName fnSurface)
     for( INDEX iLayer=0; iLayer<ctLayers; iLayer++)
     {
       CTFileName fnTexture;
-      strmFile>>fnTexture;
+      strmFile.ReadFileName(fnTexture);
       // check if texture exists
       if(!FileExists( fnTexture))
       {
@@ -243,7 +243,7 @@ void SaveSurface(CTFileName fnSurface)
       if(ptlLayer->tl_ptdTexture==NULL) continue;
       CTFileName fnTexture=ptlLayer->tl_ptdTexture->GetName();
 
-      strmFile<<fnTexture;
+      strmFile.WriteFileName(fnTexture);
 
       // save surface
       strmFile<<ptlLayer->tl_fRotateX;
