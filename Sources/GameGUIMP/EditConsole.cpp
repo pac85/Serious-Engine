@@ -85,7 +85,7 @@ BOOL CEditConsole::PreTranslateMessage(MSG* pMsg)
     if( !bCtrl && (iCharOffset != -1) )
     {
       // extract string to execute
-      wchar_t achrToExecute[ 1024];
+      TCHAR achrToExecute[ 1024];
       INDEX ctLetters = GetLine( iCurrentLine, achrToExecute, 1023);
       // set EOF delimiter
       achrToExecute[ ctLetters] = 0;
