@@ -1641,7 +1641,8 @@ functions:
   CTString GetStatsRealWorldStarted(void)
   {
     struct tm *newtime;
-    newtime = localtime((const time_t*)&m_iStartTime);
+    time_t tmStart = m_iStartTime;
+    newtime = localtime(&tmStart);
 
     setlocale(LC_ALL, "");
     CTString strTimeline;
@@ -5368,7 +5369,9 @@ functions:
     m_iMayRespawn = 0;
     m_bEndOfLevel = TRUE;
     // remember end time
-    time((time_t*)&m_iEndTime);
+    time_t tmEnd;
+    time(&tmEnd);
+    m_iEndTime = tmEnd;
     // add time score
     TIME tmLevelTime = _pTimer->CurrentTick()-m_tmLevelStarted;
     m_psLevelStats.ps_tmTime = tmLevelTime;
@@ -6550,7 +6553,9 @@ procedures:
   Main(EVoid evoid)
   {
     // remember start time
-    time((time_t*)&m_iStartTime);
+    time_t tmStart;
+    time(&tmStart);
+    m_iStartTime = tmStart;
 
     m_ctUnreadMessages = 0;
     SetFlags(GetFlags()|ENF_CROSSESLEVELS|ENF_NOTIFYLEVELCHANGE);
