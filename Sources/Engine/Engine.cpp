@@ -530,10 +530,10 @@ ENGINE_API void SE_EndEngine(void)
   CRCT_Clear();
 
   // shutdown
-  if( _pNetwork != NULL) { delete _pNetwork;  _pNetwork=NULL; }
   delete _pInput;    _pInput   = NULL;  
   delete _pSound;    _pSound   = NULL;  
   delete _pGfx;      _pGfx     = NULL;    
+  if (_pNetwork != NULL) { delete _pNetwork; _pNetwork = NULL; }
   delete _pTimer;    _pTimer   = NULL;  
   delete _pShell;    _pShell   = NULL;  
   delete _pConsole;  _pConsole = NULL;
