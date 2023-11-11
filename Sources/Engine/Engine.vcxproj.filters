@@ -1329,6 +1329,15 @@
     <ClInclude Include="Graphics\GfxInterface.h">
       <Filter>Header Files\Graphics Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Gfx_wrapper_Direct3D.h">
+      <Filter>Header Files\Graphics Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Gfx_wrapper_Null.h">
+      <Filter>Header Files\Graphics Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Gfx_wrapper_OpenGL.h">
+      <Filter>Header Files\Graphics Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Base\CTString.inl">

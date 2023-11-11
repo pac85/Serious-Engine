@@ -678,6 +678,9 @@
     <ClInclude Include="GameAgent\GameAgent.h" />
     <ClInclude Include="GameAgent\MSLegacy.h" />
     <ClInclude Include="Graphics\GfxInterface.h" />
+    <ClInclude Include="Graphics\Gfx_wrapper_Direct3D.h" />
+    <ClInclude Include="Graphics\Gfx_wrapper_Null.h" />
+    <ClInclude Include="Graphics\Gfx_wrapper_OpenGL.h" />
     <ClInclude Include="Math\AABBox.h" />
     <ClInclude Include="Math\FixInt.h" />
     <ClInclude Include="Math\Float.h" />
