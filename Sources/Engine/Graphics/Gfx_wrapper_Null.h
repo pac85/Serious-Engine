@@ -107,7 +107,7 @@ class IGfxNull : public IGfxInterface
   public:
 
     // Prepare vertex array for API
-    virtual void SetVertexArray(virtual void *pvtx, INDEX ctVtx, BOOL bWithShade) { NOTHING; };
+    virtual void SetVertexArray(void *pvtx, INDEX ctVtx) { NOTHING; };
 
     // Prepare normal array for API
     virtual void SetNormalArray(GFXNormal *pnor) { NOTHING; };

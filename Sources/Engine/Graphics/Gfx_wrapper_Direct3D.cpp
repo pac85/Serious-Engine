@@ -15,6 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #ifdef SE1_D3D
 
+#include <Engine/Graphics/Gfx_wrapper_Direct3D.h>
 
 // helper for keep user clip plane of D3D happy (i.e. updated as view matrix changes)
 static void UpdateClipPlane_D3D(void)
@@ -59,10 +60,8 @@ static void UpdateClipPlane_D3D(void)
 // ENABLE/DISABLE FUNCTIONS
 
 
-static void d3d_EnableTexture(void)
+void IGfxD3D8::EnableTexture(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -87,10 +86,8 @@ static void d3d_EnableTexture(void)
 
 
 
-static void d3d_DisableTexture(void)
+void IGfxD3D8::DisableTexture(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -114,10 +111,8 @@ static void d3d_DisableTexture(void)
 
 
 
-static void d3d_EnableDepthTest(void)
+void IGfxD3D8::EnableDepthTest(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -139,10 +134,8 @@ static void d3d_EnableDepthTest(void)
 
 
 
-static void d3d_DisableDepthTest(void)
+void IGfxD3D8::DisableDepthTest(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -165,10 +158,9 @@ static void d3d_DisableDepthTest(void)
 
 
 
-static void d3d_EnableDepthBias(void)
+void IGfxD3D8::EnableDepthBias(void)
 {
   // only if supported
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   if( !(_pGfx->gl_ulFlags&GLF_D3D_ZBIAS)) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -181,10 +173,9 @@ static void d3d_EnableDepthBias(void)
 
 
 
-static void d3d_DisableDepthBias(void)
+void IGfxD3D8::DisableDepthBias(void)
 {
   // only if supported
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   if( !(_pGfx->gl_ulFlags&GLF_D3D_ZBIAS)) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -197,10 +188,8 @@ static void d3d_DisableDepthBias(void)
 
 
 
-static void d3d_EnableDepthWrite(void)
+void IGfxD3D8::EnableDepthWrite(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -223,10 +212,8 @@ static void d3d_EnableDepthWrite(void)
 
 
 
-static void d3d_DisableDepthWrite(void)
+void IGfxD3D8::DisableDepthWrite(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -249,10 +236,8 @@ static void d3d_DisableDepthWrite(void)
 
 
 
-static void d3d_EnableDither(void)
+void IGfxD3D8::EnableDither(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -275,10 +260,8 @@ static void d3d_EnableDither(void)
 
 
 
-static void d3d_DisableDither(void)
+void IGfxD3D8::DisableDither(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -301,10 +284,8 @@ static void d3d_DisableDither(void)
 
 
 
-static void d3d_EnableAlphaTest(void)
+void IGfxD3D8::EnableAlphaTest(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -327,10 +308,8 @@ static void d3d_EnableAlphaTest(void)
 
 
 
-static void d3d_DisableAlphaTest(void)
+void IGfxD3D8::DisableAlphaTest(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -353,10 +332,8 @@ static void d3d_DisableAlphaTest(void)
 
 
 
-static void d3d_EnableBlend(void)
+void IGfxD3D8::EnableBlend(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -376,16 +353,14 @@ static void d3d_EnableBlend(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 
   // adjust dithering
-  if( gap_iDithering==2) d3d_EnableDither();
-  else d3d_DisableDither();
+  if( gap_iDithering==2) EnableDither();
+  else DisableDither();
 }
 
 
 
-static void d3d_DisableBlend(void)
+void IGfxD3D8::DisableBlend(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -406,16 +381,14 @@ static void d3d_DisableBlend(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 
   // adjust dithering
-  if( gap_iDithering==0) d3d_DisableDither();
-  else d3d_EnableDither();
+  if( gap_iDithering==0) DisableDither();
+  else EnableDither();
 }
 
 
 
-static void d3d_EnableClipping(void)
+void IGfxD3D8::EnableClipping(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes = GFX_bClipping;
@@ -439,13 +412,11 @@ static void d3d_EnableClipping(void)
 
 
 
-static void d3d_DisableClipping(void)
+void IGfxD3D8::DisableClipping(void)
 {
   // only if allowed
   if( gap_iOptimizeClipping<2) return;
 
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes;
@@ -473,13 +444,11 @@ static void d3d_DisableClipping(void)
 
 
 
-static void d3d_EnableClipPlane(void)
+void IGfxD3D8::EnableClipPlane(void)
 {
   // only if supported
   if( !(_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE)) return;
 
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -510,13 +479,11 @@ static void d3d_EnableClipPlane(void)
 
 
 
-static void d3d_DisableClipPlane(void)
+void IGfxD3D8::DisableClipPlane(void)
 {
   // only if supported
   if( !(_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE)) return;
 
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes = GFX_bClipPlane; 
@@ -543,10 +510,8 @@ static void d3d_DisableClipPlane(void)
 
 
 
-static void d3d_EnableColorArray(void)
+void IGfxD3D8::EnableColorArray(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -571,10 +536,8 @@ static void d3d_EnableColorArray(void)
 
 
 // enable usage of constant color for subsequent rendering
-static void d3d_DisableColorArray(void)
+void IGfxD3D8::DisableColorArray(void)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   BOOL bRes; 
@@ -598,13 +561,11 @@ static void d3d_DisableColorArray(void)
 
 
 
-static void d3d_EnableTruform(void)
+void IGfxD3D8::EnableTruform(void)
 {
   // skip if Truform isn't set
   if( truform_iLevel<1) return;
 
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
   FLOAT fSegments;
 #ifndef NDEBUG
@@ -629,13 +590,11 @@ static void d3d_EnableTruform(void)
 
 
 
-static void d3d_DisableTruform(void)
+void IGfxD3D8::DisableTruform(void)
 {
   // skip if Truform isn't set
   if( truform_iLevel<1) return;
 
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
   FLOAT fSegments;
 #ifndef NDEBUG
@@ -692,10 +651,8 @@ __forceinline GfxBlend BlendFromD3D( _D3DBLEND d3dbFunc) {
 
 
 // set blending operations
-static void d3d_BlendFunc( GfxBlend eSrc, GfxBlend eDst)
+void IGfxD3D8::BlendFunc( GfxBlend eSrc, GfxBlend eDst)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   GfxBlend  gfxSrc, gfxDst; 
@@ -728,16 +685,15 @@ static void d3d_BlendFunc( GfxBlend eSrc, GfxBlend eDst)
 
 
 
-static void d3d_SetColorMask( ULONG ulColorMask)
+void IGfxD3D8::SetColorMask( ULONG ulColorMask)
 {
   // only if supported
   _ulCurrentColorMask = ulColorMask; // keep for Get...()
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   if( !(_pGfx->gl_ulFlags&GLF_D3D_COLORWRITES))
   { // emulate disabling of all channels
     if( ulColorMask==0) {
-      d3d_EnableBlend();
-      d3d_BlendFunc( GFX_ZERO, GFX_ONE);
+      EnableBlend();
+      BlendFunc( GFX_ZERO, GFX_ONE);
     } // done
     return;
   }
@@ -790,10 +746,8 @@ __forceinline GfxComp CompFromD3D( _D3DCMPFUNC d3dcFunc) {
 
 
 // set depth buffer compare mode
-static void d3d_DepthFunc( GfxComp eFunc)
+void IGfxD3D8::DepthFunc( GfxComp eFunc)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
  _D3DCMPFUNC d3dcFunc;
 #ifndef NDEBUG
@@ -820,13 +774,11 @@ static void d3d_DepthFunc( GfxComp eFunc)
     
 
 // set depth buffer range
-static void d3d_DepthRange( FLOAT fMin, FLOAT fMax)
+void IGfxD3D8::DepthRange( FLOAT fMin, FLOAT fMax)
 {
   // D3D doesn't allow 0 for max value (no comment!)
   if( fMax<0.001f) fMax = 0.001f; 
 
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
   D3DVIEWPORT8 d3dViewport;
 #ifndef NDEBUG
@@ -856,11 +808,10 @@ static void d3d_DepthRange( FLOAT fMin, FLOAT fMax)
 
 
 
-static void d3d_CullFace( GfxFace eFace)
+void IGfxD3D8::CullFace( GfxFace eFace)
 {
-  // check consistency and face
+  // check face
   ASSERT( eFace==GFX_FRONT || eFace==GFX_BACK || eFace==GFX_NONE);
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 
   // must (re)assign faces for front-face emulation purposes
@@ -887,27 +838,26 @@ static void d3d_CullFace( GfxFace eFace)
 
 
 
-static void d3d_FrontFace( GfxFace eFace)
+void IGfxD3D8::FrontFace( GfxFace eFace)
 {
-  // check consistency and face
+  // check face
   ASSERT( eFace==GFX_CW || eFace==GFX_CCW);
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   // cached?
   BOOL bFrontFace = (eFace==GFX_CCW);
   if( !bFrontFace==!GFX_bFrontFace && gap_bOptimizeStateChanges) return;
 
   // must emulate this by toggling cull face
   GFX_bFrontFace = bFrontFace; 
-  if( GFX_eCullFace!=GFX_NONE) d3d_CullFace(GFX_eCullFace);
+  if( GFX_eCullFace!=GFX_NONE) CullFace(GFX_eCullFace);
 }
 
 
 
 
-static void d3d_ClipPlane( const DOUBLE *pdViewPlane)
+void IGfxD3D8::ClipPlane( const DOUBLE *pdViewPlane)
 {
-  // check API and plane
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D && pdViewPlane != NULL);
+  // check plane
+  ASSERT(pdViewPlane != NULL);
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -923,11 +873,8 @@ static void d3d_ClipPlane( const DOUBLE *pdViewPlane)
 
 
 
-static void d3d_SetTextureMatrix( const FLOAT *pfMatrix/*=NULL*/)
+void IGfxD3D8::SetTextureMatrix( const FLOAT *pfMatrix/*=NULL*/)
 {
-  // check API
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
-
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   HRESULT hr;
@@ -948,10 +895,8 @@ static void d3d_SetTextureMatrix( const FLOAT *pfMatrix/*=NULL*/)
 
 
 
-static void d3d_SetViewMatrix( const FLOAT *pfMatrix/*=NULL*/)
+void IGfxD3D8::SetViewMatrix( const FLOAT *pfMatrix/*=NULL*/)
 {
-  // check API
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 
   // cached? (only identity matrix)
@@ -978,13 +923,10 @@ static void d3d_SetViewMatrix( const FLOAT *pfMatrix/*=NULL*/)
 
 
 
-static void d3d_SetOrtho( const FLOAT fLeft,   const FLOAT fRight, const FLOAT fTop,
+void IGfxD3D8::SetOrtho( const FLOAT fLeft,   const FLOAT fRight, const FLOAT fTop,
                           const FLOAT fBottom, const FLOAT fNear,  const FLOAT fFar,
                           const BOOL bSubPixelAdjust/*=FALSE*/)
 {
-  // check API and matrix type
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
-
   // cached?
   if( GFX_fLastL==fLeft  && GFX_fLastT==fTop    && GFX_fLastN==fNear
    && GFX_fLastR==fRight && GFX_fLastB==fBottom && GFX_fLastF==fFar && gap_bOptimizeStateChanges) return;
@@ -1010,13 +952,10 @@ static void d3d_SetOrtho( const FLOAT fLeft,   const FLOAT fRight, const FLOAT f
 
 
 
-static void d3d_SetFrustum( const FLOAT fLeft, const FLOAT fRight,
+void IGfxD3D8::SetFrustum( const FLOAT fLeft, const FLOAT fRight,
                             const FLOAT fTop,  const FLOAT fBottom,
                             const FLOAT fNear, const FLOAT fFar)
 {
-  // check API
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
-
   // cached?
   if( GFX_fLastL==-fLeft  && GFX_fLastT==-fTop    && GFX_fLastN==-fNear
    && GFX_fLastR==-fRight && GFX_fLastB==-fBottom && GFX_fLastF==-fFar && gap_bOptimizeStateChanges) return;
@@ -1043,9 +982,8 @@ static void d3d_SetFrustum( const FLOAT fLeft, const FLOAT fRight,
 
 
 
-static void d3d_PolygonMode( GfxPolyMode ePolyMode)
+void IGfxD3D8::PolygonMode( GfxPolyMode ePolyMode)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   HRESULT hr;
@@ -1066,9 +1004,8 @@ static void d3d_PolygonMode( GfxPolyMode ePolyMode)
 // TEXTURE MANAGEMENT
 
 
-static void d3d_SetTextureWrapping( enum GfxWrap eWrapU, enum GfxWrap eWrapV)
+void IGfxD3D8::SetTextureWrapping( enum GfxWrap eWrapU, enum GfxWrap eWrapV)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG
   // check wrapping consistency
@@ -1104,10 +1041,8 @@ static void d3d_SetTextureWrapping( enum GfxWrap eWrapU, enum GfxWrap eWrapV)
 
 
 
-static void d3d_SetTextureModulation( INDEX iScale)
+void IGfxD3D8::SetTextureModulation( INDEX iScale)
 {
-  // check consistency
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   HRESULT hr;
 #ifndef NDEBUG                 
   INDEX iRet;
@@ -1136,9 +1071,8 @@ static void d3d_SetTextureModulation( INDEX iScale)
 
 
 
-static void d3d_GenerateTexture( ULONG &ulTexObject)
+void IGfxD3D8::GenerateTexture( ULONG &ulTexObject)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1152,10 +1086,9 @@ static void d3d_GenerateTexture( ULONG &ulTexObject)
 
 
 // unbind texture from API
-static void d3d_DeleteTexture( ULONG &ulTexObject)
+void IGfxD3D8::DeleteTexture( ULONG &ulTexObject)
 {
   // skip if already unbound
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   if( ulTexObject==NONE) return;
 
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
@@ -1174,9 +1107,8 @@ static void d3d_DeleteTexture( ULONG &ulTexObject)
 // VERTEX ARRAYS
 
 
-static void d3d_SetVertexArray( GFXVertex4 *pvtx, INDEX ctVtx)
+void IGfxD3D8::SetVertexArray(void *pvtx, INDEX ctVtx)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   ASSERT( ctVtx>0 && pvtx!=NULL && GFX_iActiveTexUnit==0);
   GFX_ctVertices = ctVtx;
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1188,9 +1120,8 @@ static void d3d_SetVertexArray( GFXVertex4 *pvtx, INDEX ctVtx)
 
 
 
-static void d3d_SetNormalArray( GFXNormal *pnor)
+void IGfxD3D8::SetNormalArray( GFXNormal *pnor)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   ASSERT( pnor!=NULL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1201,11 +1132,10 @@ static void d3d_SetNormalArray( GFXNormal *pnor)
 
 
 
-static void d3d_SetColorArray( GFXColor *pcol)
+void IGfxD3D8::SetColorArray( GFXColor *pcol)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   ASSERT( pcol!=NULL);
-  d3d_EnableColorArray();
+  EnableColorArray();
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
   
   SetVertexArray_D3D( 2, (ULONG*)pcol); // type 2 = colors
@@ -1215,9 +1145,8 @@ static void d3d_SetColorArray( GFXColor *pcol)
 
 
 
-static void d3d_SetTexCoordArray( GFXTexCoord *ptex, BOOL b4/*=FALSE*/)
+void IGfxD3D8::SetTexCoordArray( GFXTexCoord *ptex, BOOL b4/*=FALSE*/)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   ASSERT( ptex!=NULL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1229,10 +1158,9 @@ static void d3d_SetTexCoordArray( GFXTexCoord *ptex, BOOL b4/*=FALSE*/)
 
 
 
-static void d3d_SetConstantColor( COLOR col)
+void IGfxD3D8::SetConstantColor( COLOR col)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
-  d3d_DisableColorArray();
+  DisableColorArray();
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   const ULONG d3dColor = rgba2argb(col);
@@ -1244,9 +1172,8 @@ static void d3d_SetConstantColor( COLOR col)
 
 
 
-static void d3d_DrawElements( INDEX ctElem, INDEX *pidx)
+void IGfxD3D8::DrawElements( INDEX ctElem, INDEX *pidx)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
 #ifndef NDEBUG
   // check if all indices are inside lock count (or smaller than 65536)
   if( pidx!=NULL) for( INDEX i=0; i<ctElem; i++) ASSERT( pidx[i] < GFX_ctVertices);
@@ -1266,9 +1193,8 @@ static void d3d_DrawElements( INDEX ctElem, INDEX *pidx)
 
 
 // force finish of API rendering queue
-static void d3d_Finish(void)
+void IGfxD3D8::Finish(void)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   // must "emulate" this by reading from back buffer :(
@@ -1292,10 +1218,9 @@ static void d3d_Finish(void)
 
 
 
-static void d3d_LockArrays(void)
+void IGfxD3D8::LockArrays(void)
 {
   // only for OpenGL
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   ASSERT( GFX_ctVertices>0 && !_bCVAReallyLocked);
 }
 
@@ -1303,10 +1228,9 @@ static void d3d_LockArrays(void)
 // SPECIAL FUNCTIONS FOR Direct3D ONLY !
 
 
-// set D3D vertex shader only if different than last time
-extern void d3dSetVertexShader( DWORD dwHandle)
+// Set D3D vertex shader only if it has changed since last time
+void IGfxInterface::SetVertexShader( DWORD dwHandle)
 {
-  ASSERT(_pGfx->GetCurrentAPI() == GAT_D3D);
   if( _pGfx->gl_dwVertexShader==dwHandle) return;
   HRESULT hr = _pGfx->gl_pd3dDevice->SetVertexShader(dwHandle);
   D3D_CHECKERROR(hr);

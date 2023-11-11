@@ -45,6 +45,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicContainer.cpp>
 #include <Engine/Templates/Stock_CTextureData.h>
 
+// [Cecil] Graphics APIs
+#include <Engine/Graphics/GFX_wrapper_Null.h>
+#include <Engine/Graphics/GFX_wrapper_OpenGL.h>
+#include <Engine/Graphics/GFX_wrapper_Direct3D.h>
 
 // control for partial usage of compiled vertex arrays
 extern BOOL CVA_b2D     = FALSE;
@@ -959,6 +963,7 @@ CGfxLibrary::CGfxLibrary(void)
   PrepareTables();
 
   // no driver loaded
+  gl_pInterface = NULL; // [Cecil]
   gl_hiDriver = NONE;
   go_hglRC = NONE;
   gl_ctDriverChanges = 0;
@@ -1260,9 +1265,20 @@ const CTString &CGfxLibrary::GetApiName(GfxAPIType eAPI)
 // [Cecil] Interface initialization by API type
 void CGfxLibrary::SetInterface(GfxAPIType eAPI)
 {
-  // Set current API and its functions
-  gl_eCurrentAPI = eAPI;
-  GFX_SetFunctionPointers(eAPI);
+  // Delete old interface
+  if (gl_pInterface != NULL) {
+    delete gl_pInterface;
+  }
+
+  switch (eAPI) {
+    case GAT_OGL: gl_pInterface = new IGfxOpenGL; break;
+
+#ifdef SE1_D3D
+    case GAT_D3D: gl_pInterface = new IGfxD3D8; break;
+#endif
+
+    default: gl_pInterface = new IGfxNull; break;
+  }
 };
 
 // set new display mode

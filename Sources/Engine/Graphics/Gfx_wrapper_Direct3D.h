@@ -107,7 +107,7 @@ class IGfxD3D8 : public IGfxInterface
   public:
 
     // Prepare vertex array for API
-    virtual void SetVertexArray(virtual void *pvtx, INDEX ctVtx, BOOL bWithShade);
+    virtual void SetVertexArray(void *pvtx, INDEX ctVtx);
 
     // Prepare normal array for API
     virtual void SetNormalArray(GFXNormal *pnor);

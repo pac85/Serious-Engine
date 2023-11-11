@@ -55,9 +55,8 @@ extern CStaticStackArray<GFXColor>    _acolCommon;
 extern CStaticStackArray<INDEX>       _aiCommonElements;
 extern CStaticStackArray<INDEX>       _aiCommonQuads;
 
-
-#include <Engine/Graphics/GFX_wrapper.h>
-
+// [Cecil] Graphics functions interface
+#include <Engine/Graphics/GfxInterface.h>
 
 #define SQRTTABLESIZE   8192
 #define SQRTTABLESIZELOG2 13
@@ -126,7 +125,7 @@ public:
   CViewPort *gl_pvpActive;   // active viewport
   HINSTANCE  gl_hiDriver;    // DLL handle
 
-  GfxAPIType   gl_eCurrentAPI;  // (0=none, 1=OpenGL, 2=DirectX8) 
+  IGfxInterface *gl_pInterface; // [Cecil] Current graphics interface
   CDisplayMode gl_dmCurrentDisplayMode;
   INDEX gl_iCurrentAdapter;
   INDEX gl_iCurrentDepth; 
@@ -252,10 +251,26 @@ public:
   // set display mode to original desktop display mode (and eventually change API)
   BOOL ResetDisplayMode( enum GfxAPIType eAPI=GAT_CURRENT);
 
-  // get current API/adapter/display mode
-  inline enum  GfxAPIType GetCurrentAPI(void) { return gl_eCurrentAPI; };
-  inline INDEX GetCurrentAdapter(void) { return gl_iCurrentAdapter; };
-  inline void  GetCurrentDisplayMode( CDisplayMode &dmCurrent) { dmCurrent = gl_dmCurrentDisplayMode; };
+  // [Cecil] Get current graphical interface
+  inline IGfxInterface *GetInterface(void) {
+    return gl_pInterface;
+  };
+
+  // Get current API
+  inline enum  GfxAPIType GetCurrentAPI(void) {
+    // [Cecil] From the current interface
+    return GetInterface()->GetType();
+  };
+
+  // Get current adapter
+  inline INDEX GetCurrentAdapter(void) {
+    return gl_iCurrentAdapter;
+  };
+
+  // Get current display mode
+  inline void GetCurrentDisplayMode(CDisplayMode &dmCurrent) {
+    dmCurrent = gl_dmCurrentDisplayMode;
+  };
 
   // check if 3D acceleration is on
   inline BOOL IsCurrentModeAccelerated(void) { return (gl_ulFlags&GLF_HASACCELERATION); };
