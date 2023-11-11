@@ -959,7 +959,6 @@ CGfxLibrary::CGfxLibrary(void)
   PrepareTables();
 
   // no driver loaded
-  gl_eCurrentAPI = GAT_NONE;
   gl_hiDriver = NONE;
   go_hglRC = NONE;
   gl_ctDriverChanges = 0;
@@ -998,7 +997,7 @@ CGfxLibrary::CGfxLibrary(void)
   AddQuadElements(1024); // should be enough (at least for a start)
 
   // reset GFX API function pointers
-  GFX_SetFunctionPointers( (INDEX)GAT_NONE);
+  SetInterface(GAT_NONE);
 }
 
 
@@ -1258,6 +1257,14 @@ const CTString &CGfxLibrary::GetApiName(GfxAPIType eAPI)
   return astrApiNames[eAPI];
 };
 
+// [Cecil] Interface initialization by API type
+void CGfxLibrary::SetInterface(GfxAPIType eAPI)
+{
+  // Set current API and its functions
+  gl_eCurrentAPI = eAPI;
+  GFX_SetFunctionPointers(eAPI);
+};
+
 // set new display mode
 BOOL CGfxLibrary::SetDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
                                   enum DisplayDepth eColorDepth)
@@ -1344,7 +1351,10 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
   GFX_ulLastDrawPortID = 0;  
   gl_iTessellationLevel = 0;
   gl_ctRealTextureUnits = 0;
- _iLastVertexBufferSize = 0;
+  _iLastVertexBufferSize = 0;
+
+  // [Cecil] API to set
+  GfxAPIType eSetAPI = GAT_NONE;
 
   // OpenGL driver ?
   if( eAPI==GAT_OGL)
@@ -1367,7 +1377,7 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
       CDS_ResetMode();
       return FALSE;
     } // made it
-    gl_eCurrentAPI = GAT_OGL;
+    eSetAPI = GAT_OGL;
     gl_iSwapInterval = 1234; // need to reset
   }
 
@@ -1381,7 +1391,7 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
     bSuccess = InitDisplay_D3D( iAdapter, pixSizeI, pixSizeJ, eColorDepth);
     if( !bSuccess) return FALSE;
     // made it
-    gl_eCurrentAPI = GAT_D3D;
+    eSetAPI = GAT_D3D;
   }
 #endif // SE1_D3D
 
@@ -1389,7 +1399,7 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
   else
   {
     ASSERT( eAPI==GAT_NONE); 
-    gl_eCurrentAPI = GAT_NONE;
+    eSetAPI = GAT_NONE;
   }
 
   // initialize on first child window
@@ -1401,7 +1411,7 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
   gl_fTextureLODBias = 0.0f;
 
   // set function pointers
-  GFX_SetFunctionPointers(GetCurrentAPI());
+  SetInterface(eSetAPI);
 
   // all done
   return TRUE;
@@ -1442,12 +1452,11 @@ void CGfxLibrary::StopDisplayMode(void)
 
   // reset some vars
   gl_ctRealTextureUnits = 0;
-  gl_eCurrentAPI = GAT_NONE;
   gl_pvpActive = NULL;
   gl_ulFlags &= GLF_ADJUSTABLEGAMMA;
 
   // reset function pointers
-  GFX_SetFunctionPointers( (INDEX)GAT_NONE);
+  SetInterface(GAT_NONE);
 }
 
 
