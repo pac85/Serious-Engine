@@ -20,6 +20,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
+// [Cecil] Moved from GfxLibrary.h
+enum GfxAPIType
+{
+  GAT_NONE = -1, // no gfx API (gfx functions are disabled)
+  GAT_OGL  =  0, // OpenGL
+  GAT_D3D  =  1, // Direct3D
+
+  GAT_MAX, // [Cecil] Amount of graphics APIs
+
+  GAT_CURRENT = 9, // current API
+};
+
 enum GfxBlend
 {
   GFX_ONE           = 21,

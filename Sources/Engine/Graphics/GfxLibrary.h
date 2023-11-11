@@ -77,19 +77,6 @@ struct CTVERTEX {
   #define D3DFVF_CTVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 #endif
 
-// Gfx API type 
-enum GfxAPIType
-{
-  GAT_NONE = -1,     // no gfx API (gfx functions are disabled)
-  GAT_OGL  =  0,     // OpenGL
-  GAT_D3D  =  1,     // Direct3D
-
-  GAT_MAX, // [Cecil] Amount of graphics APIs
-
-  GAT_CURRENT = 9,   // current API
-};
-
-
 // vertex type (for lock/unlock function)
 enum VtxType
 {
@@ -98,7 +85,6 @@ enum VtxType
   VXT_TEX = 3,  // texture coords
   VXT_COL = 4,  // color
 };
-
 
 // common flags
 #define GLF_HASACCELERATION    (1UL<<0)   // set if current mode supports hardware acceleration
