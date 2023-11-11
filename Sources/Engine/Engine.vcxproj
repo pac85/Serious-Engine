@@ -677,6 +677,7 @@
     <ClInclude Include="Base\UpdateableRT.h" />
     <ClInclude Include="GameAgent\GameAgent.h" />
     <ClInclude Include="GameAgent\MSLegacy.h" />
+    <ClInclude Include="Graphics\GfxInterface.h" />
     <ClInclude Include="Math\AABBox.h" />
     <ClInclude Include="Math\FixInt.h" />
     <ClInclude Include="Math\Float.h" />
