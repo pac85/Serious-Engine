@@ -479,7 +479,7 @@ extern CTString ReformatExtensionsString( CTString strUnformatted)
 static void GAPInfo(void)
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else // SE1_D3D
@@ -735,14 +735,22 @@ extern void UpdateGfxSysCVars(void)
   if( _pGfx->gl_ulFlags & GLF_ADJUSTABLEGAMMA) sys_bHasAdjustableGamma = 1;
   if( _pGfx->gl_ulFlags & GLF_32BITTEXTURES) sys_bHas32bitTextures = 1;
   if( _pGfx->gl_ulFlags & GLF_VSYNC) sys_bHasSwapInterval = 1;
-  if( _pGfx->gl_eCurrentAPI==GAT_OGL && !(_pGfx->gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) sys_bHasCVAs = 0;
-#ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && !(_pGfx->gl_ulFlags&GLF_D3D_HASHWTNL)) sys_bHasHardwareTnL = 0;
-#endif // SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_OGL) sys_bUsingOpenGL = 1;
-#ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D) sys_bUsingDirect3D = 1;
-#endif // SE1_D3D
+
+  if (_pGfx->GetCurrentAPI() == GAT_OGL) {
+    if (!(_pGfx->gl_ulFlags & GLF_EXT_COMPILEDVERTEXARRAY)) {
+      sys_bHasCVAs = 0;
+    }
+
+    sys_bUsingOpenGL = 1;
+  }
+
+  if (_pGfx->GetCurrentAPI() == GAT_D3D) {
+    if (!(_pGfx->gl_ulFlags & GLF_D3D_HASHWTNL)) {
+      sys_bHasHardwareTnL = 0;
+    }
+
+    sys_bUsingDirect3D = 1;
+  }
 }
 
    
@@ -1248,7 +1256,7 @@ BOOL CGfxLibrary::SetDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixS
 
   // determine new API
   GfxAPIType eNewAPI = eAPI;
-  if( eNewAPI==GAT_CURRENT) eNewAPI = gl_eCurrentAPI;
+  if (eNewAPI == GAT_CURRENT) eNewAPI = GetCurrentAPI();
   
   // shutdown old and startup new API, and mode and ... stuff, you know!
   StopDisplayMode();
@@ -1256,14 +1264,14 @@ BOOL CGfxLibrary::SetDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixS
   if( !bRet) return FALSE; // didn't make it?
 
   // update some info
-  gl_iCurrentAdapter = gl_gaAPI[gl_eCurrentAPI].ga_iCurrentAdapter = iAdapter;
+  gl_iCurrentAdapter = gl_gaAPI[GetCurrentAPI()].ga_iCurrentAdapter = iAdapter;
   gl_dmCurrentDisplayMode.dm_pixSizeI = pixSizeI;
   gl_dmCurrentDisplayMode.dm_pixSizeJ = pixSizeJ;
   gl_dmCurrentDisplayMode.dm_ddDepth  = eColorDepth;
   
   // prepare texture formats for this display mode
   extern void DetermineSupportedTextureFormats( GfxAPIType eAPI);
-  DetermineSupportedTextureFormats(gl_eCurrentAPI);
+  DetermineSupportedTextureFormats(GetCurrentAPI());
 
   // made it! (eventually disable windows system keys)
   if( gfx_bDisableWindowsKeys) DisableWindowsKeys();
@@ -1277,7 +1285,7 @@ BOOL CGfxLibrary::ResetDisplayMode( enum GfxAPIType eAPI/*=GAT_CURRENT*/)
 {
   // determine new API
   GfxAPIType eNewAPI = eAPI;
-  if( eNewAPI==GAT_CURRENT) eNewAPI = gl_eCurrentAPI;
+  if (eNewAPI == GAT_CURRENT) eNewAPI = GetCurrentAPI();
 
   // shutdown old and startup new API, and mode and ... stuff, you know!
   StopDisplayMode();
@@ -1292,7 +1300,7 @@ BOOL CGfxLibrary::ResetDisplayMode( enum GfxAPIType eAPI/*=GAT_CURRENT*/)
 
   // prepare texture formats for this display mode
   extern void DetermineSupportedTextureFormats( GfxAPIType eAPI);
-  DetermineSupportedTextureFormats(gl_eCurrentAPI);
+  DetermineSupportedTextureFormats(GetCurrentAPI());
 
   // made it!
   EnableWindowsKeys();
@@ -1382,7 +1390,7 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
   gl_fTextureLODBias = 0.0f;
 
   // set function pointers
-  GFX_SetFunctionPointers( (INDEX)gl_eCurrentAPI);
+  GFX_SetFunctionPointers(GetCurrentAPI());
 
   // all done
   return TRUE;
@@ -1399,14 +1407,14 @@ void CGfxLibrary::StopDisplayMode(void)
   UncacheShadows();
 
   // shutdown API
-  if( gl_eCurrentAPI==GAT_OGL)
+  if (GetCurrentAPI() == GAT_OGL)
   { // OpenGL
     EndDriver_OGL();
     MonitorsOn();       // re-enable multimonitor support if disabled
     CDS_ResetMode();
   }
 #ifdef SE1_D3D
-  else if( gl_eCurrentAPI==GAT_D3D)
+  else if (GetCurrentAPI() == GAT_D3D)
   { // Direct3D
     EndDriver_D3D();
     MonitorsOn();
@@ -1414,7 +1422,7 @@ void CGfxLibrary::StopDisplayMode(void)
 #endif // SE1_D3D
   else
   { // none
-    ASSERT( gl_eCurrentAPI==GAT_NONE);
+    ASSERT(GetCurrentAPI() == GAT_NONE);
   }
 
   // free driver DLL
@@ -1436,12 +1444,13 @@ void CGfxLibrary::StopDisplayMode(void)
 // prepare current viewport for rendering
 BOOL CGfxLibrary::SetCurrentViewport(CViewPort *pvp)
 {
-  if( gl_eCurrentAPI==GAT_OGL)  return SetCurrentViewport_OGL(pvp);
+  const GfxAPIType eAPI = GetCurrentAPI();
+  if (eAPI == GAT_OGL) return SetCurrentViewport_OGL(pvp);
 #ifdef SE1_D3D
-  if( gl_eCurrentAPI==GAT_D3D)  return SetCurrentViewport_D3D(pvp);
+  if (eAPI == GAT_D3D) return SetCurrentViewport_D3D(pvp);
 #endif // SE1_D3D
-  if( gl_eCurrentAPI==GAT_NONE) return TRUE;
-  ASSERTALWAYS( "SetCurrenViewport: Wrong API!");
+  if (eAPI == GAT_NONE) return TRUE;
+  ASSERTALWAYS("SetCurrenViewport: Wrong API!");
   return FALSE;
 }
 
@@ -1468,7 +1477,7 @@ BOOL CGfxLibrary::LockDrawPort( CDrawPort *pdpToLock)
   }
 
   // OpenGL ...
-  if( gl_eCurrentAPI==GAT_OGL)
+  if (GetCurrentAPI() == GAT_OGL)
   {
     // pass drawport dimensions to OpenGL
     const PIX pixMinSI = pdpToLock->dp_ScissorMinI;
@@ -1481,7 +1490,7 @@ BOOL CGfxLibrary::LockDrawPort( CDrawPort *pdpToLock)
   }
   // Direct3D ...
 #ifdef SE1_D3D
-  else if( gl_eCurrentAPI==GAT_D3D)
+  else if (GetCurrentAPI() == GAT_D3D)
   { 
     // set viewport
     const PIX pixMinSI = pdpToLock->dp_ScissorMinI;
@@ -1745,7 +1754,7 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
   d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
 
   // OpenGL  
-  if( gl_eCurrentAPI==GAT_OGL)
+  if (GetCurrentAPI() == GAT_OGL)
   {
     // force finishing of all rendering operations (if required)
     if( ogl_iFinish==2) gfxFinish();
@@ -1770,7 +1779,7 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
 
   // Direct3D
 #ifdef SE1_D3D
-  else if( gl_eCurrentAPI==GAT_D3D)
+  else if (GetCurrentAPI() == GAT_D3D)
   {
     // force finishing of all rendering operations (if required)
     if( d3d_iFinish==2) gfxFinish();
@@ -1873,12 +1882,12 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
     // ... and required
     const BOOL bTableSet = GenerateGammaTable();
     if( bTableSet) {
-      if( gl_eCurrentAPI==GAT_OGL) {
+      if (GetCurrentAPI() == GAT_OGL) {
         CTempDC tdc(pvp->vp_hWnd);
         SetDeviceGammaRamp( tdc.hdc, &_auwGammaTable[0]);
       } 
 #ifdef SE1_D3D
-      else if( gl_eCurrentAPI==GAT_D3D) {
+      else if (GetCurrentAPI() == GAT_D3D) {
         gl_pd3dDevice->SetGammaRamp( D3DSGR_NO_CALIBRATION, (D3DGAMMARAMP*)&_auwGammaTable[0]);
       }
 #endif // SE1_D3D
@@ -1903,8 +1912,8 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
 // get array of all supported display modes
 CDisplayMode *CGfxLibrary::EnumDisplayModes( INDEX &ctModes, enum GfxAPIType eAPI/*=GAT_CURRENT*/, INDEX iAdapter/*=0*/)
 {
-  if( eAPI==GAT_CURRENT) eAPI = gl_eCurrentAPI;
-  if( iAdapter==0) iAdapter = gl_iCurrentAdapter;
+  if (eAPI == GAT_CURRENT) eAPI = GetCurrentAPI();
+  if (iAdapter == 0) iAdapter = gl_iCurrentAdapter;
   CDisplayAdapter *pda = &gl_gaAPI[eAPI].ga_adaAdapter[iAdapter];
   ctModes = pda->da_ctDisplayModes;
   return &pda->da_admDisplayModes[0];
@@ -1922,7 +1931,7 @@ BOOL CGfxLibrary::LockRaster( CRaster *praToLock)
   if( bRes) {
     // must signal to picky Direct3D
 #ifdef SE1_D3D
-    if( gl_eCurrentAPI==GAT_D3D && !GFX_bRenderingScene) {  
+    if (GetCurrentAPI() == GAT_D3D && !GFX_bRenderingScene) {  
       HRESULT hr = gl_pd3dDevice->BeginScene(); 
       D3D_CHECKERROR(hr);
       bRes = (hr==D3D_OK);

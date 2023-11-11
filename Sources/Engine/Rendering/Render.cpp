@@ -712,18 +712,16 @@ void CRenderer::Render(void)
   ChangeStatsMode(CStatForm::STI_SWAPBUFFERS);
   extern INDEX ogl_iFinish;  ogl_iFinish = Clamp( ogl_iFinish, 0L, 3L);
   extern INDEX d3d_iFinish;  d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
-  if( (ogl_iFinish==1 && _pGfx->gl_eCurrentAPI==GAT_OGL) 
-#ifdef SE1_D3D
-   || (d3d_iFinish==1 && _pGfx->gl_eCurrentAPI==GAT_D3D)
-#endif // SE1_D3D
-   ) 
-   gfxFinish();
+  if ((ogl_iFinish == 1 && _pGfx->GetCurrentAPI() == GAT_OGL)
+   || (d3d_iFinish == 1 && _pGfx->GetCurrentAPI() == GAT_D3D)) {
+    gfxFinish();
+  }
 
   // check any eventual delayed depth points outside the mirror (if API and time allows)
   if( !re_bRenderingShadows && re_iIndex==0) {
     // OpenGL allows us to check z-buffer from previous frame - cool deal!
     // Direct3D is, of course, totally different story. :(
-    if( _pGfx->gl_eCurrentAPI==GAT_OGL || d3d_bAlternateDepthReads) {
+    if (_pGfx->GetCurrentAPI() == GAT_OGL || d3d_bAlternateDepthReads) {
       ChangeStatsMode(CStatForm::STI_FLARESRENDERING);
       extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel=0);
       CheckDelayedDepthPoints(re_pdpDrawPort);
@@ -889,7 +887,7 @@ void CRenderer::Render(void)
   // for D3D (or mirror) we have to check depth points now, because we need back (not depth!) buffer for it,
   // and D3D can't guarantee that it won't be discarded upon swapbuffers (especially if multisampling is on!) :(
 #ifdef SE1_D3D
-  if( !re_bRenderingShadows && ((_pGfx->gl_eCurrentAPI==GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex>0)) {
+  if (!re_bRenderingShadows && ((_pGfx->GetCurrentAPI() == GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex > 0)) {
     extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel=0);
     CheckDelayedDepthPoints( re_pdpDrawPort, re_iIndex);
   }

@@ -1709,7 +1709,7 @@ void RenderScene( CDrawPort *pDP, ScenePolygon *pspoFirst, CAnyProjection3D &prP
                   COLOR colSelection, BOOL bTranslucent)
 {
   // check API
-  eAPI = _pGfx->gl_eCurrentAPI;
+  eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else // SE1_D3D

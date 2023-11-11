@@ -413,7 +413,7 @@ static void PrepareView( CRenderModel &rm)
 static void RenderWireframeBox( FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
 {
   // only for OpenGL (for now)
-  if( _pGfx->gl_eCurrentAPI!=GAT_OGL) return;
+  if (_pGfx->GetCurrentAPI() != GAT_OGL) return;
 
   // prepare wireframe OpenGL settings
   gfxDisableDepthTest();

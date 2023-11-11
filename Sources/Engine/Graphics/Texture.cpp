@@ -85,7 +85,7 @@ extern void DetermineSupportedTextureFormats( GfxAPIType eAPI)
 extern void UpdateTextureSettings(void)
 {
   // determine API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else
@@ -683,7 +683,7 @@ void CTextureData::Read_t( CTStream *inFile)
   Clear();
 
   // determine API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else // SE1_D3D
@@ -1168,7 +1168,7 @@ void CTextureData::Force( ULONG ulTexFlags)
 void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE*/)
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else // SE1_D3D

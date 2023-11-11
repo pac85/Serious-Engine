@@ -121,7 +121,7 @@ CSettingsEntry *GetGLSettings( const CTString &strRenderer)
 extern void ApplyGLSettings(BOOL bForce)
 {
   CPrintF( TRANS("\nAutomatic 3D-board preferences adjustment...\n"));
-  CDisplayAdapter &da = _pGfx->gl_gaAPI[_pGfx->gl_eCurrentAPI].ga_adaAdapter[_pGfx->gl_iCurrentAdapter];
+  CDisplayAdapter &da = _pGfx->gl_gaAPI[_pGfx->GetCurrentAPI()].ga_adaAdapter[_pGfx->gl_iCurrentAdapter];
   CPrintF( TRANS("Detected: %s - %s - %s\n"), da.da_strVendor, da.da_strRenderer, da.da_strVersion);
 
   // get new settings

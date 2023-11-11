@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 static void ogl_EnableTexture(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_TEXTURE_2D);
@@ -46,7 +46,7 @@ static void ogl_EnableTexture(void)
 static void ogl_DisableTexture(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_TEXTURE_2D);
@@ -72,7 +72,7 @@ static void ogl_DisableTexture(void)
 static void ogl_EnableDepthTest(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_DEPTH_TEST);
@@ -95,7 +95,7 @@ static void ogl_EnableDepthTest(void)
 static void ogl_DisableDepthTest(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_DEPTH_TEST);
@@ -118,7 +118,7 @@ static void ogl_DisableDepthTest(void)
 
 static void ogl_EnableDepthBias(void)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   pglEnable( GL_POLYGON_OFFSET_POINT);
@@ -133,7 +133,7 @@ static void ogl_EnableDepthBias(void)
 
 static void ogl_DisableDepthBias(void)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   pglDisable( GL_POLYGON_OFFSET_POINT);
@@ -150,7 +150,7 @@ static void ogl_DisableDepthBias(void)
 static void ogl_EnableDepthWrite(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   pglGetIntegerv( GL_DEPTH_WRITEMASK, (GLint*)&bRes);
@@ -175,7 +175,7 @@ static void ogl_EnableDepthWrite(void)
 static void ogl_DisableDepthWrite(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   pglGetIntegerv( GL_DEPTH_WRITEMASK, (GLint*)&bRes);
@@ -200,7 +200,7 @@ static void ogl_DisableDepthWrite(void)
 static void ogl_EnableDither(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_DITHER);
@@ -225,7 +225,7 @@ static void ogl_EnableDither(void)
 static void ogl_DisableDither(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_DITHER);
@@ -250,7 +250,7 @@ static void ogl_DisableDither(void)
 static void ogl_EnableAlphaTest(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_ALPHA_TEST);
@@ -275,7 +275,7 @@ static void ogl_EnableAlphaTest(void)
 static void ogl_DisableAlphaTest(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_ALPHA_TEST);
@@ -300,7 +300,7 @@ static void ogl_DisableAlphaTest(void)
 static void ogl_EnableBlend(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_BLEND);
@@ -328,7 +328,7 @@ static void ogl_EnableBlend(void)
 static void ogl_DisableBlend(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_BLEND);
@@ -360,7 +360,7 @@ static void ogl_EnableClipping(void)
   if( !(_pGfx->gl_ulFlags&GLF_EXT_CLIPHINT)) return;
 
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes;
   pglGetIntegerv( GL_CLIP_VOLUME_CLIPPING_HINT_EXT, (GLint*)&bRes);
@@ -389,7 +389,7 @@ static void ogl_DisableClipping(void)
   if( gap_iOptimizeClipping<2 || !(_pGfx->gl_ulFlags&GLF_EXT_CLIPHINT)) return;
 
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes;
   pglGetIntegerv( GL_CLIP_VOLUME_CLIPPING_HINT_EXT, (GLint*)&bRes);
@@ -416,7 +416,7 @@ static void ogl_DisableClipping(void)
 static void ogl_EnableClipPlane(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_CLIP_PLANE0);
@@ -440,7 +440,7 @@ static void ogl_EnableClipPlane(void)
 static void ogl_DisableClipPlane(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_CLIP_PLANE0);
@@ -465,7 +465,7 @@ static void ogl_DisableClipPlane(void)
 static void ogl_EnableColorArray(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_COLOR_ARRAY);
@@ -491,7 +491,7 @@ static void ogl_EnableColorArray(void)
 static void ogl_DisableColorArray(void)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_COLOR_ARRAY);
@@ -520,7 +520,7 @@ static void ogl_EnableTruform(void)
   if( truform_iLevel<1) return;
 
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_PN_TRIANGLES_ATI);
@@ -548,7 +548,7 @@ static void ogl_DisableTruform(void)
   if( truform_iLevel<1) return;
 
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   BOOL bRes; 
   bRes = pglIsEnabled(GL_PN_TRIANGLES_ATI);
@@ -603,7 +603,7 @@ __forceinline GfxBlend BlendFromOGL( GLenum gFunc) {
 static void ogl_BlendFunc( GfxBlend eSrc, GfxBlend eDst)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   GLenum gleSrc, gleDst;
 #ifndef NDEBUG
   GfxBlend gfxSrc, gfxDst; 
@@ -635,7 +635,7 @@ static void ogl_BlendFunc( GfxBlend eSrc, GfxBlend eDst)
 // color buffer writing enable
 static void ogl_SetColorMask( ULONG ulColorMask)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   _ulCurrentColorMask = ulColorMask; // keep for Get...()
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -686,7 +686,7 @@ __forceinline GfxComp CompFromOGL( GLenum gFunc) {
 static void ogl_DepthFunc( GfxComp eFunc)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   GLenum gleFunc;
 #ifndef NDEBUG
   GfxComp gfxFunc; 
@@ -714,7 +714,7 @@ static void ogl_DepthFunc( GfxComp eFunc)
 static void ogl_DepthRange( FLOAT fMin, FLOAT fMax)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   FLOAT fDepths[2]; 
   pglGetFloatv( GL_DEPTH_RANGE,(GLfloat*)&fDepths);
@@ -742,7 +742,7 @@ static void ogl_CullFace( GfxFace eFace)
 {
   // check consistency and face
   ASSERT( eFace==GFX_FRONT || eFace==GFX_BACK || eFace==GFX_NONE);
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   GLenum gleCull;
   BOOL bRes = pglIsEnabled(GL_CULL_FACE);
@@ -779,7 +779,7 @@ static void ogl_FrontFace( GfxFace eFace)
 {
   // check consistency and face
   ASSERT( eFace==GFX_CW || eFace==GFX_CCW);
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   GLenum gleFace;
   pglGetIntegerv( GL_FRONT_FACE, (GLint*)&gleFace);
@@ -810,7 +810,7 @@ static void ogl_FrontFace( GfxFace eFace)
 static void ogl_ClipPlane( const DOUBLE *pdViewPlane)
 {
   // check API and plane
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL && pdViewPlane!=NULL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL && pdViewPlane != NULL);
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -826,7 +826,7 @@ static void ogl_ClipPlane( const DOUBLE *pdViewPlane)
 static void ogl_SetTextureMatrix( const FLOAT *pfMatrix/*=NULL*/)
 {
   // check API
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -846,7 +846,7 @@ static void ogl_SetTextureMatrix( const FLOAT *pfMatrix/*=NULL*/)
 static void ogl_SetViewMatrix( const FLOAT *pfMatrix/*=NULL*/)
 {
   // check API
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 
   // cached? (only identity matrix)
   if( pfMatrix==NULL && GFX_bViewMatrix==NONE && gap_bOptimizeStateChanges) return;
@@ -871,7 +871,7 @@ static void ogl_SetOrtho( const FLOAT fLeft,   const FLOAT fRight, const FLOAT f
                           const BOOL bSubPixelAdjust/*=FALSE*/)
 {
   // check API and matrix type
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 
   // cached?
   if( GFX_fLastL==fLeft  && GFX_fLastT==fTop    && GFX_fLastN==fNear
@@ -898,7 +898,7 @@ static void ogl_SetFrustum( const FLOAT fLeft, const FLOAT fRight,
                             const FLOAT fNear, const FLOAT fFar)
 {
   // check API
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 
   // cached?
   if( GFX_fLastL==-fLeft  && GFX_fLastT==-fTop    && GFX_fLastN==-fNear
@@ -922,7 +922,7 @@ static void ogl_SetFrustum( const FLOAT fLeft, const FLOAT fRight,
 // set polygon mode (point, line or fill)
 static void ogl_PolygonMode( GfxPolyMode ePolyMode)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   switch(ePolyMode) {
@@ -945,7 +945,7 @@ static void ogl_PolygonMode( GfxPolyMode ePolyMode)
 // set texture wrapping mode
 static void ogl_SetTextureWrapping( enum GfxWrap eWrapU, enum GfxWrap eWrapV)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   // check texture unit consistency
   GLint gliRet;
@@ -965,7 +965,7 @@ static void ogl_SetTextureWrapping( enum GfxWrap eWrapU, enum GfxWrap eWrapV)
 static void ogl_SetTextureModulation( INDEX iScale)
 {
   // check consistency
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG                 
   // check current modulation
   GLint iRet;
@@ -998,7 +998,7 @@ static void ogl_SetTextureModulation( INDEX iScale)
 // generate texture for API
 static void ogl_GenerateTexture( ULONG &ulTexObject)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1015,7 +1015,7 @@ static void ogl_GenerateTexture( ULONG &ulTexObject)
 static void ogl_DeleteTexture( ULONG &ulTexObject)
 {
   // skip if already unbound
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   if( ulTexObject==NONE) return;
 
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
@@ -1036,7 +1036,7 @@ static void ogl_DeleteTexture( ULONG &ulTexObject)
 // prepare vertex array for API
 static void ogl_SetVertexArray( GFXVertex4 *pvtx, INDEX ctVtx)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   ASSERT( ctVtx>0 && pvtx!=NULL && GFX_iActiveTexUnit==0);
   GFX_ctVertices = ctVtx;
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1060,7 +1060,7 @@ static void ogl_SetVertexArray( GFXVertex4 *pvtx, INDEX ctVtx)
 // prepare normal array for API
 static void ogl_SetNormalArray( GFXNormal *pnor)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   ASSERT( pnor!=NULL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1077,7 +1077,7 @@ static void ogl_SetNormalArray( GFXNormal *pnor)
 // prepare color array for API (and force rendering with color array!)
 static void ogl_SetColorArray( GFXColor *pcol)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   ASSERT( pcol!=NULL);
   ogl_EnableColorArray();
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1093,7 +1093,7 @@ static void ogl_SetColorArray( GFXColor *pcol)
 // prepare texture coordinates array for API
 static void ogl_SetTexCoordArray( GFXTexCoord *ptex, BOOL b4/*=FALSE*/)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   ASSERT( ptex!=NULL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1110,7 +1110,7 @@ static void ogl_SetTexCoordArray( GFXTexCoord *ptex, BOOL b4/*=FALSE*/)
 // set constant color (and force rendering w/o color array!)
 static void ogl_SetConstantColor( COLOR col)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   ogl_DisableColorArray();
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1125,7 +1125,7 @@ static void ogl_SetConstantColor( COLOR col)
 // draw prepared arrays
 static void ogl_DrawElements( INDEX ctElem, INDEX *pidx)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   // check if all indices are inside lock count (or smaller than 65536)
   if( pidx!=NULL) for( INDEX i=0; i<ctElem; i++) ASSERT( pidx[i] < GFX_ctVertices);
@@ -1147,7 +1147,7 @@ static void ogl_DrawElements( INDEX ctElem, INDEX *pidx)
 // force finish of API rendering queue
 static void ogl_Finish(void)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   pglFinish();
@@ -1163,7 +1163,7 @@ static void ogl_Finish(void)
 static void ogl_LockArrays(void)
 {
   // only if supported
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
   ASSERT( GFX_ctVertices>0 && !_bCVAReallyLocked);
   if( !(_pGfx->gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) return;
   pglLockArraysEXT( 0, GFX_ctVertices);

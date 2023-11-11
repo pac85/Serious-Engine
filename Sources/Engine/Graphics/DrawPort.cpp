@@ -308,11 +308,10 @@ void CDrawPort::SetOrtho(void) const
   // finish all pending render-operations (if required)
   ogl_iFinish = Clamp( ogl_iFinish, 0L, 3L);
   d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
-  if( (ogl_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_OGL) 
-#ifdef SE1_D3D
-   || (d3d_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_D3D)
-#endif // SE1_D3D
-   ) gfxFinish();
+  if ((ogl_iFinish == 3 && _pGfx->GetCurrentAPI() == GAT_OGL)
+   || (d3d_iFinish == 3 && _pGfx->GetCurrentAPI() == GAT_D3D)) {
+    gfxFinish();
+  }
 
   // prepare ortho dimensions
   const PIX pixMinI  = dp_MinI;
@@ -339,11 +338,10 @@ void CDrawPort::SetProjection(CAnyProjection3D &apr) const
   // finish all pending render-operations (if required)
   ogl_iFinish = Clamp( ogl_iFinish, 0L, 3L);
   d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
-  if( (ogl_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_OGL) 
-#ifdef SE1_D3D
-   || (d3d_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_D3D)
-#endif // SE1_D3D
-   ) gfxFinish();
+  if ((ogl_iFinish == 3 && _pGfx->GetCurrentAPI() == GAT_OGL)
+   || (d3d_iFinish == 3 && _pGfx->GetCurrentAPI() == GAT_D3D)) {
+    gfxFinish();
+  }
 
   // if isometric projection
   if( apr.IsIsometric()) {
@@ -437,7 +435,7 @@ BOOL CDrawPort::Lock(void)
 void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) const
 {
   // check API and radius
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else // SE1_D3D
@@ -491,7 +489,7 @@ void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) c
 void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
 {
   // check API and radius
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -540,7 +538,7 @@ void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
 void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col, ULONG typ/*=_FULL*/) const
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -609,7 +607,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
 void CDrawPort::DrawLine3D( FLOAT3D v0, FLOAT3D v1, COLOR col) const
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -655,7 +653,7 @@ void CDrawPort::DrawLine3D( FLOAT3D v0, FLOAT3D v1, COLOR col) const
 void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col, ULONG typ/*=_FULL_*/) const
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -745,7 +743,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col
   col = AdjustColor( col, _slTexHueShift, _slTexSaturation);
 
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -796,7 +794,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
   if( !bInside) return;
 
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -866,7 +864,7 @@ void CDrawPort::Fill( COLOR col) const
   col = AdjustColor( col, _slTexHueShift, _slTexSaturation);
 
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -898,7 +896,7 @@ void CDrawPort::Fill( COLOR col) const
 void CDrawPort::FillZBuffer( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, FLOAT zval) const
 { 
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -939,7 +937,7 @@ void CDrawPort::FillZBuffer( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, FL
 void CDrawPort::FillZBuffer( FLOAT zval) const
 { 
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -970,7 +968,7 @@ void CDrawPort::FillZBuffer( FLOAT zval) const
 void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer/*=0*/) const
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -1072,7 +1070,7 @@ BOOL CDrawPort::IsPointVisible( PIX pixI, PIX pixJ, FLOAT fOoK, INDEX iID, INDEX
   if( pixI<1 || pixI>dp_Width-2 || pixJ<1 || pixJ>dp_Height-2) return FALSE;
 
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -1089,7 +1087,7 @@ void CDrawPort::RenderLensFlare( CTextureObject *pto, FLOAT fI, FLOAT fJ,
                                  FLOAT fSizeI, FLOAT fSizeJ, ANGLE aRotation, COLOR colLight) const
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -1220,7 +1218,7 @@ ULONG CDrawPort::GetTextWidth( const CTString &strText) const
 void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const COLOR colBlend) const
 {
   // check API and adjust position for D3D by half pixel
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -1512,7 +1510,7 @@ void CDrawPort::PutTexture( class CTextureObject *pTO,
   }
 
   // check API and adjust position for D3D by half pixel
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D

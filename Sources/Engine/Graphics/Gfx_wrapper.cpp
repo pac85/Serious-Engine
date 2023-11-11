@@ -141,7 +141,7 @@ extern void (*gfxSetColorMask)( ULONG ulColorMask) = NULL;
 // dummy function (one size fits all:)
 static void none_void(void)
 {
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_NONE);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_NONE);
 }
 
 
@@ -150,7 +150,7 @@ static void none_void(void)
 extern void OGL_CheckError(void)
 {
 #ifndef NDEBUG
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
   if( eAPI==GAT_OGL) ASSERT( pglGetError()==GL_NO_ERROR);
   else ASSERT( eAPI==GAT_NONE);
 #endif
@@ -160,7 +160,7 @@ extern void OGL_CheckError(void)
 extern void D3D_CheckError(HRESULT hr)
 {
 #ifndef NDEBUG
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
   if( eAPI==GAT_D3D) ASSERT( hr==D3D_OK);
   else ASSERT( eAPI==GAT_NONE);
 #endif
@@ -192,7 +192,7 @@ extern FLOAT _fCurrentLODBias = 0;  // LOD bias adjuster
 extern void UpdateLODBias( const FLOAT fLODBias)
 { 
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else // SE1_D3D
@@ -263,7 +263,7 @@ extern void gfxSetTextureFiltering( INDEX &iFilterType, INDEX &iAnisotropyDegree
 
   // for OpenGL, that's about it
 #ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI!=GAT_D3D) return;
+  if (_pGfx->GetCurrentAPI() != GAT_D3D) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -308,7 +308,7 @@ extern void gfxSetTextureBiasing( FLOAT &fLODBias)
 extern void gfxSetTextureUnit( INDEX iUnit)
 {
   // check API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
 #else // SE1_D3D
@@ -355,7 +355,7 @@ extern void gfxSetTexture( ULONG &ulTexObject, CTexParams &tpLocal)
   }
 
   // determine API and enable texturing
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -392,7 +392,7 @@ extern void gfxSetTexture( ULONG &ulTexObject, CTexParams &tpLocal)
 extern void gfxUploadTexture( ULONG *pulTexture, PIX pixWidth, PIX pixHeight, ULONG ulFormat, BOOL bNoDiscard)
 {
   // determine API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -428,7 +428,7 @@ extern SLONG gfxGetTextureSize( ULONG ulTexObject, BOOL bHasMipmaps/*=TRUE*/)
   if (ulTexObject == 0) return 0;
 
   // determine API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -488,7 +488,7 @@ extern SLONG gfxGetTextureSize( ULONG ulTexObject, BOOL bHasMipmaps/*=TRUE*/)
 extern INDEX gfxGetTexturePixRatio( ULONG ulTextureObject)
 {
   // determine API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -508,7 +508,7 @@ extern INDEX gfxGetTexturePixRatio( ULONG ulTextureObject)
 extern INDEX gfxGetFormatPixRatio( ULONG ulTextureFormat)
 {
   // determine API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
@@ -566,7 +566,7 @@ extern void gfxUnlockArrays(void)
 {
   // only if locked (OpenGL can lock 'em)
   if( !_bCVAReallyLocked) return;
-  ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
+  ASSERT(_pGfx->GetCurrentAPI() == GAT_OGL);
 #ifndef NDEBUG
   INDEX glctRet;
   pglGetIntegerv( GL_ARRAY_ELEMENT_LOCK_COUNT_EXT, (GLint*)&glctRet);
@@ -623,7 +623,7 @@ extern void gfxFlushQuads(void)
   if( ctElements<=0) return;
   // draw thru arrays (for OGL only) or elements?
   extern INDEX ogl_bAllowQuadArrays;
-  if( _pGfx->gl_eCurrentAPI==GAT_OGL && ogl_bAllowQuadArrays) FlushArrays( NULL, _avtxCommon.Count());
+  if (_pGfx->GetCurrentAPI() == GAT_OGL && ogl_bAllowQuadArrays) FlushArrays(NULL, _avtxCommon.Count());
   else {
     // make sure that enough quad elements has been initialized
     const INDEX ctQuads = _aiCommonQuads.Count();
@@ -657,7 +657,7 @@ extern void gfxSetTruform( INDEX iLevel, BOOL bLinearNormals)
   if( truform_iLevel==iLevel && !truform_bLinear==!bLinearNormals) return;
 
   // determine API
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D

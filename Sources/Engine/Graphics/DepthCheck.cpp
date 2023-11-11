@@ -54,7 +54,7 @@ CStaticStackArray<COLOR>    _acolDelayed;
 static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirrorLevel,
                                          DepthInfo *pdi, const INDEX ctCount)
 {
-  const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
+  const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
 #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D

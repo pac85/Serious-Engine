@@ -640,10 +640,11 @@ void PrintDisplayModeInfo(void)
   strRes.PrintF( "%dx%dx%s", slDPWidth, slDPHeight, _pGfx->gl_dmCurrentDisplayMode.DepthString());
   if( dm.IsDualHead())   strRes += TRANS(" DualMonitor");
   if( dm.IsWideScreen()) strRes += TRANS(" WideScreen");
-       if( _pGfx->gl_eCurrentAPI==GAT_OGL) strRes += " (OpenGL)";
-#ifdef SE1_D3D
-  else if( _pGfx->gl_eCurrentAPI==GAT_D3D) strRes += " (Direct3D)";
-#endif // SE1_D3D
+  if (_pGfx->GetCurrentAPI() == GAT_OGL) {
+    strRes += " (OpenGL)";
+  } else if (_pGfx->GetCurrentAPI() == GAT_D3D) {
+    strRes += " (Direct3D)";
+  }
 
   CTString strDescr;
   strDescr.PrintF("\n%s (%s)\n", _strPreferencesDescription, RenderingPreferencesDescription(sam_iVideoSetup));

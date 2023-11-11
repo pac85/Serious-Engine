@@ -189,7 +189,7 @@ void CViewPort::OpenCanvas(void)
   ASSERT( vp_hWnd!=NULL);
 #ifdef SE1_D3D
   // prepare new swap chain for D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && !bFullScreen) CreateSwapChain_D3D( this, pixWinSizeI, pixWinSizeJ);
+  if (_pGfx->GetCurrentAPI() == GAT_D3D && !bFullScreen) CreateSwapChain_D3D(this, pixWinSizeI, pixWinSizeJ);
 #endif // SE1_D3D
 
   // resize raster
@@ -197,7 +197,7 @@ void CViewPort::OpenCanvas(void)
   ShowWindow( vp_hWnd, SW_SHOW);
 #ifdef SE1_D3D
   // set as rendering target
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && vp_pSwapChain!=NULL) SetAsRenderTarget_D3D(this);
+  if (_pGfx->GetCurrentAPI() == GAT_D3D && vp_pSwapChain != NULL) SetAsRenderTarget_D3D(this);
 #endif // SE1_D3D
 }
 
@@ -207,9 +207,9 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
 {
   // release D3D swap chain if allocated
 #ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && bRelease) {
-    if( vp_pSwapChain!=NULL) D3DRELEASE( vp_pSwapChain, TRUE);
-    if( vp_pSurfDepth!=NULL) D3DRELEASE( vp_pSurfDepth, TRUE);
+  if (_pGfx->GetCurrentAPI() == GAT_D3D && bRelease) {
+    if (vp_pSwapChain != NULL) D3DRELEASE(vp_pSwapChain, TRUE);
+    if (vp_pSurfDepth != NULL) D3DRELEASE(vp_pSurfDepth, TRUE);
   }
 #endif // SE1_D3D
   // destroy window
@@ -246,13 +246,13 @@ void CViewPort::Resize(void)
 
   // "resize" D3D surface (if any)
 #ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && vp_pSwapChain!=NULL) {
+  if (_pGfx->GetCurrentAPI() == GAT_D3D && vp_pSwapChain != NULL) {
     // release old surface
-    ASSERT( vp_pSurfDepth!=NULL);
-    D3DRELEASE( vp_pSwapChain, TRUE);
-    D3DRELEASE( vp_pSurfDepth, TRUE);
+    ASSERT(vp_pSurfDepth!=NULL);
+    D3DRELEASE(vp_pSwapChain, TRUE);
+    D3DRELEASE(vp_pSurfDepth, TRUE);
     // create a new one and set it as current
-    CreateSwapChain_D3D( this, pixNewWidth, pixNewHeight);
+    CreateSwapChain_D3D(this, pixNewWidth, pixNewHeight);
     SetAsRenderTarget_D3D(this);
   }
 #endif // SE1_D3D
