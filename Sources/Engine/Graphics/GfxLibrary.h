@@ -278,11 +278,13 @@ public:
 
   // is API supported
   inline BOOL HasAPI( enum GfxAPIType eAPI) {
-    if( eAPI==GAT_CURRENT) return TRUE;
-    if( eAPI==GAT_OGL) return (gl_gaAPI[0].ga_ctAdapters>0);
-#ifdef SE1_D3D
-    if( eAPI==GAT_D3D) return (gl_gaAPI[1].ga_ctAdapters>0);
-#endif // SE1_D3D
+    if (eAPI == GAT_CURRENT) return TRUE;
+
+    // [Cecil] Check any API
+    if (eAPI != GAT_NONE) {
+      return (gl_gaAPI[eAPI].ga_ctAdapters > 0);
+    }
+
     return FALSE;
   };
 
