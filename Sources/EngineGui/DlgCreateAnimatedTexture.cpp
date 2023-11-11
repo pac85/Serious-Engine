@@ -250,10 +250,16 @@ void CDlgCreateAnimatedTexture::OnCreateTexture()
   if( m_strCreatedTextureName == "Unnamed")
   {
     // extract last sub directory name
-    char achrLastSubDir[ 256];
-    strcpy(achrLastSubDir, m_fnSourceFileName.FileDir().ConstData());
-    achrLastSubDir[ strlen(achrLastSubDir)-1]=0;  // remove last '\'
-    CTString strLastSubDir = CTFileName(CTString(achrLastSubDir)).FileName();
+    CTString strLastSubDir = m_fnSourceFileName.FileDir();
+
+    // [Cecil] Avoid the crash if the directory is empty (i.e. root directory)
+    if (strLastSubDir == "") {
+      strLastSubDir = "Texture";
+
+    } else {
+      strLastSubDir.Data()[strLastSubDir.Length() - 1] = '\0'; // Remove last '\'
+      strLastSubDir = strLastSubDir.FileName();
+    }
 
     // call save texture requester
     fnSaveName = _EngineGUI.BrowseTexture( 
