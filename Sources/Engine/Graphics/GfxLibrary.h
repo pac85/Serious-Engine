@@ -82,9 +82,7 @@ enum GfxAPIType
 {
   GAT_NONE = -1,     // no gfx API (gfx functions are disabled)
   GAT_OGL  =  0,     // OpenGL
-#ifdef SE1_D3D
   GAT_D3D  =  1,     // Direct3D
-#endif // SE1_D3D
   GAT_CURRENT = 9,   // current API
 };
 
@@ -283,6 +281,13 @@ public:
     if( eAPI==GAT_D3D) return (gl_gaAPI[1].ga_ctAdapters>0);
 #endif // SE1_D3D
     return FALSE;
+  };
+
+  // [Cecil] Check currently used API for debugging
+  inline void CheckAPI(void)
+  {
+    const GfxAPIType eAPI = GetCurrentAPI();
+    ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
   };
 
   // canvas functions
