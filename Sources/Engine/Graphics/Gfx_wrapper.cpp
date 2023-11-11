@@ -193,11 +193,8 @@ extern void UpdateLODBias( const FLOAT fLODBias)
 { 
   // check API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
-#else // SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   // only if supported and needed
   if( _fCurrentLODBias==fLODBias && _pGfx->gl_fMaxTextureLODBias==0) return;
   _fCurrentLODBias = fLODBias;
@@ -309,11 +306,8 @@ extern void gfxSetTextureUnit( INDEX iUnit)
 {
   // check API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
-#else // SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   ASSERT( iUnit>=0 && iUnit<4); // supports 4 layers (for now)
 
   // check consistency
@@ -356,11 +350,8 @@ extern void gfxSetTexture( ULONG &ulTexObject, CTexParams &tpLocal)
 
   // determine API and enable texturing
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   gfxEnableTexture();
 
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
@@ -393,11 +384,7 @@ extern void gfxUploadTexture( ULONG *pulTexture, PIX pixWidth, PIX pixHeight, UL
 {
   // determine API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -429,11 +416,8 @@ extern SLONG gfxGetTextureSize( ULONG ulTexObject, BOOL bHasMipmaps/*=TRUE*/)
 
   // determine API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   SLONG slMipSize;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -489,11 +473,8 @@ extern INDEX gfxGetTexturePixRatio( ULONG ulTextureObject)
 {
   // determine API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   if( eAPI==GAT_OGL) {
     return GetTexturePixRatio_OGL( (GLuint)ulTextureObject);
   } 
@@ -509,11 +490,8 @@ extern INDEX gfxGetFormatPixRatio( ULONG ulTextureFormat)
 {
   // determine API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   if( eAPI==GAT_OGL) {
     return GetFormatPixRatio_OGL( (GLenum)ulTextureFormat);
   } 
@@ -658,11 +636,7 @@ extern void gfxSetTruform( INDEX iLevel, BOOL bLinearNormals)
 
   // determine API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 

@@ -55,11 +55,8 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
                                          DepthInfo *pdi, const INDEX ctCount)
 {
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   ASSERT( pdp!=NULL && ctCount>0);
   const CRaster *pra = pdp->dp_Raster;
 

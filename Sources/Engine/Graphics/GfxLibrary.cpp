@@ -480,11 +480,8 @@ static void GAPInfo(void)
 {
   // check API
   const GfxAPIType eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
-#else // SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   CPrintF( "\n");
 
   // in case of driver hasn't been initialized yet
@@ -1459,11 +1456,7 @@ BOOL CGfxLibrary::SetCurrentViewport(CViewPort *pvp)
 BOOL CGfxLibrary::LockDrawPort( CDrawPort *pdpToLock)
 {
   // check API
-#ifdef SE1_D3D
-  ASSERT( gl_eCurrentAPI==GAT_OGL || gl_eCurrentAPI==GAT_D3D || gl_eCurrentAPI==GAT_NONE);
-#else // SE1_D3D
-  ASSERT( gl_eCurrentAPI==GAT_OGL || gl_eCurrentAPI==GAT_NONE);
-#endif // SE1_D3D
+  CheckAPI();
 
   // don't allow locking if drawport is too small
   if( pdpToLock->dp_Width<1 || pdpToLock->dp_Height<1) return FALSE;
@@ -1515,11 +1508,7 @@ BOOL CGfxLibrary::LockDrawPort( CDrawPort *pdpToLock)
 void CGfxLibrary::UnlockDrawPort( CDrawPort *pdpToUnlock)
 {
   // check API
-#ifdef SE1_D3D
-  ASSERT(gl_eCurrentAPI == GAT_OGL || gl_eCurrentAPI == GAT_D3D || gl_eCurrentAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(gl_eCurrentAPI == GAT_OGL || gl_eCurrentAPI == GAT_NONE);
-#endif // SE1_D3D
+  CheckAPI();
   // eventually signalize that scene rendering has ended
 }
 
@@ -1725,11 +1714,7 @@ static BOOL GenerateGammaTable(void);
 void CGfxLibrary::SwapBuffers(CViewPort *pvp)
 {
   // check API
-#ifdef SE1_D3D
-  ASSERT(gl_eCurrentAPI == GAT_OGL || gl_eCurrentAPI == GAT_D3D || gl_eCurrentAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(gl_eCurrentAPI == GAT_OGL || gl_eCurrentAPI == GAT_NONE);
-#endif // SE1_D3D
+  CheckAPI();
 
   // safety check
   ASSERT( gl_pvpActive!=NULL);
