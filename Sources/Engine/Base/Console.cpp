@@ -89,7 +89,7 @@ void CConsole::Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX 
   con_fLog = fopen(fnmLog.ConstData(), "wt");
 
   if (con_fLog==NULL) {
-    FatalError("%s", strerror(errno));
+    FatalError("Cannot open log file '%s' for writing:\n%s", fnmLog.ConstData(), strerror(errno));
   }
 
   // print one dummy line on start
