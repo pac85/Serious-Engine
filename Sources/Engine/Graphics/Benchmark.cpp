@@ -352,13 +352,8 @@ void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp)
   _pixSizeI = pdp->GetWidth();
   _pixSizeJ = pdp->GetHeight();
 
-  CTString strAPI = "";
-
-  if (_pGfx->GetCurrentAPI() == GAT_OGL) {
-    strAPI = "OpenGL";
-  } else if (_pGfx->GetCurrentAPI()==GAT_D3D) {
-    strAPI = "Direct3D";
-  }
+  // [Cecil] API name
+  CTString strAPI = _pGfx->GetApiName(_pGfx->GetCurrentAPI());
 
   CPrintF("=====================================\n");
   CPrintF("%s performance testing ...\n", strAPI);

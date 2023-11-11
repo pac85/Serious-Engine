@@ -496,9 +496,8 @@ static void GAPInfo(void)
   }
 
   // report API
-  CPrintF( "- Graphics API: ");
-  if( eAPI==GAT_OGL) CPrintF( "OpenGL\n");
-  else CPrintF( "Direct3D\n");
+  CPrintF( "- Graphics API: %s\n", _pGfx->GetApiName(eAPI));
+
   // and number of adapters
   CPrintF( "- Adapters found: %d\n", _pGfx->gl_gaAPI[eAPI].ga_ctAdapters);
   CPrintF( "\n");
@@ -1242,7 +1241,22 @@ void CGfxLibrary::Init(void)
   InitAPIs();
 }
 
+// [Cecil] Get API name from type
+const CTString &CGfxLibrary::GetApiName(GfxAPIType eAPI)
+{
+  // Invalid API
+  if (eAPI == GAT_NONE || eAPI >= GAT_MAX) {
+    static const CTString strNone = "none";
+    return strNone;
+  }
 
+  static const CTString astrApiNames[GAT_MAX] = {
+    "OpenGL",
+    "Direct3D",
+  };
+
+  return astrApiNames[eAPI];
+};
 
 // set new display mode
 BOOL CGfxLibrary::SetDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,

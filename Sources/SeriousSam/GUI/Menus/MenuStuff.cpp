@@ -123,6 +123,7 @@ extern CTString astrDisplayPrefsRadioTexts[] = {
 };
 
 extern CTString astrDisplayAPIRadioTexts[] = {
+  // [Cecil] TODO: Get names using CGfxLibrary::GetApiName()
   RADIOTRANS("OpenGL"),
   RADIOTRANS("Direct3D"),
 };

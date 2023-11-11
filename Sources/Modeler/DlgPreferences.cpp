@@ -182,9 +182,9 @@ BOOL CDlgPreferences::OnInitDialog()
   CDialog::OnInitDialog();
 
   m_ctrlGfxApi.ResetContent();
-  m_ctrlGfxApi.AddString(L"OpenGL");
+  m_ctrlGfxApi.AddString(CString(_pGfx->GetApiName(GAT_OGL).ConstData()));
 #ifdef SE1_D3D
-  m_ctrlGfxApi.AddString(L"DirectX");
+  m_ctrlGfxApi.AddString(CString(_pGfx->GetApiName(GAT_D3D).ConstData()));
 #endif // SE1_D3D
 
   if( IsWindow(m_ctrlGfxApi.m_hWnd))

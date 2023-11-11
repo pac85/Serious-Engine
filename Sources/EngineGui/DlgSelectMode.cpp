@@ -168,19 +168,8 @@ CDlgSelectMode::CDlgSelectMode( CDisplayMode &dm, enum GfxAPIType &gfxAPI,
   str.PrintF( "%d x %d x %s", dm.dm_pixSizeI, dm.dm_pixSizeJ, dm.DepthString());
   m_strCurrentMode = str.ConstData();
 
-  switch(gfxAPI) {
-  case GAT_OGL:
-    m_strCurrentDriver = "OpenGL";
-    break;
-#ifdef SE1_D3D
-  case GAT_D3D:
-    m_strCurrentDriver = "Direct3D";
-    break;
-#endif // SE1_D3D
-  default:
-    m_strCurrentDriver = "none";
-    break;
-  }
+  // [Cecil] API name
+  m_strCurrentDriver = _pGfx->GetApiName(_pGfx->GetCurrentAPI());
 }
 
 CDlgSelectMode::~CDlgSelectMode()
@@ -253,12 +242,12 @@ void CDlgSelectMode::DoDataExchange(CDataExchange* pDX)
     m_ctrlResCombo.ResetContent();
 
     // init driver combo
-    i = m_ctrlDriverCombo.AddString( L"OpenGL");
-    m_ctrlDriverCombo.SetItemData( i, (INDEX)GAT_OGL);
+    i = m_ctrlDriverCombo.AddString(CString(_pGfx->GetApiName(GAT_OGL).ConstData()));
+    m_ctrlDriverCombo.SetItemData(i, GAT_OGL);
     if( *m_pGfxAPI==GAT_OGL) iSelect = i;
 #ifdef SE1_D3D
-    i = m_ctrlDriverCombo.AddString( L"Direct3D");
-    m_ctrlDriverCombo.SetItemData( i, (INDEX)GAT_D3D);
+    i = m_ctrlDriverCombo.AddString(CString(_pGfx->GetApiName(GAT_D3D).ConstData()));
+    m_ctrlDriverCombo.SetItemData(i, GAT_D3D);
     if( *m_pGfxAPI==GAT_D3D) iSelect = i;
 #endif // SE1_D3D
     // set old driver to be default
