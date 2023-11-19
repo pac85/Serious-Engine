@@ -70,3 +70,14 @@ void *OS::GetLibSymbol(HMODULE hLib, const char *strSymbol) {
 };
 
 #endif
+
+// Throw an error if unable to load a library
+HMODULE OS::LoadLibOrThrow_t(const char *strLibrary) {
+  HMODULE hLib = OS::LoadLib(strLibrary);
+
+  if (hLib == NULL) {
+    ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"), strLibrary, GetWindowsError(GetLastError()));
+  }
+
+  return hLib;
+};

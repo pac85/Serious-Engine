@@ -35,6 +35,9 @@ class ENGINE_API OS {
     // Load library
     static HMODULE LoadLib(const char *strLibrary);
 
+    // Throw an error if unable to load a library
+    static HMODULE LoadLibOrThrow_t(const char *strLibrary);
+
     // Free loaded library
     static BOOL FreeLib(HMODULE hLib);
 
@@ -48,10 +51,10 @@ class ENGINE_API OS {
       // PeekMessage()
       static BOOL Peek(MSG *lpMsg, void *hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
 
-      // TranslateMessage();
+      // TranslateMessage()
       static void Translate(const MSG *lpMsg);
 
-      // DispatchMessage();
+      // DispatchMessage()
       static void Dispatch(const MSG *lpMsg);
     };
 
