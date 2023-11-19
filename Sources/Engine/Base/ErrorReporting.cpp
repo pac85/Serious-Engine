@@ -146,7 +146,7 @@ void ThrowF_t(const char *strFormat, ...)  // throws char *
 /*
  * Get the name string for error code.
  */
- const char *ErrorName(const struct ErrorTable *pet, SLONG ulErrCode)
+const char *ErrorName(const struct ErrorTable *pet, SLONG ulErrCode)
 {
   for (INDEX i=0; i<pet->et_Count; i++) {
     if (pet->et_Errors[i].ec_Code == ulErrCode) {
@@ -159,7 +159,7 @@ void ThrowF_t(const char *strFormat, ...)  // throws char *
 /*
  * Get the description string for error code.
  */
- const char *ErrorDescription(const struct ErrorTable *pet, SLONG ulErrCode)
+const char *ErrorDescription(const struct ErrorTable *pet, SLONG ulErrCode)
 {
   for (INDEX i=0; i<pet->et_Count; i++) {
     if (pet->et_Errors[i].ec_Code == ulErrCode) {
@@ -172,23 +172,38 @@ void ThrowF_t(const char *strFormat, ...)  // throws char *
 /*
  * Get the description string for windows error code.
  */
- extern const CTString GetWindowsError(DWORD dwWindowsErrorCode)
+const CTString GetWindowsError(DWORD dwWindowsErrorCode)
 {
   // buffer to receive error description
   LPVOID lpMsgBuf;
   // call function that will prepare text abount given windows error code
-  FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-      NULL, dwWindowsErrorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-      (LPTSTR) &lpMsgBuf, 0, NULL );
+  DWORD dwSuccess = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+    NULL, dwWindowsErrorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&lpMsgBuf, 0, NULL);
+
   // create result CTString from prepared message
-  CTString strResultMessage = (char *)lpMsgBuf;
-  // Free the buffer.
-  LocalFree( lpMsgBuf );
+  CTString strResultMessage;
+
+  // [Cecil] Make sure the message could be formatted at all
+  if (dwSuccess != 0) {
+    // copy the result
+    strResultMessage = (char *)lpMsgBuf;
+    // free the windows message buffer
+    LocalFree(lpMsgBuf);
+
+  } else {
+    // set our message about the failure
+    strResultMessage.PrintF(
+      TRANS("Cannot format error message!\n"
+      "Original error code: %d,\n"
+      "Formatting error code: %d.\n"),
+      dwWindowsErrorCode, GetLastError());
+  }
+
   return strResultMessage;
 }
 
 // must be in separate function to disable stupid optimizer
-extern void Breakpoint(void)
+void Breakpoint(void)
 {
 // [Cecil] Prioritize old compiler
 #if SE1_OLD_COMPILER || SE1_USE_ASM
