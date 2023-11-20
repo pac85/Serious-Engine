@@ -33,10 +33,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #elif SE1_UNIX
-  #include <assert.h>
   #include <signal.h>
 
-  #define _assert(x, y, z) assert(0)
+  // [Cecil] SDL: Assertion
+  #define _assert(expr, file, line) SDL_assert(expr)
 #endif
 
 

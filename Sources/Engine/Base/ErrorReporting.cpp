@@ -47,12 +47,19 @@ void FatalError(const char *strFormat, ...)
   // (this is a low overhead and shouldn't allocate memory)
   CDS_ResetMode();
 
+#if !SE1_USE_SDL
   // hide fullscreen window if any
   if( _bFullScreen) {
     // must do minimize first - don't know why :(
     ShowWindow( _hwndMain, SW_MINIMIZE);
     ShowWindow( _hwndMain, SW_HIDE);
   }
+
+#else
+  // [Cecil] SDL: Destroy the window
+  SDL_DestroyWindow((SDL_Window *)_hwndMain);
+  _hwndMain = NULL;
+#endif
 
   // format the message in buffer
   va_list arg;
@@ -68,14 +75,22 @@ void FatalError(const char *strFormat, ...)
     _pConsole->CloseLog();
   }
 
+#if !SE1_USE_SDL
   // create message box with just OK button
   MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Fatal Error"),
     MB_OK|MB_ICONHAND|MB_SETFOREGROUND|MB_TASKMODAL);
 
-  _bInFatalError = FALSE;
-
   extern void EnableWindowsKeys(void);
   EnableWindowsKeys();
+
+#else
+  // [Cecil] SDL: Show fatal error
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, TRANS("Fatal Error"), strBuffer, NULL);
+  SDL_Quit();
+#endif
+
+  _bInFatalError = FALSE;
+
   // exit program
   exit(EXIT_FAILURE);
 }
@@ -95,8 +110,14 @@ void WarningMessage(const char *strFormat, ...)
   CPrintF("%s\n", strBuffer);
   // if warnings are enabled
   if( !con_bNoWarnings) {
+  #if !SE1_USE_SDL
     // create message box
     MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Warning"), MB_OK|MB_ICONEXCLAMATION|MB_SETFOREGROUND|MB_TASKMODAL);
+
+  #else
+    // [Cecil] SDL: Show warning
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANS("Warning"), strBuffer, (SDL_Window *)_hwndMain);
+  #endif
   }
 }
 
@@ -110,8 +131,15 @@ void InfoMessage(const char *strFormat, ...)
 
   // print it to console
   CPrintF("%s\n", strBuffer);
+
+#if !SE1_USE_SDL
   // create message box
   MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Information"), MB_OK|MB_ICONINFORMATION|MB_SETFOREGROUND|MB_TASKMODAL);
+
+#else
+  // [Cecil] SDL: Show information
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANS("Information"), strBuffer, (SDL_Window *)_hwndMain);
+#endif
 }
 
 /* Ask user for yes/no answer(stops program until user responds). */
@@ -125,8 +153,28 @@ BOOL YesNoMessage(const char *strFormat, ...)
 
   // print it to console
   CPrintF("%s\n", strBuffer);
+
+#if !SE1_USE_SDL
   // create message box
   return MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Question"), MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND|MB_TASKMODAL)==IDYES;
+
+#else
+  // [Cecil] SDL: Show question
+  const SDL_MessageBoxButtonData aButtons[] = {
+    { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 0, TRANS("No") },
+    { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, TRANS("Yes") },
+  };
+
+  const SDL_MessageBoxData msgbox = {
+    SDL_MESSAGEBOX_INFORMATION, (SDL_Window *)_hwndMain,
+    TRANS("Question"), strBuffer, SDL_arraysize(aButtons), aButtons, NULL,
+  };
+
+  int iResponse = 0;
+  int iOK = SDL_ShowMessageBox(&msgbox, &iResponse);
+
+  return (iOK != -1 && iResponse == 1);
+#endif
 }
 
 /*
@@ -174,6 +222,7 @@ const char *ErrorDescription(const struct ErrorTable *pet, SLONG ulErrCode)
  */
 const CTString GetWindowsError(DWORD dwWindowsErrorCode)
 {
+#if SE1_WIN
   // buffer to receive error description
   LPVOID lpMsgBuf;
   // call function that will prepare text abount given windows error code
@@ -200,6 +249,11 @@ const CTString GetWindowsError(DWORD dwWindowsErrorCode)
   }
 
   return strResultMessage;
+
+#else
+  ASSERTALWAYS("GetWindowsError() is only supported on Windows OS!");
+  return "GetWindowsError() is only supported on Windows OS!";
+#endif
 }
 
 // must be in separate function to disable stupid optimizer
@@ -209,6 +263,7 @@ void Breakpoint(void)
 #if SE1_OLD_COMPILER || SE1_USE_ASM
   __asm int 0x03;
 #else
-  __debugbreak();
+  // [Cecil] SDL: Trigger breakpoint universally
+  SDL_TriggerBreakpoint();
 #endif
 }

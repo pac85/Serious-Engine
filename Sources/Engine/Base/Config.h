@@ -66,6 +66,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define SE1_DITHERBITMAP 1
 #endif
 
+// Don't prioritize SDL functionality over Windows API by default
+#if SE1_WIN
+  #ifndef SE1_USE_SDL
+    #define SE1_USE_SDL 0
+  #endif
+
+#else
+  #define SE1_USE_SDL 1
+#endif
+
 // Building under a traditional platform (Windows x86)
 #if SE1_WIN && SE1_32BIT
   #define SE1_OLD_COMPILER (_MSC_VER < 1600) // Check for the old compiler
