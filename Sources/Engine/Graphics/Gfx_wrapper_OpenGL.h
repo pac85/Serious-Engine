@@ -22,7 +22,7 @@ class IGfxOpenGL : public IGfxInterface
 {
   public:
     // Unique graphical API type
-    GfxAPIType GetType(void) const override {
+    virtual GfxAPIType GetType(void) const {
       return GAT_OGL;
     };
 

@@ -22,7 +22,7 @@ class IGfxD3D8 : public IGfxInterface
 {
   public:
     // Unique graphical API type
-    GfxAPIType GetType(void) const override {
+    virtual GfxAPIType GetType(void) const {
       return GAT_D3D;
     };
 
