@@ -13,6 +13,7 @@
 *.dylib
 *.dll
 *.p
+!Sources/ThirdParty/SDL2/lib/**/*.dll
 
 # Fortran module files
 *.mod
@@ -22,6 +23,7 @@
 *.la
 *.a
 *.lib
+!Sources/ThirdParty/SDL2/lib/**/*.lib
 
 # Executables
 *.exe
