@@ -13,6 +13,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+// [Cecil] SDL: Include SDL2 in its entirety
+#define SDL_MAIN_HANDLED
+#include <SDL2/include/SDL.h>
+
+#pragma comment(lib, "SDL2.lib")
+
 #define ENGINE_INTERNAL 1
 #define ENGINE_EXPORTS 1
 
