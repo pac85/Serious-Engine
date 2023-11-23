@@ -128,6 +128,23 @@ void CTimer_TimerFunc_internal(void)
 
 //  } CTSTREAM_END;
 }
+
+#ifdef SE1_SDL
+
+// [Cecil] SDL: Timer tick function
+Uint32 CTimer_TimerFunc(Uint32 interval, void *param) {
+  (void)param;
+
+  // access to the list of handlers must be locked
+  CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
+  // handle all timers
+  CTimer_TimerFunc_internal();
+
+  return interval;
+};
+
+#else
+
 void __stdcall CTimer_TimerFunc(UINT uID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
 {
   // access to the list of handlers must be locked
@@ -136,6 +153,7 @@ void __stdcall CTimer_TimerFunc(UINT uID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR
   CTimer_TimerFunc_internal();
 }
 
+#endif // SE1_SDL
 
 #pragma inline_depth()
 
@@ -262,12 +280,22 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   // start interrupt (eventually)
   if( tm_bInterrupt)
   {
+  #ifdef SE1_SDL
+    // [Cecil] SDL: Add timer
+    if (SDL_Init(SDL_INIT_TIMER) == -1) {
+      FatalError(TRANS("Cannot initialize SDL timer!"));
+    }
+
+    tm_TimerID = SDL_AddTimer(ULONG(TickQuantum * (TIME)1000.0), CTimer_TimerFunc, NULL);
+
+  #else
     tm_TimerID = timeSetEvent(
       ULONG(TickQuantum*1000.0f),	  // period value [ms]
       0,	                          // resolution (0==max. possible)
       &CTimer_TimerFunc,	          // callback
       0,                            // user
       TIME_PERIODIC);               // event type
+  #endif
 
     // check that interrupt was properly started
     if( tm_TimerID==NULL) FatalError(TRANS("Cannot initialize multimedia timer!"));
@@ -293,6 +321,11 @@ CTimer::~CTimer(void)
 {
   ASSERT(_pTimer == this);
 
+#ifdef SE1_SDL
+  // [Cecil] SDL: Remove timer
+  SDL_RemoveTimer(tm_TimerID);
+
+#else
   // destroy timer
   if (tm_bInterrupt) {
     ASSERT(tm_TimerID!=NULL);
@@ -301,6 +334,7 @@ CTimer::~CTimer(void)
   }
   // check that all handlers have been removed
   ASSERT(tm_lhHooks.IsEmpty());
+#endif
 
   // clear global pointer
   _pTimer = NULL;
@@ -404,8 +438,13 @@ CTimerValue CTimer::GetHighPrecisionTimer(void) {
 
 // [Cecil] Suspend current thread execution for some time (cross-platform replacement for Sleep() from Windows API)
 void CTimer::Suspend(ULONG ulMilliseconds) {
-#if SE1_WIN
+#if defined(SE1_SDL)
+  // [Cecil] SDL: Delay
+  SDL_Delay(ulMilliseconds);
+
+#elif SE1_WIN
   ::Sleep(ulMilliseconds);
+
 #else
   std::this_thread::sleep_for(std::chrono::milliseconds(ulMilliseconds));
 #endif
