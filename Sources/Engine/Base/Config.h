@@ -68,11 +68,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Don't prioritize SDL functionality over Windows API by default
 #if SE1_WIN
+  // Needs SE1_SDL to be defined as well to work
   #ifndef SE1_USE_SDL
     #define SE1_USE_SDL 0
   #endif
 
 #else
+  #define SE1_SDL // Should always be enabled
   #define SE1_USE_SDL 1
 #endif
 
