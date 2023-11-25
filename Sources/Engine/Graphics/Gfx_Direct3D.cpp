@@ -623,6 +623,7 @@ void CGfxLibrary::InitContext_D3D()
     if( d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE) gl_ulFlags |= GLF_VSYNC;  
   } else CPrintF( TRANS("  Vertical syncronization cannot be disabled.\n"));
 
+#if SE1_TRUFORM
   // determine support for N-Patches
   extern INDEX truform_iLevel;
   extern BOOL  truform_bLinear;
@@ -639,6 +640,7 @@ void CGfxLibrary::InitContext_D3D()
       ctMinStreams++; // need an extra stream for normals now
     } else CPrintF( TRANS("Not enough streams - N-Patches cannot be used.\n"));
   }
+#endif
 
   // determine support for multi-texturing (only if Modulate2X mode is supported!)
   gl_ctTextureUnits = 1;
@@ -1079,6 +1081,7 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
     _iTexPass = _iColPass = 0;
     break;
 
+#if SE1_TRUFORM
   // NORMALS
   case 1: 
     ASSERT( _pGfx->gl_iMaxTessellationLevel>0 && gap_iTruformLevel>0); // only if enabled
@@ -1092,6 +1095,7 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
     iStream  = NORIDX;
     slStride = NORSIZE;
     break;
+#endif
 
   // COLORS
   case 2: 

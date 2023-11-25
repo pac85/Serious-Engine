@@ -625,6 +625,7 @@ void CGfxLibrary::InitContext_OGL(void)
     ASSERT( pwglSwapIntervalEXT!=NULL && pwglGetSwapIntervalEXT!=NULL);
   }
 
+#if SE1_TRUFORM
   // determine support for ATI Truform technology
   extern INDEX truform_iLevel;
   extern BOOL  truform_bLinear;
@@ -644,6 +645,7 @@ void CGfxLibrary::InitContext_OGL(void)
     gl_iMaxTessellationLevel = gliRet;
     OGL_CHECKERROR;
   } 
+#endif
 
   // if T-buffer is supported
   if( _TBCapability) {

@@ -73,6 +73,7 @@ void BeginModelRenderingView( CAnyProjection3D &prProjection, CDrawPort *pdp)
   _atexCommon.PopAll();
   _acolCommon.PopAll();
 
+#if SE1_TRUFORM
   // eventually setup truform
   extern INDEX gap_bForceTruform;
   extern INDEX ogl_bTruformLinearNormals;
@@ -81,6 +82,7 @@ void BeginModelRenderingView( CAnyProjection3D &prProjection, CDrawPort *pdp)
     gap_bForceTruform = 1;
     gfxSetTruform( _pGfx->gl_iTessellationLevel, ogl_bTruformLinearNormals);
   }
+#endif
 }
 
 

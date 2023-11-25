@@ -70,7 +70,11 @@ static CStaticStackArray<UBYTE>       _ashdMipHaze;
 
 // surface arrays
 static CStaticStackArray<GFXVertex4>  _avtxSrfBase;
+
+#if SE1_TRUFORM
 static CStaticStackArray<GFXNormal4>  _anorSrfBase;  // normals for Truform!
+#endif
+
 static CStaticStackArray<GFXTexCoord> _atexSrfBase;
 static CStaticStackArray<GFXTexCoord> _atexSrfBump; // Bump maping
 static CStaticStackArray<GFXColor>    _acolSrfBase;
@@ -134,7 +138,11 @@ static void ResetVertexArrays(void)
   _anorMipBase.PopAll();
 
   _avtxSrfBase.PopAll();
+
+#if SE1_TRUFORM
   _anorSrfBase.PopAll();
+#endif
+
   _atexSrfBase.PopAll();
   _atexSrfBump.PopAll();
   _acolSrfBase.PopAll();
@@ -160,7 +168,11 @@ extern void Models_ClearVertexArrays(void)
   _ashdMipHaze.Clear();
 
   _avtxSrfBase.Clear();
+
+#if SE1_TRUFORM
   _anorSrfBase.Clear();
+#endif
+
   _atexSrfBase.Clear();
   _atexSrfBump.Clear();
   _acolSrfBase.Clear();
@@ -1750,6 +1762,7 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
 #endif // SE1_D3D
   if( _eAPI==GAT_NONE) return;  // must have API
 
+#if SE1_TRUFORM
   // adjust Truform usage
   extern INDEX mdl_bTruformWeapons;
   extern INDEX gap_bForceTruform;
@@ -1771,6 +1784,8 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
       else gfxDisableTruform();
     }
   }
+#endif
+
   // setup drawing direction (in case of mirror)
   if( rm.rm_ulFlags & RMF_INVERTED) gfxFrontFace(GFX_CW);
   else gfxFrontFace(GFX_CCW);
@@ -1819,10 +1834,12 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
   ASSERT( _atexSrfBase.Count()==0);  _atexSrfBase.Push(_ctAllSrfVx);   
   ASSERT( _acolSrfBase.Count()==0);  _acolSrfBase.Push(_ctAllSrfVx);   
 
+#if SE1_TRUFORM
   if( GFX_bTruform) {
     ASSERT( _anorSrfBase.Count()==0);
     _anorSrfBase.Push(_ctAllSrfVx);   
   }
+#endif
 
   // determine multitexturing capability for overbrighting purposes
   extern INDEX mdl_bAllowOverbright;
@@ -2030,6 +2047,7 @@ srfVtxLoop:
     }
   #endif
 
+  #if SE1_TRUFORM
     // setup normal array for truform (if enabled)
     if( GFX_bTruform) {
       GFXNormal *pnorSrfBase = &_anorSrfBase[iSrfVx0];
@@ -2040,11 +2058,16 @@ srfVtxLoop:
         pnorSrfBase[iSrfVx].nz = pnorMipBase[iMipVx].nz;
       }
     }
+  #endif
   }}
   // prepare (and lock) vertex array
   gfxEnableDepthTest();
   gfxSetVertexArray( &_avtxSrfBase[0], _ctAllSrfVx);
+
+#if SE1_TRUFORM
   if(GFX_bTruform) gfxSetNormalArray( &_anorSrfBase[0]);
+#endif
+
   if(CVA_bModels) gfxLockArrays();
   // cache light in object space (for reflection, specular and/or bump mapping)
   _vLightObj = rm.rm_vLightObj;
@@ -3268,7 +3291,10 @@ void CModelObject::RenderShadow_View( CRenderModel &rm, const CPlacement3D &plLi
   gfxEnableBlend();
   gfxBlendFunc( GFX_ZERO, GFX_INV_SRC_ALPHA);
   gfxDisableAlphaTest();
+
+#if SE1_TRUFORM
   gfxDisableTruform();
+#endif
 
   gfxEnableClipping();
   gfxCullFace(GFX_BACK);
@@ -3453,7 +3479,10 @@ void RenderBatchedSimpleShadows_View(void)
   gfxBlendFunc( GFX_ZERO, GFX_INV_SRC_COLOR);
   gfxDisableAlphaTest();
   gfxEnableClipping();
+
+#if SE1_TRUFORM
   gfxDisableTruform();
+#endif
 
   // draw!
   _pGfx->gl_ctModelTriangles += ctVertices/2; 

@@ -470,7 +470,7 @@ void IGfxOpenGL::DisableColorArray(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
+#if SE1_TRUFORM
 
 // enable truform rendering
 void IGfxOpenGL::EnableTruform(void)
@@ -496,8 +496,6 @@ void IGfxOpenGL::EnableTruform(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
-
 // disable truform rendering
 void IGfxOpenGL::DisableTruform(void)
 {
@@ -522,7 +520,7 @@ void IGfxOpenGL::DisableTruform(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
+#endif
 
 // helper for blending operation function
 __forceinline GLenum BlendToOGL( GfxBlend eFunc) {
@@ -983,7 +981,7 @@ void IGfxOpenGL::SetVertexArray(void *pvtx, INDEX ctVtx)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
+#if SE1_TRUFORM
 
 // prepare normal array for API
 void IGfxOpenGL::SetNormalArray( GFXNormal *pnor)
@@ -999,7 +997,7 @@ void IGfxOpenGL::SetNormalArray( GFXNormal *pnor)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
+#endif
 
 // prepare color array for API (and force rendering with color array!)
 void IGfxOpenGL::SetColorArray( GFXColor *pcol)

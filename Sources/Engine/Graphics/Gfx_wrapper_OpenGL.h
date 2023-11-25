@@ -109,8 +109,10 @@ class IGfxOpenGL : public IGfxInterface
     // Prepare vertex array for API
     virtual void SetVertexArray(void *pvtx, INDEX ctVtx);
 
+  #if SE1_TRUFORM
     // Prepare normal array for API
     virtual void SetNormalArray(GFXNormal *pnor);
+  #endif
 
     // Prepare UV array for API
     virtual void SetTexCoordArray(GFXTexCoord *ptex, BOOL b4); // b4 = projective mapping (4 FLOATs)
@@ -137,9 +139,11 @@ class IGfxOpenGL : public IGfxInterface
     // Compiled vertex array control
     virtual void LockArrays(void);
 
+  #if SE1_TRUFORM
     // Toggle truform
     virtual void EnableTruform(void);
     virtual void DisableTruform(void);
+  #endif
 };
 
 #endif // include-once check

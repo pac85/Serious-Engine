@@ -374,8 +374,10 @@ void CRenderer::RenderOneModel( CEntity &en, CModelObject &moModel, const CPlace
     bRenderModelShadow = FALSE;
   }
 
+#if SE1_TRUFORM
   // TEMP: disable Truform usage on weapon models
   if( IsOfClass( &en, "Player Weapons")) rm.rm_ulFlags |= RMF_WEAPON; 
+#endif
 
   // set tesselation level of models
   rm.rm_iTesselationLevel = en.GetMaxTessellationLevel();

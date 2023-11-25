@@ -109,8 +109,10 @@ class IGfxNull : public IGfxInterface
     // Prepare vertex array for API
     virtual void SetVertexArray(void *pvtx, INDEX ctVtx) { NOTHING; };
 
+  #if SE1_TRUFORM
     // Prepare normal array for API
     virtual void SetNormalArray(GFXNormal *pnor) { NOTHING; };
+  #endif
 
     // Prepare UV array for API
     virtual void SetTexCoordArray(GFXTexCoord *ptex, BOOL b4) { NOTHING; }; // b4 = projective mapping (4 FLOATs)
@@ -137,9 +139,11 @@ class IGfxNull : public IGfxInterface
     // Compiled vertex array control
     virtual void LockArrays(void) { NOTHING; };
 
+  #if SE1_TRUFORM
     // Toggle truform
     virtual void EnableTruform(void) { NOTHING; };
     virtual void DisableTruform(void) { NOTHING; };
+  #endif
 };
 
 #endif // include-once check

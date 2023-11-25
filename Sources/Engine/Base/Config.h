@@ -66,6 +66,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define SE1_DITHERBITMAP 1
 #endif
 
+// Truform support (obsolete)
+#ifndef SE1_TRUFORM
+  #define SE1_TRUFORM 0
+#endif
+
 // Don't prioritize SDL functionality over Windows API by default
 #if SE1_WIN
   #ifndef SE1_SDL
@@ -91,9 +96,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define SE1_USE_ASM 0 // Cannot use inline assembly
 #endif
 
-// [Cecil] NOTE: Experimental
-#if !defined(SE1_MMXINTOPT) && SE1_32BIT
-  #define SE1_MMXINTOPT 1
+#ifndef SE1_MMXINTOPT
+  // [Cecil] NOTE: Experimental
+  #if SE1_32BIT
+    #define SE1_MMXINTOPT 1
+  #else
+    #define SE1_MMXINTOPT 0
+  #endif
 #endif
 
 // Determine if using compilers with incomplete support of C++11

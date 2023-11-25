@@ -555,6 +555,7 @@ static void GAPInfo(void)
   // OpenGL only stuff ...
   if( eAPI==GAT_OGL) 
   {
+  #if SE1_TRUFORM
     // report truform tessellation
     CPrintF( "- Truform tessellation: ");
     if( _pGfx->gl_iMaxTessellationLevel>0) {
@@ -566,6 +567,7 @@ static void GAPInfo(void)
         CPrintF( "- Tesselation level: %d of %d (%s normals)\n", _pGfx->gl_iTessellationLevel, _pGfx->gl_iMaxTessellationLevel, strNormalMode);
       } else CPrintF( "disabled\n");
     } else CPrintF( "not supported\n");
+  #endif
 
     // report current swap interval (only if fullscreen)
     if( _pGfx->gl_ulFlags&GLF_FULLSCREEN) {
@@ -668,6 +670,7 @@ static void GAPInfo(void)
     const SLONG slMemoryUsed = SizeFromVertices_D3D(_pGfx->gl_ctVertices);
     CPrintF( "- Vertex buffer size: %.1f KB (%d vertices)\n", slMemoryUsed/1024.0f, _pGfx->gl_ctVertices);
 
+  #if SE1_TRUFORM
     // N-Patches tessellation (Truform)
     CPrintF( "- N-Patches: ");
     if( _pGfx->gl_iMaxTessellationLevel>0) {
@@ -679,6 +682,7 @@ static void GAPInfo(void)
         CPrintF( "- Tesselation level: %d of %d\n", _pGfx->gl_iTessellationLevel, _pGfx->gl_iMaxTessellationLevel);
       } else CPrintF( "disabled\n");
     } else CPrintF( "not supported\n");
+  #endif
 
     // texture compression
     CPrintF( "- Texture compression: ");

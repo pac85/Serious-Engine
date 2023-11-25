@@ -161,8 +161,10 @@ class IGfxInterface
     // Prepare vertex array for API
     virtual void SetVertexArray(void *pvtx, INDEX ctVtx) = 0;
 
+  #if SE1_TRUFORM
     // Prepare normal array for API
     virtual void SetNormalArray(GFXNormal *pnor) = 0;
+  #endif
 
     // Prepare UV array for API
     virtual void SetTexCoordArray(GFXTexCoord *ptex, BOOL b4) = 0; // b4 = projective mapping (4 FLOATs)
@@ -205,12 +207,14 @@ class IGfxInterface
     void FlushElements(void);
     void FlushQuads(void);
 
+  #if SE1_TRUFORM
     // Toggle truform
     virtual void EnableTruform(void) = 0;
     virtual void DisableTruform(void) = 0;
 
     // Set truform parameters
     virtual void SetTruform(const INDEX iLevel, BOOL bLinearNormals);
+  #endif
 
     // Set D3D vertex shader only if it has changed since last time
     void SetVertexShader(DWORD dwHandle);
@@ -276,10 +280,12 @@ class IGfxInterface
 #define gfxFlushQuads           _pGfx->GetInterface()->FlushQuads
 
 // Truform
+#if SE1_TRUFORM
 #define gfxEnableTruform        _pGfx->GetInterface()->EnableTruform
 #define gfxDisableTruform       _pGfx->GetInterface()->DisableTruform
 #define gfxSetTruform           _pGfx->GetInterface()->SetTruform
 #define gfxSetNormalArray       _pGfx->GetInterface()->SetNormalArray
+#endif
 
 #define d3dSetVertexShader      _pGfx->GetInterface()->SetVertexShader
 

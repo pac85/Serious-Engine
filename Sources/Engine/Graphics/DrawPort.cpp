@@ -328,7 +328,10 @@ void CDrawPort::SetOrtho(void) const
   // disable face culling, custom clip plane and truform
   gfxCullFace(GFX_NONE);
   gfxDisableClipPlane();
+
+#if SE1_TRUFORM
   gfxDisableTruform();
+#endif
 }
 
 
@@ -378,7 +381,10 @@ void CDrawPort::SetProjection(CAnyProjection3D &apr) const
   gfxDepthRange( apr->pr_fDepthBufferNear, apr->pr_fDepthBufferFar);
   gfxCullFace(GFX_BACK);
   gfxSetViewMatrix(NULL);
+
+#if SE1_TRUFORM
   gfxDisableTruform();
+#endif
   
   // if projection is mirrored/warped and mirroring is allowed
   if( apr->pr_bMirror || apr->pr_bWarp) {

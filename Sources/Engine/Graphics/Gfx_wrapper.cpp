@@ -558,8 +558,7 @@ void IGfxInterface::FlushElements(void)
   if( ctElements>0) FlushArrays( &_aiCommonElements[0], ctElements);
 }
 
-
-
+#if SE1_TRUFORM
 
 // set truform parameters
 void IGfxInterface::SetTruform(INDEX iLevel, BOOL bLinearNormals)
@@ -602,6 +601,8 @@ void IGfxInterface::SetTruform(INDEX iLevel, BOOL bLinearNormals)
 
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
+
+#endif
 
 // Define specific API methods
 #include <Engine/Graphics/GFX_wrapper_OpenGL.cpp>

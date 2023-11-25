@@ -559,7 +559,7 @@ void IGfxD3D8::DisableColorArray(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
+#if SE1_TRUFORM
 
 void IGfxD3D8::EnableTruform(void)
 {
@@ -588,8 +588,6 @@ void IGfxD3D8::EnableTruform(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
-
 void IGfxD3D8::DisableTruform(void)
 {
   // skip if Truform isn't set
@@ -617,8 +615,7 @@ void IGfxD3D8::DisableTruform(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
-
+#endif
 
 __forceinline _D3DBLEND BlendToD3D( GfxBlend eFunc) {
   switch( eFunc) {
@@ -1118,7 +1115,7 @@ void IGfxD3D8::SetVertexArray(void *pvtx, INDEX ctVtx)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
+#if SE1_TRUFORM
 
 void IGfxD3D8::SetNormalArray( GFXNormal *pnor)
 {
@@ -1130,7 +1127,7 @@ void IGfxD3D8::SetNormalArray( GFXNormal *pnor)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
-
+#endif
 
 void IGfxD3D8::SetColorArray( GFXColor *pcol)
 {
