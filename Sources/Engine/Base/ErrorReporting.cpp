@@ -47,7 +47,7 @@ void FatalError(const char *strFormat, ...)
   // (this is a low overhead and shouldn't allocate memory)
   CDS_ResetMode();
 
-#if !defined(SE1_SDL) || !SE1_USE_SDL
+#if !SE1_SDL || !SE1_USE_SDL
   // hide fullscreen window if any
   if( _bFullScreen) {
     // must do minimize first - don't know why :(
@@ -75,7 +75,7 @@ void FatalError(const char *strFormat, ...)
     _pConsole->CloseLog();
   }
 
-#if !defined(SE1_SDL) || !SE1_USE_SDL
+#if !SE1_SDL || !SE1_USE_SDL
   // create message box with just OK button
   MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Fatal Error"),
     MB_OK|MB_ICONHAND|MB_SETFOREGROUND|MB_TASKMODAL);
@@ -110,7 +110,7 @@ void WarningMessage(const char *strFormat, ...)
   CPrintF("%s\n", strBuffer);
   // if warnings are enabled
   if( !con_bNoWarnings) {
-  #if !defined(SE1_SDL) || !SE1_USE_SDL
+  #if !SE1_SDL || !SE1_USE_SDL
     // create message box
     MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Warning"), MB_OK|MB_ICONEXCLAMATION|MB_SETFOREGROUND|MB_TASKMODAL);
 
@@ -132,7 +132,7 @@ void InfoMessage(const char *strFormat, ...)
   // print it to console
   CPrintF("%s\n", strBuffer);
 
-#if !defined(SE1_SDL) || !SE1_USE_SDL
+#if !SE1_SDL || !SE1_USE_SDL
   // create message box
   MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Information"), MB_OK|MB_ICONINFORMATION|MB_SETFOREGROUND|MB_TASKMODAL);
 
@@ -154,7 +154,7 @@ BOOL YesNoMessage(const char *strFormat, ...)
   // print it to console
   CPrintF("%s\n", strBuffer);
 
-#if !defined(SE1_SDL) || !SE1_USE_SDL
+#if !SE1_SDL || !SE1_USE_SDL
   // create message box
   return MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Question"), MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND|MB_TASKMODAL)==IDYES;
 
@@ -263,7 +263,7 @@ void Breakpoint(void)
 #if SE1_OLD_COMPILER || SE1_USE_ASM
   __asm int 0x03;
 
-#elif !defined(SE1_SDL)
+#elif !SE1_SDL
   __debugbreak();
 
 #else

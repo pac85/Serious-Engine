@@ -48,6 +48,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #endif
 #endif // SE1_WIN
 
+// [Cecil] SDL: Include SDL2 in its entirety
+#if SE1_SDL
+  #define SDL_MAIN_HANDLED
+  #include <SDL2/include/SDL.h>
+
+  #pragma comment(lib, "SDL2.lib")
+#endif
+
 // Engine base
 #include <Engine/Base/Base.h>
 #include <Engine/Base/Types.h>
