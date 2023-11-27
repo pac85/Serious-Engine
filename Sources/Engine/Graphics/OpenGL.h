@@ -19,7 +19,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "gl_types.h"
+#if !SE1_GLEW
+  #include "gl_types.h"
+#endif
 
 /* rcg10042001 wraped for platform. */
 #if SE1_WIN

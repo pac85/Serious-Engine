@@ -56,6 +56,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma comment(lib, "SDL2.lib")
 #endif
 
+// [Cecil] GLEW: Include glew in its entirety
+#if SE1_GLEW
+  #include <glew.h>
+  #include <wglew.h>
+
+  #pragma comment(lib, "glew32.lib")
+  #pragma comment(lib, "opengl32.lib")
+#endif
+
 // Engine base
 #include <Engine/Base/Base.h>
 #include <Engine/Base/Types.h>

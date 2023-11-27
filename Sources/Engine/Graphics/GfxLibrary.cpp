@@ -941,6 +941,78 @@ static void PrepareTables(void)
   }
 }
 
+#if SE1_GLEW
+
+// [Cecil] GLEW: Initialize GLEW by creating a temporary context
+static void InitGLEW(void) {
+  // Create window and context for it
+#if SE1_SDL
+  SDL_Window *pWnd = SDL_CreateWindow("temp_glew_init", 0, 0, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+
+  if (pWnd == NULL) {
+    FatalError(TRANS("Window could not be created! SDL Error:\n%s"), SDL_GetError());
+  }
+
+  SDL_GLContext pContext = SDL_GL_CreateContext(pWnd);
+
+  if (pContext == NULL) {
+    SDL_DestroyWindow(pWnd);
+    FatalError(TRANS("OpenGL context could not be created! SDL Error:\n%s"), SDL_GetError());
+  }
+
+#else
+  HINSTANCE hInstance = GetModuleHandleA(NULL);
+
+  WNDCLASSA wc = { 0 }; 
+  wc.lpfnWndProc = &DefWindowProcA;
+  wc.hInstance = hInstance;
+  wc.hbrBackground = (HBRUSH)COLOR_BACKGROUND;
+  wc.lpszClassName = "temp_glew_init";
+  wc.style = CS_OWNDC;
+
+  if (!RegisterClassA(&wc)) {
+    FatalError(TRANS("Error initializing GLEW:\n%s"), "Unable to register window class");
+  }
+
+  HWND hwnd = CreateWindowExA(NULL, wc.lpszClassName, "temp_glew_init", WS_POPUP, 0, 0, 0, 0, 0, 0, hInstance, 0);
+
+  PIXELFORMATDESCRIPTOR pfd = {
+    sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+    PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 8, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
+  };
+
+  HDC hdc = GetDC(hwnd);
+  SetPixelFormat(hdc, ChoosePixelFormat(hdc, &pfd), &pfd);
+
+  HGLRC hglrc = wglCreateContext(hdc);
+  wglMakeCurrent(hdc, hglrc);
+#endif
+
+  // Initialize GLEW
+  glewExperimental = GL_TRUE;
+  GLenum eError = glewInit();
+
+  if (eError != GLEW_OK) {
+    FatalError(TRANS("Error initializing GLEW:\n%s"), glewGetErrorString(eError));
+  }
+
+  // Clear internal errors
+  glGetError();
+
+  // Cleanup
+#if SE1_SDL
+  SDL_GL_DeleteContext(pContext);
+  SDL_DestroyWindow(pWnd);
+
+#else
+  wglDeleteContext(hglrc); // Resets current context as well
+  ReleaseDC(hwnd, hdc);
+  DestroyWindow(hwnd);
+  UnregisterClassA(wc.lpszClassName, hInstance);
+#endif
+};
+
+#endif
 
 /*
  * Construct uninitialized gfx library.
@@ -965,6 +1037,11 @@ CGfxLibrary::CGfxLibrary(void)
   
   // create some internal tables
   PrepareTables();
+
+#if SE1_GLEW
+  // [Cecil] GLEW: Initialize
+  InitGLEW();
+#endif
 
   // no driver loaded
   gl_pInterface = NULL; // [Cecil]

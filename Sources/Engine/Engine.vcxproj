@@ -146,7 +146,7 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Message>Copying $(ProjectName) binaries into Bin</Message>
-      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -190,7 +190,7 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Message>Copying $(ProjectName) binaries into Bin</Message>
-      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -238,7 +238,7 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Message>Copying $(ProjectName) binaries into Bin</Message>
-      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -284,7 +284,7 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Message>Copying $(ProjectName) binaries into Bin</Message>
-      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+      <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

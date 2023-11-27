@@ -71,6 +71,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define SE1_TRUFORM 0
 #endif
 
+// GLEW support
+#ifndef SE1_GLEW
+  #define SE1_GLEW 0
+#endif
+
+// Utilize GLEW instead of direct OpenGL hooking
+#ifndef SE1_USE_GLEW
+  #define SE1_USE_GLEW 1
+#endif
+
 // Don't prioritize SDL functionality over Windows API by default
 #if SE1_WIN
   #ifndef SE1_SDL

@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #include <Engine/Base/Base.h>
-#include <Engine/Graphics/gl_types.h>
 
 // Unsigned integers
 typedef unsigned char  UBYTE;

@@ -128,15 +128,60 @@ static void FailFunction_t(const char *strName) {
   ThrowF_t(TRANS("Required function %s not found."), strName);
 }
 
+// [Cecil] Wrappers for non-existent GLEW methods
+#if SE1_GLEW && SE1_USE_GLEW
+
+static HINSTANCE _hiForWGL;
+
+static BOOL wglSwapBuffers(HDC hdc) {
+  typedef BOOL (*CSwapBuffers)(HDC);
+  static CSwapBuffers pFunc = (CSwapBuffers)OS::GetLibSymbol(_hiForWGL, "wglSwapBuffers");
+
+  return pFunc(hdc);
+};
+
+static BOOL wglSetPixelFormat(HDC hdc, int iFormat, const PIXELFORMATDESCRIPTOR *ppfd) {
+  typedef BOOL (*CSetPixelFormat)(HDC, int, const PIXELFORMATDESCRIPTOR *);
+  static CSetPixelFormat pFunc = (CSetPixelFormat)OS::GetLibSymbol(_hiForWGL, "wglSetPixelFormat");
+
+  return pFunc(hdc, iFormat, ppfd);
+};
+
+static int wglChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd) {
+  typedef int (*CChoosePixelFormat)(HDC, const PIXELFORMATDESCRIPTOR *);
+  static CChoosePixelFormat pFunc = (CChoosePixelFormat)OS::GetLibSymbol(_hiForWGL, "wglChoosePixelFormat");
+
+  return pFunc(hdc, ppfd);
+};
+
+static int wglDescribePixelFormat(HDC hdc, int iFormat, UINT ctPfdSize, LPPIXELFORMATDESCRIPTOR ppfd) {
+  typedef int (*CDescribePixelFormat)(HDC, int, UINT, LPPIXELFORMATDESCRIPTOR);
+  static CDescribePixelFormat pFunc = (CDescribePixelFormat)OS::GetLibSymbol(_hiForWGL, "wglDescribePixelFormat");
+
+  return pFunc(hdc, iFormat, ctPfdSize, ppfd);
+};
+
+#endif
 
 static void OGL_SetFunctionPointers_t(HINSTANCE hiOGL)
 {
   const char *strName;
   // get gl function pointers
+#if SE1_GLEW && SE1_USE_GLEW
+  _hiForWGL = hiOGL;
+
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name;  \
-    p##name = (output (__stdcall *)inputs)OS::GetLibSymbol(hi##dll, strName); \
+    p##name = (output (__stdcall *)inputs)&name; \
     if( required && p##name == NULL) FailFunction_t(strName);
+
+#else
+  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
+    strName = #name;  \
+    p##name = (output (__stdcall *)inputs)OS::GetLibSymbol(hiOGL, strName); \
+    if( required && p##name == NULL) FailFunction_t(strName);
+#endif
+
   #include "gl_functions.h"
   #undef DLLFUNCTION
 }
@@ -554,7 +599,7 @@ void CGfxLibrary::InitContext_OGL(void)
   pglActiveTextureARB       = NULL;
   pglClientActiveTextureARB = NULL;
   if (HasExtension(go_strExtensions.ConstData(), "GL_ARB_multitexture")) {
-    pglGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, (int*)&gl_ctRealTextureUnits); // get number of texture units
+    pglGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, (GLint *)&gl_ctRealTextureUnits); // get number of texture units
     if (gl_ctRealTextureUnits > 1 && HasExtension(go_strExtensions.ConstData(), "GL_EXT_texture_env_combine")) {
       AddExtension_OGL( NONE, "GL_ARB_multitexture");
       AddExtension_OGL( NONE, "GL_EXT_texture_env_combine");
