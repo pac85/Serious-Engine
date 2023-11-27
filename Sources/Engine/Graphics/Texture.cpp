@@ -135,8 +135,8 @@ extern void UpdateTextureSettings(void)
     TS.ts_tfCRGB  = GL_COMPRESSED_RGB_FXT1_3DFX;
     break;  
   case 4:  // LEGACY
-    TS.ts_tfCRGBA = bCAC ? GL_COMPRESSED_RGB4_COMPRESSED_ALPHA4_S3TC : GL_COMPRESSED_RGBA_S3TC;
-    TS.ts_tfCRGB  = GL_COMPRESSED_RGB_S3TC;
+    TS.ts_tfCRGBA = bCAC ? GL_RGBA4_DXT5_S3TC : GL_RGBA_S3TC;
+    TS.ts_tfCRGB  = GL_RGB_S3TC;
     break;
 #ifdef SE1_D3D
   case 5:  // DXTC

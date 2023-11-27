@@ -13,7 +13,8 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-
+// [Cecil] Disable methods that don't exist in GLEW
+#define GL_METHODS_NOT_IN_GLEW 0
 
 // GLFUNCTION(dll, output, name, inputs, params, required)
 
@@ -788,7 +789,9 @@ DLLFUNCTION( OGL, void , glTexCoordPointerEXT,( GLint size, GLenum type,
 DLLFUNCTION( OGL, void , glEdgeFlagPointerEXT,( GLsizei stride, GLsizei count,
                                               const GLboolean *ptr ),0,0);
 
+#if GL_METHODS_NOT_IN_GLEW
 DLLFUNCTION( OGL, void , glGetPointervEXT,( GLenum pname, void **params ),0,0);
+#endif
 
 DLLFUNCTION( OGL, void , glArrayElementEXT,( GLint i ),0,0);
 
@@ -867,6 +870,8 @@ DLLFUNCTION( OGL, void , glGetColorTableParameterivEXT,( GLenum target,
 
 /* GL_SGIS_multitexture */
 
+#if GL_METHODS_NOT_IN_GLEW
+
 DLLFUNCTION( OGL, void , glMultiTexCoord1dSGIS,(GLenum target, GLdouble s),0,0);
 DLLFUNCTION( OGL, void , glMultiTexCoord1dvSGIS,(GLenum target, const GLdouble *v),0,0);
 DLLFUNCTION( OGL, void , glMultiTexCoord1fSGIS,(GLenum target, GLfloat s),0,0);
@@ -902,12 +907,16 @@ DLLFUNCTION( OGL, void , glMultiTexCoord4svSGIS,(GLenum target, const GLshort *v
 
 DLLFUNCTION( OGL, void , glMultiTexCoordPointerSGIS,(GLenum target, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer),0,0);
 
+#endif // GL_METHODS_NOT_IN_GLEW
+
 DLLFUNCTION( OGL, void , glSelectTextureSGIS,(GLenum target),0,0);
 
 DLLFUNCTION( OGL, void , glSelectTextureCoordSetSGIS,(GLenum target),0,0);
 
 
 /* GL_EXT_multitexture */
+
+#if GL_METHODS_NOT_IN_GLEW
 
 DLLFUNCTION( OGL, void , glMultiTexCoord1dEXT,(GLenum target, GLdouble s),0,0);
 DLLFUNCTION( OGL, void , glMultiTexCoord1dvEXT,(GLenum target, const GLdouble *v),0,0);
@@ -950,10 +959,7 @@ DLLFUNCTION( OGL, void , glSelectTextureCoordSetEXT,( GLenum target ),0,0);
 
 DLLFUNCTION( OGL, void , glSelectTextureTransformEXT,( GLenum target ),0,0);
 
-
-
-
-
+#endif // GL_METHODS_NOT_IN_GLEW
 
 /* GL_EXT_point_parameters */
 DLLFUNCTION( OGL, void , glPointParameterfEXT,( GLenum pname, GLfloat param ),0,0);

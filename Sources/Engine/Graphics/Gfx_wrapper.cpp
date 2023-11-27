@@ -151,11 +151,11 @@ extern void UpdateLODBias( const FLOAT fLODBias)
     // if multitexturing is active
     else {
       for( INDEX iUnit=0; iUnit<_pGfx->gl_ctTextureUnits; iUnit++) { // loop thru units
-        pglActiveTexture(iUnit);  // select the unit
+        SE1_glActiveTexture(iUnit);  // select the unit
         pglTexEnvf( GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, fLODBias);
         OGL_CHECKERROR;
       } // reselect the original unit
-      pglActiveTexture(GFX_iActiveTexUnit);
+      SE1_glActiveTexture(GFX_iActiveTexUnit);
       OGL_CHECKERROR;
     }
   }
@@ -269,7 +269,7 @@ void IGfxInterface::SetTextureUnit( INDEX iUnit)
   if( eAPI!=GAT_OGL) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
-  pglActiveTexture(iUnit);
+  SE1_glActiveTexture(iUnit);
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 

@@ -100,9 +100,8 @@ extern GLuint _uiFogTextureNo;     // binding for fog texture
 extern GLuint _uiHazeTextureNo;    // binding for haze texture
 extern GLuint _uiPatternTextureNo; // binding for pattern texture
 
-
-// internal!
-inline void pglActiveTexture(INDEX texunit)
+// [Cecil] NOTE: This works differently from glActiveTexture() from OpenGL 2.0+ and hence have been prefixed with "SE1_"
+inline void SE1_glActiveTexture(INDEX texunit)
 {
   ASSERT( texunit>=0 && texunit<4);
   ASSERT( pglActiveTextureARB!=NULL);
