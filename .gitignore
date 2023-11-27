@@ -13,6 +13,7 @@
 *.dylib
 *.dll
 *.p
+!Sources/ThirdParty/glew/bin/**/*.dll
 !Sources/ThirdParty/SDL2/lib/**/*.dll
 
 # Fortran module files
@@ -23,6 +24,7 @@
 *.la
 *.a
 *.lib
+!Sources/ThirdParty/glew/lib/**/*.lib
 !Sources/ThirdParty/SDL2/lib/**/*.lib
 
 # Executables
@@ -31,6 +33,7 @@
 *.app
 !Bison.exe
 !Flex.exe
+!Sources/ThirdParty/glew/bin/**/*.exe
 
 # CMake Build dirs (temp)
 Build/*
