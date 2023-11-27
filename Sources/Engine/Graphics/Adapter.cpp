@@ -126,6 +126,7 @@ void CGfxLibrary::InitAPIs(void)
     pda->da_ctDisplayModes++;
   }
 
+#ifdef SE1_3DFX
   // detect presence of 3Dfx standalone OpenGL driver (for Voodoo1/2)
   char *strDummy;
   char  strBuffer[_MAX_PATH+1];
@@ -146,9 +147,10 @@ void CGfxLibrary::InitAPIs(void)
     adm[2].dm_pixSizeI =  800;  adm[2].dm_pixSizeJ = 600;  adm[2].dm_ddDepth = DD_16BIT;
     adm[3].dm_pixSizeI = 1024;  adm[3].dm_pixSizeJ = 768;  adm[3].dm_ddDepth = DD_16BIT;
   }
+#endif
 
-  // try to init Direct3D 8
 #ifdef SE1_D3D
+  // try to init Direct3D 8
   BOOL bRes = InitDriver_D3D();
   if( !bRes) return; // didn't made it?
   

@@ -807,7 +807,12 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
 {
   ASSERT( gl_hiDriver==NONE);
   UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-  CTString strDriverFileName = b3Dfx ? "3DFXVGL.DLL" : "OPENGL32.DLL";
+
+#ifdef SE1_3DFX
+  const CTString strDriverFileName = b3Dfx ? "3DFXVGL.DLL" : "OPENGL32.DLL";
+#else
+  const CTString strDriverFileName = "OPENGL32.DLL";
+#endif
 
   try
   { // if driver doesn't exists on disk
@@ -820,6 +825,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
     gl_hiDriver = OS::LoadLib(strDriverFileName.ConstData());
     // if it cannot be loaded (although it is present on disk)
     if( gl_hiDriver==NONE) {
+    #ifdef SE1_3DFX
       // if it is 3dfx stand-alone driver
       if( b3Dfx) {
         // do a fatal error and inform user to deinstall it,
@@ -828,7 +834,10 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
                           "If you previously had a 3Dfx card and it was removed,\n"
                           "please deinstall the driver and restart windows before\n"
                           "continuing.\n"), strDriverFileName);
-      } // fail!
+      }
+    #endif
+
+      // fail!
       ThrowF_t(TRANS("Cannot load OpenGL driver '%s'"), strDriverFileName);
     }
     // prepare functions
@@ -847,7 +856,10 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
   SetErrorMode(iOldErrorMode);
 
   // if default driver
-  if( !b3Dfx) {
+#ifdef SE1_3DFX
+  if (!b3Dfx)
+#endif
+  {
     // use GDI functions
     pwglSwapBuffers       = ::SwapBuffers;
     pwglSetPixelFormat    = ::SetPixelFormat;

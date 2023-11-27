@@ -1403,7 +1403,11 @@ const INDEX aDefaultModes[][3] =
 { // color, API, adapter
   { DD_DEFAULT, GAT_OGL, 0},
   { DD_16BIT,   GAT_OGL, 0},
+
+#ifdef SE1_3DFX
   { DD_16BIT,   GAT_OGL, 1}, // 3dfx Voodoo2
+#endif
+
 #ifdef SE1_D3D
   { DD_DEFAULT, GAT_D3D, 0},
   { DD_16BIT,   GAT_D3D, 0},
@@ -1429,7 +1433,14 @@ void StartNewMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI, PIX pi
     CPrintF( TRANS("Requested display mode could not be set!\n"));
     pixSizeI = 640;
     pixSizeJ = 480;
+
+    // [Cecil] Fullscreen is only required for 3Dfx to work properly
+  #ifdef SE1_3DFX
     bFullScreenMode = TRUE;
+  #else
+    bFullScreenMode = FALSE;
+  #endif
+
     // try to revert to one of recovery modes
     for( INDEX iMode=0; iMode<ctDefaultModes; iMode++) {
       eColorDepth = (DisplayDepth)aDefaultModes[iMode][0];
