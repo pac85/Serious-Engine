@@ -96,6 +96,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define SE1_USE_SDL 1
 #endif
 
+// Automatic switch for detecting preference of SDL over Windows API
+#define SE1_PREFER_SDL (SE1_SDL && SE1_USE_SDL)
+
 // Building under a traditional platform (Windows x86)
 #if SE1_WIN && SE1_32BIT
   #define SE1_OLD_COMPILER (_MSC_VER < 1600) // Check for the old compiler
