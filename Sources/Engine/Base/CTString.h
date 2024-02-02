@@ -1,5 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
-   Copyright (c) 2023 Dreamy Cecil
+   Copyright (c) 2023-2024 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -28,6 +28,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class ENGINE_API CTString {
 public:
   char *str_String;         // pointer to memory holding the character string
+
+  static const size_t npos; // [Cecil] Invalid character index
+
 public:
   /* Default constructor. */
   inline CTString(void);
@@ -69,41 +72,8 @@ public:
   // strip decorations from the string
   CTString Undecorated(void) const;
 
-  // [Cecil] Find substring in a string
-  inline const char *Substr(const char *strSub, size_t iFrom = 0) const {
-    return strstr(str_String + iFrom, strSub);
-  };
-
-  // [Cecil] Find index of a substring in a string (-1 if not found)
-  inline size_t FindSubstr(const char *strSub, size_t iFrom = 0) const {
-    const char *str = Substr(strSub, iFrom);
-
-    if (str == NULL) return -1;
-    
-    return str - str_String;
-  };
-
   /* Replace a substring in a string. */
   BOOL ReplaceSubstr(const CTString &strSub, const CTString &strNewSub);
-
-  // [Cecil] Find character in a string
-  inline char *FindChar(char ch, size_t iFrom = 0) {
-    return strchr(str_String + iFrom, ch);
-  };
-
-  // [Cecil] Find character in a constant string
-  inline const char *FindChar(char ch, size_t iFrom = 0) const {
-    return strchr(str_String + iFrom, ch);
-  };
-
-  // [Cecil] Find character position in a string (-1 if not found)
-  inline size_t FindCharIndex(char ch, size_t iFrom = 0) const {
-    const char *pch = FindChar(ch, iFrom);
-
-    if (pch == NULL) return -1;
-
-    return pch - str_String;
-  };
 
   // [Cecil] Replace specific character in the entire string
   void ReplaceChar(char chOld, char chNew);
@@ -178,6 +148,44 @@ public:
   // variable management functions
   void LoadVar(const CTString &fnmFile);
   void SaveVar(const CTString &fnmFile);
+
+// [Cecil] New methods for searching
+public:
+
+  // Find substring within the string
+  const char *GetSubstr(const char *strSub, size_t iFrom = 0) const;
+
+  // Find character within the string
+  char *GetChar(char ch, size_t iFrom = 0) const;
+
+  // Find substring position in a string
+  size_t Find(const char *strSub, size_t iFrom = 0) const;
+
+  // Find character position in a string
+  size_t Find(char ch, size_t iFrom = 0) const;
+
+  // Deprecated method left for compatibility
+  INDEX FindSubstr(const CTString &strSub) {
+    return (INDEX)Find(strSub.str_String);
+  };
+
+  // Find last substring position in a string
+  size_t RFind(const char *strSub, size_t iFrom = npos) const;
+
+  // Find last character position in a string
+  size_t RFind(char ch, size_t iFrom = npos) const;
+
+  // Find first occurrence of any of the characters
+  size_t FindFirstOf(const char *str, size_t iFrom = 0) const;
+
+  // Find first absence of any of the characters
+  size_t FindFirstNotOf(const char *str, size_t iFrom = 0) const;
+
+  // Find last occurrence of any of the characters
+  size_t FindLastOf(const char *str, size_t iFrom = npos) const;
+
+  // Find last absence of any of the characters
+  size_t FindLastNotOf(const char *str, size_t iFrom = npos) const;
 
 // [Cecil] Migrated methods from CTFileName
 public:

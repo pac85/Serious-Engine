@@ -497,19 +497,19 @@ CTString RemoveSubstring(const CTString &strFull, const CTString &strSub)
   CTString strFullL = strFull.ToLower();
   CTString strSubL = strSub.ToLower();
 
-  const INDEX iOffset = (INDEX)strFullL.FindSubstr(strSubL);
+  const size_t iOffset = strFullL.Find(strSubL);
   INDEX iLenSub = strSub.Length();
 
-  if (iOffset == -1 || iLenSub == 0) {
+  if (iOffset == CTString::npos || iLenSub == 0) {
     return strFull;
   }
 
   INDEX iLenFull = strFull.Length();
 
   CTString strLeft = strFull;
-  strLeft.TrimRight(iOffset);
+  strLeft.TrimRight((INDEX)iOffset);
   CTString strRight = strFull;
-  strRight.TrimLeft(iLenFull-iOffset-iLenSub);
+  strRight.TrimLeft(iLenFull - (INDEX)iOffset - iLenSub);
   return strLeft+strRight;
 }
 CTString RemoveSubstringCfunc(void* pArgs)

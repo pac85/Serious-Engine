@@ -1,5 +1,5 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. 
-   Copyright (c) 2023 Dreamy Cecil
+   Copyright (c) 2023-2024 Dreamy Cecil
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -24,6 +24,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/Console.h>
 
+// [Cecil] Invalid character index
+const size_t CTString::npos = size_t(-1);
 
 /*
  * Equality comparison.
@@ -121,9 +123,9 @@ BOOL CTString::HasPrefix( const CTString &strPrefix) const
 /* Replace a substring in a string. */
 BOOL CTString::ReplaceSubstr(const CTString &strSub, const CTString &strNewSub)
 {
-  size_t iPos = FindSubstr(strSub);
+  size_t iPos = Find(strSub);
 
-  if (iPos == -1) {
+  if (iPos == npos) {
     return FALSE;
   }
 
@@ -270,14 +272,14 @@ INDEX CTString::TrimSpacesRight(void)
 void CTString::OnlyFirstLine(void)
 {
   // get position of first line end
-  const char *pchNL = FindChar('\n');
+  size_t iNL = Find('\n');
   // if none
-  if (pchNL==NULL) {
+  if (iNL == CTString::npos) {
     // do nothing
     return;
   }
   // trim everything after that char
-  TrimRight(pchNL-str_String);
+  TrimRight((INDEX)iNL);
 }
 
 // [Cecil] Convert all characters to lowercase
@@ -787,3 +789,201 @@ CTString RemoveSpecialCodes( const CTString &str)
   *pcDst = 0;
   return strRet;
 }
+
+// [Cecil] Find substring in a string
+const char *CTString::GetSubstr(const char *strSub, size_t iFrom) const {
+  ASSERT(iFrom < Length());
+
+  // Inline implementation of strstr()
+  const size_t ct = strlen(strSub);
+  if (ct == 0) return NULL; // Empty substring
+
+  const char *pch = str_String + iFrom;
+
+  while (*pch != '\0') {
+    if (!memcmp(pch, strSub, ct)) {
+      return pch;
+    }
+    ++pch;
+  }
+
+  return NULL;
+};
+
+// [Cecil] Find character in a string
+char *CTString::GetChar(char ch, size_t iFrom) const {
+  ASSERT(iFrom < Length());
+
+  // Inline implementation of strchr()
+  char *pch = str_String + iFrom;
+
+  while (*pch != '\0') {
+    if (*pch == ch) {
+      return pch;
+    }
+    ++pch;
+  }
+
+  return NULL;
+};
+
+// [Cecil] Find substring position in a string
+size_t CTString::Find(const char *strSub, size_t iFrom) const {
+  const char *str = GetSubstr(strSub, iFrom);
+  if (str == NULL) return npos;
+
+  return str - str_String;
+};
+
+// [Cecil] Find character position in a string
+size_t CTString::Find(char ch, size_t iFrom) const {
+  const char *pch = GetChar(ch, iFrom);
+  if (pch == NULL) return npos;
+
+  return pch - str_String;
+};
+
+// [Cecil] Find last substring position in a string
+size_t CTString::RFind(const char *strSub, size_t iFrom) const {
+  const size_t ct = strlen(strSub);
+  if (ct == 0) return npos; // Empty substring
+
+  const size_t iLen = Length();
+  if (iLen < ct) return npos; // Substring wouldn't fit
+
+  iFrom = ClampUp(iFrom, iLen - ct);
+
+  do {
+    if (!memcmp(str_String + iFrom, strSub, ct)) {
+      return iFrom;
+    }
+  } while (iFrom-- != 0);
+
+  return npos;
+};
+
+// [Cecil] Find last character position in a string
+size_t CTString::RFind(char ch, size_t iFrom) const {
+  const size_t iLen = Length();
+  if (iLen == 0) return npos;
+
+  iFrom = ClampUp(iFrom, iLen - 1);
+
+  do {
+    if (str_String[iFrom] == ch) {
+      return iFrom;
+    }
+  } while (iFrom-- != 0);
+
+  return npos;
+};
+
+// [Cecil] Find first character equal to one of the characters
+size_t CTString::FindFirstOf(const char *str, size_t iFrom) const {
+  // No characters in either string
+  if (*str == '\0') return npos;
+
+  const size_t iLen = Length();
+  if (iLen == 0) return npos;
+
+  char *pch = str_String + ClampUp(iFrom, iLen);
+
+  while (*pch != '\0') {
+    // Check every character
+    const char *pchCheck = str;
+
+    while (*pchCheck != '\0') {
+      if (*pch == *pchCheck) {
+        return pch - str_String;
+      }
+      ++pchCheck;
+    }
+    ++pch;
+  }
+
+  return npos;
+};
+
+// [Cecil] Find first character equal to none of the characters
+size_t CTString::FindFirstNotOf(const char *str, size_t iFrom) const {
+  // No characters in either string
+  if (*str == '\0') return npos;
+
+  const size_t iLen = Length();
+  if (iLen == 0) return npos;
+
+  char *pch = str_String + ClampUp(iFrom, iLen);
+
+  while (*pch != '\0') {
+    // Check every character
+    BOOL bFound = FALSE;
+    const char *pchCheck = str;
+
+    while (*pchCheck != '\0') {
+      if (*pch == *pchCheck) {
+        bFound = TRUE;
+        break;
+      }
+      ++pchCheck;
+    }
+
+    // None found
+    if (!bFound) return pch - str_String;
+
+    ++pch;
+  }
+
+  return npos;
+};
+
+// [Cecil] Find last character equal to one of the characters
+size_t CTString::FindLastOf(const char *str, size_t iFrom) const {
+  const size_t iLen = Length();
+  if (iLen == 0) return npos;
+
+  iFrom = ClampUp(iFrom, iLen - 1);
+
+  do {
+    // Check every character
+    const char *pchCheck = str;
+
+    while (*pchCheck != '\0') {
+      if (str_String[iFrom] == *pchCheck) {
+        return iFrom;
+      }
+      ++pchCheck;
+    }
+  } while (iFrom-- != 0);
+
+  return npos;
+};
+
+// [Cecil] Find last character equal to none of the characters
+size_t CTString::FindLastNotOf(const char *str, size_t iFrom) const {
+  const size_t iLen = Length();
+  if (iLen == 0) return npos;
+
+  iFrom = ClampUp(iFrom, iLen - 1);
+
+  do {
+    BOOL bFound = FALSE;
+
+    // Check every character
+    const char *pchCheck = str;
+
+    while (*pchCheck != '\0') {
+      if (str_String[iFrom] == *pchCheck) {
+        bFound = TRUE;
+        break;
+      }
+
+      ++pchCheck;
+    }
+
+    // None found
+    if (!bFound) return iFrom;
+
+  } while (iFrom-- != 0);
+
+  return npos;
+};

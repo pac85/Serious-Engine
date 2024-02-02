@@ -44,21 +44,20 @@ CTString GetNextParam(void)
   // if the first char is quote
   if (_strCmd[0]=='"') {
     // find first next quote
-    const char *pchClosingQuote = _strCmd.FindChar('"', 1);
+    size_t iQuote = _strCmd.Find('"', 1);
     // if not found
-    if (pchClosingQuote==NULL) {
+    if (iQuote == CTString::npos) {
       // error in command line
       cmd_strOutput+=CTString(0, TRANS("Command line error!\n"));
       // finish parsing
       _strCmd = "";
       return "";
     }
-    INDEX iQuote = pchClosingQuote-_strCmd;
 
     // get the quoted string
     CTString strWord;
     CTString strRest;
-    _strCmd.Split(iQuote, strWord, strRest);
+    _strCmd.Split((INDEX)iQuote, strWord, strRest);
     // remove the quotes
     strWord.DeleteChar(0);
     strRest.DeleteChar(0);
@@ -122,11 +121,11 @@ void ParseCommandLine(CTString strCmd)
       cmd_strPassword = GetNextParam();
     } else if (strWord=="+connect") {
       cmd_strServer = GetNextParam();
-      const char *pcColon = cmd_strServer.FindChar(':');
-      if (pcColon!=NULL) {
+      size_t iColon = cmd_strServer.Find(':');
+      if (iColon != CTString::npos) {
         CTString strServer;
         CTString strPort;
-        cmd_strServer.Split(pcColon-cmd_strServer, strServer, strPort);
+        cmd_strServer.Split((INDEX)iColon, strServer, strPort);
         cmd_strServer = strServer;
         strPort.ScanF(":%d", &cmd_iPort);
       }

@@ -116,7 +116,7 @@ void SubMain( int argc, char *argv[])
       strmSrc.GetLine_t(strLine);
 
       // try to find address marker in it
-      const char *strAdr = strLine.Substr("$adr:");
+      const char *strAdr = strLine.GetSubstr("$adr:");
 
       // if there is no marker
       if (strAdr == NULL) {
