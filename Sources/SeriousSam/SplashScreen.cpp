@@ -21,6 +21,99 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 static OS::Window _window = NULL;
 
+#if SE1_PREFER_SDL
+
+static SDL_Renderer *_pRenderer = NULL;
+static SDL_Texture *_pTexture = NULL;
+
+void ShowSplashScreen(HINSTANCE hInstance)
+{
+  // Get splash image
+  SDL_Surface *surSplash = SDL_LoadBMP("Splash.bmp");
+  if (surSplash == NULL) return;
+
+  // Get mask image for it
+  SDL_Surface *surMask = SDL_LoadBMP("SplashMask.bmp");
+
+  if (surMask != NULL) {
+    // Mismatching sizes
+    if (surMask->w != surSplash->w || surMask->h != surSplash->h) {
+      SDL_FreeSurface(surMask);
+      SDL_FreeSurface(surSplash);
+      return;
+    }
+
+    _window = SDL_CreateShapedWindow(SPLASH_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                     surSplash->w, surSplash->h, SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR);
+
+    if (_window != NULL) {
+      SDL_WindowShapeMode mode;
+      SDL_zero(mode);
+      mode.mode = ShapeModeColorKey;
+
+      // Apply shape mask to the window
+      SDL_Color &col = mode.parameters.colorKey;
+      SDL_GetRGBA(SDL_MapRGB(surMask->format, 0xFF, 0xFF, 0xFF), surMask->format, &col.r, &col.g, &col.b, &col.a);
+
+      if (SDL_SetWindowShape(_window, surMask, &mode) != 0) {
+        _window.Destroy();
+      }
+    }
+
+    SDL_FreeSurface(surMask);
+
+  } else {
+    // Simple splash without a mask
+    _window = SDL_CreateWindow(SPLASH_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                               surSplash->w, surSplash->h, SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR);
+  }
+
+  BOOL bSuccess = FALSE;
+
+  if (_window != NULL) {
+    _pRenderer = SDL_CreateRenderer(_window, -1, 0);
+
+    if (_pRenderer != NULL) {
+      SDL_SetRenderDrawColor(_pRenderer, 0, 0, 0, 0);
+      SDL_RenderClear(_pRenderer);
+      SDL_RenderPresent(_pRenderer);
+
+      _pTexture = SDL_CreateTextureFromSurface(_pRenderer, surSplash);
+
+      bSuccess = (_pTexture != NULL);
+    }
+  }
+
+  SDL_FreeSurface(surSplash);
+
+  // Render the final splash screen or discard it
+  if (bSuccess) {
+    SDL_RenderCopy(_pRenderer, _pTexture, NULL, NULL);
+    SDL_RenderPresent(_pRenderer);
+
+  } else {
+    HideSplashScreen();
+  }
+};
+
+void HideSplashScreen(void)
+{
+  // Cleanup
+  if (_pTexture != NULL) {
+    SDL_DestroyTexture(_pTexture);
+    _pTexture = NULL;
+  }
+
+  if (_pRenderer != NULL) {
+    SDL_DestroyRenderer(_pRenderer);
+    _pRenderer = NULL;
+  }
+
+  _window.Destroy();
+};
+
+#else
+
 #include "resource.h"
 
 #define NAME "Splash"
@@ -126,3 +219,5 @@ void HideSplashScreen(void)
   DeleteObject(_hbmSplash);
   DeleteObject(_hbmSplashMask);
 }
+
+#endif // SE1_PREFER_SDL
