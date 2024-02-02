@@ -14,7 +14,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 extern BOOL _bWindowChanging;    // ignores window messages while this is set
-extern HWND _hwndMain;
+extern OS::Window _hwndMain;
 
 // init/end main window management
 void MainWindow_Init(void);

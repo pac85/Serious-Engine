@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 INDEX con_bNoWarnings = 0;
 
 // global handle for application window in full-screen mode
-extern HWND _hwndMain;
+extern OS::Window _hwndMain;
 extern BOOL _bFullScreen;
 
 

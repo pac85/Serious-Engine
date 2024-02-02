@@ -203,7 +203,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 ENGINE_API void SE_InitEngine( CTString strGameID);
 ENGINE_API void SE_EndEngine(void);
 ENGINE_API void SE_LoadDefaultFonts(void);
-ENGINE_API void SE_UpdateWindowHandle( HWND hwndWindowed);
+ENGINE_API void SE_UpdateWindowHandle(OS::Window hwndWindowed);
 ENGINE_API void SE_PretouchIfNeeded(void);
 
 extern ENGINE_API CTString _strEngineBuild;  // not valid before InitEngine()!

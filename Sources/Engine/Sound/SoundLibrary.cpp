@@ -76,8 +76,8 @@ static FLOAT snd_fEAXPanning = 0.0f;
 static FLOAT snd_fNormalizer = 0.9f;
 static FLOAT _fLastNormalizeValue = 1;
 
-extern HWND  _hwndMain; // global handle for application window
-static HWND  _hwndCurrent = NULL;
+extern OS::Window _hwndMain; // global handle for application window
+static OS::Window _hwndCurrent = NULL;
 static HINSTANCE _hInstDS = NULL;
 static INDEX _iWriteOffset  = 0;
 static INDEX _iWriteOffset2 = 0;

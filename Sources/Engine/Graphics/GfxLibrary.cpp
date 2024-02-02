@@ -1637,7 +1637,7 @@ void CGfxLibrary::UnlockDrawPort( CDrawPort *pdpToUnlock)
 // Window canvas functions
 
 /* Create a new window canvas. */
-void CGfxLibrary::CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort **ppdpNew)
+void CGfxLibrary::CreateWindowCanvas(OS::Window hWnd, CViewPort **ppvpNew, CDrawPort **ppdpNew)
 {
   RECT rectWindow;	// rectangle for the client area of the window
 
@@ -1649,7 +1649,7 @@ void CGfxLibrary::CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort 
   *ppvpNew = NULL;
   *ppdpNew = NULL;
   // create a new viewport
-  if (*ppvpNew = new CViewPort( pixWidth, pixHeight, (HWND)hWnd)) {
+  if (*ppvpNew = new CViewPort(pixWidth, pixHeight, hWnd)) {
     // and it's drawport
 		*ppdpNew = &(*ppvpNew)->vp_Raster.ra_MainDrawPort;
   } else {

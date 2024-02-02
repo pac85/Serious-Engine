@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "resource.h"
 
 extern BOOL _bWindowChanging = FALSE;    // ignores window messages while this is set
-extern HWND _hwndMain = NULL;
+extern OS::Window _hwndMain = NULL;
 static char achWindowTitle[256]; // current window title
 
 static HBITMAP _hbmSplash = NULL;

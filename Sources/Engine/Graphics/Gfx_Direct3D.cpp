@@ -902,7 +902,7 @@ BOOL CGfxLibrary::InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
   } else d3d_bUseHardwareTnL = 0;
 
   // go for it ...
-  extern HWND _hwndMain;
+  extern OS::Window _hwndMain;
   extern const D3DDEVTYPE d3dDevType;
   hr = gl_pD3D->CreateDevice( iAdapter, d3dDevType, _hwndMain, dwVP, &d3dPresentParams, &gl_pd3dDevice);
   if( hr!=D3D_OK) return FALSE;

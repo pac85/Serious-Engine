@@ -55,7 +55,7 @@ ENGINE_API BOOL _bWorldEditorApp  = FALSE;
 ENGINE_API CTString _strLogFile = "";
 
 // global handle for application window
-extern HWND _hwndMain = NULL;
+extern OS::Window _hwndMain = NULL;
 extern BOOL _bFullScreen = FALSE;
 
 // critical section for access to zlib functions
@@ -590,7 +590,7 @@ ENGINE_API void SE_LoadDefaultFonts(void)
 
 
 // updates main windows' handles for windowed mode and fullscreen
-ENGINE_API void SE_UpdateWindowHandle( HWND hwndMain)
+ENGINE_API void SE_UpdateWindowHandle(OS::Window hwndMain)
 {
   ASSERT( hwndMain!=NULL);
   _hwndMain = hwndMain;

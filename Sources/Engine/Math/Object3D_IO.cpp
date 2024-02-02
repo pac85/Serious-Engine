@@ -143,7 +143,7 @@ TInitExploration3D _Init3d;
 e3_API*_api;
 e3_SCENE*_pe3Scene;
 e3_OBJECT *_pe3Object;
-HWND _hwnd;
+OS::Window _hwnd;
 BOOL _bBatchLoading = FALSE;
 #endif
 

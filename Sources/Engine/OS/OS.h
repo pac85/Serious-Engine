@@ -29,6 +29,35 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif // !SE1_WIN
 
 class ENGINE_API OS {
+  public:
+    // Window handle pointer
+  #if SE1_PREFER_SDL
+    typedef SDL_Window *WndHandle;
+  #else
+    typedef HWND WndHandle;
+  #endif
+
+    // Window handler
+    struct ENGINE_API Window {
+      WndHandle pWindow;
+
+      Window(int i = NULL) : pWindow((WndHandle)(size_t)i) {};
+      Window(size_t i) : pWindow((WndHandle)i) {};
+      Window(const Window &other) : pWindow(other.pWindow) {};
+      Window(const WndHandle pSetWindow) : pWindow(pSetWindow) {};
+
+      operator WndHandle() { return pWindow; };
+      operator const WndHandle() const { return pWindow; };
+
+      inline bool operator==(const Window &other) const { return pWindow == other.pWindow; };
+      inline bool operator!=(const Window &other) const { return pWindow != other.pWindow; };
+      inline bool operator==(size_t i) const { return pWindow == (WndHandle)i; };
+      inline bool operator!=(size_t i) const { return pWindow != (WndHandle)i; };
+
+      // Destroy current window
+      void Destroy(void);
+    };
+
   // Dynamic library methods
   public:
 
@@ -49,7 +78,7 @@ class ENGINE_API OS {
 
     struct ENGINE_API Message {
       // PeekMessage()
-      static BOOL Peek(MSG *lpMsg, void *hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
+      static BOOL Peek(MSG *lpMsg, OS::Window hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
 
       // TranslateMessage()
       static void Translate(const MSG *lpMsg);
@@ -58,11 +87,11 @@ class ENGINE_API OS {
       static void Dispatch(const MSG *lpMsg);
     };
 
-    static BOOL IsIconic(void *hWnd);
+    static BOOL IsIconic(OS::Window hWnd);
     static UWORD GetKeyState(int vKey);
     static UWORD GetAsyncKeyState(int vKey);
     static BOOL GetCursorPos(LPPOINT lpPoint);
-    static BOOL ScreenToClient(void *hWnd, LPPOINT lpPoint);
+    static BOOL ScreenToClient(OS::Window hWnd, LPPOINT lpPoint);
     static int ShowCursor(BOOL bShow);
 };
 

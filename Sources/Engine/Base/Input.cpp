@@ -769,7 +769,7 @@ void CInput::EnableInput(CViewPort *pvp)
 }
 
 
-void CInput::EnableInput(HWND hwnd)
+void CInput::EnableInput(OS::Window hwnd)
 {
   // skip if already enabled
   if( inp_bInputEnabled) return;

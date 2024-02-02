@@ -97,7 +97,7 @@ public:
   void Initialize(void);
   // Enable input inside one viewport, or window
   void EnableInput(CViewPort *pvp);
-  void EnableInput(HWND hWnd);
+  void EnableInput(OS::Window hWnd);
   // Disable input
   void DisableInput(void);
   // enable/disable joystick polling (it can be slow to poll if user doesn't realy use the joystick)

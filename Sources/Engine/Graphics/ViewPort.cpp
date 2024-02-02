@@ -82,7 +82,7 @@ CTempDC::~CTempDC(void)
  *   ViewPort functions
  */
 
-CViewPort::CViewPort( PIX pixWidth, PIX pixHeight, HWND hWnd) :
+CViewPort::CViewPort( PIX pixWidth, PIX pixHeight, OS::Window hWnd) :
                       vp_Raster( pixWidth, pixHeight, 0)
 {
   vp_hWnd = NULL;

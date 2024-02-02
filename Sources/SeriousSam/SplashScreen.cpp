@@ -14,6 +14,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "StdH.h"
+
+#include "SplashScreen.h"
+
+#define SPLASH_TITLE "SeriousSam loading..."
+
+static OS::Window _window = NULL;
+
 #include "resource.h"
 
 #define NAME "Splash"
@@ -22,7 +29,6 @@ static HBITMAP _hbmSplash = NULL;
 static BITMAP _bmSplash;
 static HBITMAP _hbmSplashMask = NULL;
 static BITMAP _bmSplashMask;
-static HWND hwnd = NULL;
 
 static LRESULT FAR PASCAL SplashWindowProc( HWND hWnd, UINT message, 
 			    WPARAM wParam, LPARAM lParam )
@@ -52,7 +58,6 @@ static LRESULT FAR PASCAL SplashWindowProc( HWND hWnd, UINT message,
 
 void ShowSplashScreen(HINSTANCE hInstance)
 {
-
   _hbmSplash = LoadBitmapA(hInstance, (char*)IDB_SPLASH);
   if (_hbmSplash==NULL) {
     return;
@@ -88,10 +93,10 @@ void ShowSplashScreen(HINSTANCE hInstance)
   /*
    * create a window
    */
-  hwnd = CreateWindowExA(
+  _window = CreateWindowExA(
 	  WS_EX_TRANSPARENT|WS_EX_TOOLWINDOW,
 	  NAME,
-	  "SeriousSam loading...",   // title
+	  SPLASH_TITLE,   // title
     WS_POPUP,
 	  iScreenX/2-_bmSplash.bmWidth/2,
 	  iScreenY/2-_bmSplash.bmHeight/2,
@@ -101,23 +106,23 @@ void ShowSplashScreen(HINSTANCE hInstance)
 	  hInstance,
 	  NULL);
 
-  if(!hwnd) {
+  if (_window == NULL) {
 	  return;
   }
  
-  ShowWindow( hwnd, SW_SHOW);
+  ShowWindow(_window, SW_SHOW);
   RECT rect;
-  GetClientRect(hwnd, &rect); 
-  InvalidateRect(hwnd, &rect, TRUE); 
-  UpdateWindow(hwnd); 
+  GetClientRect(_window, &rect); 
+  InvalidateRect(_window, &rect, TRUE); 
+  UpdateWindow(_window); 
 }
 
 void HideSplashScreen(void)
 {
-  if (hwnd==NULL) {
+  if (_window == NULL) {
     return;
   }
-  DestroyWindow(hwnd);
+  _window.Destroy();
   DeleteObject(_hbmSplash);
   DeleteObject(_hbmSplashMask);
 }

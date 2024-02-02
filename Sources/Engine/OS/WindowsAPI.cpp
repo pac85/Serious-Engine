@@ -17,9 +17,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "OS.h"
 
-BOOL OS::Message::Peek(MSG *lpMsg, void *hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
+// Destroy current window
+void OS::Window::Destroy(void) {
+  if (pWindow == NULL) return;
+
+#if SE1_PREFER_SDL
+  SDL_DestroyWindow(pWindow);
+#else
+  DestroyWindow(pWindow);
+#endif
+
+  pWindow = NULL;
+};
+
+BOOL OS::Message::Peek(MSG *lpMsg, OS::Window hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
-  return ::PeekMessage(lpMsg, (HWND)hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+  return ::PeekMessage(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
 };
 
 void OS::Message::Translate(const MSG *lpMsg)
@@ -32,9 +45,9 @@ void OS::Message::Dispatch(const MSG *lpMsg)
   DispatchMessage(lpMsg);
 };
 
-BOOL OS::IsIconic(void *hWnd)
+BOOL OS::IsIconic(OS::Window hWnd)
 {
-  return ::IsIconic((HWND)hWnd);
+  return ::IsIconic(hWnd);
 };
 
 UWORD OS::GetKeyState(int vKey)
@@ -52,9 +65,9 @@ BOOL OS::GetCursorPos(LPPOINT lpPoint)
   return ::GetCursorPos(lpPoint);
 };
 
-BOOL OS::ScreenToClient(void *hWnd, LPPOINT lpPoint)
+BOOL OS::ScreenToClient(OS::Window hWnd, LPPOINT lpPoint)
 {
-  return ::ScreenToClient((HWND)hWnd, lpPoint);
+  return ::ScreenToClient(hWnd, lpPoint);
 };
 
 int OS::ShowCursor(BOOL bShow)

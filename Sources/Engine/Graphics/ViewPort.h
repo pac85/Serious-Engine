@@ -57,8 +57,8 @@ public:
 class ENGINE_API CViewPort {
 public:
 // implementation
-  HWND vp_hWnd;                 // canvas (child) window
-  HWND vp_hWndParent;           // window of the viewport
+  OS::Window vp_hWnd;                 // canvas (child) window
+  OS::Window vp_hWndParent;           // window of the viewport
   CRaster vp_Raster;            // the used Raster
 	LPDIRECT3DSWAPCHAIN8 vp_pSwapChain;  // swap chain for D3D
 	LPDIRECT3DSURFACE8   vp_pSurfDepth;  // z-buffer for D3D
@@ -70,7 +70,7 @@ public:
 
 // interface
   /* Constructor for given window. */
-  CViewPort(PIX pixWidth, PIX pixHeight, HWND hWnd);
+  CViewPort(PIX pixWidth, PIX pixHeight, OS::Window hWnd);
 	/* Destructor. */
   ~CViewPort(void);
 
