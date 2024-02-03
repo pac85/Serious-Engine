@@ -26,13 +26,17 @@ ENGINE_API CTString::CTString(const CTString &strOriginal)
   str_String = StringDuplicate(strOriginal.str_String);
 }
 
-// [Cecil] Constructor from character string with optional offset for insertion in binary files
-ENGINE_API CTString::CTString(const char *strCharString, INDEX i)
+// [Cecil] Constructor from character string with optional offset and amount of characters
+ENGINE_API CTString::CTString(const char *strCharString, size_t iFrom, size_t ct)
 {
   ASSERT(strCharString!=NULL);
 
   // make string duplicate
-  str_String = StringDuplicate(strCharString + i);
+  str_String = StringDuplicate(strCharString + iFrom);
+
+  if (ct < Length()) {
+    str_String[ct] = '\0';
+  }
 }
 
 /* Constructor with formatting. */
@@ -111,6 +115,18 @@ ENGINE_API CTString &CTString::operator=(const CTString &strOther)
   return *this;
 }
 
+// [Cecil] Assign a new string consisting of a specific character
+ENGINE_API void CTString::Fill(size_t ct, char ch) {
+  ASSERT(IsValid());
+
+  // Recreate the string array
+  FreeMemory(str_String);
+  str_String = (char *)AllocMemory(ct + 1);
+
+  // Set every character and add a null terminator
+  memset(str_String, ch, ct);
+  str_String[ct] = '\0';
+};
 
 #endif  /* include-once check. */
 

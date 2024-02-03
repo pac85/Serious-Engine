@@ -36,8 +36,8 @@ public:
   inline CTString(void);
   /* Copy constructor. */
   inline CTString(const CTString &strOriginal);
-  // [Cecil] Constructor from character string with optional offset for insertion in binary files
-  inline CTString(const char *strCharString, INDEX i = 0);
+  // [Cecil] Constructor from character string with optional offset and amount of characters
+  inline CTString(const char *strCharString, size_t iFrom = 0, size_t ct = npos);
   /* Constructor with formatting. */
   inline CTString(INDEX iDummy, const char *strFormat, ...);
   /* Destructor. */
@@ -47,16 +47,6 @@ public:
 
   /* Conversion into character string. */
   inline operator const char*() const;
-
-  // [Cecil] Retrieve string data
-  inline char *Data(void) {
-    return str_String;
-  };
-
-  // [Cecil] Retrieve constant string data
-  inline const char *ConstData(void) const {
-    return str_String;
-  };
 
   /* Assignment. */
   inline CTString &operator=(const char *strCharString);
@@ -92,12 +82,6 @@ public:
   ULONG GetHash(void) const;
   // retain only first line of the string
   void OnlyFirstLine(void);
-
-  // [Cecil] Convert all characters to lowercase
-  CTString ToLower(void) const;
-
-  // [Cecil] Convert all characters to uppercase
-  CTString ToUpper(void) const;
 
   /* Equality comparison. */
   BOOL operator==(const CTString &strOther) const;
@@ -148,6 +132,36 @@ public:
   // variable management functions
   void LoadVar(const CTString &fnmFile);
   void SaveVar(const CTString &fnmFile);
+
+// [Cecil] Extra methods
+public:
+
+  // Retrieve string data
+  inline char *Data(void) {
+    return str_String;
+  };
+
+  // Retrieve constant string data
+  inline const char *ConstData(void) const {
+    return str_String;
+  };
+
+  // Assign a new string consisting of a specific character
+  inline void Fill(size_t ct, char ch);
+
+  // Convert all characters to lowercase
+  CTString ToLower(void) const;
+
+  // Convert all characters to uppercase
+  CTString ToUpper(void) const;
+
+  // Erase a portion of characters from the middle of the string
+  CTString &Erase(size_t iFrom, size_t ct = npos);
+
+  // Extract substring from the string
+  __forceinline CTString Substr(size_t iFrom, size_t ct = npos) const {
+    return CTString(str_String, iFrom, ct);
+  };
 
 // [Cecil] New methods for searching
 public:

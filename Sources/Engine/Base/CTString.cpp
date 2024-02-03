@@ -790,6 +790,29 @@ CTString RemoveSpecialCodes( const CTString &str)
   return strRet;
 }
 
+// [Cecil] Erase a portion of characters from the middle of the string
+CTString &CTString::Erase(size_t iFrom, size_t ct) {
+  // Nothing to erase
+  if (ct == 0) return *this;
+
+  // Erase past the length
+  const size_t iLen = Length();
+  if (iFrom >= iLen) return *this;
+
+  // Simple cutoff if past the end
+  if (ct > iLen - iFrom) {
+    str_String[iFrom] = '\0';
+    return *this;
+  }
+
+  // Move the rest of the string to the current position, including null terminator
+  char *pchStart = str_String + iFrom;
+  size_t ctRest = (iLen - ct - iFrom) + 1;
+
+  memmove(pchStart, pchStart + ct, ctRest);
+  return *this;
+};
+
 // [Cecil] Find substring in a string
 const char *CTString::GetSubstr(const char *strSub, size_t iFrom) const {
   ASSERT(iFrom < Length());
