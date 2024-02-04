@@ -25,8 +25,8 @@ This is a fork of Croteam's Serious Engine 1.10 that aims to provide code that i
 ### Other projects
 - `LWSkaExporter` - Exporter of SKA models in ASCII format for use in LightWave
 - `GameAgent` - Custom master server emulator written in Python
-- `libogg`, `libvorbis` - Third party libraries used for playing OGG-encoded ingame music (see http://www.vorbis.com/ for more information)
-- `zlib` - Third party static library for working with ZIP archives (see https://zlib.net/ for more information)
+- `libogg`, `libvorbis` - Third party libraries used for playing OGG-encoded ingame music
+- `zlib` - Third party static library for working with ZIP archives
 
 These have been modified to run correctly under the recent versions of Windows. (Tested: Win7 x64, Win8 x64, Win8.1 x64, Win10 x64)
 
@@ -43,9 +43,14 @@ These features are disabled by default but can be enabled if you wish to extend 
 - **DirectX:** Download DirectX8 SDK (headers & libraries) ( https://www.microsoft.com/en-us/download/details.aspx?id=6812 ) and then define a `SE1_D3D` macro for all projects in the solution (you can do it by adding it to the `SE1GenericPreproc` property inside `Sources/Properties/Common.props`). You will also need to make sure the DirectX8 headers and libraries are located in the following folders (make the folder structure if it doesn't exist):
   - `Tools.Win32/Libraries/DX8SDK/Include/`
   - `Tools.Win32/Libraries/DX8SDK/Lib/`
-- **MP3 playback:** Copy `amp11lib.dll` library into the 'Bin' directory (and 'Bin/Debug' in Debug mode) that used to be distributed with older versions of **Serious Sam Classic: The First Encounter**.
-- **3D Exploration**: Support is disabled due to copyright issues. If you need to create new models, you will have to either use editing tools from any of the original games, or write your own code for 3D object import/export.
-- **IFeel:** Support is disabled due to copyright issues. If you need IFeel support, you will have to copy `IFC22.dll` and `ImmWrapper.dll` from the original games into the `Bin` folder.
+- **3Dfx:** Support for this outdated driver for outdated graphics cards is still present but is disabled in favor of modernity. To enable it, define a `SE1_3DFX` macro for all projects in the solution.
+- **MP3 playback:** Copy `amp11lib.dll` library into the `Bin/` directory (and `Bin/Debug/` in Debug mode) that used to be distributed with older versions of **Serious Sam Classic: The First Encounter**.
+- **3D Exploration**: Support is disabled due to copyright issues. If you need to create new models, either use editing tools from any of the original games or write your own code for 3D object import/export.
+- **IFeel:** Support is disabled due to copyright issues. If you need IFeel support, copy `IFC22.dll` and `ImmWrapper.dll` from the original games into the `Bin/` folder.
+- **Truform:** Its functionality is disabled by default. To enable it, you need to switch the `SE1_TRUFORM` macro to `1` (or define it as such for all projects).
+- **Simple DirectMedia Layer (SDL):** It's included with the source code but its functionality is disabled by default for the Windows platform. To enable it, you need to switch the `SE1_SDL` macro to `1` (or define it as such for all projects).
+  - It is always enabled for non-Windows platforms because cross-platform code cannot function without it.
+- **The OpenGL Extension Wrangler Library (GLEW):** It's included with the source code but its functionality is disabled by default. To enable it, you need to switch the `SE1_GLEW` macro to `1` (or define it as such for all projects).
 
 # Running
 
@@ -59,13 +64,16 @@ When running a selected project, make sure that its project settings under **Deb
 
 - `SeriousSkaStudio` has some issues with MFC windows that can prevent the main window from being displayed properly.
 - Even though **Visual Studio 2010** can be used for building, its compiler seems to be introducing certain bugs that are not ironed out yet, so it's suggested that you use **Visual Studio 2013** or higher. Serious Engine 1.10 was initially released for these versions.
+  - Projects use `$(DefaultPlatformToolset)` property for automatically selecting the toolset from the studio that you're using, which doesn't exist in **Visual Studio 2010**. You will have to manually change it to `v100`.
 
 # License
 
-Serious Engine is licensed under the GNU GPL v2 (see `LICENSE` file).
+Serious Engine is licensed under the GNU GPL v2 license (see `LICENSE` file).
 
-Some of the code included with the engine sources under `Sources/ThirdParty` is not licensed under the GNU GPL v2:
+Some of the code included with the engine sources under `Sources/ThirdParty/` is not licensed under GNU GPL v2:
 
-- **zlib** (located in `zlib`) by Jean-loup Gailly and Mark Adler
-- **LightWave SDK** (located in `LWSkaExporter/SDK`) by NewTek Inc.
-- **libogg** & **libvorbis** (located in `libogg` and `libvorbis`) by Xiph.Org Foundation
+- **GLEW** (`glew/`) from https://glew.sourceforge.net/
+- **libogg** & **libvorbis** (`libogg/`, `libvorbis/`) by Xiph.Org Foundation ( http://www.vorbis.com/ )
+- **LightWave SDK** (`LWSkaExporter/SDK/`) by NewTek Inc.
+- **SDL2** (`SDL2/`) from https://libsdl.org/
+- **zlib** (`zlib/`) by Jean-loup Gailly and Mark Adler ( https://zlib.net/ )
