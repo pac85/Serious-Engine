@@ -38,7 +38,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.cpp>
 
 // [Cecil] For no ASM in CLayerMixer::AddAmbientPoint()
-#include <xmmintrin.h>
+#if !SE1_OLD_COMPILER
+  #include <xmmintrin.h>
+#endif
 
 // asm shortcuts
 #define O offset
@@ -268,6 +270,8 @@ static SLONG _slL2Row, _slDDL2oDU, _slDDL2oDV, _slDDL2oDUoDV, _slDL2oDURow, _slD
 static SLONG _slLightMax, _slHotSpot, _slLightStep;
 static ULONG *_pulLayer;
 
+#if !SE1_USE_ASM
+
 // [Cecil] Separate methods to avoid code duplication
 static __forceinline void PrepareColorMMX(__m64 &mm7, const ULONG ulLightRGB) {
   #if SE1_MMXINTOPT
@@ -357,6 +361,8 @@ static __forceinline void MixPixelMMX(ULONG &ulPixel, const SLONG slIntensity, c
     ulPixel = tmp_mm5.m64_u32[0];
   #endif
 };
+
+#endif // !SE1_USE_ASM
 
 // add one layer point light without diffusion and mask
 void CLayerMixer::AddAmbientPoint(void)

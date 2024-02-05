@@ -272,7 +272,7 @@ BOOL MSJExceptionHandler::GetLogicalAddress(
     if ( !VirtualQuery( addr, &mbi, sizeof(mbi) ) )
         return FALSE;
 
-    DWORD_PTR hMod = (DWORD_PTR)mbi.AllocationBase;
+    UINT_PTR hMod = (UINT_PTR)mbi.AllocationBase;
 
     if ( !GetModuleFileNameA( (HMODULE)hMod, szModule, len ) )
         return FALSE;
@@ -285,7 +285,7 @@ BOOL MSJExceptionHandler::GetLogicalAddress(
 
     PIMAGE_SECTION_HEADER pSection = IMAGE_FIRST_SECTION( pNtHdr );
 
-    DWORD_PTR rva = (DWORD_PTR)addr - hMod; // RVA is offset from module load address
+    UINT_PTR rva = (UINT_PTR)addr - hMod; // RVA is offset from module load address
 
     // Iterate through the section table, looking for the one that encompasses
     // the linear address.

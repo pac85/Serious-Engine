@@ -1201,14 +1201,14 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
 	ZeroMemory(&cif,sizeof(STARTUPINFOA));
 	PROCESS_INFORMATION pi;
 	
-	strcpy_s(strCmd,"SeriousSam.exe");
-	strcpy_s(strParam," +game ");
-	strcat_s(strParam,_fnmModToLoad.FileName());
+	strcpy(strCmd,"SeriousSam.exe");
+	strcpy(strParam," +game ");
+	strcat(strParam,_fnmModToLoad.FileName());
 	if (_strModServerJoin!="") {
-	  strcat_s(strParam," +connect ");
-	  strcat_s(strParam,_strModServerJoin);
-	  strcat_s(strParam," +quickjoin");
-    }	
+	  strcat(strParam," +connect ");
+	  strcat(strParam,_strModServerJoin);
+	  strcat(strParam," +quickjoin");
+  }	
 
 	if (CreateProcessA(strCmd,strParam,NULL,NULL,FALSE,CREATE_DEFAULT_ERROR_MODE,NULL,NULL,&cif,&pi) == FALSE)
 	{

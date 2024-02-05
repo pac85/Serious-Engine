@@ -19,9 +19,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#if SE1_WIN
+#if SE1_WIN && !SE1_OLD_COMPILER
   #include <io.h>
   #include <DbgHelp.h>
+
+  #pragma comment(lib, "DbgHelp.lib")
 #endif
 
 #include <Engine/Base/Protection.h>
@@ -960,8 +962,10 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   // check that the file is not open
   ASSERT(fstrm_pFile == NULL);
 
+#if !SE1_OLD_COMPILER
   // create the directory for the new file if it doesn't exist yet
   MakeSureDirectoryPathExists(fnmFullFileName.ConstData());
+#endif
 
   // open file stream for writing (destroy file context if file existed before)
   fstrm_pFile = fopen(fnmFullFileName.ConstData(), "wb+");

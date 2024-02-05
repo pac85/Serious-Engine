@@ -123,8 +123,14 @@ LRESULT CALLBACK CViewPortCLASS_WindowProc(
     // send it to parent
     HWND hWndParent = GetParent(hWnd);
     ASSERT(hWndParent!=NULL);
+
+  #if SE1_OLD_COMPILER
+    return CallWindowProc( (WNDPROC)GetWindowLong(hWndParent, GWL_WNDPROC),
+                           hWndParent, Msg, wParam, lParam);
+  #else
     return CallWindowProc( (WNDPROC)GetWindowLongPtr(hWndParent, GWLP_WNDPROC),
                            hWndParent, Msg, wParam, lParam);
+  #endif
   }
 
   // [Cecil] FIXME: For some reason it returns 0 on x64
@@ -184,7 +190,11 @@ void CViewPort::OpenCanvas(void)
 	  0,0,  // window size
 	  vp_hWndParent,
 	  NULL,
-	  (HINSTANCE)GetWindowLongPtr(vp_hWndParent, GWLP_HINSTANCE),
+  #if SE1_OLD_COMPILER
+    (HINSTANCE)GetWindowLong(vp_hWndParent, GWL_HINSTANCE),
+  #else
+    (HINSTANCE)GetWindowLongPtr(vp_hWndParent, GWLP_HINSTANCE),
+  #endif
 	  NULL);
   ASSERT( vp_hWnd!=NULL);
 #ifdef SE1_D3D

@@ -377,9 +377,11 @@ typedef BSPCutter          DOUBLEbspcutter3D;
 template<class cType>
 inline void Clear(cType &t) { t.Clear(); };
 
-// [Cecil] Clear pointer of any type
-template<class cType>
-inline void Clear(cType *pt) {};
+#if !SE1_OLD_COMPILER
+  // [Cecil] Clear pointer of any type
+  template<class cType>
+  inline void Clear(cType *pt) {};
+#endif
 
 // specific clearing functions for built-in types
 inline void Clear(signed long int sli) {};

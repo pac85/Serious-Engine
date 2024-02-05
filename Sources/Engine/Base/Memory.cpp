@@ -21,7 +21,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ErrorReporting.h>
 
 #if SE1_WIN
+  // [Cecil] Undefine debug operator
+  #ifndef NDEBUG
+    #undef new
+  #endif
+
   #include <new.h>
+
+  // [Cecil] Redefine it again
+  #ifndef NDEBUG
+    #define new DEBUG_NEW_CT
+  #endif
+
 #else
   #include <new>
 #endif

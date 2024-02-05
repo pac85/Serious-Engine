@@ -329,6 +329,8 @@ static HHOOK _hLLKeyHook = NULL;
 
 LRESULT CALLBACK LowLevelKeyboardProc (INT nCode, WPARAM wParam, LPARAM lParam)
 {
+// [Cecil] NOTE: Is this code even needed?
+#if !SE1_OLD_COMPILER
   // By returning a non-zero value from the hook procedure, the
   // message does not get passed to the target window
   KBDLLHOOKSTRUCT *pkbhs = (KBDLLHOOKSTRUCT *) lParam;
@@ -359,6 +361,8 @@ LRESULT CALLBACK LowLevelKeyboardProc (INT nCode, WPARAM wParam, LPARAM lParam)
       default:
           break;
   }
+#endif // !SE1_OLD_COMPILER
+
   return CallNextHookEx (_hLLKeyHook, nCode, wParam, lParam);
 } 
 

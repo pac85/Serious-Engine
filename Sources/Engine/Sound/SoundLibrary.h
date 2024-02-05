@@ -29,7 +29,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // [Cecil] Windows-specific
 #if SE1_WIN
-  #include <initguid.h>
+  #if !SE1_OLD_COMPILER
+    #include <initguid.h>
+  #endif
   #include <Engine/Sound/DSound.h>
   #include <Engine/Sound/EAX.h>
 #endif

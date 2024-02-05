@@ -50,11 +50,13 @@ public:
   // Declare a symbol in the shell.
   void DeclareSymbol(const CTString &strDeclaration, void *pvValue);
 
+#if !SE1_OLD_COMPILER
   // [Cecil] Declare symbol of any type
   template<typename Type> __forceinline
   void DeclareSymbol(const CTString &strDeclaration, Type *pValue) {
     DeclareSymbol(strDeclaration, (void *)pValue);
   };
+#endif
 
   // Execute command(s).
   void Execute(const CTString &strCommands);

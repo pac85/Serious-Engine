@@ -78,7 +78,7 @@ class ENGINE_API OS {
 
     struct ENGINE_API Message {
       // PeekMessage()
-      static BOOL Peek(MSG *lpMsg, OS::Window hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
+      static BOOL Peek(MSG *lpMsg, Window hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
 
       // TranslateMessage()
       static void Translate(const MSG *lpMsg);
@@ -87,11 +87,11 @@ class ENGINE_API OS {
       static void Dispatch(const MSG *lpMsg);
     };
 
-    static BOOL IsIconic(OS::Window hWnd);
+    static BOOL IsIconic(Window hWnd);
     static UWORD GetKeyState(int vKey);
     static UWORD GetAsyncKeyState(int vKey);
     static BOOL GetCursorPos(LPPOINT lpPoint);
-    static BOOL ScreenToClient(OS::Window hWnd, LPPOINT lpPoint);
+    static BOOL ScreenToClient(Window hWnd, LPPOINT lpPoint);
     static int ShowCursor(BOOL bShow);
 };
 

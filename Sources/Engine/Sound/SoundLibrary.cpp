@@ -14,7 +14,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "stdh.h"
-#include "initguid.h"
+
+// [Cecil] Windows-specific
+#if SE1_WIN
+  #include <initguid.h>
+
+  #pragma comment(lib, "winmm.lib")
+  #pragma comment(lib, "dxguid.lib")
+#endif
 
 #include <Engine/Sound/SoundLibrary.h>
 #include <Engine/Base/Translation.h>
@@ -37,8 +44,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Templates/StaticStackArray.cpp>
-
-#pragma comment(lib, "winmm.lib")
 
 // pointer to global sound library object
 CSoundLibrary *_pSound = NULL;
