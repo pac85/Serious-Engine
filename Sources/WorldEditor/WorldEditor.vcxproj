@@ -133,8 +133,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <IgnoreSpecificDefaultLibraries>game.lib gamemp.lib gamegui.lib gameguimp.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />
@@ -174,8 +172,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <IgnoreSpecificDefaultLibraries>game.lib gamemp.lib gamegui.lib gameguimp.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />
@@ -214,8 +210,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <IgnoreSpecificDefaultLibraries>gamed.lib gamempd.lib gameguid.lib gameguimpd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>htmlhelp.lib;EngineD.lib;EngineGUID.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />
@@ -252,8 +246,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <IgnoreSpecificDefaultLibraries>gamed.lib gamempd.lib gameguid.lib gameguimpd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>htmlhelp.lib;EngineD.lib;EngineGUID.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />

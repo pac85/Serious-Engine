@@ -119,7 +119,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />
@@ -154,7 +153,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />
@@ -189,7 +187,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />
@@ -224,7 +221,6 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />

@@ -29,4 +29,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <EntitiesMP/Common/GameInterface.h>
 #include <EntitiesMP/Player.h>
 
+// [Cecil] Link library here
+#ifdef NDEBUG
+  #pragma comment(lib, "EntitiesMP.lib")
+#else
+  #pragma comment(lib, "EntitiesMPD.lib")
+#endif
+
 #undef DECL_DLL

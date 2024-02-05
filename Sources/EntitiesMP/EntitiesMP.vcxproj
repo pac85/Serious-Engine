@@ -214,7 +214,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>EngineD.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep />
     <PostBuildEvent>
@@ -252,7 +251,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>EngineD.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep />
     <PostBuildEvent>

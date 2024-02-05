@@ -133,7 +133,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>user32.lib;Engine.lib;EntitiesMP.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep />
     <PostBuildEvent>
@@ -174,7 +173,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>user32.lib;Engine.lib;EntitiesMP.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep />
     <PostBuildEvent>
@@ -213,7 +211,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>user32.lib;EngineD.lib;EntitiesMPD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />
@@ -251,7 +248,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>user32.lib;EngineD.lib;EntitiesMPD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <CustomBuildStep />

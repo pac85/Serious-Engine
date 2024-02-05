@@ -29,6 +29,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticStackArray.cpp>
 
 #include <zlib/zlib.h>
+#pragma comment(lib, "zlib.lib")
+
 extern CTCriticalSection zip_csLock; // critical section for access to zlib functions
 
 #pragma pack(1)

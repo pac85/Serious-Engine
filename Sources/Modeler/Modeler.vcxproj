@@ -132,7 +132,6 @@
     <Bscmake />
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
@@ -172,7 +171,6 @@
     <Bscmake />
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
@@ -211,7 +209,6 @@
     <Bscmake />
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
@@ -248,7 +245,6 @@
     <Bscmake />
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>

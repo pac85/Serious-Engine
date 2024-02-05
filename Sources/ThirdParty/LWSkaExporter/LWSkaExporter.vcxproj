@@ -141,7 +141,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\serv.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep />
@@ -182,7 +181,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\serv.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep />
@@ -225,7 +223,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\serv.def</ModuleDefinitionFile>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
@@ -267,7 +264,6 @@
       <LinkDLL>true</LinkDLL>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>.\serv.def</ModuleDefinitionFile>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
