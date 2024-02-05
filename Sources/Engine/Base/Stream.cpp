@@ -48,9 +48,9 @@ ULONG _ulMaxLenghtOfSavingFile = (1UL<<20)*128;
 extern INDEX fil_bPreferZips = FALSE;
 
 // set if current thread has currently enabled stream handling
-static thread_local BOOL _bThreadCanHandleStreams = FALSE;
+static SE1_THREADLOCAL BOOL _bThreadCanHandleStreams = FALSE;
 // list of currently opened streams
-static thread_local CListHead *_plhOpenedStreams = NULL;
+static SE1_THREADLOCAL CListHead *_plhOpenedStreams = NULL;
 
 ULONG _ulVirtuallyAllocatedSpace = 0;
 ULONG _ulVirtuallyAllocatedSpaceTotal = 0;

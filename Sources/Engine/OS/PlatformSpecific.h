@@ -18,15 +18,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SE_INCL_PLATFORMSPECIFIC_H
 
 // Thread-local variables specifier
-#ifndef thread_local
+#ifndef SE1_THREADLOCAL
   #if SE1_WIN
-    #define thread_local __declspec(thread)
+    #define SE1_THREADLOCAL __declspec(thread)
   #elif __STDC_VERSION__ >= 201112L
-    #define thread_local _Thread_local
+    #define SE1_THREADLOCAL _Thread_local
   #else
-    #define thread_local __thread
+    #define SE1_THREADLOCAL __thread
   #endif
-#endif // thread_local
+#endif // SE1_THREADLOCAL
 
 // Unix-specific
 #if SE1_UNIX

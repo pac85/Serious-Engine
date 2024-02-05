@@ -55,7 +55,7 @@ static inline SQUAD ReadTSC(void)
 #pragma comment(lib, "winmm.lib")
 
 // current game time always valid for the currently active task
-static thread_local TIME _CurrentTickTimer = 0.0f;
+static SE1_THREADLOCAL TIME _CurrentTickTimer = 0.0f;
 
 // CTimer implementation
 

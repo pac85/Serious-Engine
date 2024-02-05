@@ -44,7 +44,7 @@ typedef struct {
    HANDLE hEvent;
 } OPTEX, *POPTEX;
 
-thread_local INDEX _iLastLockedMutex = 0;
+SE1_THREADLOCAL INDEX _iLastLockedMutex = 0;
 
 BOOL OPTEX_Initialize (POPTEX poptex) {
   
