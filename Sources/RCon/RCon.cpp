@@ -58,7 +58,7 @@ CRConApp theApp;
 BOOL CRConApp::SubInitInstance()
 {
   // initialize engine
-  SE_InitEngine( "Serious Sam");
+  SE_InitEngine(E_SEAPP_SERVER);
 
   CTString strCmdLine = CStringA(m_lpCmdLine);
   char strHost[80], strPass[80];

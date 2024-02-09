@@ -15,7 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <Engine/Engine.h>
 #include <Engine/CurrentVersion.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Base/Shell.h>

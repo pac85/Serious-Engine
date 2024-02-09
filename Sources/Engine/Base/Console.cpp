@@ -213,7 +213,6 @@ void CConsole::PutString(const char *strString)
   }
 
   // if dedicated server
-  extern BOOL _bDedicatedServer;
   if (_bDedicatedServer) {
     // print to output
     printf("%s", strString);

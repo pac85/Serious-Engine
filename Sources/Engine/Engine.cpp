@@ -50,8 +50,9 @@ ENGINE_API CTString _strEngineBuild  = "";
 ENGINE_API ULONG _ulEngineBuildMajor = _SE_BUILD_MAJOR;
 ENGINE_API ULONG _ulEngineBuildMinor = _SE_BUILD_MINOR;
 
-ENGINE_API BOOL _bDedicatedServer = FALSE;
-ENGINE_API BOOL _bWorldEditorApp  = FALSE;
+// [Cecil] TEMP: Current application type
+EEngineAppType _eEngineAppType = E_SEAPP_OTHER;
+
 ENGINE_API CTString _strLogFile = "";
 
 // global handle for application window
@@ -252,12 +253,10 @@ static void AnalyzeApplicationPath(void)
 
 
 // startup engine 
-ENGINE_API void SE_InitEngine(CTString strGameID)
+ENGINE_API void SE_InitEngine(EEngineAppType eType)
 {
-  #pragma message(">> Remove this from SE_InitEngine : _bWorldEditorApp")
-  if(strGameID=="SeriousEditor") {
-    _bWorldEditorApp = TRUE;
-  }
+  // [Cecil] TEMP: Set application type
+  _eEngineAppType = eType;
 
   AnalyzeApplicationPath();
   _fnmApplicationPath = CTString(strDirPath);
@@ -453,7 +452,8 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   _pGfx->Init();
   _pSound->Init();
 
-  if (strGameID!="") {
+  // [Cecil] TEMP: Significant application
+  if (eType != E_SEAPP_OTHER) {
     _pNetwork->Init();
     // just make classes declare their shell variables
     try {

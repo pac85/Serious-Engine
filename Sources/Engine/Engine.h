@@ -198,9 +198,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Selection.h>
 #include <Engine/Templates/Selection.cpp>
 
+// [Cecil] TEMP: Possible application types
+enum EEngineAppType {
+  E_SEAPP_OTHER,  // Some other application without special functions
+  E_SEAPP_GAME,   // Game client
+  E_SEAPP_SERVER, // Dedicated server
+  E_SEAPP_EDITOR, // World editor
+};
 
 // some global stuff
-ENGINE_API void SE_InitEngine( CTString strGameID);
+ENGINE_API void SE_InitEngine(EEngineAppType eType = E_SEAPP_OTHER); // [Cecil] TEMP: App type
 ENGINE_API void SE_EndEngine(void);
 ENGINE_API void SE_LoadDefaultFonts(void);
 ENGINE_API void SE_UpdateWindowHandle(OS::Window hwndWindowed);
@@ -210,8 +217,13 @@ extern ENGINE_API CTString _strEngineBuild;  // not valid before InitEngine()!
 extern ENGINE_API ULONG _ulEngineBuildMajor;
 extern ENGINE_API ULONG _ulEngineBuildMinor;
 
-extern ENGINE_API BOOL _bDedicatedServer;
-extern ENGINE_API BOOL _bWorldEditorApp; // is this world edtior app
+// [Cecil] TEMP: Current application type
+ENGINE_API extern EEngineAppType _eEngineAppType;
+
+// [Cecil] TEMP: Aliases for old variables (deprecated; use is discouraged)
+#define _bDedicatedServer bool(_eEngineAppType == E_SEAPP_SERVER)
+#define _bWorldEditorApp  bool(_eEngineAppType == E_SEAPP_EDITOR)
+
 extern ENGINE_API CTString _strLogFile;
 
 // temporary vars for adjustments

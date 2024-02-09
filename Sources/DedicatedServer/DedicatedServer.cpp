@@ -184,8 +184,6 @@ void ExecScript(const CTString &str)
 
 BOOL Init(int argc, char* argv[])
 {
-  _bDedicatedServer = TRUE;
-
   if (argc!=1+1 && argc!=2+1) {
     // NOTE: this cannot be translated - translations are not loaded yet
     printf("Usage: DedicatedServer <configname> [<modname>]\n"
@@ -206,7 +204,7 @@ BOOL Init(int argc, char* argv[])
   _strLogFile = CTString("Dedicated_")+argv[1];
 
   // initialize engine
-  SE_InitEngine(sam_strGameName);
+  SE_InitEngine(E_SEAPP_SERVER);
 
 //  ParseCommandLine(strCmdLine);
 

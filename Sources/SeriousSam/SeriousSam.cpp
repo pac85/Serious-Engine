@@ -413,7 +413,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   ParseCommandLine(strCmdLine);
 
   // initialize engine
-  SE_InitEngine(sam_strGameName);
+  SE_InitEngine(E_SEAPP_GAME);
 
   SE_LoadDefaultFonts();
   // now print the output of command line parsing

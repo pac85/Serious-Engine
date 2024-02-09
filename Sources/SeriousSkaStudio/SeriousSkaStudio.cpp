@@ -156,7 +156,7 @@ BOOL CSeriousSkaStudioApp::SubInitInstance()
 	AddDocTemplate(m_pdtDocTemplate);
 
   // initialize entire engine
-  SE_InitEngine("");
+  SE_InitEngine();
   SE_LoadDefaultFonts();
   // remember both compressed and uncompressed rotations in animations
   RememberUnCompresedRotatations(TRUE);

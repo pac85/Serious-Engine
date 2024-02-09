@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Console.h>
 
 
-extern BOOL _bDedicatedServer;
 #ifdef SE1_D3D
 extern const D3DDEVTYPE d3dDevType;
 #endif // SE1_D3D

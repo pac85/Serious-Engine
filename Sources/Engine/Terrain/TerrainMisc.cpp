@@ -894,7 +894,6 @@ static ULONG ulTemp = 0xFFFFFFFF;
 void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NULL*/, BOOL bAbsoluteSpace/*=FALSE*/)
 {
   // if this is not world editor app 
-  extern BOOL _bWorldEditorApp;
   if(!_bWorldEditorApp) {
 
     ASSERTALWAYS("Terrain shadow map can only be updated from world editor!");

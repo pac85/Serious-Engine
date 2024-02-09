@@ -141,7 +141,6 @@ void Mon_DisableEnable9x_t(BOOL bDisable)
 
 void MonitorsOff(void)
 {
-  extern BOOL _bDedicatedServer;
   if (_bDedicatedServer) {
     return;
   }

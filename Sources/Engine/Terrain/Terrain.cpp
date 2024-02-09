@@ -34,9 +34,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 extern CTerrain *_ptrTerrain;
 
-extern BOOL _bWorldEditorApp; // is this world edtior app
-
-
 static INDEX _iTerrainVersion = 9;   // Current terrain version
 static INDEX ctGeneratedTopMaps = 0; // TEMP
 static INDEX ctGlobalTopMaps    = 0; // TEMP
