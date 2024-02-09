@@ -454,7 +454,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   _pSound->Init();
 
   if (strGameID!="") {
-    _pNetwork->Init(strGameID);
+    _pNetwork->Init();
     // just make classes declare their shell variables
     try {
       CEntityClass* pec = _pEntityClassStock->Obtain_t(CTString("Classes\\Player.ecl"));

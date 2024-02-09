@@ -47,7 +47,6 @@ public:
 class ENGINE_API CMessageDispatcher {
 public:
   CListHead md_lhProviders;           // statical list of providers initialized at startup
-  CTString md_strGameID;
 
   /* Enumerate all providers at startup (later enumeration just copies this list). */
   void EnumNetworkProviders_startup(CListHead &lh);
@@ -56,9 +55,6 @@ public:
   CMessageDispatcher(void);
   /* Destructor. */
   ~CMessageDispatcher(void);
-
-  /* Initialize for a given game. */
-  void Init(const CTString &strGameID);
 
   /* Enumerate all providers. */
   void EnumNetworkProviders(CListHead &lh);

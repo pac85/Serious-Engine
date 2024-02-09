@@ -189,7 +189,7 @@ public:
   DECLARE_NOCOPYING(CNetworkLibrary);
 
   /* Initialize game management. */
-  void Init(const CTString &strGameID);
+  void Init(void);
   /* Start a peer-to-peer game session. */
   void StartPeerToPeer_t(const CTString &strSessionName,
     const CTFileName &fnmWorld, ULONG ulSpawnFlags, 

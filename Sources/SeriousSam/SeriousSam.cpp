@@ -478,8 +478,6 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   _pShell->DeclareSymbol("INDEX sam_iStartCredits;", &sam_iStartCredits);
 
   InitializeGame();
-  _pNetwork->md_strGameID = sam_strGameName;
-
   LCDInit();
 
   if( sam_bFirstStarted) {

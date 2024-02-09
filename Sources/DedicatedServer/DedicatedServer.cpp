@@ -247,7 +247,6 @@ BOOL Init(int argc, char* argv[])
 
   // init game - this will load persistent symbols
   InitializeGame();
-  _pNetwork->md_strGameID = sam_strGameName;
 
   LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), _strSamVersion);
   CPrintF(TRANS("Serious Sam version: %s\n"), _strSamVersion);

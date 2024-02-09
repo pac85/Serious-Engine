@@ -720,11 +720,8 @@ CNetworkLibrary::~CNetworkLibrary(void)
 /*
  * Initialize game management.
  */
-void CNetworkLibrary::Init(const CTString &strGameID)
+void CNetworkLibrary::Init(void)
 {
-  // remember the game ID
-  CMessageDispatcher::Init(strGameID);
-
   // add shell symbols
   _pShell->DeclareSymbol("user INDEX dbg_bBreak;", &dbg_bBreak);
   _pShell->DeclareSymbol("persistent user INDEX gam_bPretouch;", &gam_bPretouch);

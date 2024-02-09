@@ -146,14 +146,6 @@ CMessageDispatcher::~CMessageDispatcher(void)
   }
 }
 
-/*
- * Initialize for a given game.
- */
-void CMessageDispatcher::Init(const CTString &strGameID)
-{
-  md_strGameID = strGameID;
-}
-
 /////////////////////////////////////////////////////////////////////
 // CMessageDispatcher -- network provider management
 
