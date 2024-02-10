@@ -42,16 +42,33 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  *  ViewPort
  */
 
-/* rcg !!! FIXME: This will need to go away. */
-#if SE1_WIN
+// [Cecil] Helper class for OpenGL reworked for compatibility with SDL
 class CTempDC {
-public:
-  HDC hdc;
-  HWND hwnd;
-  CTempDC(HWND hWnd);
-  ~CTempDC(void);
+  public:
+    OS::DvcContext hdc;
+    OS::WndHandle hwnd;
+
+  public:
+  #if SE1_PREFER_SDL
+    CTempDC(OS::WndHandle hWnd) {
+      ASSERT(hWnd != NULL);
+      hwnd = hWnd;
+      hdc = hwnd;
+    };
+
+  #else
+    CTempDC(OS::WndHandle hWnd) {
+      ASSERT(hWnd != NULL);
+      hwnd = hWnd;
+      hdc = GetDC(hwnd);
+      ASSERT(hdc != NULL);
+    };
+
+    ~CTempDC(void) {
+      ReleaseDC(hwnd, hdc);
+    };
+  #endif
 };
-#endif
 
 // base abstract class for viewport
 class ENGINE_API CViewPort {

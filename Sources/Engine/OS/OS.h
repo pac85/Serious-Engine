@@ -30,11 +30,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class ENGINE_API OS {
   public:
-    // Window handle pointer
+    // Handle pointers
   #if SE1_PREFER_SDL
-    typedef SDL_Window *WndHandle;
+    typedef SDL_Window *WndHandle; // Window handle
+    typedef WndHandle DvcContext;  // Alias for compatibility
   #else
-    typedef HWND WndHandle;
+    typedef HWND WndHandle; // Window handle
+    typedef HDC DvcContext; // Device context handle
   #endif
 
     // Window handler

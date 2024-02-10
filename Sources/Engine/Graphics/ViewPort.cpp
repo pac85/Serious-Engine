@@ -62,22 +62,6 @@ static void SetAsRenderTarget_D3D( CViewPort *pvp)
 }
 #endif // SE1_D3D
 
-// helper for OGL
-
-CTempDC::CTempDC(HWND hWnd)
-{
-  ASSERT(hWnd!=NULL);
-  hwnd = hWnd;
-  hdc = GetDC(hwnd);
-  ASSERT(hdc!=NULL);
-}
-
-CTempDC::~CTempDC(void)
-{
-  ReleaseDC(hwnd, hdc);
-}
-
-
 /*
  *   ViewPort functions
  */
