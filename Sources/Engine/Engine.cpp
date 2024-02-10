@@ -251,10 +251,54 @@ static void AnalyzeApplicationPath(void)
   strDirPath[sizeof(strDirPath)-1] = 0;
 }
 
+// [Cecil] SDL: Initialization and shutdown management
+#if SE1_SDL
+
+static bool _bEngineInitializedSDL = false;
+
+static void SE_EndSDL(void) {
+  // Already shut down
+  if (!_bEngineInitializedSDL) return;
+
+  SDL_Quit();
+  _bEngineInitializedSDL = false;
+};
+
+static void SE_InitSDL(ULONG ulFlags) {
+  // Already initialized
+  if (_bEngineInitializedSDL) return;
+
+  // Main initialization (may be basic with 0 flags)
+  ULONG ulNoJoysticks = ulFlags & ~SDL_INIT_JOYSTICK;
+
+  if (SDL_Init(ulNoJoysticks) == -1) {
+    FatalError(TRANS("SDL_Init(0x%X) failed:\n%s"), ulNoJoysticks, SDL_GetError());
+  }
+
+  // Optional
+  if (ulFlags & SDL_INIT_JOYSTICK) {
+    if (SDL_Init(SDL_INIT_JOYSTICK) == -1) {
+      CPrintF(TRANS("SDL_Init(SDL_INIT_JOYSTICK) failed:\n%s\n"), SDL_GetError());
+    }
+  }
+
+  atexit(SE_EndSDL);
+  _bEngineInitializedSDL = true;
+};
+
+#endif
 
 // startup engine 
 ENGINE_API void SE_InitEngine(EEngineAppType eType)
 {
+#if SE1_SDL
+  // [Cecil] SDL: Initialize for gameplay or for basic stuff
+  const BOOL bGameApp = (eType == E_SEAPP_GAME || eType == E_SEAPP_EDITOR);
+  const ULONG ulGameplay = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK;
+
+  SE_InitSDL(bGameApp ? ulGameplay : 0);
+#endif
+
   // [Cecil] TEMP: Set application type
   _eEngineAppType = eType;
 
@@ -563,6 +607,11 @@ ENGINE_API void SE_EndEngine(void)
 
   // deinit IFeel
   IFeel_DeleteDevice();
+
+#if SE1_SDL
+  // [Cecil] SDL: Shutdown
+  SE_EndSDL();
+#endif
 }
 
 
