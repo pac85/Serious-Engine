@@ -82,7 +82,11 @@ public:
   FLOAT tm_fLerpFactor;   // factor used for lerping between frames
   FLOAT tm_fLerpFactor2;  // secondary lerp-factor used for unpredicted movement
 
+#if SE1_SDL
+  SDL_TimerID tm_TimerID; // [Cecil] SDL: Timer ID
+#else
   ULONG tm_TimerID;       // windows timer ID
+#endif
 
   CTCriticalSection tm_csHooks;   // access to timer hooks
   CListHead         tm_lhHooks;   // a list head for timer hooks

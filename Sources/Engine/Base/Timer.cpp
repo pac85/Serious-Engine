@@ -283,7 +283,7 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   #if SE1_SDL
     // [Cecil] SDL: Add timer
     if (SDL_Init(SDL_INIT_TIMER) == -1) {
-      FatalError(TRANS("Cannot initialize SDL timer!"));
+      FatalError(TRANS("Cannot initialize SDL timer:\n%s"), SDL_GetError());
     }
 
     tm_TimerID = SDL_AddTimer(ULONG(TickQuantum * (TIME)1000.0), CTimer_TimerFunc, NULL);
