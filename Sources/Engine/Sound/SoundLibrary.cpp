@@ -239,7 +239,14 @@ static void ShutDown_dsound( CSoundLibrary &sl)
   // free direct sound object
   if( sl.sl_pDS!=NULL) {
     // reset cooperative level
-    if( _hwndCurrent!=NULL) sl.sl_pDS->SetCooperativeLevel( _hwndCurrent, DSSCL_NORMAL);
+    if (_hwndCurrent != NULL) {
+    #if SE1_PREFER_SDL
+      // [Cecil] FIXME: Get HWND from SDL_Window
+      sl.sl_pDS->SetCooperativeLevel(GetActiveWindow(), DSSCL_NORMAL);
+    #else
+      sl.sl_pDS->SetCooperativeLevel(_hwndCurrent, DSSCL_NORMAL);
+    #endif
+    }
     sl.sl_pDS->Release();
     sl.sl_pDS = NULL;
   }
@@ -467,7 +474,14 @@ static BOOL StartUp_dsound( CSoundLibrary &sl, BOOL bReport=TRUE)
 
   // set cooperative level to priority
   _hwndCurrent = _hwndMain;
+
+#if SE1_PREFER_SDL
+  // [Cecil] FIXME: Get HWND from SDL_Window
+  hResult = sl.sl_pDS->SetCooperativeLevel(GetActiveWindow(), DSSCL_PRIORITY);
+#else
   hResult = sl.sl_pDS->SetCooperativeLevel( _hwndCurrent, DSSCL_PRIORITY);
+#endif
+
   if( hResult != DS_OK) return DSFail( sl, TRANS("  ! DirectSound error: Cannot set cooperative level.\n"));
 
   // prepare 3D flag if EAX

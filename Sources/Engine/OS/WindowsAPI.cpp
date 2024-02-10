@@ -32,7 +32,13 @@ void OS::Window::Destroy(void) {
 
 BOOL OS::Message::Peek(MSG *lpMsg, OS::Window hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
+#if SE1_PREFER_SDL
+  // [Cecil] FIXME: Get HWND from SDL_Window or...
+  // [Cecil] TODO: Rewrite using SDL
+  return ::PeekMessage(lpMsg, NULL, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+#else
   return ::PeekMessage(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+#endif
 };
 
 void OS::Message::Translate(const MSG *lpMsg)
@@ -47,7 +53,11 @@ void OS::Message::Dispatch(const MSG *lpMsg)
 
 BOOL OS::IsIconic(OS::Window hWnd)
 {
+#if SE1_PREFER_SDL
+  return (hWnd != NULL && (SDL_GetWindowFlags(hWnd) & SDL_WINDOW_MINIMIZED) == SDL_WINDOW_MINIMIZED);
+#else
   return ::IsIconic(hWnd);
+#endif
 };
 
 UWORD OS::GetKeyState(int vKey)
@@ -67,7 +77,13 @@ BOOL OS::GetCursorPos(LPPOINT lpPoint)
 
 BOOL OS::ScreenToClient(OS::Window hWnd, LPPOINT lpPoint)
 {
+#if SE1_PREFER_SDL
+  // [Cecil] FIXME: Get HWND from SDL_Window or...
+  // [Cecil] TODO: Rewrite using SDL
+  return ::ScreenToClient(GetActiveWindow(), lpPoint);
+#else
   return ::ScreenToClient(hWnd, lpPoint);
+#endif
 };
 
 int OS::ShowCursor(BOOL bShow)

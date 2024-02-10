@@ -774,13 +774,21 @@ void CInput::EnableInput(OS::Window hwnd)
   // skip if already enabled
   if( inp_bInputEnabled) return;
 
+#if SE1_PREFER_SDL
+  // [Cecil] FIXME: Get HWND from SDL_Window or...
+  // [Cecil] TODO: Rewrite input using SDL
+  HWND hwndCurrent = GetActiveWindow();
+#else
+  HWND hwndCurrent = hwnd;
+#endif
+
   // get window rectangle
   RECT rectClient;
-  GetClientRect(hwnd, &rectClient);
+  GetClientRect(hwndCurrent, &rectClient);
   POINT pt;
   pt.x=0;
   pt.y=0;
-  ClientToScreen(hwnd, &pt);
+  ClientToScreen(hwndCurrent, &pt);
   OffsetRect(&rectClient, pt.x, pt.y);
 
   // remember mouse pos
