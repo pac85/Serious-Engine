@@ -21,9 +21,13 @@ void MainWindow_Init(void);
 void MainWindow_End(void);
 // close the main application window
 void CloseMainWindow(void);
+
+#if !SE1_PREFER_SDL
+  void ResetMainWindowNormal(void);
+#endif
+
 // open the main application window for windowed mode
 void OpenMainWindowNormal(PIX pixSizeI, PIX pixSizeJ);
-void ResetMainWindowNormal(void);
 // open the main application window for fullscreen mode
 void OpenMainWindowFullScreen(PIX pixSizeI, PIX pixSizeJ);
 // open the main application window invisible

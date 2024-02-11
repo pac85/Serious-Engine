@@ -346,11 +346,19 @@ void TrimString(char *str)
 // run web browser and view an url
 void RunBrowser(const char *strUrl)
 {
+#if SE1_PREFER_SDL
+  // [Cecil] SDL: Open URL in browser
+  if (SDL_OpenURL(strUrl) == -1) {
+    NOTHING;
+  }
+
+#else
   INT_PTR iResult = (INT_PTR)ShellExecuteA(_hwndMain, "OPEN", strUrl, NULL, NULL, SW_SHOWMAXIMIZED);
   if (iResult<32) {
     // should report error?
     NOTHING;
   }
+#endif
 }
 
 void LoadAndForceTexture(CTextureObject &to, CTextureObject *&pto, const CTFileName &fnm)
@@ -866,6 +874,8 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
         }
       }
 
+      // [Cecil] SDL: Window commands are handled automatically
+    #if !SE1_PREFER_SDL
       // system commands (also send by the application itself)
       if( msg.message==WM_SYSCOMMAND)
       {
@@ -920,6 +930,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
           break;
         }
       }
+    #endif // !SE1_PREFER_SDL
 
       // toggle full-screen on alt-enter
       if (msg.message == WM_SYSKEYDOWN && msg.wParam == VK_RETURN && !OS::IsIconic(_hwndMain)) {
@@ -1317,7 +1328,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
 #endif // SE1_D3D
     bSuccess = _pGfx->ResetDisplayMode( eGfxAPI);
     if( bSuccess && eGfxAPI==GAT_OGL) OpenMainWindowNormal( pixSizeI, pixSizeJ);
-#ifdef SE1_D3D
+#if defined(SE1_D3D) && !SE1_PREFER_SDL
     if( bSuccess && eGfxAPI==GAT_D3D) ResetMainWindowNormal();
 #endif // SE1_D3D
   }

@@ -21,6 +21,8 @@ extern BOOL _bWindowChanging = FALSE;    // ignores window messages while this i
 extern OS::Window _hwndMain = NULL;
 static char achWindowTitle[256]; // current window title
 
+#if !SE1_PREFER_SDL
+
 static HBITMAP _hbmSplash = NULL;
 static BITMAP  _bmSplash;
 
@@ -143,11 +145,8 @@ void MainWindow_Init(void)
   wc.lpszClassName = APPLICATION_NAME;
   wc.hIconSm = NULL;
   if (0 == RegisterClassExA(&wc)) {
-    DWORD dwError = GetLastError();
-    CTString strErrorMessage(TRANS("Cannot open main window!"));
-    CTString strError;
-    strError.PrintF("%s Error %d", strErrorMessage, dwError);
-    FatalError(strError);
+    // [Cecil] Simplified and more informative error message
+    FatalError(TRANS("Cannot open main window:\n%s"), GetWindowsError(GetLastError()));
   }
 
   // load bitmaps
@@ -162,19 +161,6 @@ void MainWindow_End(void)
 {
   DeleteObject(_hbmSplash);
 }
-
-
-// close the main application window
-void CloseMainWindow(void)
-{
-  // if window exists
-  if( _hwndMain!=NULL) {
-    // destroy it
-    DestroyWindow(_hwndMain);
-    _hwndMain = NULL;
-  }
-}
-
 
 void ResetMainWindowNormal(void)
 {
@@ -192,12 +178,38 @@ void ResetMainWindowNormal(void)
   ShowWindow(   _hwndMain, SW_SHOW);
 }
 
+#else
+
+// [Cecil] SDL: No extra setup required, and splash display on window change isn't very necessary
+void MainWindow_Init(void) {};
+void MainWindow_End(void) {};
+
+#endif // !SE1_PREFER_SDL
+
+// [Cecil] Destroy window universally
+void CloseMainWindow(void) {
+  _hwndMain.Destroy();
+};
+
+// [Cecil] Make sure the window is always created
+static inline void AssertWindowCreation(void) {
+  if (_hwndMain != NULL) return;
+
+#if SE1_PREFER_SDL
+  CTString strErrorMessage = SDL_GetError();
+#else
+  CTString strErrorMessage = GetWindowsError(GetLastError());
+#endif
+
+  FatalError(TRANS("Cannot open main window:\n%s"), strErrorMessage.ConstData());
+};
 
 // open the main application window for windowed mode
 void OpenMainWindowNormal( PIX pixSizeI, PIX pixSizeJ)
 {
   ASSERT(_hwndMain==NULL);
 
+#if !SE1_PREFER_SDL
   // create a window, invisible initially
   _hwndMain = CreateWindowExA(
 	  WS_EX_APPWINDOW,
@@ -210,9 +222,8 @@ void OpenMainWindowNormal( PIX pixSizeI, PIX pixSizeJ)
 	  NULL,
 	  _hInstance,
 	  NULL);
-  // didn't make it?
-  if( _hwndMain==NULL) FatalError(TRANS("Cannot open main window!"));
-  SE_UpdateWindowHandle( _hwndMain);
+
+  AssertWindowCreation(); // [Cecil]
 
   // set window title
   sprintf( achWindowTitle, TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
@@ -220,6 +231,17 @@ void OpenMainWindowNormal( PIX pixSizeI, PIX pixSizeJ)
   _pixLastSizeI = pixSizeI;
   _pixLastSizeJ = pixSizeJ;
   ResetMainWindowNormal();
+
+#else
+  // [Cecil] SDL: Create normal window
+  SDL_snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
+  _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
+    SDL_WINDOW_OPENGL);
+
+  AssertWindowCreation();
+#endif // !SE1_PREFER_SDL
+
+  SE_UpdateWindowHandle(_hwndMain);
 }
 
 
@@ -227,6 +249,8 @@ void OpenMainWindowNormal( PIX pixSizeI, PIX pixSizeJ)
 void OpenMainWindowFullScreen( PIX pixSizeI, PIX pixSizeJ)
 {
   ASSERT( _hwndMain==NULL);
+
+#if !SE1_PREFER_SDL
   // create a window, invisible initially
   _hwndMain = CreateWindowExA(
     WS_EX_TOPMOST | WS_EX_APPWINDOW,
@@ -239,14 +263,24 @@ void OpenMainWindowFullScreen( PIX pixSizeI, PIX pixSizeJ)
     NULL,
     _hInstance,
     NULL);
-  // didn't make it?
-  if( _hwndMain==NULL) FatalError(TRANS("Cannot open main window!"));
-  SE_UpdateWindowHandle( _hwndMain);
+
+  AssertWindowCreation(); // [Cecil]
 
   // set window title and show it
   sprintf( achWindowTitle, TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
   SetWindowTextA( _hwndMain, achWindowTitle);
   ShowWindow(    _hwndMain, SW_SHOWNORMAL);
+
+#else
+  // [Cecil] SDL: Create fullscreen window
+  SDL_snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
+  _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
+    SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+
+  AssertWindowCreation();
+#endif // !SE1_PREFER_SDL
+
+  SE_UpdateWindowHandle(_hwndMain);
 }
 
 
@@ -254,6 +288,8 @@ void OpenMainWindowFullScreen( PIX pixSizeI, PIX pixSizeJ)
 void OpenMainWindowInvisible(void)
 {
   ASSERT(_hwndMain==NULL);
+
+#if !SE1_PREFER_SDL
   // create a window, invisible initially
   _hwndMain = CreateWindowExA(
 	  WS_EX_APPWINDOW,
@@ -266,17 +302,18 @@ void OpenMainWindowInvisible(void)
 	  NULL,
 	  _hInstance,
 	  NULL);
-  // didn't make it?
-  if( _hwndMain==NULL) {
-    DWORD dwError = GetLastError();
-    CTString strErrorMessage(TRANS("Cannot open main window!"));
-    CTString strError;
-    strError.PrintF("%s Error %d", strErrorMessage, dwError);
-    FatalError(strError);
-  }
-  SE_UpdateWindowHandle( _hwndMain);
+
+  AssertWindowCreation(); // [Cecil]
 
   // set window title
   sprintf( achWindowTitle, "Serious Sam");
   SetWindowTextA( _hwndMain, achWindowTitle);
+
+#else
+  // [Cecil] SDL: Create invisible window
+  _hwndMain = SDL_CreateWindow("Serious Sam", 0, 0, 10, 10, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+  AssertWindowCreation();
+#endif // !SE1_PREFER_SDL
+
+  SE_UpdateWindowHandle(_hwndMain);
 }
