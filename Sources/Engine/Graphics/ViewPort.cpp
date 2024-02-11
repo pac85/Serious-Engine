@@ -126,6 +126,7 @@ LRESULT CALLBACK CViewPortCLASS_WindowProc(
 // open overlaid window for rendering context
 void CViewPort::OpenCanvas(void)
 {
+#if !SE1_PREFER_SDL
   // do nothing if not feasable
   if( vp_hWnd!=NULL || vp_hWndParent==NULL) return;
 
@@ -193,6 +194,11 @@ void CViewPort::OpenCanvas(void)
   // set as rendering target
   if (_pGfx->GetCurrentAPI() == GAT_D3D && vp_pSwapChain != NULL) SetAsRenderTarget_D3D(this);
 #endif // SE1_D3D
+
+#else
+  // [Cecil] SDL: No need to open a new window, reuse the parent
+  vp_hWnd = vp_hWndParent;
+#endif
 }
 
 
@@ -206,11 +212,16 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
     if (vp_pSurfDepth != NULL) D3DRELEASE(vp_pSurfDepth, TRUE);
   }
 #endif // SE1_D3D
+
+  // [Cecil] SDL: No new window has been created
+#if !SE1_PREFER_SDL
   // destroy window
   if( vp_hWnd!=NULL && IsWindow(vp_hWnd)) { 
     BOOL bRes = DestroyWindow(vp_hWnd);
     ASSERT(bRes);
   }
+#endif
+
   // mark
   vp_hWnd = NULL;
 #ifdef SE1_D3D
@@ -223,6 +234,8 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
 // Change size of this viewport, it's raster and all it's drawports
 void CViewPort::Resize(void)
 {
+  // [Cecil] SDL: The parent window is already resized
+#if !SE1_PREFER_SDL
 	PIX pixNewWidth, pixNewHeight;
 	RECT rectWindow;
 
@@ -250,6 +263,7 @@ void CViewPort::Resize(void)
     SetAsRenderTarget_D3D(this);
   }
 #endif // SE1_D3D
+#endif // !SE1_PREFER_SDL
 }
 
 

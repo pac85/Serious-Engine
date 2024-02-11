@@ -1050,7 +1050,7 @@ CGfxLibrary::CGfxLibrary(void)
   // no driver loaded
   gl_pInterface = NULL; // [Cecil]
   gl_hiDriver = NONE;
-  go_hglRC = NONE;
+  go_hglRC = NULL;
   gl_ctDriverChanges = 0;
 
   // DX8 not loaded either
@@ -1643,12 +1643,18 @@ void CGfxLibrary::UnlockDrawPort( CDrawPort *pdpToUnlock)
 /* Create a new window canvas. */
 void CGfxLibrary::CreateWindowCanvas(OS::Window hWnd, CViewPort **ppvpNew, CDrawPort **ppdpNew)
 {
-  RECT rectWindow;	// rectangle for the client area of the window
+  // Get dimensions from the window
+  int pixWidth, pixHeight;
 
-	// get the dimensions from the window
-  GetClientRect( (HWND)hWnd, &rectWindow);
-  PIX pixWidth  = rectWindow.right  - rectWindow.left;
-	PIX pixHeight = rectWindow.bottom - rectWindow.top;
+#if !SE1_PREFER_SDL
+  RECT rectWindow;
+  GetClientRect(hWnd, &rectWindow);
+  pixWidth  = int(rectWindow.right  - rectWindow.left);
+  pixHeight = int(rectWindow.bottom - rectWindow.top);
+
+#else
+  SDL_GL_GetDrawableSize(hWnd, &pixWidth, &pixHeight);
+#endif
 
   *ppvpNew = NULL;
   *ppdpNew = NULL;
@@ -1670,6 +1676,8 @@ void CGfxLibrary::DestroyWindowCanvas(CViewPort *pvpOld) {
 
 /////////////////////////////////////////////////////////////////////
 // Work canvas functions
+
+#if !SE1_PREFER_SDL
 
 #define WorkCanvasCLASS "WorkCanvas Window"
 static BOOL _bClassRegistered = FALSE;
@@ -1726,7 +1734,7 @@ void CGfxLibrary::DestroyWorkCanvas(CDrawPort *pdpOld)
   ::DestroyWindow(hwnd);
 }
 
-
+#endif // !SE1_PREFER_SDL
 
 // optimize memory used by cached shadow maps
 
@@ -1872,12 +1880,22 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
     if( gl_ulFlags & GLF_VSYNC) {
       if( gl_iSwapInterval != gap_iSwapInterval) {
         gl_iSwapInterval = gap_iSwapInterval;
-        pwglSwapIntervalEXT( gl_iSwapInterval);
+
+        #if !SE1_PREFER_SDL
+          pwglSwapIntervalEXT( gl_iSwapInterval);
+        #else
+          SDL_GL_SetSwapInterval(gl_iSwapInterval);
+        #endif
       }
     }
+
     // swap buffers
-    CTempDC tdc(pvp->vp_hWnd);
-    pwglSwapBuffers(tdc.hdc);
+    #if !SE1_PREFER_SDL
+      CTempDC tdc(pvp->vp_hWnd);
+      pwglSwapBuffers(tdc.hdc);
+    #else
+      SDL_GL_SwapWindow(pvp->vp_hWnd);
+    #endif
 
     // force finishing of all rendering operations (if required)
     if( ogl_iFinish==3) gfxFinish();
@@ -1986,6 +2004,8 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
   if( gfx_bClearScreen) pvp->vp_Raster.ra_MainDrawPort.Fill( C_BLACK|CT_OPAQUE);
   //pvp->vp_Raster.ra_MainDrawPort.FillZBuffer(ZBUF_BACK);
 
+  // [Cecil] SDL: Don't bother with gamma adjustment
+#if !SE1_PREFER_SDL
   // adjust gamma table if supported ...
   if( gl_ulFlags & GLF_ADJUSTABLEGAMMA) {
     // ... and required
@@ -1995,24 +2015,24 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
         CTempDC tdc(pvp->vp_hWnd);
         SetDeviceGammaRamp( tdc.hdc, &_auwGammaTable[0]);
       } 
-#ifdef SE1_D3D
+    #ifdef SE1_D3D
       else if (GetCurrentAPI() == GAT_D3D) {
         gl_pd3dDevice->SetGammaRamp( D3DSGR_NO_CALIBRATION, (D3DGAMMARAMP*)&_auwGammaTable[0]);
       }
-#endif // SE1_D3D
+    #endif // SE1_D3D
     }
+    return;
   }
-  // if not supported
-  else {
-    // just reset settings to default
-    gfx_fBrightness = 0;
-    gfx_fContrast   = 1;
-    gfx_fGamma      = 1;
-    gfx_fBiasR  = 1;
-    gfx_fBiasG  = 1;
-    gfx_fBiasB  = 1;
-    gfx_iLevels = 256;
-  }
+#endif // !SE1_PREFER_SDL
+
+  // just reset settings to default
+  gfx_fBrightness = 0;
+  gfx_fContrast   = 1;
+  gfx_fGamma      = 1;
+  gfx_fBiasR  = 1;
+  gfx_fBiasG  = 1;
+  gfx_fBiasB  = 1;
+  gfx_iLevels = 256;
 }
 
 

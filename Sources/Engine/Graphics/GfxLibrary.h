@@ -150,7 +150,11 @@ public:
   DWORD gl_dwVertexShader;
 
   // OpenGL info
+#if !SE1_PREFER_SDL
   HGLRC    go_hglRC;                  // rendering context
+#else
+  SDL_GLContext go_hglRC;             // [Cecil] SDL
+#endif
   CTString go_strExtensions;          // reported extensions
   CTString go_strWinExtensions;
   CTString go_strSupportedExtensions; // supported extensions
@@ -195,8 +199,8 @@ private:
   void EndDriver_OGL(void);
   void TestExtension_OGL( ULONG ulFlag, const char *strName); // if exist, add OpenGL extension to flag and list
   void AddExtension_OGL(  ULONG ulFlag, const char *strName); // unconditionally add OpenGL extension to flag and list
-  BOOL CreateContext_OGL( HDC hdc);
-  BOOL SetupPixelFormat_OGL( HDC hdc, BOOL bReport=FALSE);
+  BOOL CreateContext_OGL(OS::DvcContext hdc);
+  BOOL SetupPixelFormat_OGL(OS::DvcContext hdc, BOOL bReport=FALSE);
   void InitContext_OGL(void);
   BOOL SetCurrentViewport_OGL( CViewPort *pvp);
   void UploadPattern_OGL( ULONG ulPatternEven); 

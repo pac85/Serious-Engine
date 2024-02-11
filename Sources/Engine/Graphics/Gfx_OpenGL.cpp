@@ -95,10 +95,13 @@ GLint     (__stdcall *pwglGetSwapIntervalEXT)(void) = NULL;
 void (__stdcall *pglActiveTextureARB)(GLenum texunit) = NULL;
 void (__stdcall *pglClientActiveTextureARB)(GLenum texunit) = NULL;
 
+#if !SE1_PREFER_SDL
 // t-buffer support
 char *(__stdcall *pwglGetExtensionsStringARB)(HDC hdc);
 BOOL  (__stdcall *pwglChoosePixelFormatARB)(HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
 BOOL  (__stdcall *pwglGetPixelFormatAttribivARB)(HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, int *piAttributes, int *piValues);
+#endif
+
 void  (__stdcall *pglTBufferMask3DFX)(GLuint mask);
 
 // NV occlusion query
@@ -175,6 +178,12 @@ static void OGL_SetFunctionPointers_t(HINSTANCE hiOGL)
     p##name = (output (__stdcall *)inputs)&name; \
     if( required && p##name == NULL) FailFunction_t(strName);
 
+#elif SE1_PREFER_SDL
+  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
+    strName = #name;  \
+    p##name = (output (__stdcall*)inputs)SDL_GL_GetProcAddress(strName); \
+    if( required && p##name == NULL) FailFunction_t(strName);
+
 #else
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name;  \
@@ -195,8 +204,7 @@ static void OGL_ClearFunctionPointers(void)
   #undef DLLFUNCTION
 }
 
-
-
+#if !SE1_PREFER_SDL
 
 #define BACKOFF pwglMakeCurrent( NULL, NULL); \
 	              pwglDeleteContext( hglrc); \
@@ -335,14 +343,59 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
   return iPixelFormat;
 }
 
+#else
+
+// [Cecil] SDL: Check if there's been some sort of an error
+static BOOL CheckErrorSDL(BOOL bSuccess, const char *strDescription) {
+  // Successful result
+  if (bSuccess) return FALSE;
+
+  // No SDL error
+  const char *strError = SDL_GetError();
+  if (strError == NULL) return FALSE;
+
+  // Report error
+  WarningMessage("%s: %s", strDescription, strError);
+  return TRUE;
+};
+
+#endif // !SE1_PREFER_SDL
 
 // prepares pixel format for OpenGL context
-BOOL CGfxLibrary::SetupPixelFormat_OGL( HDC hdc, BOOL bReport/*=FALSE*/)
+BOOL CGfxLibrary::SetupPixelFormat_OGL(OS::DvcContext hdc, BOOL bReport/*=FALSE*/)
 {
+  const DisplayDepth dd = gl_dmCurrentDisplayMode.dm_ddDepth;
+
+  // clamp depth/stencil values
+  extern INDEX gap_iDepthBits;
+  extern INDEX gap_iStencilBits;
+
+  // [Cecil] SDL: 16 should be the lowest
+#if !SE1_PREFER_SDL
+  if (gap_iDepthBits < 12) {
+    gap_iDepthBits = 0;
+  } else
+#endif
+  if (gap_iDepthBits < 22) {
+    gap_iDepthBits = 16;
+  } else if (gap_iDepthBits < 28) {
+    gap_iDepthBits = 24;
+  } else {
+    gap_iDepthBits = 32;
+  }
+
+  if (gap_iStencilBits < 3) {
+    gap_iStencilBits = 0;
+  } else if (gap_iStencilBits < 7) {
+    gap_iStencilBits = 4;
+  } else {
+    gap_iStencilBits = 8;
+  }
+
+#if !SE1_PREFER_SDL
   int iPixelFormat = 0;
   const PIX pixResWidth  = gl_dmCurrentDisplayMode.dm_pixSizeI;
   const PIX pixResHeight = gl_dmCurrentDisplayMode.dm_pixSizeJ;
-  const DisplayDepth dd  = gl_dmCurrentDisplayMode.dm_ddDepth;
 
   PIXELFORMATDESCRIPTOR pfd;
   memset( &pfd, 0, sizeof(pfd));
@@ -350,17 +403,6 @@ BOOL CGfxLibrary::SetupPixelFormat_OGL( HDC hdc, BOOL bReport/*=FALSE*/)
   pfd.nVersion   = 1;
   pfd.dwFlags    = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
   pfd.iPixelType = PFD_TYPE_RGBA;
-
-  // clamp depth/stencil values
-  extern INDEX gap_iDepthBits;
-  extern INDEX gap_iStencilBits;
-       if( gap_iDepthBits <12) gap_iDepthBits   = 0;
-  else if( gap_iDepthBits <22) gap_iDepthBits   = 16;
-  else if( gap_iDepthBits <28) gap_iDepthBits   = 24;
-  else                         gap_iDepthBits   = 32;
-       if( gap_iStencilBits<3) gap_iStencilBits = 0;
-  else if( gap_iStencilBits<7) gap_iStencilBits = 4;
-  else                         gap_iStencilBits = 8;
 
   // set color/depth buffer values
   pfd.cColorBits   = (dd!=DD_16BIT) ? 32 : 16;
@@ -451,6 +493,20 @@ BOOL CGfxLibrary::SetupPixelFormat_OGL( HDC hdc, BOOL bReport/*=FALSE*/)
   
   // all done
   CPrintF( "\n");
+
+#else
+  // [Cecil] SDL: Set OpenGL attributes
+  const BOOL b32bit = (dd != DD_16BIT);
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   b32bit ? 8 : 5);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, b32bit ? 8 : 6);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  b32bit ? 8 : 5);
+
+  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, gap_iDepthBits);
+  SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, gap_iStencilBits);
+#endif // !SE1_PREFER_SDL
+
   return TRUE;
 }
 
@@ -490,9 +546,11 @@ void CGfxLibrary::TestExtension_OGL( ULONG ulFlag, const char *strName)
 
 
 // creates OpenGL drawing context
-BOOL CGfxLibrary::CreateContext_OGL(HDC hdc)
+BOOL CGfxLibrary::CreateContext_OGL(OS::DvcContext hdc)
 {
   if( !SetupPixelFormat_OGL( hdc, TRUE)) return FALSE;
+
+#if !SE1_PREFER_SDL
   go_hglRC = pwglCreateContext(hdc);
   if( go_hglRC==NULL) {
     WIN_CHECKERROR(0, "CreateContext");
@@ -504,6 +562,28 @@ BOOL CGfxLibrary::CreateContext_OGL(HDC hdc)
     //WIN_CHECKERROR(0, "MakeCurrent after CreateContext");
     return FALSE;
   }
+
+#else
+  // [Cecil] SDL: Create and set new OpenGL context
+  go_hglRC = SDL_GL_CreateContext(hdc);
+  if (CheckErrorSDL(go_hglRC != NULL, "CreateContext")) return FALSE;
+
+  BOOL bMakeCurrent = (SDL_GL_MakeCurrent(hdc, go_hglRC) != -1);
+  if (CheckErrorSDL(bMakeCurrent, "MakeCurrent after CreateContext")) return FALSE;
+
+  // Try to keep depth bits
+  int iDepth = 0;
+
+  if (SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &iDepth) != -1) {
+    gl_iCurrentDepth = iDepth;
+  } else {
+    gl_iCurrentDepth = 16;
+  }
+
+  // Prepare functions
+  OGL_SetFunctionPointers_t(gl_hiDriver);
+#endif
+
   return TRUE;
 }
 
@@ -586,12 +666,15 @@ void CGfxLibrary::InitContext_OGL(void)
 
   // check for WGL extensions, too
   go_strWinExtensions = "";
+
+#if !SE1_PREFER_SDL
   pwglGetExtensionsStringARB = (char* (__stdcall*)(HDC))pwglGetProcAddress("wglGetExtensionsStringARB");
   if( pwglGetExtensionsStringARB != NULL) {
     AddExtension_OGL( NONE, "WGL_ARB_extensions_string"); // register
     CTempDC tdc(gl_pvpActive->vp_hWnd);
     go_strWinExtensions = (char*)pwglGetExtensionsStringARB(tdc.hdc);
   }
+#endif
 
   // multitexture is supported only thru GL_EXT_texture_env_combine extension
   gl_ctTextureUnits = 1;
@@ -692,6 +775,7 @@ void CGfxLibrary::InitContext_OGL(void)
   } 
 #endif
 
+#if !SE1_PREFER_SDL
   // if T-buffer is supported
   if( _TBCapability) {
     // add extension and disable t-buffer usage by default
@@ -699,6 +783,7 @@ void CGfxLibrary::InitContext_OGL(void)
     pglDisable( GL_MULTISAMPLE_3DFX);
     OGL_CHECKERROR;
   }
+#endif
 
   // test for clamp to edge
   TestExtension_OGL( GLF_EXT_EDGECLAMP, "GL_EXT_texture_edge_clamp");
@@ -806,6 +891,8 @@ void CGfxLibrary::InitContext_OGL(void)
 BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
 {
   ASSERT( gl_hiDriver==NONE);
+
+#if !SE1_PREFER_SDL
   UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
 
 #ifdef SE1_3DFX
@@ -872,6 +959,13 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
     // functions from GDI, which in turn call either OPENGL32.DLL, _or_ the client driver,
     // as appropriate.
   }
+
+#else
+  // [Cecil] SDL: Try loading OpenGL
+  BOOL bLoaded = (SDL_GL_LoadLibrary(NULL) != -1);
+  if (CheckErrorSDL(bLoaded, "Error starting OpenGL")) return FALSE;
+#endif
+
   // done
   return TRUE;
 } 
@@ -896,6 +990,7 @@ void CGfxLibrary::EndDriver_OGL(void)
   _ptdFlat->Unbind();
 
   // shut the driver down
+#if !SE1_PREFER_SDL
   if( go_hglRC!=NULL) {
     if( pwglMakeCurrent!=NULL) {
       BOOL bRes = pwglMakeCurrent(NULL, NULL);
@@ -906,6 +1001,17 @@ void CGfxLibrary::EndDriver_OGL(void)
     WIN_CHECKERROR( bRes, "DeleteContext");
     go_hglRC = NULL;
   }
+
+#else
+  // [Cecil] SDL: Reset and delete OpenGL context
+  SDL_GL_MakeCurrent(NULL, NULL);
+
+  if (go_hglRC != NULL) {
+    SDL_GL_DeleteContext(go_hglRC);
+    go_hglRC = NULL;
+  }
+#endif
+
   OGL_ClearFunctionPointers();
 }
 
@@ -926,6 +1032,12 @@ BOOL CGfxLibrary::SetCurrentViewport_OGL(CViewPort *pvp)
     if( !CreateContext_OGL(tdc.hdc)) return FALSE;
     gl_pvpActive = pvp; // remember as current viewport (must do that BEFORE InitContext)
     InitContext_OGL();
+
+    // [Cecil] SDL: Assume that hardware acceleration is always available
+    #if SE1_PREFER_SDL
+      gl_ulFlags |= GLF_HASACCELERATION; // [Cecil] FIXME: Determine using SDL
+    #endif
+
     pvp->vp_ctDisplayChanges = gl_ctDriverChanges;
     return TRUE;
   }
@@ -936,12 +1048,17 @@ BOOL CGfxLibrary::SetCurrentViewport_OGL(CViewPort *pvp)
     // reopen window
     pvp->CloseCanvas();
     pvp->OpenCanvas();
+
+  #if !SE1_PREFER_SDL
     // set it
     CTempDC tdc(pvp->vp_hWnd);
     if( !SetupPixelFormat_OGL(tdc.hdc)) return FALSE;
+  #endif
+
     pvp->vp_ctDisplayChanges = gl_ctDriverChanges;
   }
 
+#if !SE1_PREFER_SDL
   if( gl_pvpActive!=NULL) {
     // fail, if only one window is allowed (3dfx driver), already initialized and trying to set non-primary viewport
     const BOOL bOneWindow = (gl_gaAPI[GAT_OGL].ga_adaAdapter[gl_iCurrentAdapter].da_ulFlags & DAF_ONEWINDOW);
@@ -955,6 +1072,7 @@ BOOL CGfxLibrary::SetCurrentViewport_OGL(CViewPort *pvp)
   CTempDC tdc(pvp->vp_hWnd);
   // fail, if cannot set context to this window
   if( !pwglMakeCurrent( tdc.hdc, go_hglRC)) return FALSE;
+#endif
 
   // remember as current window
   gl_pvpActive = pvp;
