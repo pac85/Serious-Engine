@@ -28,6 +28,8 @@ extern const D3DDEVTYPE d3dDevType;
 // list of all modes avaliable through CDS
 static CListHead _lhCDSModes;
 
+#if !SE1_PREFER_SDL
+
 class CResolution {
 public:
   PIX   re_pixSizeI;
@@ -186,6 +188,8 @@ static inline void SetupD3D(void) {
 
 #endif // SE1_D3D
 
+#endif // !SE1_PREFER_SDL
+
 // initialize CDS support (enumerate modes at startup)
 void CGfxLibrary::InitAPIs(void)
 {
@@ -206,6 +210,7 @@ void CGfxLibrary::InitAPIs(void)
   pda->da_ctDisplayModes = 0;
   pda->da_iCurrentDisplayMode = -1;
 
+#if !SE1_PREFER_SDL
   // Detect current mode and report it
   DEVMODE devmode;
   memset(&devmode, 0, sizeof(devmode));
@@ -244,6 +249,37 @@ void CGfxLibrary::InitAPIs(void)
   #ifdef SE1_D3D
     if (InitDriver_D3D()) SetupD3D();
   #endif
+
+#else
+  // [Cecil] SDL: Detect modes for OpenGL ICD
+  const INDEX iDisplayIndex = 0;
+  const INDEX ctDisplayModes = SDL_GetNumDisplayModes(iDisplayIndex);
+
+  INDEX &ctModes = pda->da_ctDisplayModes;
+
+  // Go in the reverse order (from lowest resolution to highest)
+  for (INDEX iMode = ctDisplayModes - 1; iMode >= 0; iMode--)
+  {
+    if (ctModes >= ARRAYCOUNT(pda->da_admDisplayModes)) break;
+
+    SDL_DisplayMode mode;
+    if (SDL_GetDisplayMode(iDisplayIndex, iMode, &mode) != 0) continue;
+
+    INDEX iBPP = SDL_BITSPERPIXEL(mode.format);
+    if (iBPP < 16) continue;
+
+    // Make sure resolutions aren't repeating
+    if (ctModes > 0) {
+      CDisplayMode &dmLast = pda->da_admDisplayModes[ctModes - 1];
+
+      if (dmLast.dm_pixSizeI == mode.w && dmLast.dm_pixSizeJ == mode.h) continue;
+    }
+
+    // Add new display mode
+    CDisplayMode &dm = pda->da_admDisplayModes[ctModes++];
+    dm.Configure(mode.w, mode.h, DD_DEFAULT);
+  }
+#endif // !SE1_PREFER_SDL
 }
 
 // get list of all modes avaliable through CDS -- do not modify/free the returned list
