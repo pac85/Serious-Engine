@@ -42,8 +42,19 @@ public:
   PIX dm_pixSizeJ;
   enum DisplayDepth dm_ddDepth;  // bits per pixel for color
 
-  /* Default constructor. */
-  CDisplayMode(void);
+  // [Cecil] Default constructor in place
+  inline CDisplayMode() {
+    dm_pixSizeI = 0;
+    dm_pixSizeJ = 0;
+    dm_ddDepth = DD_DEFAULT;
+  };
+
+  // [Cecil] Configure display mode
+  inline void Configure(PIX pixSizeI, PIX pixSizeJ, DisplayDepth ddDepth) {
+    dm_pixSizeI = pixSizeI;
+    dm_pixSizeJ = pixSizeJ;
+    dm_ddDepth = ddDepth;
+  };
 
   // get depth string
   CTString DepthString(void) const;
