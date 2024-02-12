@@ -52,12 +52,12 @@ extern void (__stdcall *pglActiveTextureARB)(GLenum texunit);
 extern void (__stdcall *pglClientActiveTextureARB)(GLenum texunit);
 
 #if !SE1_PREFER_SDL /* !!! FIXME: Move to abstraction layer. --rcg. */
-// t-buffer support
 extern char *(__stdcall *pwglGetExtensionsStringARB)(HDC hdc);
 extern BOOL  (__stdcall *pwglChoosePixelFormatARB)(HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
 extern BOOL  (__stdcall *pwglGetPixelFormatAttribivARB)(HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, int *piAttributes, int *piValues);
 #endif
 
+// t-buffer support
 extern void  (__stdcall *pglTBufferMask3DFX)(GLuint mask);
 
 // GL_NV_vertex_array_range & GL_NV_fence
@@ -91,10 +91,6 @@ inline void glCOLOR( COLOR col)
   col = ByteSwap32(col);
   pglColor4ubv((GLubyte*)&col);
 }
-
-// check windows errors always
-extern void WIN_CheckError(BOOL bRes, const char *strDescription);
-#define WIN_CHECKERROR(result, string)   WIN_CheckError(result, string);
 
 extern BOOL glbUsingVARs;   // vertex_array_range
 

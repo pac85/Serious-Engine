@@ -96,12 +96,12 @@ void (__stdcall *pglActiveTextureARB)(GLenum texunit) = NULL;
 void (__stdcall *pglClientActiveTextureARB)(GLenum texunit) = NULL;
 
 #if !SE1_PREFER_SDL
-// t-buffer support
 char *(__stdcall *pwglGetExtensionsStringARB)(HDC hdc);
 BOOL  (__stdcall *pwglChoosePixelFormatARB)(HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
 BOOL  (__stdcall *pwglGetPixelFormatAttribivARB)(HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, int *piAttributes, int *piValues);
 #endif
 
+// t-buffer support
 void  (__stdcall *pglTBufferMask3DFX)(GLuint mask);
 
 // NV occlusion query
@@ -117,15 +117,38 @@ GLboolean (__stdcall *pglIsOcclusionQueryNV)( GLuint id);
 void (__stdcall *pglPNTrianglesiATI)( GLenum pname, GLint param);
 void (__stdcall *pglPNTrianglesfATI)( GLenum pname, GLfloat param);
 
+// [Cecil] If there's some sort of an error, report it and return TRUE
+// NOTE: Reworked WIN_CheckError() with return states and SDL compatibility
+static BOOL CheckGenericError(BOOL bSuccess, const char *strDescription) {
+  // Successful result
+  if (bSuccess) return FALSE;
 
-void WIN_CheckError(BOOL bRes, const char *strDescription)
-{
-  if( bRes) return;
-  DWORD dwWindowsErrorCode = GetLastError();
-  if( dwWindowsErrorCode==ERROR_SUCCESS) return; // ignore stupid 'successful' error 
-  WarningMessage("%s: %s", strDescription, GetWindowsError(dwWindowsErrorCode));
-}
+#if !SE1_PREFER_SDL
+  // No error
+  DWORD dwError = GetLastError();
+  if (dwError == ERROR_SUCCESS) return FALSE;
 
+  CTString strError = GetWindowsError(dwError);
+
+#else
+  // [Cecil] SDL: Check error message
+  const char *strError = SDL_GetError();
+  if (strError == NULL) return FALSE;
+#endif
+
+  // Report error
+  WarningMessage("%s: %s", strDescription, strError);
+  return TRUE;
+};
+
+// [Cecil] Get specific symbol from OpenGL library
+static inline void *OGL_GetProcAddress(const char *strSymbol) {
+#if !SE1_PREFER_SDL
+  return pwglGetProcAddress(strSymbol);
+#else
+  return SDL_GL_GetProcAddress(strSymbol);
+#endif
+};
 
 static void FailFunction_t(const char *strName) {
   ThrowF_t(TRANS("Required function %s not found."), strName);
@@ -204,6 +227,9 @@ static void OGL_ClearFunctionPointers(void)
   #undef DLLFUNCTION
 }
 
+// [Cecil] NOTE: This is never toggled for SDL
+static BOOL _TBCapability = FALSE;
+
 #if !SE1_PREFER_SDL
 
 #define BACKOFF pwglMakeCurrent( NULL, NULL); \
@@ -215,7 +241,6 @@ static void OGL_ClearFunctionPointers(void)
 
 
 // helper for choosing t-buffer's pixel format
-static BOOL _TBCapability = FALSE;
 static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
                                   PIX pixResWidth, PIX pixResHeight)
 {
@@ -283,7 +308,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	// get the wgl extension list.
 	if( strstr((const char*)extensions, "WGL_EXT_extensions_string ") != NULL)
   { // windows extension string supported
-    pwglGetExtensionsStringARB = (char* (__stdcall*)(HDC))pwglGetProcAddress( "wglGetExtensionsStringARB");
+    pwglGetExtensionsStringARB = (char* (__stdcall*)(HDC))OGL_GetProcAddress( "wglGetExtensionsStringARB");
     if( pwglGetExtensionsStringARB == NULL) {
       BACKOFF
       return 0;
@@ -302,9 +327,9 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
       (strstr((const char*)extensions,    "GL_3DFX_multisample ")  != NULL)) {
     // 3dfx extensions present
     _TBCapability = TRUE;
-    pwglChoosePixelFormatARB      = (BOOL (__stdcall*)(HDC,const int*,const FLOAT*,UINT,int*,UINT*))pwglGetProcAddress( "wglChoosePixelFormatARB");
-    pwglGetPixelFormatAttribivARB = (BOOL (__stdcall*)(HDC,int,int,UINT,int*,int*)                 )pwglGetProcAddress( "wglGetPixelFormatAttribivARB");
-		pglTBufferMask3DFX = (void (__stdcall*)(GLuint))pwglGetProcAddress("glTBufferMask3DFX");
+    pwglChoosePixelFormatARB      = (BOOL (__stdcall*)(HDC,const int*,const FLOAT*,UINT,int*,UINT*))OGL_GetProcAddress( "wglChoosePixelFormatARB");
+    pwglGetPixelFormatAttribivARB = (BOOL (__stdcall*)(HDC,int,int,UINT,int*,int*)                 )OGL_GetProcAddress( "wglGetPixelFormatAttribivARB");
+		pglTBufferMask3DFX = (void (__stdcall*)(GLuint))OGL_GetProcAddress("glTBufferMask3DFX");
     if( pwglChoosePixelFormatARB==NULL && pglTBufferMask3DFX==NULL) {
       BACKOFF
       return 0;
@@ -343,22 +368,6 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
   return iPixelFormat;
 }
 
-#else
-
-// [Cecil] SDL: Check if there's been some sort of an error
-static BOOL CheckErrorSDL(BOOL bSuccess, const char *strDescription) {
-  // Successful result
-  if (bSuccess) return FALSE;
-
-  // No SDL error
-  const char *strError = SDL_GetError();
-  if (strError == NULL) return FALSE;
-
-  // Report error
-  WarningMessage("%s: %s", strDescription, strError);
-  return TRUE;
-};
-
 #endif // !SE1_PREFER_SDL
 
 // prepares pixel format for OpenGL context
@@ -392,6 +401,7 @@ BOOL CGfxLibrary::SetupPixelFormat_OGL(OS::DvcContext hdc, BOOL bReport/*=FALSE*
     gap_iStencilBits = 8;
   }
 
+// [Cecil] SDL FIXME
 #if !SE1_PREFER_SDL
   int iPixelFormat = 0;
   const PIX pixResWidth  = gl_dmCurrentDisplayMode.dm_pixSizeI;
@@ -435,14 +445,10 @@ BOOL CGfxLibrary::SetupPixelFormat_OGL(OS::DvcContext hdc, BOOL bReport/*=FALSE*
     iPixelFormat = pwglChoosePixelFormat( hdc, &pfd);
   }
 
-  if( !iPixelFormat) {
-    WIN_CHECKERROR( 0, "ChoosePixelFormat");
-    return FALSE;
-  }
-  if( !pwglSetPixelFormat( hdc, iPixelFormat, &pfd)) {
-    WIN_CHECKERROR( 0, "SetPixelFormat");
-    return FALSE;
-  }
+  if (CheckGenericError(iPixelFormat == 0, "ChoosePixelFormat")) return FALSE;
+
+  BOOL bSetPixelFormat = pwglSetPixelFormat(hdc, iPixelFormat, &pfd);
+  if (CheckGenericError(bSetPixelFormat, "SetPixelFormat")) return FALSE;
 
   // test acceleration
   memset( &pfd, 0, sizeof(pfd));
@@ -552,24 +558,22 @@ BOOL CGfxLibrary::CreateContext_OGL(OS::DvcContext hdc)
 
 #if !SE1_PREFER_SDL
   go_hglRC = pwglCreateContext(hdc);
-  if( go_hglRC==NULL) {
-    WIN_CHECKERROR(0, "CreateContext");
-    return FALSE;
-  }
-  if( !pwglMakeCurrent(hdc, go_hglRC)) {
-    // NOTE: This error is sometimes reported without a reason on 3dfx hardware
-    // so we just have to ignore it.
-    //WIN_CHECKERROR(0, "MakeCurrent after CreateContext");
-    return FALSE;
-  }
+  if (CheckGenericError(go_hglRC != NULL, "CreateContext")) return FALSE;
+
+  BOOL bMakeCurrent = pwglMakeCurrent(hdc, go_hglRC);
+
+  // NOTE: This error is sometimes reported without a reason on 3dfx hardware
+  // so we just have to ignore it.
+  //if (CheckGenericError(bMakeCurrent, "MakeCurrent after CreateContext")) return FALSE;
+  if (!bMakeCurrent) return FALSE;
 
 #else
   // [Cecil] SDL: Create and set new OpenGL context
   go_hglRC = SDL_GL_CreateContext(hdc);
-  if (CheckErrorSDL(go_hglRC != NULL, "CreateContext")) return FALSE;
+  if (CheckGenericError(go_hglRC != NULL, "CreateContext")) return FALSE;
 
   BOOL bMakeCurrent = (SDL_GL_MakeCurrent(hdc, go_hglRC) != -1);
-  if (CheckErrorSDL(bMakeCurrent, "MakeCurrent after CreateContext")) return FALSE;
+  if (CheckGenericError(bMakeCurrent, "MakeCurrent after CreateContext")) return FALSE;
 
   // Try to keep depth bits
   int iDepth = 0;
@@ -668,7 +672,7 @@ void CGfxLibrary::InitContext_OGL(void)
   go_strWinExtensions = "";
 
 #if !SE1_PREFER_SDL
-  pwglGetExtensionsStringARB = (char* (__stdcall*)(HDC))pwglGetProcAddress("wglGetExtensionsStringARB");
+  pwglGetExtensionsStringARB = (char* (__stdcall*)(HDC))OGL_GetProcAddress("wglGetExtensionsStringARB");
   if( pwglGetExtensionsStringARB != NULL) {
     AddExtension_OGL( NONE, "WGL_ARB_extensions_string"); // register
     CTempDC tdc(gl_pvpActive->vp_hWnd);
@@ -686,8 +690,8 @@ void CGfxLibrary::InitContext_OGL(void)
     if (gl_ctRealTextureUnits > 1 && HasExtension(go_strExtensions.ConstData(), "GL_EXT_texture_env_combine")) {
       AddExtension_OGL( NONE, "GL_ARB_multitexture");
       AddExtension_OGL( NONE, "GL_EXT_texture_env_combine");
-      pglActiveTextureARB       = (void (__stdcall*)(GLenum))pwglGetProcAddress( "glActiveTextureARB");
-      pglClientActiveTextureARB = (void (__stdcall*)(GLenum))pwglGetProcAddress( "glClientActiveTextureARB");
+      pglActiveTextureARB       = (void (__stdcall*)(GLenum))OGL_GetProcAddress( "glActiveTextureARB");
+      pglClientActiveTextureARB = (void (__stdcall*)(GLenum))OGL_GetProcAddress( "glClientActiveTextureARB");
       ASSERT( pglActiveTextureARB!=NULL && pglClientActiveTextureARB!=NULL);
       gl_ctTextureUnits = Min( GFX_MAXTEXUNITS, gl_ctRealTextureUnits);
     } else {
@@ -738,8 +742,8 @@ void CGfxLibrary::InitContext_OGL(void)
   pglUnlockArraysEXT = NULL;
   if (HasExtension(go_strExtensions.ConstData(), "GL_EXT_compiled_vertex_array")) {
     AddExtension_OGL( GLF_EXT_COMPILEDVERTEXARRAY, "GL_EXT_compiled_vertex_array");
-    pglLockArraysEXT   = (void (__stdcall*)(GLint,GLsizei))pwglGetProcAddress( "glLockArraysEXT");
-    pglUnlockArraysEXT = (void (__stdcall*)(void)         )pwglGetProcAddress( "glUnlockArraysEXT");
+    pglLockArraysEXT   = (void (__stdcall*)(GLint,GLsizei))OGL_GetProcAddress( "glLockArraysEXT");
+    pglUnlockArraysEXT = (void (__stdcall*)(void)         )OGL_GetProcAddress( "glUnlockArraysEXT");
     ASSERT( pglLockArraysEXT!=NULL && pglUnlockArraysEXT!=NULL);
   }
 
@@ -748,8 +752,8 @@ void CGfxLibrary::InitContext_OGL(void)
   pwglGetSwapIntervalEXT = NULL;
   if (HasExtension(go_strExtensions.ConstData(), "WGL_EXT_swap_control")) {
     AddExtension_OGL( GLF_VSYNC, "WGL_EXT_swap_control");
-    pwglSwapIntervalEXT    = (GLboolean (__stdcall*)(GLint))pwglGetProcAddress( "wglSwapIntervalEXT");
-    pwglGetSwapIntervalEXT = (GLint     (__stdcall*)(void) )pwglGetProcAddress( "wglGetSwapIntervalEXT");
+    pwglSwapIntervalEXT    = (GLboolean (__stdcall*)(GLint))OGL_GetProcAddress( "wglSwapIntervalEXT");
+    pwglGetSwapIntervalEXT = (GLint     (__stdcall*)(void) )OGL_GetProcAddress( "wglGetSwapIntervalEXT");
     ASSERT( pwglSwapIntervalEXT!=NULL && pwglGetSwapIntervalEXT!=NULL);
   }
 
@@ -765,8 +769,8 @@ void CGfxLibrary::InitContext_OGL(void)
   gl_iMaxTessellationLevel = 0;
   if (HasExtension(go_strExtensions.ConstData(), "GL_ATI_pn_triangles")) {
     AddExtension_OGL( NONE, "GL_ATI_pn_triangles");
-    pglPNTrianglesiATI = (void (__stdcall*)(GLenum,GLint  ))pwglGetProcAddress( "glPNTrianglesiATI");
-    pglPNTrianglesfATI = (void (__stdcall*)(GLenum,GLfloat))pwglGetProcAddress( "glPNTrianglesfATI");
+    pglPNTrianglesiATI = (void (__stdcall*)(GLenum,GLint  ))OGL_GetProcAddress( "glPNTrianglesiATI");
+    pglPNTrianglesfATI = (void (__stdcall*)(GLenum,GLfloat))OGL_GetProcAddress( "glPNTrianglesfATI");
     ASSERT( pglPNTrianglesiATI!=NULL && pglPNTrianglesfATI!=NULL);
     // check max possible tessellation
     pglGetIntegerv( GL_MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI, &gliRet);
@@ -775,7 +779,6 @@ void CGfxLibrary::InitContext_OGL(void)
   } 
 #endif
 
-#if !SE1_PREFER_SDL
   // if T-buffer is supported
   if( _TBCapability) {
     // add extension and disable t-buffer usage by default
@@ -783,7 +786,6 @@ void CGfxLibrary::InitContext_OGL(void)
     pglDisable( GL_MULTISAMPLE_3DFX);
     OGL_CHECKERROR;
   }
-#endif
 
   // test for clamp to edge
   TestExtension_OGL( GLF_EXT_EDGECLAMP, "GL_EXT_texture_edge_clamp");
@@ -802,13 +804,13 @@ void CGfxLibrary::InitContext_OGL(void)
   if( HasExtension( go_strExtensions, "GL_NV_occlusion_query"))
   { // prepare extension's functions
     AddExtension_OGL( GLF_EXT_OCCLUSIONQUERY, "GL_NV_occlusion_query");
-    pglGenOcclusionQueriesNV    = (void (__stdcall*)(GLsizei, GLuint*))pwglGetProcAddress( "glGenOcclusionQueriesNV");
-    pglDeleteOcclusionQueriesNV = (void (__stdcall*)(GLsizei, const GLuint*))pwglGetProcAddress( "glDeleteOcclusionQueriesNV");
-    pglBeginOcclusionQueryNV    = (void (__stdcall*)(GLuint))pwglGetProcAddress( "glBeginOcclusionQueryNV");
-    pglEndOcclusionQueryNV      = (void (__stdcall*)(void))pwglGetProcAddress( "glEndOcclusionQueryNV");
-    pglGetOcclusionQueryivNV    = (void (__stdcall*)(GLuint, GLenum, GLint*))pwglGetProcAddress( "glGetOcclusionQueryivNV");
-    pglGetOcclusionQueryuivNV   = (void (__stdcall*)(GLuint, GLenum, GLuint*))pwglGetProcAddress( "glGetOcclusionQueryuivNV");
-    pglIsOcclusionQueryNV  = (GLboolean (__stdcall*)(GLuint))pwglGetProcAddress( "glIsOcclusionQueryNV");
+    pglGenOcclusionQueriesNV    = (void (__stdcall*)(GLsizei, GLuint*))OGL_GetProcAddress( "glGenOcclusionQueriesNV");
+    pglDeleteOcclusionQueriesNV = (void (__stdcall*)(GLsizei, const GLuint*))OGL_GetProcAddress( "glDeleteOcclusionQueriesNV");
+    pglBeginOcclusionQueryNV    = (void (__stdcall*)(GLuint))OGL_GetProcAddress( "glBeginOcclusionQueryNV");
+    pglEndOcclusionQueryNV      = (void (__stdcall*)(void))OGL_GetProcAddress( "glEndOcclusionQueryNV");
+    pglGetOcclusionQueryivNV    = (void (__stdcall*)(GLuint, GLenum, GLint*))OGL_GetProcAddress( "glGetOcclusionQueryivNV");
+    pglGetOcclusionQueryuivNV   = (void (__stdcall*)(GLuint, GLenum, GLuint*))OGL_GetProcAddress( "glGetOcclusionQueryuivNV");
+    pglIsOcclusionQueryNV  = (GLboolean (__stdcall*)(GLuint))OGL_GetProcAddress( "glIsOcclusionQueryNV");
     ASSERT( pglGenOcclusionQueriesNV!=NULL && pglDeleteOcclusionQueriesNV!=NULL
          && pglBeginOcclusionQueryNV!=NULL && pglEndOcclusionQueryNV!=NULL
          && pglGetOcclusionQueryivNV!=NULL && pglGetOcclusionQueryuivNV!=NULL
@@ -963,7 +965,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
 #else
   // [Cecil] SDL: Try loading OpenGL
   BOOL bLoaded = (SDL_GL_LoadLibrary(NULL) != -1);
-  if (CheckErrorSDL(bLoaded, "Error starting OpenGL")) return FALSE;
+  if (CheckGenericError(bLoaded, "Error starting OpenGL")) return FALSE;
 #endif
 
   // done
@@ -993,12 +995,12 @@ void CGfxLibrary::EndDriver_OGL(void)
 #if !SE1_PREFER_SDL
   if( go_hglRC!=NULL) {
     if( pwglMakeCurrent!=NULL) {
-      BOOL bRes = pwglMakeCurrent(NULL, NULL);
-      WIN_CHECKERROR( bRes, "MakeCurrent(NULL, NULL)");
+      BOOL bMakeCurrent = pwglMakeCurrent(NULL, NULL);
+      CheckGenericError(bMakeCurrent, "MakeCurrent(NULL, NULL)");
     }
     ASSERT( pwglDeleteContext!=NULL);
-    BOOL bRes = pwglDeleteContext(go_hglRC);
-    WIN_CHECKERROR( bRes, "DeleteContext");
+    BOOL bDeleteContext = pwglDeleteContext(go_hglRC);
+    CheckGenericError(bDeleteContext, "DeleteContext");
     go_hglRC = NULL;
   }
 

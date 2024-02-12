@@ -993,7 +993,7 @@ DLLFUNCTION( OGL, void , glCopyTexSubImage3D,( GLenum target, GLint level,
 
 
 /* !!! FIXME: This needs to move to a GL context abstraction layer. */
-#if SE1_WIN
+#if !SE1_PREFER_SDL
 
 // gdi functions
 DLLFUNCTION( OGL, BOOL , wglCopyContext,(HGLRC, HGLRC, UINT),0,0);
@@ -1007,10 +1007,6 @@ DLLFUNCTION( OGL, BOOL , wglMakeCurrent,(HDC, HGLRC),8,1);
 DLLFUNCTION( OGL, BOOL , wglShareLists,(HGLRC, HGLRC),0,0);
 DLLFUNCTION( OGL, BOOL , wglUseFontBitmapsA,(HDC, DWORD, DWORD, DWORD),0,0);
 DLLFUNCTION( OGL, BOOL , wglUseFontBitmapsW,(HDC, DWORD, DWORD, DWORD),0,0);
-
-#endif // SE1_WIN
-
-#if !SE1_PREFER_SDL
 
 DLLFUNCTION( OGL, BOOL, wglSwapBuffers, (HDC), 4,1);
 DLLFUNCTION( OGL, BOOL, wglSetPixelFormat, (HDC, int, CONST PIXELFORMATDESCRIPTOR*),12,1);
