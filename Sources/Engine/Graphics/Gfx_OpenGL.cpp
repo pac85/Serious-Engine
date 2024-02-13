@@ -159,29 +159,29 @@ static void FailFunction_t(const char *strName) {
 
 static HINSTANCE _hiForWGL;
 
-static BOOL wglSwapBuffers(HDC hdc) {
-  typedef BOOL (*CSwapBuffers)(HDC);
+static BOOL __stdcall wglSwapBuffers(HDC hdc) {
+  typedef BOOL (__stdcall *CSwapBuffers)(HDC);
   static CSwapBuffers pFunc = (CSwapBuffers)OS::GetLibSymbol(_hiForWGL, "wglSwapBuffers");
 
   return pFunc(hdc);
 };
 
-static BOOL wglSetPixelFormat(HDC hdc, int iFormat, const PIXELFORMATDESCRIPTOR *ppfd) {
-  typedef BOOL (*CSetPixelFormat)(HDC, int, const PIXELFORMATDESCRIPTOR *);
+static BOOL __stdcall wglSetPixelFormat(HDC hdc, int iFormat, const PIXELFORMATDESCRIPTOR *ppfd) {
+  typedef BOOL (__stdcall *CSetPixelFormat)(HDC, int, const PIXELFORMATDESCRIPTOR *);
   static CSetPixelFormat pFunc = (CSetPixelFormat)OS::GetLibSymbol(_hiForWGL, "wglSetPixelFormat");
 
   return pFunc(hdc, iFormat, ppfd);
 };
 
-static int wglChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd) {
-  typedef int (*CChoosePixelFormat)(HDC, const PIXELFORMATDESCRIPTOR *);
+static int __stdcall wglChoosePixelFormat(HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd) {
+  typedef int (__stdcall *CChoosePixelFormat)(HDC, const PIXELFORMATDESCRIPTOR *);
   static CChoosePixelFormat pFunc = (CChoosePixelFormat)OS::GetLibSymbol(_hiForWGL, "wglChoosePixelFormat");
 
   return pFunc(hdc, ppfd);
 };
 
-static int wglDescribePixelFormat(HDC hdc, int iFormat, UINT ctPfdSize, LPPIXELFORMATDESCRIPTOR ppfd) {
-  typedef int (*CDescribePixelFormat)(HDC, int, UINT, LPPIXELFORMATDESCRIPTOR);
+static int __stdcall wglDescribePixelFormat(HDC hdc, int iFormat, UINT ctPfdSize, LPPIXELFORMATDESCRIPTOR ppfd) {
+  typedef int (__stdcall *CDescribePixelFormat)(HDC, int, UINT, LPPIXELFORMATDESCRIPTOR);
   static CDescribePixelFormat pFunc = (CDescribePixelFormat)OS::GetLibSymbol(_hiForWGL, "wglDescribePixelFormat");
 
   return pFunc(hdc, iFormat, ctPfdSize, ppfd);
@@ -204,7 +204,7 @@ static void OGL_SetFunctionPointers_t(HINSTANCE hiOGL)
 #elif SE1_PREFER_SDL
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name;  \
-    p##name = (output (__stdcall*)inputs)SDL_GL_GetProcAddress(strName); \
+    p##name = (output (__stdcall *)inputs)SDL_GL_GetProcAddress(strName); \
     if( required && p##name == NULL) FailFunction_t(strName);
 
 #else
