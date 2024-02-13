@@ -724,6 +724,15 @@
     <ClCompile Include="OS\WindowsAPI.cpp">
       <Filter>Source Files\OS</Filter>
     </ClCompile>
+    <ClCompile Include="Sound\SoundAPI_DSound.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundAPI_WaveOut.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundAPI.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Anim.h">
@@ -1337,6 +1346,15 @@
     </ClInclude>
     <ClInclude Include="Graphics\Gfx_wrapper_OpenGL.h">
       <Filter>Header Files\Graphics Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundAPI_DSound.h">
+      <Filter>Header Files\Sound Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundAPI_WaveOut.h">
+      <Filter>Header Files\Sound Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundAPI.h">
+      <Filter>Header Files\Sound Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

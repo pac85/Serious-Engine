@@ -27,14 +27,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticStackArray.h>
 #include <Engine/Templates/DynamicArray.h>
 
-// [Cecil] Windows-specific
-#if SE1_WIN
-  #if !SE1_OLD_COMPILER
-    #include <initguid.h>
-  #endif
-  #include <Engine/Sound/DSound.h>
-  #include <Engine/Sound/EAX.h>
-#endif
+// [Cecil] Sound interfaces
+#include <Engine/Sound/SoundAPI.h>
 
 /* !!! FIXME: rcg10042001 This is going to need OpenAL or SDL_audio... */
 
@@ -78,46 +72,31 @@ public:
   CTCriticalSection sl_csSound;          // sync. access to sounds
   CSoundTimerHandler sl_thTimerHandler;  // handler for mixing sounds in timer
 
-/* rcg !!! FIXME: This needs to be abstracted. */
+  SoundFormat sl_EsfFormat; // sound format (external)
+  CAbstractSoundAPI *sl_pInterface; // [Cecil] Currently used interface
+
 #if SE1_WIN
-  INDEX sl_ctWaveDevices;                // number of devices detected
-  BOOL  sl_bUsingDirectSound;
-  BOOL  sl_bUsingEAX;
-  HWAVEOUT sl_hwoWaveOut;                   // wave out handle
-  CStaticStackArray<HWAVEOUT> sl_ahwoExtra; // preventively taken channels
-
-  LPDIRECTSOUND   sl_pDS;                   // direct sound 'handle'
-  LPKSPROPERTYSET sl_pKSProperty;           // for setting properties of EAX
-  LPDIRECTSOUNDBUFFER sl_pDSPrimary;        // and buffers
-  LPDIRECTSOUNDBUFFER sl_pDSSecondary;      // 2D usage 
-  LPDIRECTSOUNDBUFFER sl_pDSSecondary2; 
-  LPDIRECTSOUND3DLISTENER sl_pDSListener;   // 3D EAX
-  LPDIRECTSOUND3DBUFFER   sl_pDSSourceLeft;
-  LPDIRECTSOUND3DBUFFER   sl_pDSSourceRight;
-
-  UBYTE *sl_pubBuffersMemory;            // memory allocated for the sound buffer(s) output
-  CStaticArray<WAVEHDR> sl_awhWOBuffers; // the waveout buffers
-
-  SoundFormat  sl_EsfFormat;             // sound format (external)
-  WAVEFORMATEX sl_SwfeFormat;            // primary sound buffer format
-  SLONG *sl_pslMixerBuffer;              // buffer for mixing sounds (32-bit!)
-  SWORD *sl_pswDecodeBuffer;             // buffer for decoding encoded sounds (ogg, mpeg...)
-  SLONG  sl_slMixerBufferSize;           // mixer buffer size
-  SLONG  sl_slDecodeBufferSize;          // decoder buffer size
-
-  CListHead sl_ClhAwareList;	 					         // list of sound mode aware objects
-  CListHead sl_lhActiveListeners;                // active listeners for current frame of listening
-
-#else
-
-  SoundFormat  sl_EsfFormat;
-
+  INDEX sl_ctWaveDevices; // number of devices detected
+  WAVEFORMATEX sl_SwfeFormat; // primary sound buffer format
 #endif
+
+  CListHead sl_ClhAwareList; // list of sound mode aware objects
+  CListHead sl_lhActiveListeners; // active listeners for current frame of listening
 
   /* Return library state (active <==> format <> NONE */
   inline BOOL IsActive(void) {return sl_EsfFormat != SF_NONE;};
   /* Clear Library WaveOut */
   void ClearLibrary(void);
+
+private:
+  // [Cecil] Destroy current sound interface
+  void DestroyInterface(void);
+
+  // [Cecil] Internal functionality
+  void SetWaveFormat(SoundFormat EsfFormat);
+  void SetLibraryFormat(void);
+  void SetFormat_internal(SoundFormat EsfNew, BOOL bReport);
+
 public:
   /* Constructor */
   CSoundLibrary(void);
@@ -141,9 +120,6 @@ public:
   void MixSounds(void);
   /* Mute output until next UpdateSounds() */
   void Mute(void);
-
-  /* Set listener enviroment properties (EAX) */
-  BOOL SetEnvironment( INDEX iEnvNo, FLOAT fEnvSize=0);
 
   /* Add sound in sound aware list */
   void AddSoundAware( CSoundData &CsdAdd);

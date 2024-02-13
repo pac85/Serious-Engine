@@ -142,6 +142,7 @@ extern CTString astrFrequencyRadioTexts[] = {
 };
 
 extern CTString astrSoundAPIRadioTexts[] = {
+  // [Cecil] TODO: Get names using CAbstractSoundAPI::GetApiName()
   RADIOTRANS("WaveOut"),
   RADIOTRANS("DirectSound"),
   RADIOTRANS("EAX"),

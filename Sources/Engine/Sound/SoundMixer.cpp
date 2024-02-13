@@ -829,8 +829,8 @@ void MixSound( CSoundObject *pso)
     _pfSoundProfile.StartTimer(CSoundProfile::PTI_DECODESOUND);
     // decode some samples from it
     SLONG slWantedBytes  = FloatToInt(slMixerBufferSize*fStep*pso->so_pCsdLink->sd_wfeFormat.nChannels) *2;
-    void *pvDecodeBuffer = _pSound->sl_pswDecodeBuffer;
-    ASSERT(slWantedBytes<=_pSound->sl_slDecodeBufferSize);
+    void *pvDecodeBuffer = _pSound->sl_pInterface->m_pswDecodeBuffer;
+    ASSERT(slWantedBytes<=_pSound->sl_pInterface->m_slDecodeBufferSize);
     SLONG slDecodedBytes = pso->so_psdcDecoder->Decode( pvDecodeBuffer, slWantedBytes);
     ASSERT(slDecodedBytes<=slWantedBytes);
     // if it has a loop
