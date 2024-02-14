@@ -24,6 +24,18 @@ extern void RefreshSoundFormat(void);
 
 void CAudioOptionsMenu::Initialize_t(void)
 {
+  // [Cecil] Create array of available sound APIs
+  const INDEX ctAPIs = CAbstractSoundAPI::E_SND_MAX;
+
+  if (astrSoundAPIRadioTexts == NULL) {
+    astrSoundAPIRadioTexts = new CTString[ctAPIs];
+
+    for (INDEX iAPI = 0; iAPI < ctAPIs; iAPI++) {
+      const CTString &strAPI = CAbstractSoundAPI::GetApiName((CAbstractSoundAPI::ESoundAPI)iAPI);
+      astrSoundAPIRadioTexts[iAPI] = TRANSV(strAPI);
+    }
+  }
+
   // intialize Audio options menu
   gm_mgTitle.mg_boxOnScreen = BoxTitle();
   gm_mgTitle.mg_strText = TRANS("AUDIO");
@@ -42,6 +54,7 @@ void CAudioOptionsMenu::Initialize_t(void)
     gm_mgFrequencyTrigger, gm_mgWaveVolume, TRANS("SOUND SYSTEM"), astrSoundAPIRadioTexts);
   gm_mgAudioAPITrigger.mg_strTip = TRANS("choose sound system (API) to use");
   gm_mgAudioAPITrigger.mg_pOnTriggerChange = NULL;
+  gm_mgAudioAPITrigger.mg_ctTexts = ctAPIs; // [Cecil] Amount of available APIs
 
   gm_mgWaveVolume.mg_boxOnScreen = BoxMediumRow(3);
   gm_mgWaveVolume.mg_strText = TRANS("SOUND EFFECTS VOLUME");

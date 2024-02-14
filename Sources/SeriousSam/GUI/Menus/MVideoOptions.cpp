@@ -25,6 +25,18 @@ extern void UpdateVideoOptionsButtons(INDEX iSelected);
 
 void CVideoOptionsMenu::Initialize_t(void)
 {
+  // [Cecil] Create array of available graphics APIs
+  const INDEX ctAPIs = GAT_MAX;
+
+  if (astrDisplayAPIRadioTexts == NULL) {
+    astrDisplayAPIRadioTexts = new CTString[ctAPIs];
+
+    for (INDEX iAPI = 0; iAPI < ctAPIs; iAPI++) {
+      const CTString &strAPI = CGfxLibrary::GetApiName((GfxAPIType)iAPI);
+      astrDisplayAPIRadioTexts[iAPI] = TRANSV(strAPI);
+    }
+  }
+
   // intialize video options menu
   gm_mgTitle.mg_boxOnScreen = BoxTitle();
   gm_mgTitle.mg_strText = TRANS("VIDEO");
@@ -33,6 +45,8 @@ void CVideoOptionsMenu::Initialize_t(void)
   TRIGGER_MG(gm_mgDisplayAPITrigger, 0,
     gm_mgApply, gm_mgDisplayAdaptersTrigger, TRANS("GRAPHICS API"), astrDisplayAPIRadioTexts);
   gm_mgDisplayAPITrigger.mg_strTip = TRANS("choose graphics API to be used");
+  gm_mgDisplayAPITrigger.mg_ctTexts = ctAPIs; // [Cecil] Amount of available APIs
+
   TRIGGER_MG(gm_mgDisplayAdaptersTrigger, 1,
     gm_mgDisplayAPITrigger, gm_mgDisplayPrefsTrigger, TRANS("DISPLAY ADAPTER"), astrNoYes);
   gm_mgDisplayAdaptersTrigger.mg_strTip = TRANS("choose display adapter to be used");

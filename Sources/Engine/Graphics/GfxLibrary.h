@@ -294,7 +294,7 @@ public:
   };
 
   // [Cecil] Get API name from type
-  const CTString &GetApiName(GfxAPIType eAPI);
+  static const CTString &GetApiName(GfxAPIType eAPI);
 
   // [Cecil] Interface initialization by API type
   void SetInterface(GfxAPIType eAPI);

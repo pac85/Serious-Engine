@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #include <Engine/Sound/EAX.h>
 #endif
 
-class CAbstractSoundAPI {
+class ENGINE_API CAbstractSoundAPI {
   public:
     enum ESoundAPI {
       E_SND_INVALID = -1,
@@ -60,7 +60,7 @@ class CAbstractSoundAPI {
     void FreeBuffers(void);
 
     // Get API name from type
-    const CTString &GetApiName(ESoundAPI eAPI);
+    static const CTString &GetApiName(ESoundAPI eAPI);
 
     // Create API from type
     static CAbstractSoundAPI *CreateAPI(ESoundAPI eAPI);

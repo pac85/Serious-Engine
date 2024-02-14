@@ -277,11 +277,11 @@ void InitializeMenus(void)
   {
     TRANSLATERADIOARRAY(astrNoYes);
     TRANSLATERADIOARRAY(astrComputerInvoke);
-    TRANSLATERADIOARRAY(astrDisplayAPIRadioTexts);
+    //TRANSLATERADIOARRAY(astrDisplayAPIRadioTexts);
     TRANSLATERADIOARRAY(astrDisplayPrefsRadioTexts);
     TRANSLATERADIOARRAY(astrBitsPerPixelRadioTexts);
     TRANSLATERADIOARRAY(astrFrequencyRadioTexts);
-    TRANSLATERADIOARRAY(astrSoundAPIRadioTexts);
+    //TRANSLATERADIOARRAY(astrSoundAPIRadioTexts);
     TRANSLATERADIOARRAY(astrDifficultyRadioTexts);
     TRANSLATERADIOARRAY(astrMaxPlayersRadioTexts);
     TRANSLATERADIOARRAY(astrWeapon);

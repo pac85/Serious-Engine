@@ -91,7 +91,8 @@ static void SizeToResolution(PIX pixSizeI, PIX pixSizeJ, INDEX &iRes)
     }
   }
   // if still none found
-  ASSERT(FALSE);  // this should never happen
+  // [Cecil] No need to report an error, just select the first resolution
+  //ASSERT(FALSE);  // this should never happen
   // return first one
   iRes = 0;
 }
@@ -862,7 +863,7 @@ extern void RefreshSoundFormat(void)
   }
 
   gmCurrent.gm_mgAudioAutoTrigger.mg_iSelected = Clamp(sam_bAutoAdjustAudio, 0, 1);
-  gmCurrent.gm_mgAudioAPITrigger.mg_iSelected = Clamp(_pShell->GetINDEX("snd_iInterface"), 0L, 2L);
+  gmCurrent.gm_mgAudioAPITrigger.mg_iSelected = Clamp(_pShell->GetINDEX("snd_iInterface"), 0L, CAbstractSoundAPI::E_SND_MAX - 1);
 
   gmCurrent.gm_mgWaveVolume.mg_iMinPos = 0;
   gmCurrent.gm_mgWaveVolume.mg_iMaxPos = VOLUME_STEPS;
@@ -891,11 +892,12 @@ static void ApplyAudioOptions(void)
 
     switch (gmCurrent.gm_mgFrequencyTrigger.mg_iSelected)
     {
-      case 0: {_pSound->SetFormat(CSoundLibrary::SF_NONE); break; }
-      case 1: {_pSound->SetFormat(CSoundLibrary::SF_11025_16); break; }
-      case 2: {_pSound->SetFormat(CSoundLibrary::SF_22050_16); break; }
-      case 3: {_pSound->SetFormat(CSoundLibrary::SF_44100_16); break; }
-      default: _pSound->SetFormat(CSoundLibrary::SF_NONE);
+      // [Cecil] Report reinitialization
+      case 0:  _pSound->SetFormat(CSoundLibrary::SF_NONE, TRUE); break;
+      case 1:  _pSound->SetFormat(CSoundLibrary::SF_11025_16, TRUE); break;
+      case 2:  _pSound->SetFormat(CSoundLibrary::SF_22050_16, TRUE); break;
+      case 3:  _pSound->SetFormat(CSoundLibrary::SF_44100_16, TRUE); break;
+      default: _pSound->SetFormat(CSoundLibrary::SF_NONE, TRUE);
     }
   }
 

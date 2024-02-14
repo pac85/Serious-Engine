@@ -44,10 +44,10 @@ extern CTString astrGameTypeRadioTexts[20];
 extern CTString astrDifficultyRadioTexts[6];
 extern CTString astrSplitScreenRadioTexts[4];
 extern CTString astrDisplayPrefsRadioTexts[4];
-extern CTString astrDisplayAPIRadioTexts[2];
+extern CTString *astrDisplayAPIRadioTexts; // [Cecil] Dynamically created array
 extern CTString astrBitsPerPixelRadioTexts[3];
 extern CTString astrFrequencyRadioTexts[4];
-extern CTString astrSoundAPIRadioTexts[3];
+extern CTString *astrSoundAPIRadioTexts; // [Cecil] Dynamically created array
 
 extern PIX apixWidths[20][2];
 

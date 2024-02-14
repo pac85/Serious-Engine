@@ -122,11 +122,8 @@ extern CTString astrDisplayPrefsRadioTexts[] = {
   RADIOTRANS("Custom"),
 };
 
-extern CTString astrDisplayAPIRadioTexts[] = {
-  // [Cecil] TODO: Get names using CGfxLibrary::GetApiName()
-  RADIOTRANS("OpenGL"),
-  RADIOTRANS("Direct3D"),
-};
+// [Cecil] Dynamically created array
+CTString *astrDisplayAPIRadioTexts = NULL;
 
 extern CTString astrBitsPerPixelRadioTexts[] = {
   RADIOTRANS("Desktop"),
@@ -141,12 +138,8 @@ extern CTString astrFrequencyRadioTexts[] = {
   RADIOTRANS("44kHz"),
 };
 
-extern CTString astrSoundAPIRadioTexts[] = {
-  // [Cecil] TODO: Get names using CAbstractSoundAPI::GetApiName()
-  RADIOTRANS("WaveOut"),
-  RADIOTRANS("DirectSound"),
-  RADIOTRANS("EAX"),
-};
+// [Cecil] Dynamically created array
+CTString *astrSoundAPIRadioTexts = NULL;
 
 ULONG GetSpawnFlagsForGameType(INDEX iGameType)
 {
