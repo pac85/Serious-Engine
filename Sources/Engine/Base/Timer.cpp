@@ -157,12 +157,13 @@ void __stdcall CTimer_TimerFunc(UINT uID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR
 
 #pragma inline_depth()
 
-#define MAX_MEASURE_TRIES 5
-static INDEX _aiTries[MAX_MEASURE_TRIES];
-
 // Get processor speed in Hertz
 static SQUAD GetCPUSpeedHz(void)
 {
+#if SE1_WIN
+  #define MAX_MEASURE_TRIES 5
+  static INDEX _aiTries[MAX_MEASURE_TRIES];
+
   // get the frequency of the 'high' precision timer
   SQUAD llTimerFrequency;
   BOOL bPerformanceCounterPresent = QueryPerformanceFrequency((LARGE_INTEGER*)&llTimerFrequency);
@@ -244,6 +245,45 @@ static SQUAD GetCPUSpeedHz(void)
     // use measured value
     return (SQUAD)slSpeedRead*1000000;
   }
+
+#else
+  // [Cecil] Determine CPU speed on Unix
+  FILE *fileCPU = fopen("/proc/cpuinfo", "rb");
+
+  if (fileCPU == NULL) {
+    FatalError(TRANS("Couldn't open '/proc/cpuinfo' for reading:\n%s"), strerror(errno));
+  }
+
+  SQUAD llSpeedMHz = 0;
+  char *pBuffer = (char *)AllocMemory(10240);
+
+  if (pBuffer != NULL) {
+    fread(pBuffer, 10240, 1, fileCPU);
+    char *strMHz = strstr(pBuffer, "cpu MHz");
+
+    if (strMHz != NULL) {
+      strMHz = strchr(strMHz, ':');
+
+      if (strMHz != NULL) {
+        do {
+          strMHz++;
+        } while (*strMHz == '\t' || *strMHz == ' ');
+
+        llSpeedMHz = (SQUAD)atof(strMHz);
+      }
+    }
+
+    FreeMemory(pBuffer);
+  }
+
+  fclose(fileCPU);
+
+  if (llSpeedMHz == 0) {
+    FatalError(TRANS("Couldn't determine CPU speed!"));
+  }
+
+  return llSpeedMHz * (SQUAD)1000000;
+#endif // SE1_WIN
 }
 
 
@@ -258,8 +298,12 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   _pTimer = this;
   tm_bInterrupt = bInterrupt;
 
-  { // this part of code must be executed as precisely as possible
+  {
+  #if SE1_WIN
+    // this part of code must be executed as precisely as possible
     CSetPriority sp(REALTIME_PRIORITY_CLASS, THREAD_PRIORITY_TIME_CRITICAL);
+  #endif // SE1_WIN
+
     tm_llCPUSpeedHZ = GetCPUSpeedHz();
     tm_llPerformanceCounterFrequency = tm_llCPUSpeedHZ;
 
