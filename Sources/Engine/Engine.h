@@ -13,8 +13,8 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-// [Cecil] Configuration of specific platform macros
-#include <Engine/Base/Config.h>
+// [Cecil] Serious Engine configuration for a specific platform
+#include <Engine/SE_Config.h>
 
 // set this to 1 to enable checks whether somethig is deleted while iterating some array/container
 #define CHECKARRAYLOCKING 0

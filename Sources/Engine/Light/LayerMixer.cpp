@@ -274,7 +274,7 @@ static ULONG *_pulLayer;
 
 // [Cecil] Separate methods to avoid code duplication
 static __forceinline void PrepareColorMMX(__m64 &mm7, const ULONG ulLightRGB) {
-  #if SE1_MMXINTOPT
+  #if SE1_USE_MMXINT
     __m64 tmp_mm0;
 
     mm7.m64_u64 = 0;
@@ -303,7 +303,7 @@ static __forceinline void MixPixelMMX(ULONG &ulPixel, const SLONG slIntensity, c
   // Mix underlaying pixels with the calculated one
   __m64 tmp_mm6;
 
-  #if SE1_MMXINTOPT
+  #if SE1_USE_MMXINT
     tmp_mm6.m64_u64 = 0;
     tmp_mm6 = _mm_cvtsi32_si64(slIntensity);
     tmp_mm6 = _mm_unpacklo_pi16(tmp_mm6, tmp_mm6); // punpcklwd
@@ -328,7 +328,7 @@ static __forceinline void MixPixelMMX(ULONG &ulPixel, const SLONG slIntensity, c
   // Add light pixel to underlying pixel
   __m64 tmp_mm5;
 
-  #if SE1_MMXINTOPT
+  #if SE1_USE_MMXINT
     // [Cecil] Old compilers don't like inline braces
     const __m64 mmZero = { 0L };
 

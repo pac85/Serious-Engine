@@ -157,7 +157,7 @@ static void FailFunction_t(const char *strName) {
 }
 
 // [Cecil] Wrappers for non-existent GLEW methods
-#if SE1_GLEW && SE1_USE_GLEW
+#if SE1_GLEW >= 2
 
 static HINSTANCE _hiForWGL;
 
@@ -195,7 +195,7 @@ static void OGL_SetFunctionPointers_t(HINSTANCE hiOGL)
 {
   const char *strName;
   // get gl function pointers
-#if SE1_GLEW && SE1_USE_GLEW
+#if SE1_GLEW >= 2
   _hiForWGL = hiOGL;
 
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \

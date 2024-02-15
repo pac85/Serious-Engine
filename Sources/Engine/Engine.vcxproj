@@ -627,7 +627,6 @@
     <ClInclude Include="Base\ByteSwap.h" />
     <ClInclude Include="Base\Changeable.h" />
     <ClInclude Include="Base\ChangeableRT.h" />
-    <ClInclude Include="Base\Config.h" />
     <ClInclude Include="Base\Console.h" />
     <ClInclude Include="Base\Console_internal.h" />
     <ClInclude Include="Base\CRC.h" />
@@ -714,6 +713,7 @@
     <ClInclude Include="OS\OS.h" />
     <ClInclude Include="OS\PlatformSpecific.h" />
     <ClInclude Include="OS\PlatformTypes.h" />
+    <ClInclude Include="SE_Config.h" />
     <ClInclude Include="Sound\al_functions.h" />
     <ClInclude Include="Sound\DSound.h" />
     <ClInclude Include="Sound\eax.h" />
