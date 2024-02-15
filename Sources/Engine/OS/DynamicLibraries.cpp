@@ -76,7 +76,11 @@ HMODULE OS::LoadLibOrThrow_t(const char *strLibrary) {
   HMODULE hLib = OS::LoadLib(strLibrary);
 
   if (hLib == NULL) {
+  #if SE1_WIN
     ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"), strLibrary, GetWindowsError(GetLastError()));
+  #else
+    ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"), strLibrary, dlerror());
+  #endif
   }
 
   return hLib;

@@ -45,6 +45,10 @@ class ENGINE_API OS {
 
       Window(int i = NULL) : pWindow((WndHandle)(size_t)i) {};
       Window(size_t i) : pWindow((WndHandle)i) {};
+    #if !SE1_WIN
+      Window(long int i) : pWindow((WndHandle)i) {};
+    #endif
+
       Window(const Window &other) : pWindow(other.pWindow) {};
       Window(const WndHandle pSetWindow) : pWindow(pSetWindow) {};
 

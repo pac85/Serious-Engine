@@ -57,8 +57,7 @@ void FatalError(const char *strFormat, ...)
 
 #else
   // [Cecil] SDL: Destroy the window
-  SDL_DestroyWindow((SDL_Window *)_hwndMain);
-  _hwndMain = NULL;
+  _hwndMain.Destroy();
 #endif
 
   // format the message in buffer
@@ -116,7 +115,7 @@ void WarningMessage(const char *strFormat, ...)
 
   #else
     // [Cecil] SDL: Show warning
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANS("Warning"), strBuffer, (SDL_Window *)_hwndMain);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANS("Warning"), strBuffer, _hwndMain);
   #endif
   }
 }
@@ -138,7 +137,7 @@ void InfoMessage(const char *strFormat, ...)
 
 #else
   // [Cecil] SDL: Show information
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANS("Information"), strBuffer, (SDL_Window *)_hwndMain);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANS("Information"), strBuffer, _hwndMain);
 #endif
 }
 
@@ -166,7 +165,7 @@ BOOL YesNoMessage(const char *strFormat, ...)
   };
 
   const SDL_MessageBoxData msgbox = {
-    SDL_MESSAGEBOX_INFORMATION, (SDL_Window *)_hwndMain,
+    SDL_MESSAGEBOX_INFORMATION, _hwndMain,
     TRANS("Question"), strBuffer, SDL_arraysize(aButtons), aButtons, NULL,
   };
 
