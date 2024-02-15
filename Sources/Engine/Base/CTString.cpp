@@ -815,7 +815,7 @@ CTString &CTString::Erase(size_t iFrom, size_t ct) {
 
 // [Cecil] Find substring in a string
 const char *CTString::GetSubstr(const char *strSub, size_t iFrom) const {
-  ASSERT(iFrom < Length());
+  ASSERT(iFrom <= Length());
 
   // Inline implementation of strstr()
   const size_t ct = strlen(strSub);
@@ -835,7 +835,7 @@ const char *CTString::GetSubstr(const char *strSub, size_t iFrom) const {
 
 // [Cecil] Find character in a string
 char *CTString::GetChar(char ch, size_t iFrom) const {
-  ASSERT(iFrom < Length());
+  ASSERT(iFrom <= Length());
 
   // Inline implementation of strchr()
   char *pch = str_String + iFrom;
