@@ -328,7 +328,9 @@ static DOUBLE _dX;
 static DOUBLE _dD;
 static void RunTest(DOUBLE (*pTest)(void), INDEX ct)
 {
+#if SE1_WIN
   CSetPriority sp(REALTIME_PRIORITY_CLASS, THREAD_PRIORITY_TIME_CRITICAL);
+#endif
 
   DOUBLE dSum  = 0;
   DOUBLE dSum2 = 0;

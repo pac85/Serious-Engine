@@ -662,8 +662,8 @@ void IGfxOpenGL::DepthFunc( GfxComp eFunc)
 void IGfxOpenGL::DepthRange( FLOAT fMin, FLOAT fMax)
 {
 #ifndef NDEBUG
-  FLOAT fDepths[2]; 
-  pglGetFloatv( GL_DEPTH_RANGE,(GLfloat*)&fDepths);
+  GLfloat fDepths[2];
+  pglGetFloatv(GL_DEPTH_RANGE, fDepths);
   OGL_CHECKERROR;
   ASSERT( fDepths[0]==GFX_fMinDepthRange && fDepths[1]==GFX_fMaxDepthRange);
 #endif
@@ -974,7 +974,7 @@ void IGfxOpenGL::SetVertexArray(void *pvtx, INDEX ctVtx)
   ASSERT( !pglIsEnabled( GL_COLOR_ARRAY));
   ASSERT( !pglIsEnabled( GL_NORMAL_ARRAY));
   ASSERT(  pglIsEnabled( GL_VERTEX_ARRAY));
-  pglVertexPointer( 3, GL_FLOAT, 16, pvtx);
+  pglVertexPointer(3, GL_FLOAT, sizeof(GFXVertex), pvtx); // [Cecil] sizeof(GFXVertex) instead of 16
   OGL_CHECKERROR;
   GFX_bColorArray = FALSE; // mark that color array has been disabled (because of potential LockArrays)
 
@@ -991,7 +991,7 @@ void IGfxOpenGL::SetNormalArray( GFXNormal *pnor)
 
   pglEnableClientState(GL_NORMAL_ARRAY);
   ASSERT( pglIsEnabled(GL_NORMAL_ARRAY));
-  pglNormalPointer( GL_FLOAT, 16, pnor);
+  pglNormalPointer(GL_FLOAT, sizeof(GFXNormal), pnor); // [Cecil] sizeof(GFXNormal) instead of 16
   OGL_CHECKERROR;
 
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
@@ -1005,8 +1005,9 @@ void IGfxOpenGL::SetColorArray( GFXColor *pcol)
   ASSERT( pcol!=NULL);
   EnableColorArray();
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
-  
-  pglColorPointer( 4, GL_UNSIGNED_BYTE, 0, pcol);
+
+  // [Cecil] NOTE: Not sure if sizeof(GFXColor) instead of 0 produces different results
+  pglColorPointer(4, GL_UNSIGNED_BYTE, sizeof(GFXColor), pcol);
   OGL_CHECKERROR;
 
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
@@ -1022,7 +1023,9 @@ void IGfxOpenGL::SetTexCoordArray( GFXTexCoord *ptex, BOOL b4/*=FALSE*/)
 
   pglEnableClientState(GL_TEXTURE_COORD_ARRAY);
   ASSERT( pglIsEnabled(GL_TEXTURE_COORD_ARRAY));
-  pglTexCoordPointer( b4?4:2, GL_FLOAT, 0, ptex);
+
+  // [Cecil] NOTE: Not sure if sizeof(GFXTexCoord) instead of 0 produces different results
+  pglTexCoordPointer(b4 ? 4 : 2, GL_FLOAT, sizeof(GFXTexCoord), ptex);
   OGL_CHECKERROR;
 
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);

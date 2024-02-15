@@ -84,7 +84,10 @@ extern BOOL CVA_bModels;
 static FLOAT _fLastBrightness, _fLastContrast, _fLastGamma;
 static FLOAT _fLastBiasR, _fLastBiasG, _fLastBiasB;
 static INDEX _iLastLevels;
+
+#if !SE1_PREFER_SDL
 static UWORD _auwGammaTable[256*3];
+#endif
 
 // table for clipping [-512..+1024] to [0..255]
 static UBYTE aubClipByte[256*2+ 256 +256*3];
@@ -578,11 +581,18 @@ static void GAPInfo(void)
       // report current swap interval
       CPrintF( "- Swap interval: ");
       if( _pGfx->gl_ulFlags&GLF_VSYNC) {
-        GLint gliWaits = pwglGetSwapIntervalEXT();
+        #if !SE1_PREFER_SDL
+          const int gliWaits = (int)pwglGetSwapIntervalEXT();
+          const char *strZero = "not readable\n";
+        #else
+          const int gliWaits = SDL_GL_GetSwapInterval();
+          const char *strZero = "adaptive vsync\n";
+        #endif
+
         if( gliWaits>=0) {
           ASSERT( gliWaits==_pGfx->gl_iSwapInterval);
           CPrintF( "%d frame(s)\n", gliWaits);
-        } else CPrintF( "not readable\n");
+        } else CPrintF(strZero);
       } else CPrintF( "not adjustable\n");
     }
     // report T-Buffer support
@@ -1836,9 +1846,10 @@ extern INDEX _ctProbeShdU = 0;
 extern INDEX _ctProbeShdB = 0;
 extern INDEX _ctFullShdU  = 0;
 extern SLONG _slFullShdUBytes = 0;
+
+#if !SE1_PREFER_SDL
 static BOOL GenerateGammaTable(void);
-
-
+#endif
 
 /*
  * Swap buffers in a viewport.
@@ -2080,7 +2091,7 @@ void CGfxLibrary::UnlockRaster( CRaster *praToUnlock)
   ASSERT( GFX_bRenderingScene);
 }
 
-
+#if !SE1_PREFER_SDL
 
 // generates gamma table and returns true if gamma table has been changed
 static BOOL GenerateGammaTable(void)
@@ -2158,7 +2169,7 @@ static BOOL GenerateGammaTable(void)
   return TRUE;
 }
 
-
+#endif // !SE1_PREFER_SDL
 
 #if 0
 

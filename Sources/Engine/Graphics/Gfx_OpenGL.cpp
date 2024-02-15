@@ -89,8 +89,10 @@ extern BOOL  glbUsingVARs = FALSE;   // vertex_array_range
 void (__stdcall *pglLockArraysEXT)(GLint first, GLsizei count) = NULL;
 void (__stdcall *pglUnlockArraysEXT)(void) = NULL;
 
+#if !SE1_PREFER_SDL
 GLboolean (__stdcall *pwglSwapIntervalEXT)(GLint interval) = NULL;
 GLint     (__stdcall *pwglGetSwapIntervalEXT)(void) = NULL;
+#endif
 
 void (__stdcall *pglActiveTextureARB)(GLenum texunit) = NULL;
 void (__stdcall *pglClientActiveTextureARB)(GLenum texunit) = NULL;
@@ -401,7 +403,6 @@ BOOL CGfxLibrary::SetupPixelFormat_OGL(OS::DvcContext hdc, BOOL bReport/*=FALSE*
     gap_iStencilBits = 8;
   }
 
-// [Cecil] SDL FIXME
 #if !SE1_PREFER_SDL
   int iPixelFormat = 0;
   const PIX pixResWidth  = gl_dmCurrentDisplayMode.dm_pixSizeI;
@@ -747,6 +748,7 @@ void CGfxLibrary::InitContext_OGL(void)
     ASSERT( pglLockArraysEXT!=NULL && pglUnlockArraysEXT!=NULL);
   }
 
+#if !SE1_PREFER_SDL
   // check support for swap interval
   pwglSwapIntervalEXT    = NULL;
   pwglGetSwapIntervalEXT = NULL;
@@ -756,6 +758,7 @@ void CGfxLibrary::InitContext_OGL(void)
     pwglGetSwapIntervalEXT = (GLint     (__stdcall*)(void) )OGL_GetProcAddress( "wglGetSwapIntervalEXT");
     ASSERT( pwglSwapIntervalEXT!=NULL && pwglGetSwapIntervalEXT!=NULL);
   }
+#endif
 
 #if SE1_TRUFORM
   // determine support for ATI Truform technology

@@ -88,6 +88,7 @@ CViewPort::~CViewPort(void)
   if( _pGfx->gl_pvpActive==this) _pGfx->gl_pvpActive = NULL;
 }
 
+#if !SE1_PREFER_SDL
 
 #define CViewPortCLASS "ViewPort Window"
 static BOOL _bClassRegistered = FALSE;
@@ -122,6 +123,7 @@ LRESULT CALLBACK CViewPortCLASS_WindowProc(
   return TRUE;
 }
 
+#endif // !SE1_PREFER_SDL
 
 // open overlaid window for rendering context
 void CViewPort::OpenCanvas(void)

@@ -295,6 +295,7 @@ BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd)
   // no need for gfx when dedicated server is on
   if( _bDedicatedServer) return FALSE;
 
+#if SE1_WIN
   // prepare general mode parameters
   DEVMODE devmode;
   memset(&devmode, 0, sizeof(devmode));
@@ -356,6 +357,8 @@ BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd)
   }
   // report
   CPrintF(TRANS("  CDS: mode set to %dx%dx%d\n"), pixSizeI, pixSizeJ, devmode.dmBitsPerPel);
+#endif // SE1_WIN
+
   return TRUE;
 }
 
@@ -366,7 +369,9 @@ void CDS_ResetMode(void)
   // no need for gfx when dedicated server is on
   if( _bDedicatedServer) return;
 
+#if SE1_WIN
   LONG lRes = ChangeDisplaySettings( NULL, 0);
   ASSERT(lRes==DISP_CHANGE_SUCCESSFUL);
   CPrintF(TRANS("  CDS: mode reset to original desktop settings\n"));
+#endif // SE1_WIN
 }

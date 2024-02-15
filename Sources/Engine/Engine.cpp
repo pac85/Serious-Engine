@@ -62,8 +62,10 @@ extern BOOL _bFullScreen = FALSE;
 // critical section for access to zlib functions
 CTCriticalSection zip_csLock; 
 
+#if !SE1_PREFER_SDL
 // to keep system gamma table
 static UWORD auwSystemGamma[256*3];
+#endif
 
 
 // OS info
@@ -286,7 +288,7 @@ static void SE_InitSDL(ULONG ulFlags) {
   _bEngineInitializedSDL = true;
 };
 
-#endif
+#endif // SE1_SDL
 
 // startup engine 
 ENGINE_API void SE_InitEngine(EEngineAppType eType)
@@ -516,6 +518,7 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   _pfdDisplayFont = NULL;
   _pfdConsoleFont = NULL;
 
+#if !SE1_PREFER_SDL
   // readout system gamma table
   HDC  hdc = GetDC(NULL);
   BOOL bOK = GetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
@@ -525,7 +528,8 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
     CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
   } // done
   ReleaseDC( NULL, hdc);
-  
+#endif
+
   // init IFeel
   HWND hwnd = NULL;//GetDesktopWindow();
   HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -551,6 +555,7 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
 // shutdown entire engine
 ENGINE_API void SE_EndEngine(void)
 {
+#if !SE1_PREFER_SDL
   // restore system gamma table (if needed)
   if( _pGfx->gl_ulFlags&GLF_ADJUSTABLEGAMMA) {
     HDC  hdc = GetDC(NULL);
@@ -558,6 +563,7 @@ ENGINE_API void SE_EndEngine(void)
     //ASSERT(bOK);
     ReleaseDC( NULL, hdc);
   }
+#endif
 
   // free stocks
   delete _pEntityClassStock;  _pEntityClassStock = NULL;
