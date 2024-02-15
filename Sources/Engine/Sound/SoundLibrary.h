@@ -30,9 +30,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // [Cecil] Sound interfaces
 #include <Engine/Sound/SoundAPI.h>
 
-/* !!! FIXME: rcg10042001 This is going to need OpenAL or SDL_audio... */
-
-
 // Mixer
 // set master volume and resets mixer buffer (wipes it with zeroes and keeps pointers)
 void ResetMixer( const SLONG *pslBuffer, const SLONG slBufferSize);
@@ -75,10 +72,8 @@ public:
   SoundFormat sl_EsfFormat; // sound format (external)
   CAbstractSoundAPI *sl_pInterface; // [Cecil] Currently used interface
 
-#if SE1_WIN
   INDEX sl_ctWaveDevices; // number of devices detected
   WAVEFORMATEX sl_SwfeFormat; // primary sound buffer format
-#endif
 
   CListHead sl_ClhAwareList; // list of sound mode aware objects
   CListHead sl_lhActiveListeners; // active listeners for current frame of listening

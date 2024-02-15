@@ -27,16 +27,20 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #include <Engine/Sound/EAX.h>
 #endif
 
+#define WAVEOUTBLOCKSIZE 1024
+
 class ENGINE_API CAbstractSoundAPI {
   public:
     enum ESoundAPI {
       E_SND_INVALID = -1,
 
-      E_SND_WAVEOUT = 0,
+    #if SE1_WIN
+      E_SND_WAVEOUT,
       E_SND_DSOUND,
       E_SND_EAX,
+    #endif
 
-      E_SND_MAX,
+      E_SND_MAX, // [Cecil] NOTE: This should always be at least 1 under any configuration
     };
 
   public:
@@ -52,6 +56,12 @@ class ENGINE_API CAbstractSoundAPI {
 
     // Destructor
     virtual ~CAbstractSoundAPI();
+
+    // Calculate mixer buffer size
+    SLONG CalculateMixerSize(const WAVEFORMATEX &wfe);
+
+    // Calculate decoder buffer size (only after mixer size)
+    SLONG CalculateDecoderSize(const WAVEFORMATEX &wfe);
 
     // Allocate new buffer memory
     void AllocBuffers(void);
@@ -72,7 +82,7 @@ class ENGINE_API CAbstractSoundAPI {
     };
 
   public:
-    virtual BOOL StartUp(BOOL bReport = TRUE) = 0;
+    virtual BOOL StartUp(BOOL bReport) = 0;
 
     // Free memory by default
     virtual void ShutDown(void) {
@@ -86,7 +96,7 @@ class ENGINE_API CAbstractSoundAPI {
     virtual SLONG PrepareSoundBuffer(void) = 0;
 
     // Assume that it will mute itself eventually by default
-    virtual void Mute(void) {};
+    virtual void Mute(BOOL &bSetSoundMuted) {};
 
     // No EAX support by default
     virtual void UpdateEAX(void) {};

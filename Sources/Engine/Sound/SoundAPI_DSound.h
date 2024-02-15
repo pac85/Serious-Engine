@@ -19,9 +19,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Sound/SoundAPI.h>
 
+#if SE1_WIN
+
 class CSoundAPI_DSound : public CAbstractSoundAPI {
   public:
     HINSTANCE m_hDSoundLib;
+    OS::Window m_wndCurrent;
     BOOL m_bUsingEAX;
 
     LPDIRECTSOUND           m_pDS;           // DirectSound handle
@@ -43,6 +46,7 @@ class CSoundAPI_DSound : public CAbstractSoundAPI {
     // Constructor
     CSoundAPI_DSound() : CAbstractSoundAPI() {
       m_hDSoundLib = NULL;
+      m_wndCurrent = NULL;
       m_bUsingEAX = FALSE;
 
       m_pDS            = NULL;
@@ -75,14 +79,16 @@ class CSoundAPI_DSound : public CAbstractSoundAPI {
     BOOL SetEnvironment(INDEX iEnvNo, FLOAT fEnvSize);
 
   public:
-    virtual BOOL StartUp(BOOL bReport = TRUE);
+    virtual BOOL StartUp(BOOL bReport);
     virtual void ShutDown(void);
 
     virtual void CopyMixerBuffer(SLONG slMixedSize);
     virtual SLONG PrepareSoundBuffer(void);
 
-    virtual void Mute(void);
+    virtual void Mute(BOOL &bSetSoundMuted);
     virtual void UpdateEAX(void);
 };
+
+#endif // SE1_WIN
 
 #endif // include-once check

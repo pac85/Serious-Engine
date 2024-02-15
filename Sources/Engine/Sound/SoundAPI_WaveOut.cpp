@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Sound/SoundAPI_WaveOut.h>
 #include <Engine/Sound/SoundLibrary.h>
 
-#define WAVEOUTBLOCKSIZE 1024
+#if SE1_WIN
 
 extern FLOAT snd_tmMixAhead;
 extern INDEX snd_iDevice;
@@ -110,17 +110,15 @@ BOOL CSoundAPI_WaveOut::StartUp(BOOL bReport) {
     CPrintF(TRANS("  %dHz, %dbit, %s\n"), wfe.nSamplesPerSec, wfe.wBitsPerSample, strDevice);
   }
 
-  // Determine whole mixer buffer size from mixahead console variable
-  m_slMixerBufferSize = SLONG(ceil(snd_tmMixAhead * wfe.nSamplesPerSec) * wfe.wBitsPerSample / 8 * wfe.nChannels);
+  // Determine whole mixer buffer size
+  m_slMixerBufferSize = CalculateMixerSize(wfe);
 
   // Align size to be next multiply of WAVEOUTBLOCKSIZE
   m_slMixerBufferSize += WAVEOUTBLOCKSIZE - (m_slMixerBufferSize % WAVEOUTBLOCKSIZE);
+  m_slDecodeBufferSize = CalculateDecoderSize(wfe);
 
   // Determine number of WaveOut buffers
   const INDEX ctWOBuffers = m_slMixerBufferSize / WAVEOUTBLOCKSIZE;
-
-  // Decoder buffer always works at 44khz
-  m_slDecodeBufferSize = m_slMixerBufferSize * ((44100 + wfe.nSamplesPerSec - 1) / wfe.nSamplesPerSec);
 
   if (bReport) {
     CPrintF(TRANS("  parameters: %d Hz, %d bit, stereo, mix-ahead: %gs\n"), wfe.nSamplesPerSec, wfe.wBitsPerSample, snd_tmMixAhead);
@@ -242,3 +240,5 @@ SLONG CSoundAPI_WaveOut::PrepareSoundBuffer(void) {
   ASSERT(slDataToMix <= m_slMixerBufferSize);
   return slDataToMix;
 };
+
+#endif // SE1_WIN

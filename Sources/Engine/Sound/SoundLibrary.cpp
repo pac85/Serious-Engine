@@ -37,6 +37,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Templates/StaticStackArray.cpp>
 
+// [Cecil]
+#include <Engine/Sound/SoundAPI_DSound.h>
+
 // pointer to global sound library object
 CSoundLibrary *_pSound = NULL;
 
@@ -73,7 +76,7 @@ FLOAT snd_fEAXPanning = 0.0f;
 static FLOAT snd_fNormalizer = 0.9f;
 static FLOAT _fLastNormalizeValue = 1;
 
-BOOL _bMuted = FALSE;
+static BOOL _bMutedForMixing = FALSE;
 
 /**
  * ----------------------------
@@ -295,7 +298,13 @@ void CSoundLibrary::Init(void)
   _pShell->DeclareSymbol( "persistent user INDEX snd_iMaxOpenRetries;",   &snd_iMaxOpenRetries);
   _pShell->DeclareSymbol( "persistent user FLOAT snd_tmOpenFailDelay;",   &snd_tmOpenFailDelay);
   _pShell->DeclareSymbol( "persistent user FLOAT snd_fEAXPanning;", &snd_fEAXPanning);
-  
+
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) {
+    CPrintF(TRANS("Skipping initialization of sound for dedicated servers...\n"));
+    return;
+  }
+
   // print header
   CPrintF(TRANS("Initializing sound...\n"));
 
@@ -331,6 +340,9 @@ void CSoundLibrary::Init(void)
  *  Clear Sound Library
  */
 void CSoundLibrary::Clear(void) {
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) return;
+
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // synchronize access to sounds
@@ -352,6 +364,9 @@ void CSoundLibrary::Clear(void) {
 /* Clear Library WaveOut */
 void CSoundLibrary::ClearLibrary(void)
 {
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) return;
+
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
 
@@ -375,10 +390,10 @@ void CSoundLibrary::Mute(void)
   // stop all IFeel effects
   IFeel_StopEffect(NULL);
 
-  // erase direct sound buffer (waveout will shut-up by itself), but skip if there's no more sound library
-  if (this == NULL || sl_pInterface == NULL) return;
+  // [Cecil] Ignore sounds on a dedicated server or when there's no sound interface
+  if (_eEngineAppType == E_SEAPP_SERVER || this == NULL || sl_pInterface == NULL) return;
 
-  sl_pInterface->Mute();
+  sl_pInterface->Mute(_bMutedForMixing);
 };
 
 /*
@@ -386,6 +401,12 @@ void CSoundLibrary::Mute(void)
  */
 CSoundLibrary::SoundFormat CSoundLibrary::SetFormat( CSoundLibrary::SoundFormat EsfNew, BOOL bReport/*=FALSE*/)
 {
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) {
+    sl_EsfFormat = SF_NONE;
+    return SF_NONE;
+  }
+
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // synchronize access to sounds
@@ -424,15 +445,24 @@ CSoundLibrary::SoundFormat CSoundLibrary::SetFormat( CSoundLibrary::SoundFormat 
 /* Update all 3d effects and copy internal data. */
 void CSoundLibrary::UpdateSounds(void)
 {
-  // see if we have valid handle for direct sound and eventually reinit sound
-  extern OS::Window _hwndCurrent;
-  extern OS::Window _hwndMain;
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) return;
 
-  if (sl_pInterface->GetType() == CAbstractSoundAPI::E_SND_DSOUND && _hwndCurrent != _hwndMain) {
-    _hwndCurrent = _hwndMain;
-    SetFormat( sl_EsfFormat);
+#if SE1_WIN
+  // see if we have valid handle for direct sound and eventually reinit sound
+  if (sl_pInterface->GetType() == CAbstractSoundAPI::E_SND_DSOUND) {
+    // [Cecil] FIXME: Don't like including the interface just for accessing one of its fields
+    CSoundAPI_DSound &apiDSound = (CSoundAPI_DSound &)*sl_pInterface;
+    extern OS::Window _hwndMain;
+
+    if (apiDSound.m_wndCurrent != _hwndMain) {
+      apiDSound.m_wndCurrent = _hwndMain;
+      SetFormat(sl_EsfFormat);
+    }
   }
-  _bMuted = FALSE; // enable mixer
+#endif
+
+  _bMutedForMixing = FALSE; // enable mixer
   _sfStats.StartTimer(CStatForm::STI_SOUNDUPDATE);
   _pfSoundProfile.StartTimer(CSoundProfile::PTI_UPDATESOUNDS);
 
@@ -497,11 +527,14 @@ void CSoundTimerHandler::HandleTimer(void)
 /* Update Mixer */
 void CSoundLibrary::MixSounds(void)
 {
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) return;
+
   // synchronize access to sounds
   CTSingleLock slSounds( &sl_csSound, TRUE);
 
   // do nothing if no sound
-  if( sl_EsfFormat==SF_NONE || _bMuted) return;
+  if (sl_EsfFormat==SF_NONE || _bMutedForMixing) return;
 
   _sfStats.StartTimer(CStatForm::STI_SOUNDMIXING);
   _pfSoundProfile.IncrementAveragingCounter();
@@ -522,7 +555,7 @@ void CSoundLibrary::MixSounds(void)
   _pfSoundProfile.IncrementCounter(CSoundProfile::PCI_MIXINGS, 1);
   ResetMixer(sl_pInterface->m_pslMixerBuffer, slDataToMix);
 
-  BOOL bGamePaused = _pNetwork->IsPaused() || _pNetwork->IsServer() && _pNetwork->GetLocalPause();
+  BOOL bGamePaused = _pNetwork->IsPaused() || (_pNetwork->IsServer() && _pNetwork->GetLocalPause());
 
   // for each sound
   FOREACHINLIST( CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {
@@ -573,6 +606,9 @@ void CSoundLibrary::MixSounds(void)
  *  Add sound in sound aware list
  */
 void CSoundLibrary::AddSoundAware(CSoundData &CsdAdd) {
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) return;
+
   // add sound to list tail
   sl_ClhAwareList.AddTail(CsdAdd.sd_Node);
 };
@@ -581,6 +617,9 @@ void CSoundLibrary::AddSoundAware(CSoundData &CsdAdd) {
  *  Remove a display mode aware object.
  */
 void CSoundLibrary::RemoveSoundAware(CSoundData &CsdRemove) {
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) return;
+
   // remove it from list
   CsdRemove.sd_Node.Remove();
 };
@@ -588,6 +627,9 @@ void CSoundLibrary::RemoveSoundAware(CSoundData &CsdRemove) {
 // listen from this listener this frame
 void CSoundLibrary::Listen(CSoundListener &sl)
 {
+  // [Cecil] Ignore sounds on a dedicated server
+  if (_eEngineAppType == E_SEAPP_SERVER) return;
+
   // just add it to list
   if (sl.sli_lnInActiveListeners.IsLinked()) {
     sl.sli_lnInActiveListeners.Remove();

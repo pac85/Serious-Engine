@@ -19,6 +19,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Sound/SoundAPI.h>
 
+#if SE1_WIN
+
 class CSoundAPI_WaveOut : public CAbstractSoundAPI {
   public:
     HWAVEOUT m_hwoWaveOut; // WaveOut handle
@@ -39,11 +41,13 @@ class CSoundAPI_WaveOut : public CAbstractSoundAPI {
     };
 
   public:
-    virtual BOOL StartUp(BOOL bReport = TRUE);
+    virtual BOOL StartUp(BOOL bReport);
     virtual void ShutDown(void);
 
     virtual void CopyMixerBuffer(SLONG slMixedSize);
     virtual SLONG PrepareSoundBuffer(void);
 };
+
+#endif // SE1_WIN
 
 #endif // include-once check

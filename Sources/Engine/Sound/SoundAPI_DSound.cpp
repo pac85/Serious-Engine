@@ -19,20 +19,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Sound/SoundAPI_DSound.h>
 #include <Engine/Sound/SoundLibrary.h>
 
-// [Cecil] Windows-specific
 #if SE1_WIN
-  #include <initguid.h>
 
-  #pragma comment(lib, "winmm.lib")
-  #pragma comment(lib, "dxguid.lib")
-#endif
+#include <initguid.h>
+
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "dxguid.lib")
 
 #define MINPAN (1.0f)
 #define MAXPAN (9.0f)
-
-extern OS::Window _hwndMain; // global handle for application window
-OS::Window _hwndCurrent = NULL;
-extern BOOL _bMuted;
 
 extern FLOAT snd_tmMixAhead;
 extern INDEX snd_iDevice;
@@ -224,13 +219,14 @@ BOOL CSoundAPI_DSound::StartUp(BOOL bReport) {
   }
 
   // Set cooperative level to priority
-  _hwndCurrent = _hwndMain;
+  extern OS::Window _hwndMain;
+  m_wndCurrent = _hwndMain;
 
 #if SE1_PREFER_SDL
   // [Cecil] FIXME: Get HWND from SDL_Window
   hResult = m_pDS->SetCooperativeLevel(GetActiveWindow(), DSSCL_PRIORITY);
 #else
-  hResult = m_pDS->SetCooperativeLevel(_hwndCurrent, DSSCL_PRIORITY);
+  hResult = m_pDS->SetCooperativeLevel(m_wndCurrent, DSSCL_PRIORITY);
 #endif
 
   if (hResult != DS_OK) return Fail(TRANS("  ! DirectSound error: Cannot set cooperative level.\n"));
@@ -258,7 +254,7 @@ BOOL CSoundAPI_DSound::StartUp(BOOL bReport) {
   if (hResult != DS_OK) return Fail(TRANS("  ! DirectSound error: Cannot set primary sound buffer format.\n"));
 
   // Start up secondary sound buffers
-  SLONG slBufferSize = SLONG(ceil(snd_tmMixAhead * wfe.nSamplesPerSec) * wfe.wBitsPerSample / 8 * wfe.nChannels);
+  SLONG slBufferSize = CalculateMixerSize(wfe);
 
   if (!InitSecondary(m_pDSSecondary, slBufferSize)) return FALSE;
 
@@ -324,7 +320,7 @@ BOOL CSoundAPI_DSound::StartUp(BOOL bReport) {
   m_iWriteOffset = 0;
   m_iWriteOffset2 = 0;
   m_slMixerBufferSize = slBufferSize;
-  m_slDecodeBufferSize = m_slMixerBufferSize * ((44100 + wfe.nSamplesPerSec - 1) / wfe.nSamplesPerSec);
+  m_slDecodeBufferSize = CalculateDecoderSize(wfe);
 
   AllocBuffers();
 
@@ -343,6 +339,7 @@ BOOL CSoundAPI_DSound::StartUp(BOOL bReport) {
 };
 
 void CSoundAPI_DSound::ShutDown(void) {
+  m_wndCurrent = NULL;
   m_bUsingEAX = FALSE;
 
   #define DSOUND_FREE(_Buf)          if (_Buf != NULL) {               _Buf->Release(); _Buf = NULL; }
@@ -363,12 +360,12 @@ void CSoundAPI_DSound::ShutDown(void) {
   if (m_pDS != NULL)
   {
     // Reset cooperative level
-    if (_hwndCurrent != NULL) {
+    if (m_wndCurrent != NULL) {
       #if SE1_PREFER_SDL
         // [Cecil] FIXME: Get HWND from SDL_Window
         m_pDS->SetCooperativeLevel(GetActiveWindow(), DSSCL_NORMAL);
       #else
-        m_pDS->SetCooperativeLevel(_hwndCurrent, DSSCL_NORMAL);
+        m_pDS->SetCooperativeLevel(m_wndCurrent, DSSCL_NORMAL);
       #endif
     }
 
@@ -499,12 +496,12 @@ SLONG CSoundAPI_DSound::PrepareSoundBuffer(void)
   return slDataToMix;
 };
 
-void CSoundAPI_DSound::Mute(void) {
+void CSoundAPI_DSound::Mute(BOOL &bSetSoundMuted) {
   // Synchronize access to sounds
   CTSingleLock slSounds(&_pSound->sl_csSound, TRUE);
 
   // Suppress future mixing and erase sound buffer
-  _bMuted = TRUE;
+  bSetSoundMuted = TRUE;
 
   LPVOID lpData;
   DWORD dwSize;
@@ -602,3 +599,5 @@ void CSoundAPI_DSound::UpdateEAX(void) {
     Fail(TRANS("  ! DirectSound3D error: Cannot set 3D position.\n"));
   }
 };
+
+#endif // SE1_WIN

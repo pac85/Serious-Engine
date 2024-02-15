@@ -34,6 +34,18 @@ CAbstractSoundAPI::~CAbstractSoundAPI() {
   ShutDown();
 };
 
+// Calculate mixer buffer size
+SLONG CAbstractSoundAPI::CalculateMixerSize(const WAVEFORMATEX &wfe) {
+  extern FLOAT snd_tmMixAhead;
+  return SLONG(ceil(snd_tmMixAhead * wfe.nSamplesPerSec) * wfe.wBitsPerSample / 8 * wfe.nChannels);
+};
+
+// Calculate decoder buffer size (only after mixer size)
+SLONG CAbstractSoundAPI::CalculateDecoderSize(const WAVEFORMATEX &wfe) {
+  // Decoder buffer always works at 44khz
+  return m_slMixerBufferSize * ((44100 + wfe.nSamplesPerSec - 1) / wfe.nSamplesPerSec);
+};
+
 // Allocate new buffer memory
 void CAbstractSoundAPI::AllocBuffers(void) {
   ASSERT(m_pslMixerBuffer == NULL);
@@ -67,9 +79,11 @@ const CTString &CAbstractSoundAPI::GetApiName(CAbstractSoundAPI::ESoundAPI eAPI)
   }
 
   static const CTString astrApiNames[E_SND_MAX] = {
+  #if SE1_WIN
     "WaveOut",
     "DirectSound",
     "EAX",
+  #endif
   };
 
   return astrApiNames[eAPI];
@@ -78,12 +92,16 @@ const CTString &CAbstractSoundAPI::GetApiName(CAbstractSoundAPI::ESoundAPI eAPI)
 // Create API from type
 CAbstractSoundAPI *CAbstractSoundAPI::CreateAPI(CAbstractSoundAPI::ESoundAPI eAPI) {
   switch (eAPI) {
+  #if SE1_WIN
     case E_SND_WAVEOUT: return new CSoundAPI_WaveOut;
     case E_SND_DSOUND:  return new CSoundAPI_DSound;
     case E_SND_EAX:     return new CSoundAPI_DSound;
-  }
+  #endif
 
-  // Invalid API
-  ASSERT(NULL);
-  return NULL;
+    // Invalid API
+    default: {
+      ASSERT(NULL);
+      return NULL;
+    }
+  }
 };
