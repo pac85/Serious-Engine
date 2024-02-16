@@ -19,14 +19,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
+// [Cecil] Initialize IFeel in the engine
+void SE_IFeelInit(void);
+
 ENGINE_API BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd);
 ENGINE_API void IFeel_DeleteDevice();
 ENGINE_API CTString IFeel_GetProductName();
 ENGINE_API CTString IFeel_GetProjectFileName();
 ENGINE_API BOOL IFeel_LoadFile(CTFileName fnFile);
 ENGINE_API void IFeel_UnLoadFile();
-ENGINE_API void IFeel_PlayEffect(char *pstrEffectName);
-ENGINE_API void IFeel_StopEffect(char *pstrEffectName);
+ENGINE_API void IFeel_PlayEffect(const char *strEffectName);
+ENGINE_API void IFeel_StopEffect(const char *strEffectName);
 ENGINE_API void IFeel_ChangeGain(FLOAT fGain);
 
 #endif  /* include-once check. */

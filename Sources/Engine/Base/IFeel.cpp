@@ -103,6 +103,30 @@ CTString IFeel_GetProjectFileName()
   return strDefaultProjectFile;
 }
 
+// [Cecil] Initialize IFeel in the engine
+void SE_IFeelInit(void) {
+  HWND hwnd = NULL; //GetDesktopWindow();
+  HINSTANCE hInstance = GetModuleHandleA(NULL);
+
+  if (!IFeel_InitDevice(hInstance, hwnd)) return;
+
+  CTString strDefaultProject = "Data\\Default.ifr";
+
+  // Get project file name for this device
+  CTString strIFeel = IFeel_GetProjectFileName();
+
+  // If no filename is returned, use default file
+  if (strIFeel == "") strIFeel = strDefaultProject;
+
+  if (!IFeel_LoadFile(strIFeel)) {
+    if (strIFeel != strDefaultProject) {
+      IFeel_LoadFile(strDefaultProject);
+    }
+  }
+
+  CPrintF("\n");
+};
+
 // inits imm ifeel device
 BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
 {
@@ -202,15 +226,15 @@ void IFeel_UnloadFile()
   if(immUnloadFile!=NULL) immUnloadFile();
 }
 // plays effect from ifr file
-void IFeel_PlayEffect(char *pstrEffectName)
+void IFeel_PlayEffect(const char *strEffectName)
 {
   IFeel_ChangeGain(ifeel_fGain);
-  if(immPlayEffect!=NULL) immPlayEffect(pstrEffectName);
+  if(immPlayEffect!=NULL) immPlayEffect(strEffectName);
 }
 // stops effect from ifr file
-void IFeel_StopEffect(char *pstrEffectName)
+void IFeel_StopEffect(const char *strEffectName)
 {
-  if(immStopEffect!=NULL) immStopEffect(pstrEffectName);
+  if(immStopEffect!=NULL) immStopEffect(strEffectName);
 }
 // change gain
 void IFeel_ChangeGain(FLOAT fGain)

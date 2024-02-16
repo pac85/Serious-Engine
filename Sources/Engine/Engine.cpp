@@ -530,25 +530,8 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   ReleaseDC( NULL, hdc);
 #endif
 
-  // init IFeel
-  HWND hwnd = NULL;//GetDesktopWindow();
-  HINSTANCE hInstance = GetModuleHandle(NULL);
-  if(IFeel_InitDevice(hInstance,hwnd))
-  {
-    CTString strDefaultProject = "Data\\Default.ifr";
-    // get project file name for this device
-    CTString strIFeel = IFeel_GetProjectFileName();
-    // if no file name is returned use default file
-    if(strIFeel.Length()==0) strIFeel = strDefaultProject;
-    if(!IFeel_LoadFile(strIFeel))
-    {
-      if(strIFeel!=strDefaultProject)
-      {
-        IFeel_LoadFile(strDefaultProject);
-      }
-    }
-    CPrintF("\n");
-  }
+  // [Cecil] Initialize IFeel
+  SE_IFeelInit();
 }
 
 
