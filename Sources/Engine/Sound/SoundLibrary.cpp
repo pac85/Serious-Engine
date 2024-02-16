@@ -67,7 +67,7 @@ extern FLOAT snd_fDFilter  = 3.0f;   // filter for down
 ENGINE_API extern INDEX snd_iFormat = 3;
 extern INDEX snd_bMono = FALSE;
 INDEX snd_iDevice = -1;
-INDEX snd_iInterface = CAbstractSoundAPI::E_SND_EAX;   // 0=WaveOut, 1=DirectSound, 2=EAX
+INDEX snd_iInterface = CAbstractSoundAPI::E_SND_DEFAULT; // [Cecil] Default API type depending on platform
 INDEX snd_iMaxOpenRetries = 3;
 INDEX snd_iMaxExtraChannels = 32;
 FLOAT snd_tmOpenFailDelay = 0.5f;
@@ -75,6 +75,9 @@ FLOAT snd_fEAXPanning = 0.0f;
 
 static FLOAT snd_fNormalizer = 0.9f;
 static FLOAT _fLastNormalizeValue = 1;
+
+// [Cecil] TEMP: For specifying SDL audio device
+CTString snd_strDeviceName;
 
 static BOOL _bMutedForMixing = FALSE;
 
@@ -299,6 +302,9 @@ void CSoundLibrary::Init(void)
   _pShell->DeclareSymbol( "persistent user FLOAT snd_tmOpenFailDelay;",   &snd_tmOpenFailDelay);
   _pShell->DeclareSymbol( "persistent user FLOAT snd_fEAXPanning;", &snd_fEAXPanning);
 
+  // [Cecil] TEMP: For specifying SDL audio device
+  _pShell->DeclareSymbol("persistent user CTString snd_strDeviceName;", &snd_strDeviceName);
+
   // [Cecil] Ignore sounds on a dedicated server
   if (_eEngineAppType == E_SEAPP_SERVER) {
     CPrintF(TRANS("Skipping initialization of sound for dedicated servers...\n"));
@@ -314,8 +320,18 @@ void CSoundLibrary::Init(void)
   // initialize any installed sound decoders
   CSoundDecoder::InitPlugins();
 
+#if SE1_SDL
+  // [Cecil] SDL: List available audio devices
+  sl_ctWaveDevices = (INDEX)SDL_GetNumAudioDevices(0);
+  CPrintF(TRANS("  Detected devices: %d\n"), sl_ctWaveDevices);
+
+  for (int iDevice = 0; iDevice < sl_ctWaveDevices; iDevice++) {
+    CPrintF(TRANS("    device %d: %s\n"), iDevice, SDL_GetAudioDeviceName(iDevice, 0));
+  }
+
+#else
   // get number of devices
-  INDEX ctDevices = waveOutGetNumDevs();
+  const INDEX ctDevices = (INDEX)waveOutGetNumDevs();
   CPrintF(TRANS("  Detected devices: %d\n"), ctDevices);
   sl_ctWaveDevices = ctDevices;
   
@@ -332,7 +348,8 @@ void CSoundLibrary::Init(void)
     CPrintF(TRANS("      form: 0x%08x, ch: %d, support: 0x%08x\n"), 
       woc.dwFormats, woc.wChannels, woc.dwSupport);
   }
-  // done
+#endif // SE1_SDL
+
   CPrintF("\n");
 };
 

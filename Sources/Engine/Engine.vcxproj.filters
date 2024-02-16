@@ -733,6 +733,9 @@
     <ClCompile Include="Sound\SoundAPI.cpp">
       <Filter>Source Files\Sound</Filter>
     </ClCompile>
+    <ClCompile Include="Sound\SoundAPI_SDL.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Anim.h">
@@ -1355,6 +1358,9 @@
     </ClInclude>
     <ClInclude Include="SE_Config.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundAPI_SDL.h">
+      <Filter>Header Files\Sound Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

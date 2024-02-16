@@ -20,6 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Available sound interfaces
 #include <Engine/Sound/SoundAPI_DSound.h>
+#include <Engine/Sound/SoundAPI_SDL.h>
 #include <Engine/Sound/SoundAPI_WaveOut.h>
 
 CAbstractSoundAPI::CAbstractSoundAPI() {
@@ -84,6 +85,9 @@ const CTString &CAbstractSoundAPI::GetApiName(CAbstractSoundAPI::ESoundAPI eAPI)
     "DirectSound",
     "EAX",
   #endif
+  #if SE1_SDL
+    "SDL Audio",
+  #endif
   };
 
   return astrApiNames[eAPI];
@@ -96,6 +100,9 @@ CAbstractSoundAPI *CAbstractSoundAPI::CreateAPI(CAbstractSoundAPI::ESoundAPI eAP
     case E_SND_WAVEOUT: return new CSoundAPI_WaveOut;
     case E_SND_DSOUND:  return new CSoundAPI_DSound;
     case E_SND_EAX:     return new CSoundAPI_DSound;
+  #endif
+  #if SE1_SDL
+    case E_SND_SDL:     return new CSoundAPI_SDL;
   #endif
 
     // Invalid API

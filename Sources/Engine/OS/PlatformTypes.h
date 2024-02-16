@@ -73,9 +73,7 @@ typedef struct {
   LONG bottom;
 } RECT;
 
-// WAV format
-#define WAVE_FORMAT_PCM 0x0001
-
+// For sound playback using a specific API
 typedef struct {
   SWORD wFormatTag;
   WORD  nChannels;
@@ -85,6 +83,8 @@ typedef struct {
   DWORD nAvgBytesPerSec;
   WORD  cbSize;
 } WAVEFORMATEX;
+
+#define WAVE_FORMAT_PCM 0x0001
 
 #endif // SE1_UNIX
 

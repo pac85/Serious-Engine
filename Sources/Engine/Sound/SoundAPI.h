@@ -39,8 +39,19 @@ class ENGINE_API CAbstractSoundAPI {
       E_SND_DSOUND,
       E_SND_EAX,
     #endif
+    #if SE1_SDL
+      E_SND_SDL,
+    #endif
 
-      E_SND_MAX, // [Cecil] NOTE: This should always be at least 1 under any configuration
+      // [Cecil] NOTE: This should always be at least 1 under any configuration
+      E_SND_MAX,
+
+      // Default API to use
+    #if SE1_WIN
+      E_SND_DEFAULT = E_SND_EAX,
+    #else
+      E_SND_DEFAULT = E_SND_SDL,
+    #endif
     };
 
   public:
