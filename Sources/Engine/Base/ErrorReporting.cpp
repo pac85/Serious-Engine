@@ -261,10 +261,6 @@ void Breakpoint(void)
 // [Cecil] Prioritize old compiler
 #if SE1_OLD_COMPILER || SE1_USE_ASM
   __asm int 0x03;
-
-#elif !SE1_SDL
-  __debugbreak();
-
 #else
   // [Cecil] SDL: Trigger breakpoint universally
   SDL_TriggerBreakpoint();

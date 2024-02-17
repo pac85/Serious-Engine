@@ -49,12 +49,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif // SE1_WIN
 
 // [Cecil] SDL: Include SDL2 in its entirety
-#if SE1_SDL
-  #define SDL_MAIN_HANDLED
-  #include <SDL2/include/SDL.h>
+#define SDL_MAIN_HANDLED
+#include <SDL2/include/SDL.h>
 
-  #pragma comment(lib, "SDL2.lib")
-#endif
+#pragma comment(lib, "SDL2.lib")
 
 // [Cecil] GLEW: Include glew in its entirety
 #if SE1_GLEW

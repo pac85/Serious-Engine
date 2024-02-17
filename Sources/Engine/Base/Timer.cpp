@@ -129,7 +129,7 @@ void CTimer_TimerFunc_internal(void)
 //  } CTSTREAM_END;
 }
 
-#if SE1_SDL
+#if SE1_PREFER_SDL
 
 // [Cecil] SDL: Timer tick function
 Uint32 CTimer_TimerFunc(Uint32 interval, void *param) {
@@ -153,7 +153,7 @@ void __stdcall CTimer_TimerFunc(UINT uID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR
   CTimer_TimerFunc_internal();
 }
 
-#endif // SE1_SDL
+#endif // SE1_PREFER_SDL
 
 #pragma inline_depth()
 
@@ -324,7 +324,7 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   // start interrupt (eventually)
   if( tm_bInterrupt)
   {
-  #if SE1_SDL
+  #if SE1_PREFER_SDL
     // [Cecil] SDL: Add timer
     if (SDL_Init(SDL_INIT_TIMER) == -1) {
       FatalError(TRANS("Cannot initialize SDL timer:\n%s"), SDL_GetError());
@@ -365,7 +365,7 @@ CTimer::~CTimer(void)
 {
   ASSERT(_pTimer == this);
 
-#if SE1_SDL
+#if SE1_PREFER_SDL
   // [Cecil] SDL: Remove timer
   SDL_RemoveTimer(tm_TimerID);
 
@@ -482,7 +482,7 @@ CTimerValue CTimer::GetHighPrecisionTimer(void) {
 
 // [Cecil] Suspend current thread execution for some time (cross-platform replacement for Sleep() from Windows API)
 void CTimer::Suspend(ULONG ulMilliseconds) {
-#if SE1_SDL
+#if SE1_PREFER_SDL
   // [Cecil] SDL: Delay
   SDL_Delay(ulMilliseconds);
 

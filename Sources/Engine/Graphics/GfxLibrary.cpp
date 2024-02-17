@@ -960,7 +960,7 @@ static void PrepareTables(void)
 // [Cecil] GLEW: Initialize GLEW by creating a temporary context
 static void InitGLEW(void) {
   // Create window and context for it
-#if SE1_SDL
+#if SE1_PREFER_SDL
   SDL_Window *pWnd = SDL_CreateWindow("temp_glew_init", 0, 0, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
 
   if (pWnd == NULL) {
@@ -1000,7 +1000,7 @@ static void InitGLEW(void) {
 
   HGLRC hglrc = wglCreateContext(hdc);
   wglMakeCurrent(hdc, hglrc);
-#endif
+#endif // SE1_PREFER_SDL
 
   // Initialize GLEW
   glewExperimental = GL_TRUE;
@@ -1014,7 +1014,7 @@ static void InitGLEW(void) {
   glGetError();
 
   // Cleanup
-#if SE1_SDL
+#if SE1_PREFER_SDL
   SDL_GL_DeleteContext(pContext);
   SDL_DestroyWindow(pWnd);
 
@@ -1023,7 +1023,7 @@ static void InitGLEW(void) {
   ReleaseDC(hwnd, hdc);
   DestroyWindow(hwnd);
   UnregisterClassA(wc.lpszClassName, hInstance);
-#endif
+#endif // SE1_PREFER_SDL
 };
 
 #endif

@@ -85,7 +85,7 @@ const CTString &CAbstractSoundAPI::GetApiName(CAbstractSoundAPI::ESoundAPI eAPI)
     "DirectSound",
     "EAX",
   #endif
-  #if SE1_SDL
+  #if SE1_PREFER_SDL
     "SDL Audio",
   #endif
   };
@@ -101,7 +101,7 @@ CAbstractSoundAPI *CAbstractSoundAPI::CreateAPI(CAbstractSoundAPI::ESoundAPI eAP
     case E_SND_DSOUND:  return new CSoundAPI_DSound;
     case E_SND_EAX:     return new CSoundAPI_DSound;
   #endif
-  #if SE1_SDL
+  #if SE1_PREFER_SDL
     case E_SND_SDL:     return new CSoundAPI_SDL;
   #endif
 

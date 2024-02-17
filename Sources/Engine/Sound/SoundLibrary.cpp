@@ -320,7 +320,7 @@ void CSoundLibrary::Init(void)
   // initialize any installed sound decoders
   CSoundDecoder::InitPlugins();
 
-#if SE1_SDL
+#if SE1_PREFER_SDL
   // [Cecil] SDL: List available audio devices
   sl_ctWaveDevices = (INDEX)SDL_GetNumAudioDevices(0);
   CPrintF(TRANS("  Detected devices: %d\n"), sl_ctWaveDevices);
@@ -348,7 +348,7 @@ void CSoundLibrary::Init(void)
     CPrintF(TRANS("      form: 0x%08x, ch: %d, support: 0x%08x\n"), 
       woc.dwFormats, woc.wChannels, woc.dwSupport);
   }
-#endif // SE1_SDL
+#endif // SE1_PREFER_SDL
 
   CPrintF("\n");
 };

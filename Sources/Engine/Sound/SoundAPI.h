@@ -39,7 +39,7 @@ class ENGINE_API CAbstractSoundAPI {
       E_SND_DSOUND,
       E_SND_EAX,
     #endif
-    #if SE1_SDL
+    #if SE1_PREFER_SDL
       E_SND_SDL,
     #endif
 

@@ -90,26 +90,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE1_GLEW
 #define SE1_GLEW          0 // GLEW support (0 - None; 1 - Available; 2 - Replace manual hooking of OpenGL in the engine)
 #endif
-#ifndef SE1_SDL
-#define SE1_SDL           0 // SDL support (0 - None; 1 - Available)
-#endif
 #ifndef SE1_USE_SDL
 #define SE1_USE_SDL       0 // Prefer SDL over Windows API (0 - No; 1 - Yes)
 #endif
 
-// Automatic overrides for non-Windows platforms
-
-#if !SE1_WIN
-  #undef SE1_SDL
-  #undef SE1_USE_SDL
-
-  #define SE1_SDL     1 // SDL should always be available
-  #define SE1_USE_SDL 1 // SDL should always be preferred over Windows API
-#endif
-
 // Automatic switches for convenience
 
-#define SE1_PREFER_SDL (SE1_SDL && SE1_USE_SDL)                   // Prefer SDL over Windows API?
+#define SE1_PREFER_SDL (!SE1_WIN || SE1_USE_SDL)                  // Prefer SDL over Windows API?
 #define SE1_USE_ASM    (SE1_WIN && SE1_32BIT && SE1_ASMOPT)       // Prioritize inline assembly under a traditional platform?
 #define SE1_USE_MMXINT (!SE1_WIN || (SE1_32BIT && SE1_MMXINTOPT)) // Prioritize MMX intrinsic functions?
 
