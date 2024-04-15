@@ -317,7 +317,8 @@ CTFileName CEngineGUI::FileRequester(
   return CTString( "");
 }
 
-ENGINEGUI_API CTFileName FileRequester(
+// [Cecil] Export via C API
+extern "C" ENGINEGUI_API CTFileName FileRequester(
   char *pchrTitle, 
   char *pchrFilters,
   char *pchrRegistry,
