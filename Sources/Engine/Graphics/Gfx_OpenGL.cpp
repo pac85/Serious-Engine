@@ -247,8 +247,8 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
                                   PIX pixResWidth, PIX pixResHeight)
 {
   _TBCapability = FALSE;
-	char *extensions = NULL;
-	char *wglextensions = NULL;
+	const char *extensions = NULL;
+	const char *wglextensions = NULL;
 	HGLRC hglrc; 
 	HWND dummyhwnd;
 	WNDCLASSA cls;
@@ -306,9 +306,9 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	aiAttribList[15] = _pGfx->go_ctSampleBuffers;
 
 	// get the extension list.
-	extensions = (char*)pglGetString(GL_EXTENSIONS);
+	extensions = (const char *)pglGetString(GL_EXTENSIONS);
 	// get the wgl extension list.
-	if( strstr((const char*)extensions, "WGL_EXT_extensions_string ") != NULL)
+	if (strstr(extensions, "WGL_EXT_extensions_string ") != NULL)
   { // windows extension string supported
     pwglGetExtensionsStringARB = (char* (__stdcall*)(HDC))OGL_GetProcAddress( "wglGetExtensionsStringARB");
     if( pwglGetExtensionsStringARB == NULL) {
@@ -317,7 +317,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
     }
     //CPrintF( "  WGL extension string passed...\n");
 		// get WGL extension string
-		wglextensions = (char*)pwglGetExtensionsStringARB(hdc);
+		wglextensions = pwglGetExtensionsStringARB(hdc);
  	}
   else {
     BACKOFF
@@ -325,8 +325,8 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	}
 
  	// check for the pixel format and multisample extension strings
- 	if( (strstr((const char*)wglextensions, "WGL_ARB_pixel_format ") != NULL) && 
-      (strstr((const char*)extensions,    "GL_3DFX_multisample ")  != NULL)) {
+ 	if ((strstr(wglextensions, "WGL_ARB_pixel_format ") != NULL) && 
+      (strstr(extensions,    "GL_3DFX_multisample ")  != NULL)) {
     // 3dfx extensions present
     _TBCapability = TRUE;
     pwglChoosePixelFormatARB      = (BOOL (__stdcall*)(HDC,const int*,const FLOAT*,UINT,int*,UINT*))OGL_GetProcAddress( "wglChoosePixelFormatARB");
