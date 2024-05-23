@@ -306,6 +306,11 @@ CTString CTString::ToUpper(void) const {
   return strCopy;
 };
 
+// [Cecil] Inline implementation of bit rotation
+static __forceinline ULONG rotl_inline(ULONG ul, int bits) {
+  return (ul << bits) | (ul >> (-bits & 31));
+};
+
 /* Calculate hashing value for the string. */
 ULONG CTString::GetHash(void) const
 {
@@ -313,7 +318,7 @@ ULONG CTString::GetHash(void) const
   INDEX len = Length();
 
   for(INDEX i=0; i<len; i++) {
-    ulKey = _rotl(ulKey,4)+toupper(str_String[i]);
+    ulKey = rotl_inline(ulKey, 4) + toupper(str_String[i]);
   }
   return ulKey;
 }

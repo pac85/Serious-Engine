@@ -81,10 +81,6 @@ inline void _strupr(char *str) {
   }
 };
 
-inline ULONG _rotl(ULONG ul, int bits) {
-  return (ul << bits) | (ul >> (-bits & 31));
-};
-
 // Windows reports
 inline void _RPT_do(const char *type, const char *fmt, ...)
 {
