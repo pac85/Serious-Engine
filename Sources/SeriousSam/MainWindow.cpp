@@ -234,7 +234,7 @@ void OpenMainWindowNormal( PIX pixSizeI, PIX pixSizeJ)
 
 #else
   // [Cecil] SDL: Create normal window
-  SDL_snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
+  _snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
   _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
     SDL_WINDOW_OPENGL);
 
@@ -273,7 +273,7 @@ void OpenMainWindowFullScreen( PIX pixSizeI, PIX pixSizeJ)
 
 #else
   // [Cecil] SDL: Create fullscreen window
-  SDL_snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
+  _snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
   _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
     SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
 
