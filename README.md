@@ -40,6 +40,8 @@ Once you've installed **Visual Studio** and (optionally) DirectX8 SDK, you can b
 
 These features are disabled by default but can be enabled if you wish to extend the capabilities of your Serious Engine build.
 
+Some features that can be customized using macros can be toggled by modifying the `Sources/Engine/SE_Config.h` header file instead of property sheets or project files.
+
 - **DirectX:** Download DirectX8 SDK (headers & libraries) ( https://www.microsoft.com/en-us/download/details.aspx?id=6812 ) and then define a `SE1_D3D` macro for all projects in the solution (you can do it by adding it to the `SE1GenericPreproc` property inside `Sources/Properties/Common.props`). You will also need to make sure the DirectX8 headers and libraries are located in the following folders (make the folder structure if it doesn't exist):
   - `Tools.Win32/Libraries/DX8SDK/Include/`
   - `Tools.Win32/Libraries/DX8SDK/Lib/`
@@ -48,9 +50,10 @@ These features are disabled by default but can be enabled if you wish to extend 
 - **3D Exploration**: Support is disabled due to copyright issues. If you need to create new models, either use editing tools from any of the original games or write your own code for 3D object import/export.
 - **IFeel:** Support is disabled due to copyright issues. If you need IFeel support, copy `IFC22.dll` and `ImmWrapper.dll` from the original games into the `Bin/` folder.
 - **Truform:** Its functionality is disabled by default. To enable it, you need to switch the `SE1_TRUFORM` macro to `1` (or define it as such for all projects).
-- **Simple DirectMedia Layer (SDL):** It's included with the source code but its functionality is disabled by default for the Windows platform. To enable it, you need to switch the `SE1_SDL` macro to `1` (or define it as such for all projects).
-  - It is always enabled for non-Windows platforms because cross-platform code cannot function without it.
+- **Simple DirectMedia Layer (SDL):** It's included with the source code and is initialized by the engine but its functionality is mostly unused by default for the Windows platform. To prioritize it over Win32 API, you need to switch the `SE1_USE_SDL` macro to `1` (or define it as such for all projects).
+  - It is always prioritized on non-Windows platforms because cross-platform code cannot function without it.
 - **The OpenGL Extension Wrangler Library (GLEW):** It's included with the source code but its functionality is disabled by default. To enable it, you need to switch the `SE1_GLEW` macro to `1` (or define it as such for all projects).
+  - Defining the macro with `2` makes it replace internal OpenGL hooking in the engine with GLEW methods, in case you intend to write new code using GLEW that's compatible with the engine.
 
 # Running
 
