@@ -1393,8 +1393,8 @@ void RM_BeginModelRenderingMask( CAnyProjection3D &prProjection, UBYTE *pubMask,
   // set mask shader
   extern void InternalShader_Mask(void);
   extern void InternalShaderDesc_Mask(ShaderDesc &shDesc);
-  _shMaskShader.ShaderFunc    = InternalShader_Mask;
-  _shMaskShader.GetShaderDesc = InternalShaderDesc_Mask;
+  _shMaskShader.pShaderFunc = InternalShader_Mask;
+  InternalShaderDesc_Mask(_shMaskShader.shDesc); // [Cecil]
 }
 
 

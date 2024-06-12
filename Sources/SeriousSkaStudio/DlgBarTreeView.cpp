@@ -296,8 +296,7 @@ void CDlgBarTreeView::ChangeTextureOnSelectedSurfaces(CTString strControlID,CTSt
     ASSERT(pmsrf!=NULL);
     if(pmsrf->msrf_pShader==NULL) continue;
     // get surface description and find witch param has same id as control that was modified
-    ShaderDesc shDesc;
-    pmsrf->msrf_pShader->GetShaderDesc(shDesc);
+    const ShaderDesc &shDesc = pmsrf->msrf_pShader->GetDesc();
     INDEX cttx = shDesc.sd_astrTextureNames.Count();
     // for each texture in shader
     for(INDEX itx=0;itx<cttx;itx++)
@@ -327,8 +326,7 @@ void CDlgBarTreeView::ChangeTextureCoordsOnSelectedSurfaces(CTString strControlI
     ASSERT(pmsrf!=NULL);
     if(pmsrf->msrf_pShader==NULL) continue;
     // get surface description and find witch param has same id as control that was modified
-    ShaderDesc shDesc;
-    pmsrf->msrf_pShader->GetShaderDesc(shDesc);
+    const ShaderDesc &shDesc = pmsrf->msrf_pShader->GetDesc();
     INDEX cttxc = shDesc.sd_astrTexCoordNames.Count();
     // for each texture in shader
     for(INDEX itxc=0;itxc<cttxc;itxc++)
@@ -365,8 +363,7 @@ void CDlgBarTreeView::ChangeColorOnSelectedSurfaces(CTString strControlID,COLOR 
     ASSERT(pmsrf!=NULL);
     if(pmsrf->msrf_pShader==NULL) continue;
     // get surface description and find witch param has same id as control that was modified
-    ShaderDesc shDesc;
-    pmsrf->msrf_pShader->GetShaderDesc(shDesc);
+    const ShaderDesc &shDesc = pmsrf->msrf_pShader->GetDesc();
     INDEX ctcl = shDesc.sd_astrColorNames.Count();
     // for each color in shader
     for(INDEX icl=0;icl<ctcl;icl++)
@@ -395,8 +392,7 @@ void CDlgBarTreeView::ChangeFloatOnSelectedSurfaces(CTString strControlID,FLOAT 
     ASSERT(pmsrf!=NULL);
     if(pmsrf->msrf_pShader==NULL) continue;
     // get surface description and find witch param has same id as control that was modified
-    ShaderDesc shDesc;
-    pmsrf->msrf_pShader->GetShaderDesc(shDesc);
+    const ShaderDesc &shDesc = pmsrf->msrf_pShader->GetDesc();
     INDEX ctfl = shDesc.sd_astrFloatNames.Count();
     // for each float in shader
     for(INDEX ifl=0;ifl<ctfl;ifl++) {
@@ -423,8 +419,7 @@ void CDlgBarTreeView::ChangeFlagOnSelectedSurfaces(CTString strControlID, BOOL b
     ASSERT(pmsrf!=NULL);
     if(pmsrf->msrf_pShader==NULL) continue;
     // get surface description and find witch param has same id as control that was modified
-    ShaderDesc shDesc;
-    pmsrf->msrf_pShader->GetShaderDesc(shDesc);
+    const ShaderDesc &shDesc = pmsrf->msrf_pShader->GetDesc();
     INDEX ctfl = shDesc.sd_astrFlagNames.Count();
     // for each flag in shader
     for(INDEX ifl=0;ifl<ctfl;ifl++) {
@@ -553,8 +548,6 @@ void CDlgBarTreeView::ShowSurfaceShader(MeshSurface *pmsrf,MeshLOD *pmlod,MeshIn
   _afcFlagControls.Clear();
   iCustomControlID=FIRSTSHADEID;
 
-  ShaderDesc shDesc;
-
   INDEX ctTextures = 0;
   INDEX ctTexCoords = 0;
   INDEX ctColors = 0;
@@ -563,7 +556,8 @@ void CDlgBarTreeView::ShowSurfaceShader(MeshSurface *pmsrf,MeshLOD *pmlod,MeshIn
 
   // if surface has shader
   if(pmsrf->msrf_pShader!=NULL) {
-    pmsrf->msrf_pShader->GetShaderDesc(shDesc);
+    const ShaderDesc &shDesc = pmsrf->msrf_pShader->GetDesc();
+
     ctTextures = shDesc.sd_astrTextureNames.Count();
     ctTexCoords = shDesc.sd_astrTexCoordNames.Count();
     ctColors = shDesc.sd_astrColorNames.Count();

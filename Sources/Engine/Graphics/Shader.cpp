@@ -88,7 +88,7 @@ void shaEnd(void)
   // Chech if shader exists
   ASSERT(_pShader!=NULL);
   // Call shader function
-  _pShader->ShaderFunc();
+  _pShader->pShaderFunc();
   // Clean used values
   shaClean();
 
@@ -774,8 +774,7 @@ BOOL shaOverBrightningEnabled(void)
 CShader::CShader()
 {
   hLibrary = NULL;
-  ShaderFunc = NULL;
-  GetShaderDesc = NULL;
+  pShaderFunc = NULL;
 }
 
 // Destructor
@@ -788,8 +787,8 @@ CShader::~CShader()
 // Clear shader 
 void CShader::Clear(void)
 {
-  ShaderFunc = NULL;
-  GetShaderDesc = NULL;
+  pShaderFunc = NULL;
+  shDesc.Clear(); // [Cecil]
   // release dll
   if(hLibrary!=NULL) OS::FreeLib(hLibrary);
 }
@@ -839,20 +838,27 @@ void CShader::Read_t(CTStream *istrFile)
     istrFile->Throw_t("Error loading '%s' library", fnmExpanded.ConstData());
     return;
   }
-  // get pointer to shader render function
-  ShaderFunc = (void (*)(void))OS::GetLibSymbol(hLibrary, strShaderFunc.ConstData());
+
+  // [Cecil] Try to find the function in the global registry, assuming it's been added
+  ShaderRenderRegistry_t::const_iterator itRender = _pShaderRenderRegistry->find(strShaderFunc);
+
   // if error accured
-  if(ShaderFunc==NULL)
-  {
+  if (itRender == _pShaderRenderRegistry->end()) {
     // report error
     istrFile->Throw_t("GetProcAddress 'ShaderFunc' Error");
   }
-  // get pointer to shader info function
-  GetShaderDesc = (void (*)(ShaderDesc &))OS::GetLibSymbol(hLibrary, strShaderInfo.ConstData());
+
+  // [Cecil] Try to find the function in the global registry, assuming it's been added
+  ShaderDescRegistry_t::const_iterator itDesc = _pShaderDescRegistry->find(strShaderInfo);
+
   // if error accured
-  if(GetShaderDesc==NULL) {
+  if (itDesc == _pShaderDescRegistry->end()) {
     // report error
     istrFile->Throw_t("GetProcAddress 'ShaderDesc' Error");
   }
+
+  // [Cecil] Get render function from the registry and read shader description immediately
+  pShaderFunc = itRender->second;
+  itDesc->second(shDesc);
 }
 

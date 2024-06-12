@@ -249,8 +249,7 @@ functions:
 
     if(iSurfaceID == iFlamerMeshID) {
       if(pShader != NULL) {
-        ShaderDesc sdDesc;
-        pShader->GetShaderDesc(sdDesc);
+        const ShaderDesc &sdDesc = pShader->GetDesc();
         if(sdDesc.sd_astrTextureNames.Count() > SHP_BASE_TEXTURE) {
           spParams.sp_aiTextureIDs[SHP_BASE_TEXTURE] = ska_GetIDFromStringTable("Lava04FX");
         }

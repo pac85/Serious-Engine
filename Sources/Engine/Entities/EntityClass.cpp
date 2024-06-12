@@ -246,10 +246,11 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   ec_hiClassDLL = OS::LoadLibOrThrow_t(fnmExpanded.ConstData());
   ec_fnmClassDLL = fnmDLL;
 
-  // get the pointer to the DLL class structure
-  ec_pdecDLLClass = (CDLLEntityClass *)OS::GetLibSymbol(ec_hiClassDLL, (strClassName + "_DLLClass").ConstData());
+  // [Cecil] Try to find the class in the global registry, assuming it's been added
+  EntityClassRegistry_t::const_iterator itInRegistry = _pEntityClassRegistry->find(strClassName);
+
   // if class structure is not found
-  if (ec_pdecDLLClass == NULL) {
+  if (itInRegistry == _pEntityClassRegistry->end()) {
     // free the library
     BOOL bSuccess = OS::FreeLib(ec_hiClassDLL);
     ASSERT(bSuccess);
@@ -258,6 +259,9 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
     // report error
     ThrowF_t(TRANS("Class '%s' not found in entity class package file '%s'"), strClassName, fnmDLL);
   }
+
+  // [Cecil] Get the pointer to the DLL class from the registry
+  ec_pdecDLLClass = itInRegistry->second;
 
   // obtain all components needed by the DLL
   {

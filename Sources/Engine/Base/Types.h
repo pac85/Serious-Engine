@@ -391,7 +391,5 @@ inline void Clear(float i) {};
 inline void Clear(double i) {};
 inline void Clear(void *pv) {};
 
-#define SYMBOLLOCATOR(symbol)
-
 #endif  /* include-once check. */
 

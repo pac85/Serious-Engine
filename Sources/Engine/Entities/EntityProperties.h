@@ -259,7 +259,7 @@ public:
     &classname##_OnWorldRender,                                       \
     &classname##_OnWorldEnd                                           \
   };\
-  SYMBOLLOCATOR(classname##_DLLClass)
+  DynamicModuleClass classname##_AddToRegistry(#classname, &classname##_DLLClass)
 
 #define ENTITY_CLASSDEFINITION_BASE(classname, id)                    \
   extern "C" DECLSPEC_DLLEXPORT CDLLEntityClass classname##_DLLClass; \

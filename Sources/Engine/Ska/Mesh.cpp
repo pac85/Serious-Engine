@@ -68,8 +68,7 @@ void ChangeSurfaceShader_t(MeshSurface &msrf,CTString fnNewShader)
   if(msrf.msrf_pShader!=NULL) _pShaderStock->Release(msrf.msrf_pShader);
   msrf.msrf_pShader = pShaderNew;
   // get new shader description
-  ShaderDesc shDesc;
-  msrf.msrf_pShader->GetShaderDesc(shDesc);
+  const ShaderDesc &shDesc = msrf.msrf_pShader->GetDesc();
   // if needed expand size of arrays for new shader
   // reset new values!!!!
   INDEX ctOldTextureIDs = msrf.msrf_ShadingParams.sp_aiTextureIDs.Count();
@@ -584,8 +583,7 @@ void CMesh::Write_t(CTStream *ostrFile)
       (*ostrFile)<<bShaderExists;
       if(bShaderExists) {
         // get shader decription
-        ShaderDesc shDesc;
-        msrf.msrf_pShader->GetShaderDesc(shDesc);
+        const ShaderDesc &shDesc = msrf.msrf_pShader->GetDesc();
         INDEX cttx=shDesc.sd_astrTextureNames.Count();
         INDEX cttc=shDesc.sd_astrTexCoordNames.Count();
         INDEX ctcol=shDesc.sd_astrColorNames.Count();
@@ -595,7 +593,6 @@ void CMesh::Write_t(CTStream *ostrFile)
         ASSERT(cttc<=msrf.msrf_ShadingParams.sp_aiTexCoordsIndex.Count());
         ASSERT(ctcol<=msrf.msrf_ShadingParams.sp_acolColors.Count());
         ASSERT(ctfl<=msrf.msrf_ShadingParams.sp_afFloats.Count());
-        ASSERT(msrf.msrf_pShader->GetShaderDesc!=NULL);
         // write texture count 
         (*ostrFile)<<cttx;
         // write texture coords count 
@@ -807,8 +804,7 @@ void CMesh::Read_t(CTStream *istrFile)
         // if mesh shader exisits
         if(msrf.msrf_pShader!=NULL) {
           // get shader description
-          ShaderDesc shDesc;
-          msrf.msrf_pShader->GetShaderDesc(shDesc);
+          const ShaderDesc &shDesc = msrf.msrf_pShader->GetDesc();
           // check if saved params count match shader params count
           if (shDesc.sd_astrTextureNames.Count() != cttx) ThrowF_t("File '%s'\nWrong texture count %d", GetName().ConstData(), cttx);
           if (shDesc.sd_astrTexCoordNames.Count() != cttc) ThrowF_t("File '%s'\nWrong uvmaps count %d", GetName().ConstData(), cttc);

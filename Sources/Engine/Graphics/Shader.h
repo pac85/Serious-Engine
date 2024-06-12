@@ -38,6 +38,16 @@ struct ShaderDesc
   CStaticArray<class CTString> sd_astrFloatNames;
   CStaticArray<class CTString> sd_astrFlagNames;
   CTString sd_strShaderInfo;
+
+  // [Cecil] Clear shader descriptions
+  void Clear(void) {
+    sd_astrTextureNames.Clear();
+    sd_astrTexCoordNames.Clear();
+    sd_astrColorNames.Clear();
+    sd_astrFloatNames.Clear();
+    sd_astrFlagNames.Clear();
+    sd_strShaderInfo = "";
+  };
 };
 
 struct ShaderParams
@@ -58,15 +68,26 @@ struct ShaderParams
   ULONG               sp_ulFlags;
 };
 
+// [Cecil] Shader functions
+typedef void (*FShaderRender)(void);
+typedef void (*FShaderDesc)(ShaderDesc &shDesc);
+
 class ENGINE_API CShader : public CSerial
 {
 public:
   CShader();
   ~CShader();
-  
+
   HINSTANCE hLibrary;
-  void (*ShaderFunc)(void);
-  void (*GetShaderDesc)(ShaderDesc &shDesc);
+  FShaderRender pShaderFunc;
+
+  // [Cecil] Replaced "GetShaderFunc" function pointer with already read data
+  ShaderDesc shDesc;
+
+  // [Cecil] Get shader description
+  inline const ShaderDesc &GetDesc(void) const {
+    return shDesc;
+  };
 
   void Read_t( CTStream *istrFile); // throw char *
   void Write_t( CTStream *ostrFile); // throw char *
@@ -223,12 +244,12 @@ ENGINE_API BOOL shaOverBrightningEnabled(void);
 
 #define SHADER_MAIN(name) \
   extern "C" void DECLSPEC_DLLEXPORT Shader_##name (void);\
-  SYMBOLLOCATOR(Shader_##name);\
+  DynamicModuleClass Shader_##name##_AddToRegistry("Shader_" #name, &Shader_##name); \
   extern "C" void DECLSPEC_DLLEXPORT Shader_##name (void)
 
 #define SHADER_DESC(name,x) \
   extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name (x);\
-  SYMBOLLOCATOR(Shader_Desc_##name);\
+  DynamicModuleClass Shader_Desc_##name##_AddToRegistry("Shader_Desc_" #name, &Shader_Desc_##name); \
   extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name (x)
 
 #endif  /* include-once check. */
