@@ -64,6 +64,31 @@ class ENGINE_API OS {
       void Destroy(void);
     };
 
+    // Depending on build configuration this structure can either be:
+    // - A handle to a dynamic module
+    // - A dummy for a static module
+    struct EngineModule {
+      HMODULE hHandle;
+
+      EngineModule(HMODULE hOther = NULL) : hHandle(hOther) {};
+
+      inline BOOL IsLoaded(void) { return hHandle != NULL; };
+      inline void Load(const char *strLibrary) { hHandle = LoadLib(strLibrary); };
+      inline void LoadOrThrow_t(const char *strLibrary) { hHandle = LoadLibOrThrow_t(strLibrary); };
+
+      inline BOOL Free(void) {
+        if (!IsLoaded()) return FALSE;
+        BOOL bReturn = FreeLib(hHandle);
+        hHandle = NULL;
+        return bReturn;
+      };
+
+      inline EngineModule &operator=(const EngineModule &hOther) {
+        hHandle = hOther.hHandle;
+        return *this;
+      };
+    };
+
   // Dynamic library methods
   public:
 
