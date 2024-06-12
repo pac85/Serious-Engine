@@ -40,7 +40,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 CEntityClass::CEntityClass(void)
 {
   ec_fnmClassDLL.Clear();
-  ec_hiClassDLL = NULL;
   ec_pdecDLLClass = NULL;
 }
 /*
@@ -49,7 +48,6 @@ CEntityClass::CEntityClass(void)
 CEntityClass::CEntityClass(class CDLLEntityClass *pdecDLLClass)
 {
   ec_pdecDLLClass = pdecDLLClass;
-  ec_hiClassDLL = NULL;
   ec_fnmClassDLL.Clear();
 }
 
@@ -80,7 +78,7 @@ void CEntityClass::RemReference(void) {
 void CEntityClass::Clear(void)
 {
   // if the DLL is loaded
-  if (ec_hiClassDLL != NULL) {
+  if (ec_mdClassDLL.IsLoaded()) {
     // [Cecil] Free the class if it's been loaded
     if (ec_pdecDLLClass != NULL) {
       ec_pdecDLLClass->dec_OnEndClass();
@@ -89,15 +87,12 @@ void CEntityClass::Clear(void)
       ec_pdecDLLClass->ReleaseComponents();
     }
 
-    /* The dll is never released from memory, because declared shell symbols
-     * must stay avaliable, since they cannot be undeclared.
-     */
-    // free it
-    //BOOL bSuccess = OS::FreeLib(ec_hiClassDLL);
-    //ASSERT(bSuccess);
+    // [Cecil] The library should never be released from memory because declared
+    // shell symbols must remain avaliable, since they cannot be undeclared
+    ec_mdClassDLL = NULL;
   }
+
   ec_pdecDLLClass = NULL;
-  ec_hiClassDLL = NULL;
   ec_fnmClassDLL.Clear();
 }
 
@@ -245,7 +240,7 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   CTFileName fnmExpanded;
   ExpandFilePath(EFP_READ, fnmDLL, fnmExpanded);
 
-  ec_hiClassDLL = OS::LoadLibOrThrow_t(fnmExpanded.ConstData());
+  ec_mdClassDLL.LoadOrThrow_t(fnmExpanded.ConstData());
   ec_fnmClassDLL = fnmDLL;
 
   // [Cecil] Try to find the class in the global registry, assuming it's been added
@@ -254,9 +249,8 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   // if class structure is not found
   if (itInRegistry == _pEntityClassRegistry->end()) {
     // free the library
-    BOOL bSuccess = OS::FreeLib(ec_hiClassDLL);
+    BOOL bSuccess = ec_mdClassDLL.Free();
     ASSERT(bSuccess);
-    ec_hiClassDLL = NULL;
     ec_fnmClassDLL.Clear();
     // report error
     ThrowF_t(TRANS("Class '%s' not found in entity class package file '%s'"), strClassName, fnmDLL);

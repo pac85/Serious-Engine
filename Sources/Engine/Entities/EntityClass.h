@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class ENGINE_API CEntityClass : public CSerial {
 public:
   CTFileName ec_fnmClassDLL;              // filename of the DLL with the class
-  HINSTANCE ec_hiClassDLL;                // handle to the DLL with the class
+  OS::EngineModule ec_mdClassDLL;         // handle to the DLL with the class
   class CDLLEntityClass *ec_pdecDLLClass; // pointer to DLL class in the DLL
 
   /* Default constructor. */

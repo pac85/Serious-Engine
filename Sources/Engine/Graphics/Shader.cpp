@@ -773,7 +773,6 @@ BOOL shaOverBrightningEnabled(void)
 // Constructor
 CShader::CShader()
 {
-  hLibrary = NULL;
   pShaderFunc = NULL;
 }
 
@@ -790,7 +789,7 @@ void CShader::Clear(void)
   pShaderFunc = NULL;
   shDesc.Clear(); // [Cecil]
   // release dll
-  if(hLibrary!=NULL) OS::FreeLib(hLibrary);
+  mdLibrary.Free();
 }
 
 // Count used memory
@@ -828,11 +827,11 @@ void CShader::Read_t(CTStream *istrFile)
   // set new error mode
   UINT iOldErrorMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   // load dll
-  hLibrary = OS::LoadLib(fnmExpanded.ConstData());
+  mdLibrary.Load(fnmExpanded.ConstData());
   // return last error mode
   SetErrorMode(iOldErrorMode);
   // check if library has loaded
-  if(hLibrary==NULL)
+  if (!mdLibrary.IsLoaded())
   {
     // report error
     istrFile->Throw_t("Error loading '%s' library", fnmExpanded.ConstData());

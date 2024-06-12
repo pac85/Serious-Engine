@@ -78,7 +78,7 @@ public:
   CShader();
   ~CShader();
 
-  HINSTANCE hLibrary;
+  OS::EngineModule mdLibrary;
   FShaderRender pShaderFunc;
 
   // [Cecil] Replaced "GetShaderFunc" function pointer with already read data
