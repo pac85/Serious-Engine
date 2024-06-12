@@ -291,6 +291,7 @@
     <ClCompile Include="Base\CRCTable.cpp" />
     <ClCompile Include="Base\CTString.cpp" />
     <ClCompile Include="Base\Directory.cpp" />
+    <ClCompile Include="Base\DynamicModules.cpp" />
     <ClCompile Include="Base\ErrorReporting.cpp" />
     <ClCompile Include="Base\FileName.cpp" />
     <ClCompile Include="Base\IFeel.cpp" />
@@ -633,6 +634,7 @@
     <ClInclude Include="Base\CRC.h" />
     <ClInclude Include="Base\CRCTable.h" />
     <ClInclude Include="Base\CTString.h" />
+    <ClInclude Include="Base\DynamicModules.h" />
     <ClInclude Include="Base\ErrorReporting.h" />
     <ClInclude Include="Base\ErrorTable.h" />
     <ClInclude Include="Base\FileName.h" />

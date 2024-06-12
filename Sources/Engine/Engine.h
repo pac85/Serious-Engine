@@ -93,6 +93,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ProgressHook.h>
 #include <Engine/Base/Registry.h>
 #include <Engine/Base/IFeel.h>
+#include <Engine/Base/DynamicModules.h> // [Cecil]
 
 // [Cecil] File system interface
 #include <Engine/OS/FileSystem.h>

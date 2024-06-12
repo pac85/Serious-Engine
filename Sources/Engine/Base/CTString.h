@@ -241,6 +241,16 @@ ENGINE_API CTString RemoveSpecialCodes( const CTString &str);
 
 #include <Engine/Base/CTString.inl>
 
+// [Cecil] Hashing function for compatibility with STL
+namespace std {
+  template<class Key> struct hash;
+
+  template<> struct hash<CTString> {
+    inline size_t operator()(const CTString &str) const noexcept {
+      return str.GetHash();
+    };
+  };
+};
 
 #endif  /* include-once check. */
 
