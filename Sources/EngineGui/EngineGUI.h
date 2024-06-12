@@ -16,19 +16,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Engine.h>
 
 #ifdef ENGINEGUI_EXPORTS
-
-  #define ENGINEGUI_API __declspec(dllexport)
-
+  #define ENGINEGUI_API SE1_API_EXPORT
 #else
-
-  #define ENGINEGUI_API __declspec(dllimport)
+  #define ENGINEGUI_API SE1_API_IMPORT
 
   #ifdef NDEBUG
     #pragma comment(lib, "EngineGUI.lib")
   #else
     #pragma comment(lib, "EngineGUID.lib")
   #endif
-
 #endif
 
 class CEngineGUI

@@ -32,7 +32,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <htmlhelp.h>
 
-#define ENGINE_INTERNAL 1
+#define ENGINE_INTERNAL
 #include <EngineGUI/EngineGUI.h>
 #include "Modeler.h"
 

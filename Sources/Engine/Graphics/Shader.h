@@ -236,21 +236,15 @@ ENGINE_API void shaSetHazeColorArray(GFXColor *paHazeColors);
 // Is overbrightning enabled
 ENGINE_API BOOL shaOverBrightningEnabled(void);
 
-#if SE1_WIN
-  #define DECLSPEC_DLLEXPORT __declspec(dllexport)
-#else
-  #define DECLSPEC_DLLEXPORT
-#endif
-
 #define SHADER_MAIN(name) \
-  extern "C" void DECLSPEC_DLLEXPORT Shader_##name (void);\
+  extern "C" void SE1_API_EXPORT Shader_##name(void); \
   DynamicModuleClass Shader_##name##_AddToRegistry("Shader_" #name, &Shader_##name); \
-  extern "C" void DECLSPEC_DLLEXPORT Shader_##name (void)
+  void Shader_##name(void)
 
 #define SHADER_DESC(name,x) \
-  extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name (x);\
+  extern "C" void SE1_API_EXPORT Shader_Desc_##name(x); \
   DynamicModuleClass Shader_Desc_##name##_AddToRegistry("Shader_Desc_" #name, &Shader_Desc_##name); \
-  extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name (x)
+  void SE1_API_EXPORT Shader_Desc_##name(x)
 
 #endif  /* include-once check. */
 

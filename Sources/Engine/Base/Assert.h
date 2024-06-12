@@ -60,7 +60,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #else	/* ndef _NTSDK */
   /* current definition */
   #ifdef	_DLL
-  #define _CRTIMP __declspec(dllimport)
+  #define _CRTIMP SE1_API_IMPORT
   #else	/* ndef _DLL */
   #define _CRTIMP
   #endif	/* _DLL */

@@ -19,11 +19,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class CGameGUI {
 public:
   // functions called from World Editor
-  __declspec(dllexport) static void OnInvokeConsole(void);
-  __declspec(dllexport) static void OnPlayerSettings(void);
-  __declspec(dllexport) static void OnAudioQuality(void);
-  __declspec(dllexport) static void OnVideoQuality(void);
-  __declspec(dllexport) static void OnSelectPlayerAndControls(void);
+  static void OnInvokeConsole(void);
+  static void OnPlayerSettings(void);
+  static void OnAudioQuality(void);
+  static void OnVideoQuality(void);
+  static void OnSelectPlayerAndControls(void);
 };
 
 // global game gui object

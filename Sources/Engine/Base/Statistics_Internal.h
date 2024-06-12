@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#if !ENGINE_EXPORTS
+#ifndef ENGINE_EXPORTS
   #error engine-internal file included out of engine!
 #endif
 

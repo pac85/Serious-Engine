@@ -20,8 +20,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #include <commdlg.h>
 
-#define ENGINE_INTERNAL 1
-#define ENGINEGUI_EXPORTS 1
+#define ENGINE_INTERNAL
+#define ENGINEGUI_EXPORTS
 #include <EngineGUI/EngineGUI.h>
 
 #include "Resource.h"

@@ -59,7 +59,7 @@ static CStaticStackArray<INDEX> _actTriangles;  // world, model, particle, total
 // one and only Game object
 extern CGame *_pGame = NULL;
 
-extern "C" __declspec (dllexport) CGame *GAME_Create(void)
+extern "C" SE1_API_EXPORT CGame *GAME_Create(void)
 {
   _pGame = new CGame;
 

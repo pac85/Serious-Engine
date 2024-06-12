@@ -237,16 +237,9 @@ public:
   void ReleaseComponents(void);
 };
 
-/* rcg10062001 */
-#if SE1_WIN
-  #define DECLSPEC_DLLEXPORT __declspec(dllexport)
-#else
-  #define DECLSPEC_DLLEXPORT
-#endif
-
 // macro for defining entity class DLL structures
 #define ENTITY_CLASSDEFINITION(classname, basename, descriptivename, iconfilename, id)\
-  extern "C" DECLSPEC_DLLEXPORT CDLLEntityClass classname##_DLLClass; \
+  extern "C" SE1_API_EXPORT CDLLEntityClass classname##_DLLClass; \
   CDLLEntityClass classname##_DLLClass = {                            \
     classname##_properties,                                           \
     classname##_propertiesct,                                         \
@@ -270,7 +263,7 @@ public:
   DynamicModuleClass classname##_AddToRegistry(#classname, &classname##_DLLClass)
 
 #define ENTITY_CLASSDEFINITION_BASE(classname, id)                    \
-  extern "C" DECLSPEC_DLLEXPORT CDLLEntityClass classname##_DLLClass; \
+  extern "C" SE1_API_EXPORT CDLLEntityClass classname##_DLLClass; \
   CDLLEntityClass classname##_DLLClass = {                            \
     NULL,0, NULL,0, NULL,0, "", "", id,                               \
     NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL                    \

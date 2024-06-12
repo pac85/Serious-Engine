@@ -33,7 +33,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif // _AFX_NO_AFXCMN_SUPPORT
 #include <htmlhelp.h>
 
-#define ENGINE_INTERNAL 1
+#define ENGINE_INTERNAL
 #include <EngineGUI/EngineGUI.h>
 #include <Engine/GameShell.h>
 #include <Engine/Base/ChangeableRT.h>

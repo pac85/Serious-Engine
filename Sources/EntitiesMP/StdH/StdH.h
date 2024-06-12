@@ -17,12 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <GameMP/SessionProperties.h>
 #include <GameMP/PlayerSettings.h>
 
-/* rcg10042001 protect against Visual C-isms. */
-#if SE1_WIN
-  #define DECL_DLL __declspec(dllexport)
-#elif SE1_UNIX
-  #define DECL_DLL 
-#endif
+#define DECL_DLL SE1_API_EXPORT
 
 #include "../Global.h"
 #include "../Common/Flags.h"

@@ -17,12 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <GameMP/Game.h>
 #include <GameMP/SEColors.h>
 
-/* rcg10042001 protect against Visual C-isms. */
-#if SE1_WIN
-  #define DECL_DLL __declspec(dllimport)
-#elif SE1_UNIX
-  #define DECL_DLL 
-#endif
+#define DECL_DLL SE1_API_IMPORT
 
 #include <EntitiesMP/Global.h>
 #include <EntitiesMP/Common/Common.h>
@@ -35,5 +30,3 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #else
   #pragma comment(lib, "EntitiesMPD.lib")
 #endif
-
-#undef DECL_DLL

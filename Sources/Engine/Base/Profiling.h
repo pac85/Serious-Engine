@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#if ENGINE_INTERNAL
+#ifdef ENGINE_INTERNAL
 
 #include <Engine/Base/CTString.h>
 #include <Engine/Base/Timer.h>
@@ -68,7 +68,7 @@ private:
 class CProfileForm {
 public:
 
-#if ENGINE_INTERNAL
+#ifdef ENGINE_INTERNAL
 // implementation:
   CTString pf_strTitle;             // main title of the profiling form
   CTString pf_strAveragingUnits;    // name for averaging units

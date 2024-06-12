@@ -14,20 +14,4 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include <Engine/Engine.h>
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CModelData.h>
 #include <GameMP/Game.h>
-
-/* rcg10042001 protect against Visual C-isms. */
-#if SE1_WIN
-  #define DECL_DLL __declspec(dllimport)
-#elif SE1_UNIX
-  #define DECL_DLL 
-#endif
-
-#include <EntitiesMP/Global.h>
-#include <EntitiesMP/Common/Common.h>
-#include <EntitiesMP/Common/GameInterface.h>
-#include <EntitiesMP/Player.h>
-
-#undef DECL_DLL

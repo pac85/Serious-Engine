@@ -15,11 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdAfx.h"
 #include <GameMP/Game.h>
-#define DECL_DLL
-
-#if 0  /* rcg10042001 Doesn't seem to exist. */
-#include <Entities/Global.h>
-#endif
 
 // application state variables
 extern BOOL _bRunning = TRUE;

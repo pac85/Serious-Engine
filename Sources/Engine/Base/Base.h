@@ -13,18 +13,21 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
+// [Cecil] Declaration specifiers for exporting and importing symbols from modules
+#if SE1_WIN
+  #define SE1_API_EXPORT __declspec(dllexport)
+  #define SE1_API_IMPORT __declspec(dllimport)
+#else
+  #define SE1_API_EXPORT __attribute__((visibility("default")))
+  #define SE1_API_IMPORT
+#endif
 
-/*
- * rcg10042001 In case these don't get defined in the project file, try to
- *   catch them here...
- */
 #if SE1_WIN
   #ifndef PRAGMA_ONCE
     #define PRAGMA_ONCE
   #endif
 
   // disable problematic warnings
-
   #pragma warning(disable: 4251)  // dll interfacing problems
   #pragma warning(disable: 4275)  // dll interfacing problems
   #pragma warning(disable: 4018)  // signed/unsigned mismatch
@@ -33,20 +36,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma warning(disable: 4355)  // 'this' : used in base member initializer list
   #pragma warning(disable: 4660)  // template-class specialization is already instantiated
   #pragma warning(disable: 4723)  // potential divide by 0
+#endif
 
-  // define engine api exporting declaration specifiers
-  #ifdef ENGINE_EXPORTS
-    #define ENGINE_API __declspec(dllexport)
+// Define engine API
+#ifdef ENGINE_EXPORTS
+  #define ENGINE_API SE1_API_EXPORT
+#else
+  #define ENGINE_API SE1_API_IMPORT
+
+  #ifdef NDEBUG
+    #pragma comment(lib, "Engine.lib")
   #else
-    #define ENGINE_API __declspec(dllimport)
-
-    #ifdef NDEBUG
-      #pragma comment(lib, "Engine.lib")
-    #else
-      #pragma comment(lib, "EngineD.lib")
-    #endif
+    #pragma comment(lib, "EngineD.lib")
   #endif
-
-#elif SE1_UNIX
-  #define ENGINE_API
 #endif
