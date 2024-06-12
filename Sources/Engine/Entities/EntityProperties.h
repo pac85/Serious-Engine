@@ -227,6 +227,14 @@ public:
   void PrecacheTexture(SLONG slID);
   void PrecacheSound(SLONG slID);
   void PrecacheClass(SLONG slID, INDEX iUser = -1);
+
+  // [Cecil] Moved from CEntityClass
+
+  // Obtain all components from component table
+  void ObtainComponents_t(void);
+
+  // Release all components from component table
+  void ReleaseComponents(void);
 };
 
 /* rcg10062001 */

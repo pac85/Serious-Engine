@@ -81,11 +81,13 @@ void CEntityClass::Clear(void)
 {
   // if the DLL is loaded
   if (ec_hiClassDLL != NULL) {
-    // detach the DLL
-    ec_pdecDLLClass->dec_OnEndClass();
+    // [Cecil] Free the class if it's been loaded
+    if (ec_pdecDLLClass != NULL) {
+      ec_pdecDLLClass->dec_OnEndClass();
 
-    // release all components needed by the DLL
-    ReleaseComponents();
+      // Release all components needed by the DLL
+      ec_pdecDLLClass->ReleaseComponents();
+    }
 
     /* The dll is never released from memory, because declared shell symbols
      * must stay avaliable, since they cannot be undeclared.
@@ -174,14 +176,14 @@ CEntity *CEntityClass::New(void)
 /*
  * Obtain all components from component table.
  */
-void CEntityClass::ObtainComponents_t(void)
+void CDLLEntityClass::ObtainComponents_t(void)
 {
   // for each component
-  for (INDEX iComponent=0; iComponent<ec_pdecDLLClass->dec_ctComponents; iComponent++) {
+  for (INDEX iComponent = 0; iComponent < dec_ctComponents; iComponent++) {
     // if not precaching all
     if( gam_iPrecachePolicy<PRECACHE_ALL) {
       // if component is not class
-      CEntityComponent &ec = ec_pdecDLLClass->dec_aecComponents[iComponent];
+      CEntityComponent &ec = dec_aecComponents[iComponent];
       if (ec.ec_ectType!=ECT_CLASS) {
         // skip it
         continue;
@@ -191,7 +193,7 @@ void CEntityClass::ObtainComponents_t(void)
     // try to
     try {
       // obtain the component
-      ec_pdecDLLClass->dec_aecComponents[iComponent].Obtain_t();
+      dec_aecComponents[iComponent].Obtain_t();
     // if failed
     } catch (char *) {
       // if in paranoia mode
@@ -210,12 +212,12 @@ void CEntityClass::ObtainComponents_t(void)
 /*
  * Release all components from component table.
  */
-void CEntityClass::ReleaseComponents(void)
+void CDLLEntityClass::ReleaseComponents(void)
 {
   // for each component
-  for (INDEX iComponent=0; iComponent<ec_pdecDLLClass->dec_ctComponents; iComponent++) {
+  for (INDEX iComponent = 0; iComponent < dec_ctComponents; iComponent++) {
     // release the component
-    ec_pdecDLLClass->dec_aecComponents[iComponent].Release();
+    dec_aecComponents[iComponent].Release();
   }
 }
 
@@ -266,7 +268,7 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   // obtain all components needed by the DLL
   {
     CTmpPrecachingNow tpn;
-    ObtainComponents_t();
+    ec_pdecDLLClass->ObtainComponents_t();
   }
 
   // attach the DLL

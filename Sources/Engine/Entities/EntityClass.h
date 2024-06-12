@@ -28,11 +28,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 class ENGINE_API CEntityClass : public CSerial {
 public:
-  /* Obtain all components from component table. */
-  void ObtainComponents_t(void);  // throw char *
-  /* Release all components from component table. */
-  void ReleaseComponents(void);
-public:
   CTFileName ec_fnmClassDLL;              // filename of the DLL with the class
   HINSTANCE ec_hiClassDLL;                // handle to the DLL with the class
   class CDLLEntityClass *ec_pdecDLLClass; // pointer to DLL class in the DLL
