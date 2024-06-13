@@ -156,7 +156,7 @@ BOOL LSLoadNetSettings(const CTFileName &fnm)
 {
   sam_strNetworkSettings = fnm;
   CTString strCmd;
-  strCmd.PrintF("include \"%s\"", (const char*)sam_strNetworkSettings);
+  strCmd.PrintF("include \"%s\"", sam_strNetworkSettings.ConstData());
   _pShell->Execute(strCmd);
 
   void MenuGoToParent(void);

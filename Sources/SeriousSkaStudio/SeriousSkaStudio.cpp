@@ -305,7 +305,7 @@ void CSeriousSkaStudioApp::OnFileOpen()
   if(pmi == NULL)
   {
     // if faile to open smc
-    theApp.ErrorMessage("Failed to open model instance '%s'",(const char*)fnSim);
+    theApp.ErrorMessage("Failed to open model instance '%s'", fnSim.ConstData());
     return;
   }
   // create new document
@@ -392,7 +392,7 @@ BOOL StartParser(CTString fnParseFile)
   try
   {
     if (yyin==NULL) {
-      ThrowF_t("Cannot open file '%s'!", (const char*)fnParseFile );
+      ThrowF_t("Cannot open file '%s'!", fnParseFile.ConstData());
     }
 
     yyrestart(yyin);
@@ -731,7 +731,7 @@ BOOL CSeriousSkaStudioApp::ConvertAnimationInAnimSet(CAnimSet *pas,Animation *pa
   if(pan->an_bCompresed) strCompresion = "TRUE";
   if(pan->an_bCustomSpeed) strCustomSpeed.PrintF("  ANIMSPEED %g;",pan->an_fSecPerFrame);
   strAnimSet.PrintF("ANIMSETLIST\n{\n  TRESHOLD %g;\n  COMPRESION %s;\n%s\n  #INCLUDE \"%s\"\n}\n",
-    pan->an_fTreshold,(const char*)strCompresion,(const char*)strCustomSpeed,(const char*)pan->an_fnSourceFile);
+    pan->an_fTreshold, strCompresion.ConstData(), strCustomSpeed.ConstData(), pan->an_fnSourceFile.ConstData());
 
   try
   {
@@ -896,7 +896,7 @@ void CSeriousSkaStudioApp::SaveModelInstance_t(CModelInstance *pmi,CModelInstanc
   }
   
   ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
-  ostrFile.FPrintF_t("NAME \"%s\";\n",(const char*)pmi->GetName());
+  ostrFile.FPrintF_t("NAME \"%s\";\n", pmi->GetName().ConstData());
   ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
   ostrFile.FPrintF_t("{\n");
   iCurSpaces+=2;
@@ -906,7 +906,7 @@ void CSeriousSkaStudioApp::SaveModelInstance_t(CModelInstance *pmi,CModelInstanc
     MeshInstance &mshi = pmi->mi_aMeshInst[imi];
     ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
     CTString fnMesh = mshi.mi_pMesh->GetName();
-    ostrFile.FPrintF_t("MESH       \tTFNM \"%s\";\n",(const char*)fnMesh);
+    ostrFile.FPrintF_t("MESH       \tTFNM \"%s\";\n", fnMesh.ConstData());
     INDEX ctti=mshi.mi_tiTextures.Count();
     // write textures
     ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
@@ -917,7 +917,7 @@ void CSeriousSkaStudioApp::SaveModelInstance_t(CModelInstance *pmi,CModelInstanc
     for(INDEX iti=0;iti<ctti;iti++) {
       TextureInstance &ti = mshi.mi_tiTextures[iti];
       ostrFile.FPrintF_t(MAKESPACE(iCurSpaces+2));
-      ostrFile.FPrintF_t("\"%s\"\tTFNM \"%s\";\n",(const char*)ska_GetStringFromTable(ti.GetID()),(const char*)ti.ti_toTexture.GetName());
+      ostrFile.FPrintF_t("\"%s\"\tTFNM \"%s\";\n", ska_GetStringFromTable(ti.GetID()).ConstData(), ti.ti_toTexture.GetName().ConstData());
     }
     ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
     ostrFile.FPrintF_t("}\n");
@@ -926,14 +926,14 @@ void CSeriousSkaStudioApp::SaveModelInstance_t(CModelInstance *pmi,CModelInstanc
   // write skeleton
   if(pmi->mi_psklSkeleton != NULL) {
     ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
-    ostrFile.FPrintF_t("SKELETON  \tTFNM \"%s\";\n",(const char*)pmi->mi_psklSkeleton->GetName());
+    ostrFile.FPrintF_t("SKELETON  \tTFNM \"%s\";\n", pmi->mi_psklSkeleton->GetName().ConstData());
   }
   INDEX ctas=pmi->mi_aAnimSet.Count();
   // write animset
   for(INDEX ias=0;ias<ctas;ias++)
   {
     ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
-    ostrFile.FPrintF_t("ANIMSET   \tTFNM \"%s\";\n",(const char*)pmi->mi_aAnimSet[ias].GetName());
+    ostrFile.FPrintF_t("ANIMSET   \tTFNM \"%s\";\n", pmi->mi_aAnimSet[ias].GetName().ConstData());
   }
 
   // write all frames bouning box
@@ -978,7 +978,7 @@ void CSeriousSkaStudioApp::SaveModelInstance_t(CModelInstance *pmi,CModelInstanc
 
     ostrFile.FPrintF_t("\n");
     ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
-    ostrFile.FPrintF_t("PARENTBONE\t\"%s\";\n",(const char*)ska_GetStringFromTable(pcmi->mi_iParentBoneID));
+    ostrFile.FPrintF_t("PARENTBONE\t\"%s\";\n", ska_GetStringFromTable(pcmi->mi_iParentBoneID).ConstData());
 
     // attachment was in same file
     if(pcmi->mi_fnSourceFile == pmi->mi_fnSourceFile)
@@ -1001,7 +1001,7 @@ void CSeriousSkaStudioApp::SaveModelInstance_t(CModelInstance *pmi,CModelInstanc
       } catch(char*) {}
       ostrFile.FPrintF_t(MAKESPACE(iCurSpaces));
       // include that file
-      ostrFile.FPrintF_t("#INCLUDE\t\"%s\"\n",(const char*)fnCmiSourceFile);
+      ostrFile.FPrintF_t("#INCLUDE\t\"%s\"\n", fnCmiSourceFile.ConstData());
       if(bSaveChildren) 
       {
         INDEX itmpSpaces = iCurSpaces;
@@ -1031,15 +1031,15 @@ void CSeriousSkaStudioApp::SaveShaderParams_t(MeshLOD *pmlod,CTFileName fnShader
     if(msrf.msrf_pShader!=NULL) strShaderName = msrf.msrf_pShader->GetName();
     CTString strSurfName = ska_GetStringFromTable(msrf.msrf_iSurfaceID);
     
-    ostrFile.FPrintF_t("  SHADER_SURFACE \"%s\";\n  {\n",(const char*)strSurfName);
-    ostrFile.FPrintF_t("    SHADER_NAME \"%s\";\n",(const char*)strShaderName);
+    ostrFile.FPrintF_t("  SHADER_SURFACE \"%s\";\n  {\n", strSurfName.ConstData());
+    ostrFile.FPrintF_t("    SHADER_NAME \"%s\";\n", strShaderName.ConstData());
     // write texture names
     INDEX cttx = pShdParams->sp_aiTextureIDs.Count();
     ostrFile.FPrintF_t("    SHADER_TEXTURES %d\n    {\n",cttx);
     for(INDEX itx=0;itx<cttx;itx++)
     {
       CTString strTextID = ska_GetStringFromTable(pShdParams->sp_aiTextureIDs[itx]);
-      ostrFile.FPrintF_t("      \"%s\";\n",(const char*)strTextID);
+      ostrFile.FPrintF_t("      \"%s\";\n", strTextID.ConstData());
     }
     ostrFile.FPrintF_t("    };\n");
     // write uvmaps
@@ -1056,7 +1056,7 @@ void CSeriousSkaStudioApp::SaveShaderParams_t(MeshLOD *pmlod,CTFileName fnShader
     for(INDEX icol=0;icol<ctcol;icol++)
     {
       CTString strColor = CTString(0,"%.8X",pShdParams->sp_acolColors[icol]);
-      ostrFile.FPrintF_t("      0x%s;\n",(const char*)strColor);
+      ostrFile.FPrintF_t("      0x%s;\n", strColor.ConstData());
     }
     ostrFile.FPrintF_t("    };\n");
     //write floats
@@ -1069,7 +1069,7 @@ void CSeriousSkaStudioApp::SaveShaderParams_t(MeshLOD *pmlod,CTFileName fnShader
     ostrFile.FPrintF_t("    };\n");
     // write flags
     CTString strFlags = CTString(0,"%.8X",pShdParams->sp_ulFlags);
-    ostrFile.FPrintF_t("    SHADER_FLAGS 0x%s;\n",(const char*)strFlags);
+    ostrFile.FPrintF_t("    SHADER_FLAGS 0x%s;\n", strFlags.ConstData());
 
     // close surface 
     ostrFile.FPrintF_t("  };\n");
@@ -1093,8 +1093,8 @@ void CSeriousSkaStudioApp::SaveMeshInstance_t(MeshInstance &mshi,CTFileStream &o
     CTFileName fnShaderParams = fnSource.FileDir()+fnSource.FileName()+".shp";
     try { fnSource.RemoveApplicationPath_t(); }
     catch(char *){}
-    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n",(const char*)fnShaderParams);
-    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n",(const char*)fnSource);
+    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n", fnShaderParams.ConstData());
+    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n", fnSource.ConstData());
     SaveShaderParams_t(&mlod,fnShaderParams);
   }
   ostrFile.FPrintF_t("}\n");
@@ -1116,7 +1116,7 @@ void CSeriousSkaStudioApp::SaveAnimSet_t(CAnimSet &as,CTFileStream &ostrFile)
     if(an.an_bCompresed) ostrFile.FPrintF_t("  COMPRESION TRUE;\n");
     else ostrFile.FPrintF_t("  COMPRESION FALSE;\n");
     if(an.an_bCustomSpeed) ostrFile.FPrintF_t("  ANIMSPEED %g;\n",an.an_fSecPerFrame);
-    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n",(const char*)fnSource);
+    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n", fnSource.ConstData());
   }
   ostrFile.FPrintF_t("}\n");
 }
@@ -1134,7 +1134,7 @@ void CSeriousSkaStudioApp::SaveSkeletonList_t(CSkeleton &skl,CTFileStream &ostrF
     CTFileName fnSource = slod.slod_fnSourceFile;
     try { fnSource.RemoveApplicationPath_t(); }
     catch(char *){}
-    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n",(const char*)fnSource);
+    ostrFile.FPrintF_t("  #INCLUDE \"%s\"\n", fnSource.ConstData());
   }
   ostrFile.FPrintF_t("}\n");
 }
@@ -1249,7 +1249,7 @@ CModelInstance *CSeriousSkaStudioApp::OnAddNewModelInstance()
     // create new file
     ostrFile.Create_t(fnSim,CTStream::CM_TEXT);
     // write empty header in file
-    ostrFile.FPrintF_t("NAME \"%s\";\n{\n}\n",(const char*)fnSim.FileName());
+    ostrFile.FPrintF_t("NAME \"%s\";\n{\n}\n", fnSim.FileName().ConstData());
     // close file
     ostrFile.Close();
     // load new smc file
@@ -1340,7 +1340,7 @@ void CSeriousSkaStudioApp::ErrorMessage(const char *strFormat, ...)
   CTString strText;
   CTime tm = CTime::GetCurrentTime();
   // set time and error
-  strText.PrintF("%.2d:%.2d:%.2d %s",tm.GetHour(),tm.GetMinute(),tm.GetSecond(),(const char*)strBuffer);
+  strText.PrintF("%.2d:%.2d:%.2d %s", tm.GetHour(), tm.GetMinute(), tm.GetSecond(), strBuffer.ConstData());
   if(bAppInitialized) {
     CMainFrame* pMainFrame = STATIC_DOWNCAST(CMainFrame, AfxGetMainWnd());
     pMainFrame->m_wndStatusBar.SetPaneText(0,CString(strText),TRUE);
@@ -1350,7 +1350,7 @@ void CSeriousSkaStudioApp::ErrorMessage(const char *strFormat, ...)
     // show log list
     ShowErrorDlg(TRUE);
   } else {
-    FatalError((const char*)strText);
+    FatalError("%s", strText.ConstData());
   }
 
 }
@@ -1365,7 +1365,7 @@ void CSeriousSkaStudioApp::NotificationMessage(const char *strFormat, ...)
   CTString strText;
   CTime tm = CTime::GetCurrentTime();
   // set time and error
-  strText.PrintF("%.2d:%.2d:%.2d %s",tm.GetHour(),tm.GetMinute(),tm.GetSecond(),(const char*)strBuffer);
+  strText.PrintF("%.2d:%.2d:%.2d %s", tm.GetHour(), tm.GetMinute(), tm.GetSecond(), strBuffer.ConstData());
   if(bAppInitialized) {
   CMainFrame* pMainFrame = STATIC_DOWNCAST(CMainFrame, AfxGetMainWnd());
   pMainFrame->m_wndStatusBar.SetPaneText(0,CString(strText),TRUE);
@@ -1373,7 +1373,7 @@ void CSeriousSkaStudioApp::NotificationMessage(const char *strFormat, ...)
   GetErrorList()->InsertItem(0,CString(strText),15);
   GetErrorList()->EnsureVisible(0,FALSE);
   } else {
-    WarningMessage((const char*)strText);
+    WarningMessage("%s", strText.ConstData());
   }
 }
 

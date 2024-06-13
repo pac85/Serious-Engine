@@ -184,7 +184,7 @@ void CreateCurrentAnimationList(CModelInstance *pmi,CTString &strAnimations)
   INDEX ctas = pmi->mi_aAnimSet.Count();
   if(ctas == 0) {
     strText.PrintF(MAKESPACE(ctChildLevel));
-    strText += CTString(0,"[%s]\n",(const char*)pmi->GetName());
+    strText += CTString(0, "[%s]\n", pmi->GetName().ConstData());
     strAnimations += strText;
     return;
   }
@@ -206,7 +206,7 @@ void CreateCurrentAnimationList(CModelInstance *pmi,CTString &strAnimations)
   }
 
   strText.PrintF(MAKESPACE(ctChildLevel));
-  strText += CTString(0,"[%s]\n",(const char*)pmi->GetName());
+  strText += CTString(0, "[%s]\n", pmi->GetName().ConstData());
   strAnimations += strText;
 
   // for each anim list after iFirstAnimList
@@ -530,12 +530,12 @@ void CSeriousSkaStudioView::RenderView(CDrawPort *pdp)
           ANGLE3D angAngle;
           DirectionVectorToAngles(vDirection,angAngle);
           
-          pDlgCurrent->GetDlgItem(IDC_LB_POSX)->SetWindowText((const char*)CTString(0,"%g",vStartPoint(1)));
-          pDlgCurrent->GetDlgItem(IDC_LB_POSY)->SetWindowText((const char*)CTString(0,"%g",vStartPoint(2)));
-          pDlgCurrent->GetDlgItem(IDC_LB_POSZ)->SetWindowText((const char*)CTString(0,"%g",vStartPoint(3)));
-          pDlgCurrent->GetDlgItem(IDC_LB_HEADING)->SetWindowText((const char*)CTString(0,"%g",angAngle(1)));
-          pDlgCurrent->GetDlgItem(IDC_LB_PITCH)->SetWindowText((const char*)CTString(0,"%g",angAngle(2)));
-          pDlgCurrent->GetDlgItem(IDC_LB_BANKING)->SetWindowText((const char*)CTString(0,"%g",angAngle(3)));
+          pDlgCurrent->GetDlgItem(IDC_LB_POSX)->SetWindowText(CTString(0, "%g", vStartPoint(1)).ConstData());
+          pDlgCurrent->GetDlgItem(IDC_LB_POSY)->SetWindowText(CTString(0, "%g", vStartPoint(2)).ConstData());
+          pDlgCurrent->GetDlgItem(IDC_LB_POSZ)->SetWindowText(CTString(0, "%g", vStartPoint(3)).ConstData());
+          pDlgCurrent->GetDlgItem(IDC_LB_HEADING)->SetWindowText(CTString(0, "%g", angAngle(1)).ConstData());
+          pDlgCurrent->GetDlgItem(IDC_LB_PITCH)->SetWindowText(CTString(0, "%g", angAngle(2)).ConstData());
+          pDlgCurrent->GetDlgItem(IDC_LB_BANKING)->SetWindowText(CTString(0, "%g", angAngle(3)).ConstData());
         } else {
           ASSERT(FALSE); // Current client dialog must be texture dialog
         }
@@ -1340,7 +1340,7 @@ void CSeriousSkaStudioView::OnAddMeshlod()
   {
     fMaxDistance+=5;
     CTString strLine;
-    strLine.PrintF("  MAX_DISTANCE %g;\n  #INCLUDE \"%s\"\n",fMaxDistance,(const char*)itMesh.Current());
+    strLine.PrintF("  MAX_DISTANCE %g;\n  #INCLUDE \"%s\"\n", fMaxDistance, itMesh.Current().ConstData());
     // add this file to mesh list file
     strMeshList += strLine;
   }
@@ -1430,7 +1430,7 @@ void CSeriousSkaStudioView::OnAddSkeletonlod()
   {
     fMaxDistance+=5;
     CTString strLine;
-    strLine.PrintF("  MAX_DISTANCE %g;\n  #INCLUDE \"%s\"\n",fMaxDistance,(const char*)itSkeleton.Current());
+    strLine.PrintF("  MAX_DISTANCE %g;\n  #INCLUDE \"%s\"\n", fMaxDistance, itSkeleton.Current().ConstData());
     // add this file to skeleton list file
     strSkeletonList += strLine;
   }
@@ -1530,7 +1530,7 @@ void CSeriousSkaStudioView::OnAddAnimation()
   {
     // add this file to animset list file
     CTString strLine;
-    strLine.PrintF("  TRESHOLD 0;\n  COMPRESION FALSE;\n  #INCLUDE \"%s\"\n",(const char*)itAnimation.Current());
+    strLine.PrintF("  TRESHOLD 0;\n  COMPRESION FALSE;\n  #INCLUDE \"%s\"\n", itAnimation.Current().ConstData());
     strAnimSet += strLine;
   }
   strAnimSet += "}\n";
@@ -1638,7 +1638,7 @@ void CSeriousSkaStudioView::BrowseTexture(CTString strTextureDir)
   CDynamicArray<CTFileName> afnTexture;
   _EngineGUI.FileRequester( "Open texture files",
     FILTER_TEXTURE,
-    (char*)(const char*)strTextureDir, strTextureDir, "", &afnTexture);
+    strTextureDir.ConstData(), strTextureDir, "", &afnTexture);
 
   // return if no files selected
   if(afnTexture.Count()<=0) return;

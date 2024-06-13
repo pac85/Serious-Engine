@@ -177,7 +177,7 @@ void CObject3D::BatchLoading_t(BOOL bOn)
       memset(&init,0,sizeof(init));
       init.e_size     = sizeof(init);
       init.e_registry = "Software\\X Dimension\\SeriousEngine";
-      init.e_plugins  = (char*)(const char*)strPlugins;
+      init.e_plugins  = strPlugins.Data();
       if(_Init3d) {
         _api=_Init3d(&init);
       } else  {

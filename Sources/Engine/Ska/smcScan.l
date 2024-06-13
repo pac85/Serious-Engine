@@ -38,7 +38,7 @@ void SMCPushBuffer(const char *strName, const char *strBuffer, BOOL bParserEnd)
   _abseBufferStack[_ibsBufferStackTop].bse_iLineCt = 1;
   _abseBufferStack[_ibsBufferStackTop].bse_bParserEnd = bParserEnd;
 
-  _abseBufferStack[_ibsBufferStackTop].bse_bs = syy_scan_string((char*)(const char*)strBuffer);
+  _abseBufferStack[_ibsBufferStackTop].bse_bs = syy_scan_string(strBuffer);
 
   syy_switch_to_buffer(_abseBufferStack[_ibsBufferStackTop].bse_bs);
 }

@@ -135,7 +135,7 @@ BOOL CSeriousSkaStudioDoc::OnOpenDocument(LPCTSTR lpszPathName)
   CModelInstance *pmi = theApp.OnOpenExistingInstance(fnModelFile);
   if(pmi == NULL) {
     // if failed to open smc
-    theApp.ErrorMessage("Failed to open model instance '%s'",(const char*)fnModelFile);
+    theApp.ErrorMessage("Failed to open model instance '%s'", fnModelFile.ConstData());
     return FALSE;
   }
   // set root model instance
@@ -184,7 +184,7 @@ INDEX CSeriousSkaStudioDoc::BeforeDocumentClose()
 {
   // if model instance was changed
   if(m_ModelInstance != NULL && m_bModelInstanceChanged) {
-    CTString strText = CTString(0,"Save changes for '%s'",(const char*)m_ModelInstance->mi_fnSourceFile);
+    CTString strText(0, "Save changes for '%s'", m_ModelInstance->mi_fnSourceFile.ConstData());
     // ask to save changes
     int iRet = AfxMessageBox(CString(strText),MB_YESNOCANCEL);
     // do not close doc

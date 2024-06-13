@@ -100,7 +100,7 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
   }
 
   char strFileName[256];
-  strcpy(strFileName,(const char*)_fnmApplicationPath);
+  strcpy(strFileName, _fnmApplicationPath.ConstData());
   strcat(strFileName, yytext);
   strFileName[strlen(strFileName)-1] = 0;
 
@@ -113,7 +113,7 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
     yyin = fopen( strFileName, "r" );
     
     if(yyin == NULL) 
-      ThrowF_t("File '%s'\n Could not open '%s' (line %d)",(const char*)strCurentFileName, strFileName, _yy_iLine);
+      ThrowF_t("File '%s'\n Could not open '%s' (line %d)", strCurentFileName.ConstData(), strFileName, _yy_iLine);
 
     include_stack_ptr++;
     yy_switch_to_buffer(yy_create_buffer( yyin, YY_BUF_SIZE ));
@@ -166,9 +166,9 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
   // remove double-quotes
   yytext[strlen(yytext)-1] = 0;
   pstrNew = yytext+1;
-  //yylval.str = (const char*)strNew;
+  //yylval.str = strNew.ConstData();
   strNew = (const char*)pstrNew;
-  yylval.str = (const char*)strNew;
+  yylval.str = strNew.ConstData();
   return(c_string); 
 }
 
@@ -189,7 +189,7 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
  /* for all unrecognized characters */
 . {
   // report an error
-  ThrowF_t("File '%s'\n Unrecognized character '%c' (line %d)",(const char*)strCurentFileName,yytext,_yy_iLine);
+  ThrowF_t("File '%s'\n Unrecognized character '%c' (line %d)", strCurentFileName.ConstData(), yytext, _yy_iLine);
 }
 
 %%

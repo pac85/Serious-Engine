@@ -59,7 +59,7 @@ void CDlgTipOfTheDay::DoDataExchange(CDataExchange* pDX)
   INDEX ctTips = m_astrTips.Count();
   if (ctTips>0) {
     theApp.m_iCurrentTipOfTheDay = (theApp.m_iCurrentTipOfTheDay+ctTips)%ctTips;
-    m_wndTipText.m_strTipText = (const char*)m_astrTips[theApp.m_iCurrentTipOfTheDay];
+    m_wndTipText.m_strTipText = m_astrTips[theApp.m_iCurrentTipOfTheDay].ConstData();
   } else {
     m_wndTipText.m_strTipText = "error";
   }

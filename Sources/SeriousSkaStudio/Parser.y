@@ -75,7 +75,7 @@ void yyerror(const char *strFormat, ...)
   CTString strError;
   strError.VPrintF(strFormat, arg);
   // throw the string
-  ThrowF_t("File '%s' (line %d)\n%s",(const char*)strCurentFileName, _yy_iLine, (const char*)strError);
+  ThrowF_t("File '%s' (line %d)\n%s", strCurentFileName.ConstData(), _yy_iLine, (const char*)strError);
 };
 
 %}
@@ -373,7 +373,7 @@ bone_envelope
     CTString strBoneEnvelope = ska_GetStringFromTable(be.be_iBoneID);
 
      yyerror("Incorect number of bone envelope frames count for bone envelope '%s'.\nExpecting %d but found only %d",
-             (const char*)strBoneEnvelope,_ctFrames,_iFrame);
+             strBoneEnvelope.ConstData(), _ctFrames, _iFrame);
   }
 }
 ;
@@ -460,7 +460,7 @@ morph_env
     CTString strMorphEnvelope = ska_GetStringFromTable(me.me_iMorphMapID);
 
      yyerror("Incorect number of morph envelope frames count for morph envelope '%s'.\nExpecting %d but found only %d",
-             (const char*)strMorphEnvelope,_ctFrames,_iFrame);
+             strMorphEnvelope.ConstData(), _ctFrames, _iFrame);
   }
 }
 ;
@@ -682,7 +682,7 @@ shader_textures
   if(_ishParamIndex!=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect texture params count\nExpecting %d but found %d",_ctshParamsMax,_ishParamIndex);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
 };
 
@@ -701,7 +701,7 @@ shader_texture
   if(_ishParamIndex>=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect texture params count %d",_ctshParamsMax);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
   SurfaceShader &SurfShader = _assSurfaceShaders[_iShaderSurfIndex];
   // set ID of current texture name
@@ -723,7 +723,7 @@ shader_uvmaps
   if(_ishParamIndex!=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect uvmap params count\nExpecting %d but found %d",_ctshParamsMax,_ishParamIndex);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
 };
 
@@ -741,7 +741,7 @@ shader_uvmap
   if(_ishParamIndex>=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect uvmap params count %d",_ctshParamsMax);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
   SurfaceShader &SurfShader = _assSurfaceShaders[_iShaderSurfIndex];
   // set index of current uvmap name
@@ -763,7 +763,7 @@ shader_colors
   if(_ishParamIndex!=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect color params count\nExpecting %d but found %d",_ctshParamsMax,_ishParamIndex);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
 };
 
@@ -781,7 +781,7 @@ shader_color
   if(_ishParamIndex>=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect colors params count %d",_ctshParamsMax);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
   SurfaceShader &SurfShader = _assSurfaceShaders[_iShaderSurfIndex];
   // set color
@@ -804,7 +804,7 @@ shader_floats
   if(_ishParamIndex!=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect floats params count\nExpecting %d but found %d",_ctshParamsMax,_ishParamIndex);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
 };
 
@@ -822,7 +822,7 @@ shader_float
   if(_ishParamIndex>=_ctshParamsMax)
   {
     CTString strErr = CTString(0,"Incorect floats params count %d",_ctshParamsMax);
-    yyerror((char*)(const char*)strErr);
+    yyerror(strErr.Data());
   }
   // set color
   SurfaceShader &SurfShader = _assSurfaceShaders[_iShaderSurfIndex];

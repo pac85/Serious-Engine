@@ -83,7 +83,7 @@ BOOL GetLevelInfo(CLevelInfo &li, const CTFileName &fnm)
   // if failed
   } catch (char *strError) {
     (void) strError;
-    //CPrintF("Invalid world file '%s': %s\n", (const char*) fnm, strError);
+    //CPrintF("Invalid world file '%s': %s\n", fnm.ConstData(), strError);
     // set dummy info
     li = CLevelInfo();
     // fail

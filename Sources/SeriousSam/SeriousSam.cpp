@@ -1169,14 +1169,14 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
     // if addon is to be executed
     if (_iAddonExecState==1) {
       // print header and start console
-      CPrintF(TRANS("---- Executing addon: '%s'\n"), (const char*)_fnmAddonToExec);
+      CPrintF(TRANS("---- Executing addon: '%s'\n"), _fnmAddonToExec.ConstData());
       sam_bToggleConsole = TRUE;
       _iAddonExecState = 2;
     // if addon is ready for execution
     } else if (_iAddonExecState==2 && _pGame->gm_csConsoleState == CS_ON) {
       // execute it
       CTString strCmd;
-      strCmd.PrintF("include \"%s\"", (const char*)_fnmAddonToExec);
+      strCmd.PrintF("include \"%s\"", _fnmAddonToExec.ConstData());
       _pShell->Execute(strCmd);
       CPrintF(TRANS("Addon done, press Escape to close console\n"));
       _iAddonExecState = 3;

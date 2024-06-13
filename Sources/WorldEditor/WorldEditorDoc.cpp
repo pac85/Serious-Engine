@@ -451,7 +451,7 @@ BOOL CWorldEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
     {
       // warn user about it
       WarningMessage("'%s' is read only. You have to check it out to be able to save it.",
-        (const char*)fnOpenFileName);
+        fnOpenFileName.ConstData());
       // remember it
       m_bReadOnly = TRUE;
     }

@@ -165,7 +165,7 @@ void LoadVarSettings(const CTFileName &fnmCfg)
     ParseCFG_t(strm);
 
   } catch (char* strError) {
-    CPrintF("%s (%d) : %s\n", (const char*)_strFile, _ctLines, strError);
+    CPrintF("%s (%d) : %s\n", _strFile.ConstData(), _ctLines, strError);
   }
 
   FOREACHINLIST(CVarSetting, vs_lnNode, _lhVarSettings, itvs) {

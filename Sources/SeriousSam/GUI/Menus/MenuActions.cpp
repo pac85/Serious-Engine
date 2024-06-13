@@ -209,7 +209,7 @@ void ModNotInstalled(void)
   gmCurrent._pConfimedYes = &ExitAndSpawnExplorer;
   gmCurrent._pConfimedNo = NULL;
   gmCurrent.gm_mgConfirmLabel.mg_strText.PrintF(
-    TRANS("You don't have MOD '%s' installed.\nDo you want to visit its web site?"), (const char*)_fnmModSelected);
+    TRANS("You don't have MOD '%s' installed.\nDo you want to visit its web site?"), _fnmModSelected.ConstData());
   gmCurrent.gm_pgmParentMenu = pgmCurrentMenu;
   gmCurrent.BeSmall();
   ChangeToMenu(&gmCurrent);

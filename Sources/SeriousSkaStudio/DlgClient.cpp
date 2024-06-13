@@ -152,7 +152,7 @@ void CFlagControl::AddControl(CTString strLabelText, INDEX iFlagIndex, ULONG ulF
   if(fc_Label.Create("",LABEL_STYLES,RECT_LEFT_SIDE,&DLGSHADER,iCtrlID))
   {
     fc_Label.SetFont(DLGSHADER.GetFont(),FALSE);
-    fc_Label.SetWindowText((const char*)(strLabelText+": "));
+    fc_Label.SetWindowText((strLabelText+": ").ConstData());
   }
   
   if(fc_CheckBox.Create(CHECK_STYLES,RECT_RIGHT_SIDE,&DLGSHADER,iCtrlID+1))
@@ -463,10 +463,10 @@ void CDlgClient::OnBtConvert()
     CTString fnMesh = pmshi->mi_pMesh->GetName();
     // save and convert mesh instance
     if(theApp.SaveMeshListFile(*pmshi,TRUE)) {
-      theApp.NotificationMessage("Mesh list file '%s' converted",(const char*)fnMesh);
+      theApp.NotificationMessage("Mesh list file '%s' converted", fnMesh.ConstData());
       theApp.UpdateRootModelInstance();
     } else {
-      theApp.ErrorMessage("Cannot convert mesh file '%s'",(const char*)fnMesh);
+      theApp.ErrorMessage("Cannot convert mesh file '%s'", fnMesh.ConstData());
     }
   // if selected type is skeleton list
   } else if(niSelected.ni_iType == NT_SKELETONLODLIST) {
@@ -475,10 +475,10 @@ void CDlgClient::OnBtConvert()
     CTString fnSkeleton = pskl->GetName();
     // save and convert mesh instance
     if(theApp.SaveSkeletonListFile(*pskl,TRUE)) {
-      theApp.NotificationMessage("Skeleton list file '%s' converted",(const char*)fnSkeleton);
+      theApp.NotificationMessage("Skeleton list file '%s' converted", fnSkeleton.ConstData());
       theApp.UpdateRootModelInstance();
     } else {
-      theApp.ErrorMessage("Cannot convert skeleton list file '%s'",(const char*)fnSkeleton);
+      theApp.ErrorMessage("Cannot convert skeleton list file '%s'", fnSkeleton.ConstData());
     }
   // if selected type is animset
   } else if(niSelected.ni_iType == NT_ANIMSET) {
@@ -487,10 +487,10 @@ void CDlgClient::OnBtConvert()
     CTString fnAnimSet = pas->GetName();
     // save and convert mesh instance
     if(theApp.SaveAnimSetFile(*pas,TRUE)) {
-      theApp.NotificationMessage("AnimSet file '%s' converted",(const char*)fnAnimSet);
+      theApp.NotificationMessage("AnimSet file '%s' converted", fnAnimSet.ConstData());
       theApp.UpdateRootModelInstance();
     } else {
-      theApp.ErrorMessage("Cannot convert animset file '%s'",(const char*)fnAnimSet);
+      theApp.ErrorMessage("Cannot convert animset file '%s'", fnAnimSet.ConstData());
     }
   }
   CSeriousSkaStudioDoc *pDoc = theApp.GetDocument();

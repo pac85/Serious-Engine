@@ -1693,7 +1693,7 @@ out:;
           {
             CTMemoryStream &strm = *GetDumpStream();
             strm.FPrintF_t( "Movm Fract: %g\n", cmMove.cm_fMovementFraction);
-            strm.FPrintF_t( "En : ID:%08x %s\n", cmMove.cm_penHit->en_ulID, (const char*) GetName() );
+            strm.FPrintF_t( "En : ID:%08x %s\n", cmMove.cm_penHit->en_ulID, GetName().ConstData());
             DUMPVECTOR2("Pl col:", cmMove.cm_plClippedPlane);
           }
           catch( char *strError)
@@ -1978,7 +1978,7 @@ out:;
       try
       {
         CTMemoryStream &strm = *GetDumpStream();
-        strm.FPrintF_t("%s : %s .................\n", strDes, (const char*) GetName());
+        strm.FPrintF_t("%s : %s .................\n", strDes, GetName().ConstData());
         DUMPPLACEMENT("En pl:", en.en_plPlacement);
         DUMPVECTOR2("DesTraRel:", en.en_vDesiredTranslationRelative);
         DUMPVECTOR2("CurTraAbs:", en.en_vCurrentTranslationAbsolute);

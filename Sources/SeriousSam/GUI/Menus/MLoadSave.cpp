@@ -228,7 +228,7 @@ BOOL CLoadSaveMenu::ParseFile(const CTFileName &fnm, CTString &strName)
   }
 
   INDEX iFile = -1;
-  fnm.FileName().ScanF((const char*)(gm_fnmBaseName + "%d"), &iFile);
+  fnm.FileName().ScanF((gm_fnmBaseName + "%d").ConstData(), &iFile);
 
   gm_iLastFile = Max(gm_iLastFile, iFile);
 

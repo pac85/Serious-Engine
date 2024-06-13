@@ -231,7 +231,7 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   // print status text
   CTString strRes;
   strRes.PrintF( "%s", pphi->phi_strDescription);
-  //strupr((char*)(const char*)strRes);
+  //strupr(strRes.Data());
   dpBox.PutTextC( strRes, 160, 17, C_GREEN|255);
   strRes.PrintF( "%3.0f%%", pphi->phi_fCompleted*100);
   dpBox.PutTextCXY( strRes, pixBarCentI, pixBarCentJ, C_GREEN|255);
