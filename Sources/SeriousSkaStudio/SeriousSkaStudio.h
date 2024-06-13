@@ -38,15 +38,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // CSeriousSkaStudioApp:
 // See SeriousSkaStudio.cpp for the implementation of this class
 //
-#define FILTER_ASCII         "ASCII files (*.aal,*.asl,*.aml)\0*.aal;*.aml;*.asl\0"
-#define FILTER_MESH          "Mesh ASCII files (*.am)\0*.am;\0"
-#define FILTER_SKELETON      "Skeleton ASCII files (*.as)\0*.as;\0"
-#define FILTER_ANIMATION     "Animation ASCII files (*.aa)\0*.aa;\0"
-#define FILTER_TEXTURE       "Texture files (*.tex)\0*.tex;\0"
-#define FILTER_MESH_LIST     "Mesh list files (*.aml)\0*.aml;\0"
-#define FILTER_SKELETON_LIST "Skeleton list files (*.asl)\0*.asl;\0"
-#define FILTER_ANIMSET_LISTS "AnimSet list files (*.aal)\0*.aal;\0"
-
 #define STRETCH_BUTTON_INDEX 22
 
 #define NT_MODELINSTANCE    0

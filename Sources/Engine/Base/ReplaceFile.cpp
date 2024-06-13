@@ -37,50 +37,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/ListIterator.inl>
 
-#define FILTER_TEX            "Textures (*.tex)\0*.tex\0"
-#define FILTER_MDL            "Models (*.mdl)\0*.mdl\0"
-#define FILTER_ANI            "Animations (*.ani)\0*.ani\0"
-#define FILTER_END            "\0"
-
 BOOL _bFileReplacingApplied;
-
-#ifndef NDEBUG
-  #define ENGINEGUI_DLL_NAME "EngineGUID.dll"
-#else
-  #define ENGINEGUI_DLL_NAME "EngineGUI.dll"
-#endif
 
 extern INDEX wed_bUseBaseForReplacement;
 
 static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, char *pFilter)
 {
-#if SE1_WIN
-  typedef CTFileName FileRequester_t(
-    char *pchrTitle, 
-    char *pchrFilters,
-    char *pchrRegistry,
-    char *pchrDefaultFileSelected);
-
-  HMODULE hGUI = GetModuleHandleA(ENGINEGUI_DLL_NAME);
-  if (hGUI==NULL) {
-    WarningMessage(TRANS("Cannot load %s:\n%s\nCannot replace files!"), 
-      ENGINEGUI_DLL_NAME, GetWindowsError(GetLastError()));
-    return CTString("");
-  }
-  FileRequester_t *pFileRequester = (FileRequester_t *)OS::GetLibSymbol(hGUI, "FileRequester");
-  if (pFileRequester==NULL) {
-    WarningMessage(TRANS("Error in %s:\nFileRequester() function not found\nCannot replace files!"),
-      ENGINEGUI_DLL_NAME);
+  // [Cecil] No API available
+  if (_pEngineGuiApi == NULL) {
+    WarningMessage(TRANS("Engine GUI is unavailable! Cannot replace files!"));
     return CTString("");
   }
 
-  return pFileRequester( achrTitle, pFilter, "Replace file directory", achrSelectedFile);
-
-#else
-  // [Cecil] TODO: Make sure this function has a purpose on anything but Windows
-  return CTString("");
-#endif
-}
+  // [Cecil] Call file requester from the API
+  return _pEngineGuiApi->ReplaceFileRequester(achrTitle, pFilter, "Replace file directory", achrSelectedFile);
+};
 
 BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
                       char *pFilter)

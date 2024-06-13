@@ -176,13 +176,13 @@ UINT_PTR APIENTRY FileOpenRequesterHook( HWND hdlg, UINT uiMsg, WPARAM wParam,	L
 }
 
 CTFileName CEngineGUI::FileRequester( 
-        char *pchrTitle/*="Choose file"*/, 
-        char *pchrFilters/*=FILTER_ALL FILTER_END*/,
-        char *pchrRegistry/*="KEY_NAME_REQUEST_FILE_DIR"*/,
-        CTString strDefaultDir/*=""*/, 
-        CTString strFileSelectedByDefault/*=""*/,
-        CDynamicArray<CTFileName> *pafnSelectedFiles/*=NULL*/,
-        BOOL bIfOpen/*=TRUE*/)
+  const char *pchrTitle,
+  const char *pchrFilters,
+  const char *pchrRegistry,
+  CTString strDefaultDir,
+  CTString strFileSelectedByDefault,
+  CDynamicArray<CTFileName> *pafnSelectedFiles,
+  BOOL bIfOpen)
 {
   _pDrawPort = NULL;
   _pViewPort = NULL;
@@ -317,21 +317,22 @@ CTFileName CEngineGUI::FileRequester(
   return CTString( "");
 }
 
-// [Cecil] Export via C API
-extern "C" ENGINEGUI_API CTFileName FileRequester(
-  char *pchrTitle, 
-  char *pchrFilters,
-  char *pchrRegistry,
-  char *pchrFileSelectedByDefault)
+// [Cecil] Simplified requester for replacing files
+CTFileName CEngineGUI::ReplaceFileRequester(
+  const char *pchrTitle, 
+  const char *pchrFilters,
+  const char *pchrRegistry,
+  const char *pchrFileSelectedByDefault)
 {
-  return _EngineGUI.FileRequester(pchrTitle, pchrFilters, pchrRegistry, "", pchrFileSelectedByDefault);
+  return FileRequester(pchrTitle, pchrFilters, pchrRegistry, "", pchrFileSelectedByDefault);
 }
 
 
-CTFileName CEngineGUI::BrowseTexture(CTFileName fnDefaultSelected/*=""*/,
-                                      char *pchrIniKeyName/*=KEY_NAME_REQUEST_FILE_DIR*/,
-                                      char *pchrWindowTitle/*="Choose texture"*/,
-                                      BOOL bIfOpen/*=TRUE*/)
+CTFileName CEngineGUI::BrowseTexture(
+  CTFileName fnDefaultSelected,
+  const char *pchrIniKeyName,
+  const char *pchrWindowTitle,
+  BOOL bIfOpen)
 {
   return FileRequester( pchrWindowTitle, FILTER_TEX FILTER_END, pchrIniKeyName,
                         "Textures\\", fnDefaultSelected, NULL, bIfOpen);

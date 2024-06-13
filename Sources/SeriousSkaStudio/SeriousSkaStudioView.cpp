@@ -1637,7 +1637,7 @@ void CSeriousSkaStudioView::BrowseTexture(CTString strTextureDir)
 	CSeriousSkaStudioDoc *pDoc = GetDocument();
   CDynamicArray<CTFileName> afnTexture;
   _EngineGUI.FileRequester( "Open texture files",
-    FILTER_TEXTURE,
+    FILTER_TEX,
     strTextureDir.ConstData(), strTextureDir, "", &afnTexture);
 
   // return if no files selected

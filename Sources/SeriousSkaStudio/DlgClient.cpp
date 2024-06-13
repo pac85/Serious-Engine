@@ -569,7 +569,7 @@ void CDlgClient::OnBtBrowseTexture()
     // browse texture
     //CDynamicArray<CTFileName> afnTexture;
     CTFileName fnTexture = _EngineGUI.FileRequester( "Open texture files", 
-      FILTER_TEXTURE, "Open directory", "Models\\", "", NULL);
+      FILTER_TEX, "Open directory", "Models\\", "", NULL);
     if(fnTexture=="") {
       return;
     }

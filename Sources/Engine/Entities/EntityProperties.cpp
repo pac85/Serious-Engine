@@ -32,9 +32,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Stock_CEntityClass.h>
 #include <Engine/Templates/StaticArray.cpp>
 
-#define FILTER_ALL            "All files (*.*)\0*.*\0"
-#define FILTER_END            "\0"
-
 #define PROPERTY(offset, type) ENTITYPROPERTY(this, offset, type)
 
 /////////////////////////////////////////////////////////////////////
