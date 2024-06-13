@@ -29,9 +29,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "CmdLine.h"
 #include "Credits.h"
 
-
-extern CGame *_pGame = NULL;
-
 // application state variables
 extern BOOL _bRunning = TRUE;
 extern BOOL _bQuitScreen = TRUE;
@@ -374,35 +371,6 @@ void LoadAndForceTexture(CTextureObject &to, CTextureObject *&pto, const CTFileN
   }
 }
 
-void InitializeGame(void)
-{
-  try {
-    #ifndef NDEBUG 
-      #define GAMEDLL (_fnmApplicationExe.FileDir()+"Game"+_strModExt+"D.dll")
-    #else
-      #define GAMEDLL (_fnmApplicationExe.FileDir()+"Game"+_strModExt+".dll")
-    #endif
-    CTFileName fnmExpanded;
-    ExpandFilePath(EFP_READ, CTString(GAMEDLL), fnmExpanded);
-
-    CPrintF(TRANS("Loading game library '%s'...\n"), (const char *)fnmExpanded);
-    HMODULE hGame = LoadLibraryA(fnmExpanded);
-    if (hGame==NULL) {
-      ThrowF_t("%s", GetWindowsError(GetLastError()));
-    }
-    CGame* (*GAME_Create)(void) = (CGame* (*)(void))GetProcAddress(hGame, "GAME_Create");
-    if (GAME_Create==NULL) {
-      ThrowF_t("%s", GetWindowsError(GetLastError()));
-    }
-    _pGame = GAME_Create();
-
-  } catch (char *strError) {
-    FatalError("%s", strError);
-  }
-  // init game - this will load persistent symbols
-  _pGame->Initialize(CTString("Data\\SeriousSam.gms"));
-}
-
 BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 {
   _hInstance = hInstance;
@@ -483,7 +451,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   _pShell->DeclareSymbol("user INDEX sam_bToggleConsole;",&sam_bToggleConsole);
   _pShell->DeclareSymbol("INDEX sam_iStartCredits;", &sam_iStartCredits);
 
-  InitializeGame();
+  _pGame->Initialize("Data\\SeriousSam.gms"); // [Cecil]
   LCDInit();
 
   if( sam_bFirstStarted) {

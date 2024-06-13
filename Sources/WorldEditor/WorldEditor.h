@@ -34,7 +34,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 extern FLOAT _fLastMipBrushingOptionUsed;
 extern INDEX wed_iMaxFPSActive;
-extern struct GameGUI_interface *_pGameGUI;
 
 extern UINT _uiMessengerMsg;
 extern UINT _uiMessengerForcePopup;

@@ -32,5 +32,3 @@ extern void StartNewMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixSizeI, PI
 struct KeyData {
   char *kd_strASCII;
 };
-
-extern CGame *_pGame;

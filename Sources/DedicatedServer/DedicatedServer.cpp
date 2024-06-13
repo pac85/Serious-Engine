@@ -27,41 +27,11 @@ extern CTString ded_strConfig = "";
 extern CTString ded_strLevel = "";
 extern INDEX ded_bRestartWhenEmpty = TRUE;
 extern FLOAT ded_tmTimeout = -1;
-extern CGame *_pGame = NULL;
 extern CTString sam_strFirstLevel = "Levels\\KarnakDemo.wld";
 extern CTString sam_strIntroLevel = "Levels\\Intro.wld";
 extern CTString sam_strGameName = "serioussam";
 
 CTimerValue _tvLastLevelEnd(-1i64);
-
-void InitializeGame(void)
-{
-  try {
-    #ifndef NDEBUG 
-      #define GAMEDLL _fnmApplicationExe.FileDir()+"Game"+_strModExt+"D.dll"
-    #else
-      #define GAMEDLL _fnmApplicationExe.FileDir()+"Game"+_strModExt+".dll"
-    #endif
-    CTFileName fnmExpanded;
-    ExpandFilePath(EFP_READ, CTString(GAMEDLL), fnmExpanded);
-
-    CPrintF(TRANS("Loading game library '%s'...\n"), fnmExpanded.ConstData());
-    HMODULE hGame = LoadLibraryA(fnmExpanded.ConstData());
-    if (hGame==NULL) {
-      ThrowF_t("%s", GetWindowsError(GetLastError()));
-    }
-    CGame* (*GAME_Create)(void) = (CGame* (*)(void))GetProcAddress(hGame, "GAME_Create");
-    if (GAME_Create==NULL) {
-      ThrowF_t("%s", GetWindowsError(GetLastError()));
-    }
-    _pGame = GAME_Create();
-
-  } catch (char *strError) {
-    FatalError("%s", strError);
-  }
-  // init game - this will load persistent symbols
-  _pGame->Initialize(CTString("Data\\DedicatedServer.gms"));
-}
 
 static void QuitGame(void)
 {
@@ -239,7 +209,7 @@ BOOL Init(int argc, char* argv[])
   _pShell->DeclareSymbol("user CTString sam_strFirstLevel;", &sam_strFirstLevel);
 
   // init game - this will load persistent symbols
-  InitializeGame();
+  _pGame->Initialize("Data\\DedicatedServer.gms"); // [Cecil]
 
   LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), _strSamVersion);
   CPrintF(TRANS("Serious Sam version: %s\n"), _strSamVersion);

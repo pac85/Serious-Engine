@@ -48,11 +48,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 #include <EngineGUI/EngineGUI.h>
-#include <GameMP/Game.h>
-#include <GameGUIMP/GameGUI.h>
-#include <Engine/GameShell.h>
 
-extern class CGame *_pGame;
+#define GAMEGUI_EXPORTS
+#include <GameGUIMP/GameGUI.h>
 
 /////////////////////////////////////////////////////////////////////////////
 

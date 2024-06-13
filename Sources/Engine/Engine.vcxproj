@@ -832,7 +832,6 @@
     <ClInclude Include="Build.h" />
     <ClInclude Include="CurrentVersion.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="GameShell.h" />
     <ClInclude Include="StdH.h" />
   </ItemGroup>
   <ItemGroup>

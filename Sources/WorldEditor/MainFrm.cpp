@@ -1394,22 +1394,22 @@ void CMainFrame::OnUpdateViewViewToolsBar2(CCmdUI* pCmdUI)
 
 void CMainFrame::OnGameAudio()
 {
-  _pGameGUI->OnAudioQuality();
+  CGameGUI::OnAudioQuality();
 }
 
 void CMainFrame::OnGameVideo()
 {
-  _pGameGUI->OnVideoQuality();
+  CGameGUI::OnVideoQuality();
 }
 
 void CMainFrame::OnGamePlayer()
 {
-  _pGameGUI->OnPlayerSettings();
+  CGameGUI::OnPlayerSettings();
 }
 
 void CMainFrame::OnGameSelectPlayer()
 {
-  _pGameGUI->OnSelectPlayerAndControls();
+  CGameGUI::OnSelectPlayerAndControls();
 }
 
 
@@ -1454,7 +1454,7 @@ ON_STORE_MENU_SHORTCUT( OnStoreMenuShortcut10, 9);
 
 void CMainFrame::OnConsole()
 {
-  _pGameGUI->OnInvokeConsole();
+  CGameGUI::OnInvokeConsole();
 }
 
 

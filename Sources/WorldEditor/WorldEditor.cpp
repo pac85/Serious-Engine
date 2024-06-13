@@ -41,7 +41,6 @@ extern FLOAT _fFlyModeSpeedMultiplier = 1.0f;
 FLOAT _fLastMipBrushingOptionUsed = -10000.0f;
 extern INDEX wed_iMaxFPSActive = 500;
 extern FLOAT wed_fFrontClipDistance = 0.5f;
-extern struct GameGUI_interface *_pGameGUI = NULL;
 extern INDEX wed_bUseGenericTextureReplacement = FALSE;
 
 CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
@@ -86,33 +85,6 @@ CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
 
 #define INI_WRITE( strname)                                   \
   theApp.WriteProfileString( L"World editor prefs", CString( strname ), CString(strIni))
-
-void InitializeGame(void)
-{
-  try {
-    #ifndef NDEBUG 
-      #define GAMEDLL _fnmApplicationExe.FileDir()+"GameGUI"+_strModExt+"D.dll"
-    #else
-      #define GAMEDLL _fnmApplicationExe.FileDir()+"GameGUI"+_strModExt+".dll"
-    #endif
-    CTFileName fnmExpanded;
-    ExpandFilePath(EFP_READ, CTString(GAMEDLL), fnmExpanded);
-
-    HMODULE hGame = LoadLibraryA(fnmExpanded);
-    if (hGame==NULL) {
-      ThrowF_t("%s", GetWindowsError(GetLastError()));
-    }
-    GameGUI_interface* (*GAMEGUI_Create)(void) = (GameGUI_interface* (*)(void))GetProcAddress(hGame, "GAMEGUI_Create");
-    if (GAMEGUI_Create==NULL) {
-      ThrowF_t("%s", GetWindowsError(GetLastError()));
-    }
-    _pGameGUI = GAMEGUI_Create();
-
-  } catch (char *strError) {
-    FatalError("%s", strError);
-  }
-  _pGameGUI->Initialize(CTString("Data\\WorldEditor.gms"));
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // CWorldEditorApp
@@ -691,7 +663,7 @@ BOOL CWorldEditorApp::SubInitInstance()
   _pGfx->ResetDisplayMode((enum GfxAPIType) m_iApi);
 
   // initialize game itself (GameShell interface) and load settings
-  InitializeGame();
+  _pGame->Initialize("Data\\WorldEditor.gms"); // [Cecil]
   // load startup script
   _pShell->Execute( "include \"Scripts\\WorldEditor_startup.ini\"");
 
@@ -1920,7 +1892,7 @@ void CWorldEditorApp::ClearInvalidConfigPointers(void)
 int CWorldEditorApp::ExitInstance()
 {
   // cleanup game library
-  _pGameGUI->End();
+  _pGame->End();
 
   // delete clipboard file
   RemoveFile( CTString("Temp\\ClipboardWorld.wld"));

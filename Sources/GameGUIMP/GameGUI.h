@@ -15,8 +15,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <GameMP/Game.h>
 
+// [Cecil] Directly export from the library
+#ifdef GAMEGUI_EXPORTS
+  #define GAMEGUI_API SE1_API_EXPORT
+#else
+  #define GAMEGUI_API SE1_API_IMPORT
+
+  #ifdef NDEBUG
+    #pragma comment(lib, "GameGUIMP.lib")
+  #else
+    #pragma comment(lib, "GameGUIMPD.lib")
+  #endif
+#endif
+
 // This class is exported from the GameGUI.dll
-class CGameGUI {
+class GAMEGUI_API CGameGUI {
 public:
   // functions called from World Editor
   static void OnInvokeConsole(void);
@@ -25,6 +38,3 @@ public:
   static void OnVideoQuality(void);
   static void OnSelectPlayerAndControls(void);
 };
-
-// global game gui object
-extern CGameGUI _GameGUI;

@@ -564,7 +564,7 @@ void CChildFrame::TestGame( BOOL bFullScreen)
   // run quick test game
   extern BOOL _bInOnDraw; 
   _bInOnDraw = TRUE;
-  _pGameGUI->QuickTest( fnmWorldToPlay, pdp, pvp);
+  _pGame->QuickTest(fnmWorldToPlay, pdp, pvp);
   _bInOnDraw = FALSE;
 
   // disable sound

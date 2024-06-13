@@ -55,16 +55,11 @@ static CControls _ctrlCommonControls;
 static CStaticStackArray<TIME>  _atmFrameTimes;
 static CStaticStackArray<INDEX> _actTriangles;  // world, model, particle, total
 
+// [Cecil] Automatically initialized and wrapped in the exported pointer for compatibility
+CGame _GameApiInstance;
 
 // one and only Game object
-extern CGame *_pGame = NULL;
-
-extern "C" SE1_API_EXPORT CGame *GAME_Create(void)
-{
-  _pGame = new CGame;
-
-  return _pGame;
-}
+CGame *_pGame = &_GameApiInstance;
 
 // recorded profiling stats
 static CTimerValue _tvDemoStarted;

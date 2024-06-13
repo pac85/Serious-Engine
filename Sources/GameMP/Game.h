@@ -16,6 +16,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef __GAME_H
 #define __GAME_H 1
 
+// [Cecil] Directly export from the library
+#ifdef GAME_EXPORTS
+  #define GAME_API SE1_API_EXPORT
+#else
+  #define GAME_API SE1_API_IMPORT
+
+  #ifdef NDEBUG
+    #pragma comment(lib, "GameMP.lib")
+  #else
+    #pragma comment(lib, "GameMPD.lib")
+  #endif
+#endif
+
 #include <GameMP/PlayerSettings.h>
 #include <GameMP/SessionProperties.h>
 
@@ -309,5 +322,8 @@ public:
   virtual void MenuPreRenderMenu(const char *strMenuName);
   virtual void MenuPostRenderMenu(const char *strMenuName);
 };
+
+// [Cecil] Export the interface from here
+GAME_API extern CGame *_pGame;
 
 #endif
