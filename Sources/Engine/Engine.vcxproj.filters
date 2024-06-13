@@ -119,6 +119,12 @@
     <Filter Include="Header Files\OS Headers">
       <UniqueIdentifier>{dc4431b4-d601-4946-b64b-cb31cceb9eeb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\API Headers">
+      <UniqueIdentifier>{201dc75c-07ec-4827-9ff1-a44bbcd7cc81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\API">
+      <UniqueIdentifier>{413259e9-0c35-4e91-86c1-fdca3069b8f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base\Anim.cpp">
@@ -738,6 +744,9 @@
     </ClCompile>
     <ClCompile Include="Base\DynamicModules.cpp">
       <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="API\API.cpp">
+      <Filter>Source Files\API</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1367,6 +1376,9 @@
     </ClInclude>
     <ClInclude Include="Base\DynamicModules.h">
       <Filter>Header Files\Base Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="API\EngineGUI.h">
+      <Filter>Header Files\API Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

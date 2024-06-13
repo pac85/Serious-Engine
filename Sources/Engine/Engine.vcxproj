@@ -284,6 +284,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="API\API.cpp" />
     <ClCompile Include="Base\Anim.cpp" />
     <ClCompile Include="Base\Changeable.cpp" />
     <ClCompile Include="Base\Console.cpp" />
@@ -623,6 +624,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="API\EngineGUI.h" />
     <ClInclude Include="Base\Anim.h" />
     <ClInclude Include="Base\Assert.h" />
     <ClInclude Include="Base\Base.h" />
