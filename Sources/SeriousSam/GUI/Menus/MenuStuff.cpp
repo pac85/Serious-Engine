@@ -141,56 +141,13 @@ extern CTString astrFrequencyRadioTexts[] = {
 // [Cecil] Dynamically created array
 CTString *astrSoundAPIRadioTexts = NULL;
 
-ULONG GetSpawnFlagsForGameType(INDEX iGameType)
-{
-  if (iGameType == -1) return SPF_SINGLEPLAYER;
-
-  // get function that will provide us the flags
-  CShellSymbol *pss = _pShell->GetSymbol("GetSpawnFlagsForGameTypeSS", /*bDeclaredOnly=*/ TRUE);
-  // if none
-  if (pss == NULL) {
-    // error
-    ASSERT(FALSE);
-    return 0;
-  }
-
-  ULONG(*pFunc)(INDEX) = (ULONG(*)(INDEX))pss->ss_pvValue;
-  return pFunc(iGameType);
-}
-
-BOOL IsMenuEnabled(const CTString &strMenuName)
-{
-  // get function that will provide us the flags
-  CShellSymbol *pss = _pShell->GetSymbol("IsMenuEnabledSS", /*bDeclaredOnly=*/ TRUE);
-  // if none
-  if (pss == NULL) {
-    // error
-    ASSERT(FALSE);
-    return TRUE;
-  }
-
-  BOOL(*pFunc)(const CTString &) = (BOOL(*)(const CTString &))pss->ss_pvValue;
-  return pFunc(strMenuName);
-}
-
 // initialize game type strings table
 void InitGameTypes(void)
 {
-  // get function that will provide us the info about gametype
-  CShellSymbol *pss = _pShell->GetSymbol("GetGameTypeNameSS", /*bDeclaredOnly=*/ TRUE);
-  // if none
-  if (pss == NULL) {
-    // error
-    astrGameTypeRadioTexts[0] = "<???>";
-    ctGameTypeRadioTexts = 1;
-    return;
-  }
-
   // for each mode
   for (ctGameTypeRadioTexts = 0; ctGameTypeRadioTexts<ARRAYCOUNT(astrGameTypeRadioTexts); ctGameTypeRadioTexts++) {
     // get the text
-    CTString(*pFunc)(INDEX) = (CTString(*)(INDEX))pss->ss_pvValue;
-    CTString strMode = pFunc(ctGameTypeRadioTexts);
+    CTString strMode = GetGameTypeName(ctGameTypeRadioTexts);
     // if no mode modes
     if (strMode == "") {
       // stop

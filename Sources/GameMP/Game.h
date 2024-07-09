@@ -326,4 +326,13 @@ public:
 // [Cecil] Export the interface from here
 GAME_API extern CGame *_pGame;
 
+// [Cecil] Shell functions used by SeriousSam and GameAgent
+GAME_API CTString GetGameTypeName(INDEX iMode);
+GAME_API CTString GetCurrentGameTypeName(void);
+GAME_API ULONG GetSpawnFlagsForGameType(INDEX iGameType);
+GAME_API BOOL IsMenuEnabled(const CTString &strMenuName);
+CTString GetGameTypeNameCfunc(void *pArgs);
+ULONG GetSpawnFlagsForGameTypeCfunc(void *pArgs);
+BOOL IsMenuEnabledCfunc(void *pArgs);
+
 #endif

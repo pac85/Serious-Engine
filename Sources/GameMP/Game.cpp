@@ -981,13 +981,6 @@ void CGame::InitInternal( void)
   _pShell->DeclareSymbol("user void ReportDemoProfile(void);", &ReportDemoProfile);
   _pShell->DeclareSymbol("user void DumpDemoProfile(void);",   &DumpDemoProfile);
   extern CTString GetGameAgentRulesInfo(void);
-  extern CTString GetGameTypeName(INDEX);
-  extern CTString GetGameTypeNameCfunc(void* pArgs);
-  extern CTString GetCurrentGameTypeName(void);
-  extern ULONG GetSpawnFlagsForGameType(INDEX);
-  extern ULONG GetSpawnFlagsForGameTypeCfunc(void* pArgs);
-  extern BOOL IsMenuEnabled(const CTString &);
-  extern BOOL IsMenuEnabledCfunc(void* pArgs);
   _pShell->DeclareSymbol("user CTString GetGameAgentRulesInfo(void);",   &GetGameAgentRulesInfo);
   _pShell->DeclareSymbol("user CTString GetGameTypeName(INDEX);",        &GetGameTypeNameCfunc);
   _pShell->DeclareSymbol("user CTString GetCurrentGameTypeName(void);",  &GetCurrentGameTypeName);
@@ -997,8 +990,6 @@ void CGame::InitInternal( void)
   _pShell->DeclareSymbol("user void SayFromTo(INDEX, INDEX, CTString);", &SayFromTo);
 
   _pShell->DeclareSymbol("CTString GetGameTypeNameSS(INDEX);",           &GetGameTypeName);
-  _pShell->DeclareSymbol("INDEX GetSpawnFlagsForGameTypeSS(INDEX);",     &GetSpawnFlagsForGameType);
-  _pShell->DeclareSymbol("INDEX IsMenuEnabledSS(CTString);",             &IsMenuEnabled);
 
   _pShell->DeclareSymbol("user const INDEX ctl_iCurrentPlayerLocal;", &ctl_iCurrentPlayerLocal);
   _pShell->DeclareSymbol("user const INDEX ctl_iCurrentPlayer;",      &ctl_iCurrentPlayer);
