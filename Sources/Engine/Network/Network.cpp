@@ -242,8 +242,6 @@ extern INDEX inp_ctJoysticksAllowed;
 extern INDEX inp_bForceJoystickPolling;
 extern INDEX inp_bAutoDisableJoysticks;
 
-extern INDEX wed_bUseGenericTextureReplacement = FALSE;
-
 extern void RendererInfo(void);
 extern void ClearRenderer(void);
 
@@ -880,8 +878,6 @@ void CNetworkLibrary::Init(void)
   _pShell->DeclareSymbol("persistent user INDEX inp_ctJoysticksAllowed;",    &inp_ctJoysticksAllowed);
   _pShell->DeclareSymbol("persistent user INDEX inp_bForceJoystickPolling;", &inp_bForceJoystickPolling);
   _pShell->DeclareSymbol("persistent user INDEX inp_bAutoDisableJoysticks;", &inp_bAutoDisableJoysticks);
-
-  _pShell->DeclareSymbol("persistent user INDEX wed_bUseGenericTextureReplacement;", &wed_bUseGenericTextureReplacement);
 
   _pShell->DeclareSymbol("persistent user CTString ga_strServer;", &ga_strServer);
   _pShell->DeclareSymbol("persistent user CTString ga_strMSLegacy;", &ga_strMSLegacy);

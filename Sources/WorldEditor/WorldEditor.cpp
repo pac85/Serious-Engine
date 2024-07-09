@@ -41,7 +41,6 @@ extern FLOAT _fFlyModeSpeedMultiplier = 1.0f;
 FLOAT _fLastMipBrushingOptionUsed = -10000.0f;
 extern INDEX wed_iMaxFPSActive = 500;
 extern FLOAT wed_fFrontClipDistance = 0.5f;
-extern INDEX wed_bUseGenericTextureReplacement = FALSE;
 
 CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
 
@@ -622,7 +621,6 @@ BOOL CWorldEditorApp::SubInitInstance()
   _pShell->DeclareSymbol("user INDEX wed_bSaveTestGameFirstTime;", &wed_bSaveTestGameFirstTime);
   _pShell->DeclareSymbol("persistent user INDEX wed_iMaxFPSActive;", &wed_iMaxFPSActive);
   _pShell->DeclareSymbol("persistent user FLOAT wed_fFrontClipDistance;", &wed_fFrontClipDistance);
-  _pShell->DeclareSymbol("persistent user INDEX wed_bUseGenericTextureReplacement;", &wed_bUseGenericTextureReplacement);
 
   // functions that are used to change rendering preferences while testing game
   _pShell->DeclareSymbol("user void WED_ApplyChildSettings0(void);", &WED_ApplyChildSettings0);

@@ -40,6 +40,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 BOOL _bFileReplacingApplied;
 
 extern INDEX wed_bUseBaseForReplacement;
+extern INDEX wed_bUseGenericTextureReplacement; // [Cecil] Used here
 
 static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, char *pFilter)
 {
@@ -146,7 +147,8 @@ void SetTextureWithPossibleReplacing_t(CTextureObject &to, CTFileName &fnmTextur
       }
       else
       {
-        if(_pShell->GetINDEX("wed_bUseGenericTextureReplacement")) {
+        // [Cecil] Used variable directly
+        if (wed_bUseGenericTextureReplacement) {
           fnmTexture = CTString("Textures\\Editor\\Default.tex");
           to.SetData_t(fnmTexture);
         } else {

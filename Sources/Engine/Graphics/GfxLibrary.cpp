@@ -257,6 +257,7 @@ extern INDEX gfx_bDisableWindowsKeys = TRUE;
 
 extern INDEX wed_bIgnoreTJunctions = FALSE;
 extern INDEX wed_bUseBaseForReplacement = FALSE;
+extern INDEX wed_bUseGenericTextureReplacement = FALSE; // [Cecil] Defined here
 
 // some nifty features
 extern INDEX gfx_iHueShift   = 0;       // 0-359
@@ -1303,6 +1304,8 @@ void CGfxLibrary::Init(void)
   _pShell->DeclareSymbol("           user INDEX wed_bIgnoreTJunctions;", &wed_bIgnoreTJunctions);
   _pShell->DeclareSymbol("persistent user INDEX wed_bUseBaseForReplacement;", &wed_bUseBaseForReplacement);
 
+  // [Cecil] Symbol declared here
+  _pShell->DeclareSymbol("persistent user INDEX wed_bUseGenericTextureReplacement;", &wed_bUseGenericTextureReplacement);
 
   _pShell->DeclareSymbol("persistent user INDEX tex_iHueShift;",   &tex_iHueShift);
   _pShell->DeclareSymbol("persistent user FLOAT tex_fSaturation;", &tex_fSaturation);
