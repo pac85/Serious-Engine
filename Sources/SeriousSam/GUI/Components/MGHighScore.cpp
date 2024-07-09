@@ -30,9 +30,9 @@ void CMGHighScore::Render(CDrawPort *pdp)
 {
   SetFontMedium(pdp);
 
-  COLOR colHeader = LCDGetColor(C_GREEN | 255, "hiscore header");
-  COLOR colData = LCDGetColor(C_mdGREEN | 255, "hiscore data");
-  COLOR colLastSet = LCDGetColor(C_mlGREEN | 255, "hiscore last set");
+  COLOR colHeader = _pGame->LCDGetColor(C_GREEN | 255, "hiscore header");
+  COLOR colData = _pGame->LCDGetColor(C_mdGREEN | 255, "hiscore data");
+  COLOR colLastSet = _pGame->LCDGetColor(C_mlGREEN | 255, "hiscore last set");
   INDEX iLastSet = _pGame->gm_iLastSetHighScore;
 
   CTString strText;

@@ -43,11 +43,11 @@ void CMGModel::Render(CDrawPort *pdp)
   dpModel.Lock();
   dpModel.FillZBuffer(1.0f);
 
-  LCDSetDrawport(&dpModel);
+  _pGame->LCDSetDrawport(&dpModel);
   // clear menu here
   dpModel.Fill(C_BLACK | 255);
-  LCDRenderClouds1();
-  LCDRenderClouds2();
+  _pGame->LCDRenderClouds1();
+  _pGame->LCDRenderClouds2();
 
   // prepare projection
   CRenderModel rmRenderModel;
@@ -106,13 +106,13 @@ void CMGModel::Render(CDrawPort *pdp)
   mg_moModel.RenderModel(rmRenderModel);
   EndModelRenderingView();
 
-  LCDScreenBox(LCDGetColor(C_GREEN, "model box") | GetCurrentColor());
+  _pGame->LCDScreenBox(LCDGetColor(C_GREEN, "model box") | GetCurrentColor());
 
   dpModel.Unlock();
 
   pdp->Unlock();
   pdp->Lock();
-  LCDSetDrawport(pdp);
+  _pGame->LCDSetDrawport(pdp);
 
   // print the model name
   {

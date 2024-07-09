@@ -25,7 +25,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "MainWindow.h"
 #include "GlSettings.h"
 #include "LevelInfo.h"
-#include "LCDDrawing.h"
 #include "CmdLine.h"
 #include "Credits.h"
 
@@ -222,7 +221,7 @@ void UpdateInputEnabledState(void)
 
 
 // automaticaly manage pause toggling
-void UpdatePauseState(void)
+static void UpdatePauseState(void)
 {
   BOOL bShouldPause = (_gmRunningGameMode==GM_SINGLE_PLAYER) && (bMenuActive || 
                        _pGame->gm_csConsoleState ==CS_ON || _pGame->gm_csConsoleState ==CS_TURNINGON || _pGame->gm_csConsoleState ==CS_TURNINGOFF ||
@@ -452,7 +451,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   _pShell->DeclareSymbol("INDEX sam_iStartCredits;", &sam_iStartCredits);
 
   _pGame->Initialize("Data\\SeriousSam.gms"); // [Cecil]
-  LCDInit();
+  _pGame->LCDInit();
 
   if( sam_bFirstStarted) {
     InfoMessage("%s", TRANS(
@@ -582,7 +581,7 @@ void End(void)
   MainWindow_End();
   DestroyMenus();
   _pGame->End();
-  LCDEnd();
+  _pGame->LCDEnd();
   // unlock the directory
   DirectoryLockOff();
   SE_EndEngine();
@@ -630,7 +629,7 @@ void PrintDisplayModeInfo(void)
   pdp->SetFont( _pfdDisplayFont);
   pdp->SetTextScaling( fTextScale);
   pdp->SetTextAspect( 1.0f);
-  pdp->PutText( strRes, slDPWidth*0.05f, slDPHeight*0.85f, LCDGetColor(C_GREEN|255, "display mode"));
+  pdp->PutText( strRes, slDPWidth*0.05f, slDPHeight*0.85f, _pGame->LCDGetColor(C_GREEN|255, "display mode"));
 }
 
 // do the main game loop and render screen
@@ -692,7 +691,7 @@ void DoGame(void)
       dpScroller.Unlock();
       pdp->Lock();
     } else {
-      pdp->Fill( LCDGetColor(C_dGREEN|CT_OPAQUE, "bcg fill"));
+      pdp->Fill( _pGame->LCDGetColor(C_dGREEN|CT_OPAQUE, "bcg fill"));
     }
 
     // do menu
@@ -1329,7 +1328,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     // initial screen fill and swap, just to get context running
     BOOL bSuccess = FALSE;
     if( pdp!=NULL && pdp->Lock()) {
-      pdp->Fill( LCDGetColor( C_dGREEN|CT_OPAQUE, "bcg fill"));
+      pdp->Fill( _pGame->LCDGetColor( C_dGREEN|CT_OPAQUE, "bcg fill"));
       pdp->Unlock();
       pvpViewPort->SwapBuffers();
       bSuccess = TRUE;

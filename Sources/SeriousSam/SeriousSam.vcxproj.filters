@@ -42,9 +42,6 @@
     <ClCompile Include="GLSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LCDDrawing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LevelInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -216,9 +213,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GLSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LCDDrawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelInfo.h">
