@@ -219,8 +219,8 @@ BOOL CSoundAPI_DSound::StartUp(BOOL bReport) {
   }
 
   // Set cooperative level to priority
-  extern OS::Window _hwndMain;
-  m_wndCurrent = _hwndMain;
+  extern OS::Window _hwndCurrent;
+  m_wndCurrent = _hwndCurrent;
 
 #if SE1_PREFER_SDL
   // [Cecil] FIXME: Get HWND from SDL_Window

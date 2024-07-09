@@ -56,7 +56,7 @@ EEngineAppType _eEngineAppType = E_SEAPP_OTHER;
 ENGINE_API CTString _strLogFile = "";
 
 // global handle for application window
-extern OS::Window _hwndMain = NULL;
+extern OS::Window _hwndCurrent = NULL;
 extern BOOL _bFullScreen = FALSE;
 
 // critical section for access to zlib functions
@@ -623,7 +623,7 @@ ENGINE_API void SE_LoadDefaultFonts(void)
 ENGINE_API void SE_UpdateWindowHandle(OS::Window hwndMain)
 {
   ASSERT( hwndMain!=NULL);
-  _hwndMain = hwndMain;
+  _hwndCurrent = hwndMain;
   _bFullScreen = _pGfx!=NULL && (_pGfx->gl_ulFlags&GLF_FULLSCREEN);
 }
 

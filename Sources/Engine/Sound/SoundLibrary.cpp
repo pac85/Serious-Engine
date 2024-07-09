@@ -470,10 +470,10 @@ void CSoundLibrary::UpdateSounds(void)
   if (sl_pInterface->GetType() == CAbstractSoundAPI::E_SND_DSOUND) {
     // [Cecil] FIXME: Don't like including the interface just for accessing one of its fields
     CSoundAPI_DSound &apiDSound = (CSoundAPI_DSound &)*sl_pInterface;
-    extern OS::Window _hwndMain;
+    extern OS::Window _hwndCurrent;
 
-    if (apiDSound.m_wndCurrent != _hwndMain) {
-      apiDSound.m_wndCurrent = _hwndMain;
+    if (apiDSound.m_wndCurrent != _hwndCurrent) {
+      apiDSound.m_wndCurrent = _hwndCurrent;
       SetFormat(sl_EsfFormat);
     }
   }

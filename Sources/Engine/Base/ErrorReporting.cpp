@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 INDEX con_bNoWarnings = 0;
 
 // global handle for application window in full-screen mode
-extern OS::Window _hwndMain;
+extern OS::Window _hwndCurrent;
 extern BOOL _bFullScreen;
 
 
@@ -51,13 +51,13 @@ void FatalError(const char *strFormat, ...)
   // hide fullscreen window if any
   if( _bFullScreen) {
     // must do minimize first - don't know why :(
-    ShowWindow( _hwndMain, SW_MINIMIZE);
-    ShowWindow( _hwndMain, SW_HIDE);
+    ShowWindow( _hwndCurrent, SW_MINIMIZE);
+    ShowWindow( _hwndCurrent, SW_HIDE);
   }
 
 #else
   // [Cecil] SDL: Destroy the window
-  _hwndMain.Destroy();
+  _hwndCurrent.Destroy();
 #endif
 
   // format the message in buffer
@@ -115,7 +115,7 @@ void WarningMessage(const char *strFormat, ...)
 
   #else
     // [Cecil] SDL: Show warning
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANS("Warning"), strBuffer, _hwndMain);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANS("Warning"), strBuffer, _hwndCurrent);
   #endif
   }
 }
@@ -137,7 +137,7 @@ void InfoMessage(const char *strFormat, ...)
 
 #else
   // [Cecil] SDL: Show information
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANS("Information"), strBuffer, _hwndMain);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANS("Information"), strBuffer, _hwndCurrent);
 #endif
 }
 
@@ -165,7 +165,7 @@ BOOL YesNoMessage(const char *strFormat, ...)
   };
 
   const SDL_MessageBoxData msgbox = {
-    SDL_MESSAGEBOX_INFORMATION, _hwndMain,
+    SDL_MESSAGEBOX_INFORMATION, _hwndCurrent,
     TRANS("Question"), strBuffer, SDL_arraysize(aButtons), aButtons, NULL,
   };
 
