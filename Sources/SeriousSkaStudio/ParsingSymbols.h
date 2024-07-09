@@ -17,6 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define yyerror SKAyyerror
 #define yyparse SKAyyparse
 #define yyrestart SKAyyrestart
+#define yyin SKAyyin
 #define yylval SKAyylval
 
 // needed for parser and scanner
