@@ -621,36 +621,6 @@ void CTerrain::SetLodDistanceFactor(FLOAT fLodDistance)
   tr_fDistFactor = ClampDn(fLodDistance,0.1f);
 }
 
-// Get shadow map size
-inline PIX CTerrain::GetShadowMapWidth(void)
-{
-  if(tr_iShadowMapSizeAspect<0) {
-    return (tr_pixHeightMapWidth-1)>>-tr_iShadowMapSizeAspect;
-  } else {
-    return (tr_pixHeightMapWidth-1)<<tr_iShadowMapSizeAspect;
-  }
-}
-inline PIX CTerrain::GetShadowMapHeight(void)
-{
-  if(tr_iShadowMapSizeAspect<0) {
-    return (tr_pixHeightMapHeight-1)>>-tr_iShadowMapSizeAspect;
-  } else {
-    return (tr_pixHeightMapHeight-1)<<tr_iShadowMapSizeAspect;
-  }
-}
-
-// Get shading map size
-inline PIX CTerrain::GetShadingMapWidth(void)
-{
-  ASSERT(tr_iShadingMapSizeAspect>=0);
-  return GetShadowMapWidth()>>tr_iShadingMapSizeAspect;
-}
-inline PIX CTerrain::GetShadingMapHeight(void)
-{
-  ASSERT(tr_iShadingMapSizeAspect>=0);
-  return GetShadowMapHeight()>>tr_iShadingMapSizeAspect;
-}
-
 // Get reference to layer
 CTerrainLayer &CTerrain::GetLayer(INDEX iLayer)
 {

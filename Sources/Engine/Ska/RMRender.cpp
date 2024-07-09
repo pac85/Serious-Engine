@@ -130,7 +130,7 @@ inline static void MakeIdentityMatrix(Matrix12 &mat)
 }
 
 // transform vector with given matrix
-inline static void TransformVector(FLOAT3 &v, const Matrix12 &m)
+static void TransformVector(FLOAT3 &v, const Matrix12 &m)
 {
   float x = v[0];
   float y = v[1];
@@ -139,7 +139,7 @@ inline static void TransformVector(FLOAT3 &v, const Matrix12 &m)
   v[1] = m[4]*x + m[5]*y + m[ 6]*z + m[ 7];
   v[2] = m[8]*x + m[9]*y + m[10]*z + m[11];
 }
-inline void TransformVertex(GFXVertex &v, const Matrix12 &m)
+void TransformVertex(GFXVertex &v, const Matrix12 &m)
 {
   float x = v.x;
   float y = v.y;
@@ -150,7 +150,7 @@ inline void TransformVertex(GFXVertex &v, const Matrix12 &m)
 }
 
 // rotate vector with given matrix ( does not translate vector )
-inline void RotateVector(FLOAT3 &v, const Matrix12 &m)
+void RotateVector(FLOAT3 &v, const Matrix12 &m)
 {
   float x = v[0];
   float y = v[1];
@@ -161,13 +161,13 @@ inline void RotateVector(FLOAT3 &v, const Matrix12 &m)
 }
 
 // copy one matrix12 to another
-inline void MatrixCopy(Matrix12 &c, const Matrix12 &m)
+void MatrixCopy(Matrix12 &c, const Matrix12 &m)
 {
   memcpy(&c,&m,sizeof(c));
 }
 
 // convert 3x4 matrix to QVect 
-inline void Matrix12ToQVect(QVect &qv,const Matrix12 &m12)
+void Matrix12ToQVect(QVect &qv,const Matrix12 &m12)
 {
   FLOATmatrix3D m;
   m(1,1) = m12[ 0]; m(1,2) = m12[ 1]; m(1,3) = m12[ 2]; 
@@ -181,7 +181,7 @@ inline void Matrix12ToQVect(QVect &qv,const Matrix12 &m12)
 }
 
 // covert QVect to matrix 3x4
-inline void QVectToMatrix12(Matrix12 &m12, const QVect &qv)
+void QVectToMatrix12(Matrix12 &m12, const QVect &qv)
 {
   FLOATmatrix3D m;
   qv.qRot.ToMatrix(m);
@@ -189,7 +189,7 @@ inline void QVectToMatrix12(Matrix12 &m12, const QVect &qv)
 }
 
 // concatenate two 3x4 matrices C=(MxN)
-inline void MatrixMultiply(Matrix12 &c,const Matrix12 &m, const Matrix12 &n)
+void MatrixMultiply(Matrix12 &c,const Matrix12 &m, const Matrix12 &n)
 {
   c[0] = m[0]*n[0] + m[1]*n[4] + m[2]*n[8];
   c[1] = m[0]*n[1] + m[1]*n[5] + m[2]*n[9];
@@ -208,7 +208,7 @@ inline void MatrixMultiply(Matrix12 &c,const Matrix12 &m, const Matrix12 &n)
 }
 
 // multiply two matrices into first one
-inline void MatrixMultiplyCP(Matrix12 &c,const Matrix12 &m, const Matrix12 &n)
+void MatrixMultiplyCP(Matrix12 &c,const Matrix12 &m, const Matrix12 &n)
 {
   Matrix12 mTemp;
   MatrixMultiply(mTemp,m,n);
@@ -216,7 +216,7 @@ inline void MatrixMultiplyCP(Matrix12 &c,const Matrix12 &m, const Matrix12 &n)
 }
 
 // make transpose matrix 
-inline void MatrixTranspose(Matrix12 &r, const Matrix12 &m)
+void MatrixTranspose(Matrix12 &r, const Matrix12 &m)
 {
   r[ 0] = m[ 0];
   r[ 5] = m[ 5];

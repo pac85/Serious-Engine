@@ -230,21 +230,6 @@ BOOL FindEdge( CStaticArray<CObjectEdge *> &apedSorted,
 }
 
 /*
- * Get start and end vertices.
- */
-void CObjectPolygonEdge::GetVertices(CObjectVertex *&povxStart, CObjectVertex *&povxEnd)
-{
-  ASSERT(ope_Edge!=NULL);
-  if (ope_Backward) {
-    povxStart = ope_Edge->oed_Vertex1;
-    povxEnd = ope_Edge->oed_Vertex0;
-  } else {
-    povxStart = ope_Edge->oed_Vertex0;
-    povxEnd = ope_Edge->oed_Vertex1;
-  }
-}
-
-/*
  * Default constructor.
  */
 CObjectSector::CObjectSector(void) :

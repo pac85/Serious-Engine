@@ -123,11 +123,32 @@ public:
   void SetLodDistanceFactor(FLOAT fLodDistance);
 
   // Get shadow map size
-  PIX GetShadowMapWidth(void);
-  PIX GetShadowMapHeight(void);
+  inline PIX GetShadowMapWidth(void) {
+    if (tr_iShadowMapSizeAspect < 0) {
+      return (tr_pixHeightMapWidth - 1) >> -tr_iShadowMapSizeAspect;
+    } else {
+      return (tr_pixHeightMapWidth - 1) << tr_iShadowMapSizeAspect;
+    }
+  };
+
+  inline PIX GetShadowMapHeight(void) {
+    if (tr_iShadowMapSizeAspect < 0) {
+      return (tr_pixHeightMapHeight - 1) >> -tr_iShadowMapSizeAspect;
+    } else {
+      return (tr_pixHeightMapHeight - 1) << tr_iShadowMapSizeAspect;
+    }
+  };
+
   // Get shading map size
-  PIX GetShadingMapWidth(void);
-  PIX GetShadingMapHeight(void);
+  inline PIX GetShadingMapWidth(void) {
+    ASSERT(tr_iShadingMapSizeAspect >= 0);
+    return GetShadowMapWidth() >> tr_iShadingMapSizeAspect;
+  };
+
+  inline PIX GetShadingMapHeight(void) {
+    ASSERT(tr_iShadingMapSizeAspect >= 0);
+    return GetShadowMapHeight() >> tr_iShadingMapSizeAspect;
+  };
 
   // Get reference to layer
   CTerrainLayer &GetLayer(INDEX iLayer);
