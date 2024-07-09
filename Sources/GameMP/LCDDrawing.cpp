@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 static CTextureObject _toPointer;
 static CTextureObject _toBcgClouds;
 static CTextureObject _toBcgGrid;
-CDrawPort *_pdp = NULL;
+static CDrawPort *_pdp = NULL;
 static PIX _pixSizeI;
 static PIX _pixSizeJ;
 static PIXaabbox2D _boxScreen;

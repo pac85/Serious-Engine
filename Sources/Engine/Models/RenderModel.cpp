@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Templates/StaticStackArray.cpp>
 
-CStaticStackArray<CRenderModel> _armRenderModels;
+static CStaticStackArray<CRenderModel> _armRenderModels;
 
 
 // texture used for simple model shadows
@@ -42,7 +42,7 @@ extern FLOAT mdl_fLODAdd;
 extern INDEX mdl_iShadowQuality;
 
 CAnyProjection3D _aprProjection;
-CDrawPort *_pdp = NULL;
+static CDrawPort *_pdp = NULL;
 UBYTE *_pubMask = NULL;
 SLONG _slMaskWidth  = 0;
 SLONG _slMaskHeight = 0;

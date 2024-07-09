@@ -25,13 +25,13 @@ public:
   ANGLE cp_aFOV;
 };
 
-BOOL _bCameraOn=FALSE;
-CTFileStream _strScript;
-BOOL _bInitialized;
-FLOAT _fStartTime;
-CCameraPos _cp0;
-CCameraPos _cp1;
-CCameraPos _cp;
+static BOOL _bCameraOn=FALSE;
+static CTFileStream _strScript;
+static BOOL _bInitialized;
+static FLOAT _fStartTime;
+static CCameraPos _cp0;
+static CCameraPos _cp1;
+static CCameraPos _cp;
 
 // camera control
 extern INDEX cam_bRecord           = FALSE;

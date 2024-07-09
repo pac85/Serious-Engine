@@ -542,7 +542,7 @@ void CModelerView::RenderAxis( CPerspectiveProjection3D &prProjection, CPlacemen
   DrawArrowAndTypeText( prProjection, vCenter, vRotZ, C_RED|CT_OPAQUE, "-Z");
 }
 
-CStaticStackArray<CRenderModel> _armRenderModels;
+static CStaticStackArray<CRenderModel> _armRenderModels;
 
 void CModelerView::RenderAxisOfAllAttachments(CPerspectiveProjection3D &prProjection,
                                               CPlacement3D &plParent, CModelObject &mo)

@@ -35,10 +35,10 @@ extern INDEX con_bTalk = 0;
 CTimerValue _tvMenuQuickSave(0I64);
 
 // used filenames
-CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
-CTFileName fnmStartupScript     = CTString("Scripts\\Game_startup.ini");
-CTFileName fnmConsoleHistory    = CTString("Temp\\ConsoleHistory.txt");
-CTFileName fnmCommonControls    = CTString("Controls\\System\\Common.ctl");
+static CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
+static CTFileName fnmStartupScript     = CTString("Scripts\\Game_startup.ini");
+static CTFileName fnmConsoleHistory    = CTString("Temp\\ConsoleHistory.txt");
+static CTFileName fnmCommonControls    = CTString("Controls\\System\\Common.ctl");
 
 // force dependency for player class
 DECLARE_CTFILENAME( fnmPlayerClass, "Classes\\Player.ecl");

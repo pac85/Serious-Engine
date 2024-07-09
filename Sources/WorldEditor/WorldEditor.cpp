@@ -42,7 +42,7 @@ FLOAT _fLastMipBrushingOptionUsed = -10000.0f;
 extern INDEX wed_iMaxFPSActive = 500;
 extern FLOAT wed_fFrontClipDistance = 0.5f;
 
-CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
+static CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
 
 // Macros used for ini i/o operations
 #define INI_PRIMITIVE_READ( strname, default_val)                               \

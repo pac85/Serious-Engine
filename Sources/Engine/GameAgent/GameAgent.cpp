@@ -104,27 +104,27 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #pragma comment(lib, "wsock32.lib")
 
-WSADATA* _wsaData = NULL;
-SOCKET _socket = NULL;
+static WSADATA* _wsaData = NULL;
+static SOCKET _socket = NULL;
 
-sockaddr_in* _sin = NULL;
-sockaddr_in* _sinLocal = NULL;
-sockaddr_in _sinFrom;
+static sockaddr_in* _sin = NULL;
+static sockaddr_in* _sinLocal = NULL;
+static sockaddr_in _sinFrom;
 
-CHAR* _szBuffer = NULL;
-CHAR* _szIPPortBuffer = NULL;
-INT   _iIPPortBufferLen = 0;
-CHAR* _szIPPortBufferLocal = NULL;
-INT   _iIPPortBufferLocalLen = 0;
+static CHAR* _szBuffer = NULL;
+static CHAR* _szIPPortBuffer = NULL;
+static INT   _iIPPortBufferLen = 0;
+static CHAR* _szIPPortBufferLocal = NULL;
+static INT   _iIPPortBufferLocalLen = 0;
 
-BOOL _bServer = FALSE;
-BOOL _bInitialized = FALSE;
-BOOL _bActivated = FALSE;
-BOOL _bActivatedLocal = FALSE;
+static BOOL _bServer = FALSE;
+static BOOL _bInitialized = FALSE;
+static BOOL _bActivated = FALSE;
+static BOOL _bActivatedLocal = FALSE;
 
-TIME _tmLastHeartbeat = 0;
+static TIME _tmLastHeartbeat = 0;
 
-CDynamicStackArray<CServerRequest> ga_asrRequests;
+static CDynamicStackArray<CServerRequest> ga_asrRequests;
 
 //extern CTString ga_strServer = "master1.croteam.org";
 extern CTString ga_strServer = "master1.42amsterdam.net";

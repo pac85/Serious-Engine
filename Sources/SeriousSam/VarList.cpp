@@ -19,10 +19,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 CListHead _lhVarSettings;
 
-CTString _strFile;
-INDEX _ctLines;
+static CTString _strFile;
+static INDEX _ctLines;
 
-CTString GetNonEmptyLine_t(CTStream &strm)
+static CTString GetNonEmptyLine_t(CTStream &strm)
 {
   FOREVER {
    if(strm.AtEOF()) {
@@ -52,7 +52,7 @@ void TranslateLine(CTString &str)
   str.TrimSpacesLeft();
 }
 
-void FixupFileName_t(CTString &strFnm)
+static void FixupFileName_t(CTString &strFnm)
 {
   strFnm.TrimSpacesLeft();
   strFnm.TrimSpacesRight();

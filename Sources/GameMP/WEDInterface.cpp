@@ -61,7 +61,7 @@ void UpdateInputEnabledState(CViewPort *pvp)
 }
 
 // automaticaly manage pause toggling
-void UpdatePauseState(void)
+static void UpdatePauseState(void)
 {
   BOOL bShouldPause = 
      _pGame->gm_csConsoleState ==CS_ON || _pGame->gm_csConsoleState ==CS_TURNINGON || _pGame->gm_csConsoleState ==CS_TURNINGOFF ||

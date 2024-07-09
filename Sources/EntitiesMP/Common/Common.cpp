@@ -718,10 +718,10 @@ void ModelAddAttachment_t(CModelObject *pmo, INDEX iAttachment,
   SetModel_t(&(pamo->amo_moModelObject), fnmModel, fnmTexture);
 };
 
-CTString _strFile;
-INDEX _ctLines;
+static CTString _strFile;
+static INDEX _ctLines;
 
-CTString GetNonEmptyLine_t(CTStream &strm)
+static CTString GetNonEmptyLine_t(CTStream &strm)
 {
   FOREVER {
    if(strm.AtEOF()) {
@@ -741,7 +741,7 @@ CTString GetNonEmptyLine_t(CTStream &strm)
   }
 }
 
-void FixupFileName_t(CTString &strFnm)
+static void FixupFileName_t(CTString &strFnm)
 {
   strFnm.TrimSpacesLeft();
   if (!strFnm.RemovePrefix(CTString("TF") +"NM ")) {  // must not directly have ids in code
