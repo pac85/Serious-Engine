@@ -106,7 +106,7 @@ void CMGModel::Render(CDrawPort *pdp)
   mg_moModel.RenderModel(rmRenderModel);
   EndModelRenderingView();
 
-  _pGame->LCDScreenBox(LCDGetColor(C_GREEN, "model box") | GetCurrentColor());
+  _pGame->LCDScreenBox(_pGame->LCDGetColor(C_GREEN, "model box") | GetCurrentColor());
 
   dpModel.Unlock();
 

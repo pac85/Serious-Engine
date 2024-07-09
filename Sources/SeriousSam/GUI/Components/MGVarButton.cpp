@@ -139,7 +139,7 @@ void CMGVarButton::Render(CDrawPort *pdp)
   if (mg_pvsVar->vs_bSeparator)
   {
     mg_bEnabled = FALSE;
-    COLOR col = LCDGetColor(C_WHITE | 255, "separator");
+    COLOR col = _pGame->LCDGetColor(C_WHITE | 255, "separator");
     CTString strText = mg_pvsVar->vs_strName;
     pdp->PutTextC(strText, pixIC, pixJ, col);
   } else if (mg_pvsVar->Validate()) {

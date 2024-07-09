@@ -813,7 +813,7 @@ BOOL DoMenu( CDrawPort *pdp)
     _pGame->LCDRenderClouds1();
     _pGame->LCDRenderGrid();
   //_pGame->LCDRenderClouds2();
-    _pGame->LCDScreenBox(LCDGetColor(C_GREEN|255, "popup box"));
+    _pGame->LCDScreenBox(_pGame->LCDGetColor(C_GREEN|255, "popup box"));
     dpPopup.Unlock();
     dpMenu.Lock();
   }
