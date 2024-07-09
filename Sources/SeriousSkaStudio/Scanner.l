@@ -1,3 +1,4 @@
+%option prefix="SKAyy"
 %{
 #include "StdAfx.h"
 #include "ParsingSymbols.h"
@@ -9,7 +10,7 @@
 #include <Engine/Templates/DynamicStackArray.cpp>
 
 extern "C" {
-  int yywrap(void)
+  int SKAyywrap(void)
   {
     // no more buffers
     return 1;
@@ -143,8 +144,8 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
   else
   {
     fclose(yyin);
-    yy_delete_buffer( YY_CURRENT_BUFFER );
-    yy_switch_to_buffer( include_stack[include_stack_ptr] );
+    SKAyy_delete_buffer( YY_CURRENT_BUFFER );
+    SKAyy_switch_to_buffer( include_stack[include_stack_ptr] );
     strCurentFileName = include_fnStack[include_stack_ptr];
     yyin = include_FileStack[include_stack_ptr];
     _yy_iLine = include_lineStack[include_stack_ptr];
@@ -156,19 +157,19 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
   return(yytext[0]);}
 
  /* constants */
-"-"?{DIGIT}+                  { yylval.i = atoi(yytext); return(c_int); }
-"0x"{HEXDIGIT}+               { yylval.i = strtoul(yytext+2, NULL, 16); return(c_int);}
-"-"?{NONEXP_FLT}("f"|"F")?    { yylval.f = (float) atof(yytext); return(c_float); }
-"-"?{EXP_FLT}("f"|"F")?       { yylval.f = (float) atof(yytext); return(c_float); }
+"-"?{DIGIT}+                  { SKAyylval.i = atoi(yytext); return(c_int); }
+"0x"{HEXDIGIT}+               { SKAyylval.i = strtoul(yytext+2, NULL, 16); return(c_int);}
+"-"?{NONEXP_FLT}("f"|"F")?    { SKAyylval.f = (float) atof(yytext); return(c_float); }
+"-"?{EXP_FLT}("f"|"F")?       { SKAyylval.f = (float) atof(yytext); return(c_float); }
 "\""{STRINGCONTENT}*"\""  { 
   CTString &strNew = astrText.Push();
   char *pstrNew;
   // remove double-quotes
   yytext[strlen(yytext)-1] = 0;
   pstrNew = yytext+1;
-  //yylval.str = strNew.ConstData();
+  //SKAyylval.str = strNew.ConstData();
   strNew = (const char*)pstrNew;
-  yylval.str = strNew.ConstData();
+  SKAyylval.str = strNew.ConstData();
   return(c_string); 
 }
 

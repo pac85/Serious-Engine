@@ -351,12 +351,12 @@
     <CustomBuild Include="Parser.y">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pushd $(SolutionDir)
-bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
+bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pushd $(SolutionDir)
-bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
+bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
@@ -365,12 +365,12 @@ del %(RootDir)%(Directory)\Parser.c /q</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pushd $(SolutionDir)
-bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
+bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pushd $(SolutionDir)
-bison -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
+bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>

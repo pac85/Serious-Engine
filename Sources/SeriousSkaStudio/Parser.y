@@ -68,7 +68,7 @@ BOOL bCompresion = FALSE;// is animation is using compresions
 #define YYERROR_VERBOSE 1                  
 
 // if error occurs in parsing
-void yyerror(const char *strFormat, ...)
+void SKAyyerror(const char *strFormat, ...)
 {
   va_list arg;
   va_start(arg, strFormat);
