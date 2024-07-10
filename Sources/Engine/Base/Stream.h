@@ -391,8 +391,12 @@ ENGINE_API void MakeDirList(
   ULONG ulFlags                 // additional flags
 );
 
+// [Cecil] Turned paths into constant references to internal variables
 // global string with application path
-ENGINE_API extern CTFileName _fnmApplicationPath;
+ENGINE_API extern const CTFileName &_fnmApplicationPath;
+// global string with filename of the started application
+ENGINE_API extern const CTFileName &_fnmApplicationExe;
+
 // global string with current MOD path
 ENGINE_API extern CTFileName _fnmMod;
 // global string with current name (the parameter that is passed on cmdline)
@@ -404,13 +408,6 @@ ENGINE_API extern CTString _strModURL;
 ENGINE_API extern CTString _strModExt;
 // global string with CD path (for minimal installations)
 ENGINE_API extern CTFileName _fnmCDPath;
-// global string with filename of the started application
-ENGINE_API extern CTFileName _fnmApplicationExe;
-
-// application path usage funtions
-ENGINE_API void UseApplicationPath(void);
-ENGINE_API void IgnoreApplicationPath(void);
-
 
 #endif  /* include-once check. */
 

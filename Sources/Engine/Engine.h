@@ -94,6 +94,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Registry.h>
 #include <Engine/Base/IFeel.h>
 #include <Engine/Base/DynamicModules.h> // [Cecil]
+#include <Engine/Base/GameDir.h> // [Cecil]
 
 // [Cecil] External module interfaces
 #include <Engine/API/EngineGUI.h>

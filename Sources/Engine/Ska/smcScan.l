@@ -9,7 +9,6 @@
 #include <Engine/Base/ErrorReporting.h>
 
 #include <Engine/Templates/DynamicStackArray.cpp>
-extern CTFileName _fnmApplicationPath;
 
 int syywrap(void)
 {

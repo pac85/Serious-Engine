@@ -57,10 +57,6 @@ static SE1_THREADLOCAL CListHead *_plhOpenedStreams = NULL;
 ULONG _ulVirtuallyAllocatedSpace = 0;
 ULONG _ulVirtuallyAllocatedSpaceTotal = 0;
 
-// global string with application path
-CTFileName _fnmApplicationPath;
-// global string with filename of the started application
-CTFileName _fnmApplicationExe;
 // global string with current MOD path
 CTFileName _fnmMod;
 // global string with current name (the parameter that is passed on cmdline)
@@ -145,13 +141,8 @@ static void LoadPackages(const CTString &strDirectory, const CTString &strMatchF
   }
 };
 
-static CTFileName _fnmApp;
-
 void InitStreams(void)
 {
-  // keep a copy of path for setting purposes
-  _fnmApp = _fnmApplicationPath;
-
   // if no mod defined yet
   if (_fnmMod=="") {
     // check for 'default mod' file
@@ -229,18 +220,6 @@ void InitStreams(void)
 void EndStreams(void)
 {
 }
-
-
-void UseApplicationPath(void) 
-{
-  _fnmApplicationPath = _fnmApp;
-}
-
-void IgnoreApplicationPath(void)
-{
-  _fnmApplicationPath = CTString("");
-}
-
 
 /////////////////////////////////////////////////////////////////////////////
 // Helper functions
@@ -948,6 +927,9 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   CTFileName fnFileNameAbsolute = fnFileName;
   fnFileNameAbsolute.SetAbsolutePath();
 
+  // [Cecil] Create the directory for the new file if it doesn't exist yet
+  CreateAllDirectories(fnFileNameAbsolute);
+
   // if current thread has not enabled stream handling
   if (!_bThreadCanHandleStreams) {
     // error
@@ -961,11 +943,6 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   ASSERT(fnFileNameAbsolute.Length() > 0);
   // check that the file is not open
   ASSERT(fstrm_pFile == NULL);
-
-#if !SE1_OLD_COMPILER
-  // create the directory for the new file if it doesn't exist yet
-  MakeSureDirectoryPathExists(fnmFullFileName.ConstData());
-#endif
 
   // open file stream for writing (destroy file context if file existed before)
   fstrm_pFile = fopen(fnmFullFileName.ConstData(), "wb+");

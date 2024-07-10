@@ -203,56 +203,6 @@ static void DetectCPUWrapper(void)
   }
 }
 
-// reverses string
-void StrRev( char *str) {
-  char ctmp;
-  char *pch0 = str;
-  char *pch1 = str+strlen(str)-1;
-  while( pch1>pch0) {
-    ctmp  = *pch0;
-    *pch0 = *pch1;
-    *pch1 = ctmp;
-    pch0++;
-    pch1--;
-  }
-}
-
-static char strExePath[MAX_PATH] = "";
-static char strDirPath[MAX_PATH] = "";
-
-static void AnalyzeApplicationPath(void)
-{
-  strcpy(strDirPath, "D:\\");
-  strcpy(strExePath, "D:\\TestExe.xbe");
-  char strTmpPath[MAX_PATH] = "";
-  // get full path to the exe
-  GetModuleFileNameA( NULL, strExePath, sizeof(strExePath)-1);
-  // copy that to the path
-  strncpy(strTmpPath, strExePath, sizeof(strTmpPath)-1);
-  strDirPath[sizeof(strTmpPath)-1] = 0;
-  // remove name from application path
-  StrRev(strTmpPath);  
-  // find last backslash
-  char *pstr = strchr( strTmpPath, '\\');
-  if( pstr==NULL) {
-    // not found - path is just "\"
-    strcpy( strTmpPath, "\\");
-    pstr = strTmpPath;
-  } 
-  // remove 'debug' from app path if needed
-  if( strnicmp( pstr, "\\gubed", 6)==0) pstr += 6;
-  if( pstr[0] = '\\') pstr++;
-  char *pstrFin = strchr( pstr, '\\');
-  if( pstrFin==NULL) {
-    strcpy( pstr, "\\");
-    pstrFin = pstr;
-  }
-  // copy that to the path
-  StrRev(pstrFin);
-  strncpy( strDirPath, pstrFin, sizeof(strDirPath)-1);
-  strDirPath[sizeof(strDirPath)-1] = 0;
-}
-
 // [Cecil] SDL: Initialization and shutdown management
 static bool _bEngineInitializedSDL = false;
 
@@ -298,19 +248,12 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   // [Cecil] TEMP: Set application type
   _eEngineAppType = eType;
 
-  AnalyzeApplicationPath();
-  _fnmApplicationPath = CTString(strDirPath);
-  _fnmApplicationExe = CTString(strExePath);
-  try {
-    _fnmApplicationExe.RemoveApplicationPath_t();
-  } catch (char *strError) {
-    (void) strError;
-    ASSERT(FALSE);
-  }
+  // [Cecil] Determine application paths for the first time
+  DetermineAppPaths();
 
   _pConsole = new CConsole;
   if (_strLogFile=="") {
-    _strLogFile = CTFileName(CTString(strExePath)).FileName();
+    _strLogFile = _fnmApplicationExe.FileName();
   }
   _pConsole->Initialize(_fnmApplicationPath+_strLogFile+".log", 90, 512);
 
@@ -343,7 +286,7 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   CPrintF("  %s\n\n", _strEngineBuild);
 
   // print info on the started application
-  CPrintF(TRANS("Executable: %s\n"), strExePath);
+  CPrintF(TRANS("Executable: %s\n"), _fnmApplicationPath + _fnmApplicationExe);
   CPrintF(TRANS("Assumed engine directory: %s\n"), _fnmApplicationPath);
 
   CPrintF("\n");
@@ -403,7 +346,7 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   DWORD dwBytes;
 
   char strDrive[] = "C:\\";
-  strDrive[0] = strExePath[0];
+  strDrive[0] = _fnmApplicationPath[0];
 
   GetVolumeInformationA(strDrive, NULL, 0, &dwSerial, NULL, NULL, NULL, 0);
   GetDiskFreeSpaceA(strDrive, &dwSectors, &dwBytes, &dwFreeClusters, &dwClusters);

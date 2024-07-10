@@ -748,6 +748,9 @@
     <ClCompile Include="API\API.cpp">
       <Filter>Source Files\API</Filter>
     </ClCompile>
+    <ClCompile Include="Base\GameDir.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Anim.h">
@@ -1376,6 +1379,9 @@
     </ClInclude>
     <ClInclude Include="API\EngineGUI.h">
       <Filter>Header Files\API Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\GameDir.h">
+      <Filter>Header Files\Base Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

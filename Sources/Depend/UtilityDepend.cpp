@@ -19,7 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Depend - extract dependencies and create group file utility
 
 #define ACHR_OPTION        argv[1]
-#define ACHR_APP_DIR       argv[2]
 
 void PrintUsage()
 {
@@ -59,12 +58,6 @@ void SubMain( int argc, char *argv[])
   
   // initialize engine
   SE_InitEngine();
-  // get application path from cmd line
-  _fnmApplicationPath = CTString(ACHR_APP_DIR);
-  // if not ending with backslash
-  if (_fnmApplicationPath[_fnmApplicationPath.Length() - 1] != '\\') {
-    _fnmApplicationPath += "\\";
-  }
 
   // get all filenames from command line
   CTFileName afnFiles[3];

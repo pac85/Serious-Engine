@@ -91,8 +91,6 @@ void SubMain( int argc, char *argv[])
   
   // initialize engine
   SE_InitEngine();
-  _fnmApplicationPath = CTString("");
-
 
   CTFileName fnSrc = CTString(argv[1]);
   CTFileName fnDst = CTString(argv[2]);

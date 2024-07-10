@@ -295,6 +295,7 @@
     <ClCompile Include="Base\DynamicModules.cpp" />
     <ClCompile Include="Base\ErrorReporting.cpp" />
     <ClCompile Include="Base\FileName.cpp" />
+    <ClCompile Include="Base\GameDir.cpp" />
     <ClCompile Include="Base\IFeel.cpp" />
     <ClCompile Include="Base\Input.cpp" />
     <ClCompile Include="Base\Lists.cpp" />
@@ -640,6 +641,7 @@
     <ClInclude Include="Base\ErrorReporting.h" />
     <ClInclude Include="Base\ErrorTable.h" />
     <ClInclude Include="Base\FileName.h" />
+    <ClInclude Include="Base\GameDir.h" />
     <ClInclude Include="Base\GroupFile.h" />
     <ClInclude Include="Base\IFeel.h" />
     <ClInclude Include="Base\Input.h" />

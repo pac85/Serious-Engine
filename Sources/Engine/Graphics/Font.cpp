@@ -134,11 +134,9 @@ void CFontData::Make_t( const CTFileName &fnTexture, PIX pixCharWidth, PIX pixCh
   fd_ptdTextureData->Force( TEX_STATIC|TEX_CONSTANT);
   PIX pixTexWidth = fd_ptdTextureData->GetPixWidth();
 
-  // load ascii order file (no application path necessary)
+  // load ascii order file
   CTString strLettersOrder;
-  IgnoreApplicationPath();
   strLettersOrder.Load_t( fnOrderFile);
-  UseApplicationPath();
 
   // remember letter width and height
   fd_pixCharWidth  = pixCharWidth;
