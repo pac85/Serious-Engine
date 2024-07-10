@@ -591,7 +591,7 @@ INDEX CTString::ScanF(const char *strFormat, ...) const
 
 
   // split string in two strings at specified position (char AT splitting position goes to str2)
-void CTString::Split( INDEX iPos, CTString &str1, CTString &str2)
+void CTString::Split( INDEX iPos, CTString &str1, CTString &str2) const
 {
   str1 = str_String;
   str2 = str_String;
