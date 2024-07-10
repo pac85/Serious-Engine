@@ -217,6 +217,9 @@ public:
   // Remove application path from a file name
   BOOL RemoveApplicationPath_t(void);
 
+  // [Cecil] Convert from a relative path to an absolute path and add missing backslashes
+  void SetFullDirectory(void);
+
   // Filename is its own name (used for storing in nametable)
   inline const CTString &GetName(void) const {
     return *this;
