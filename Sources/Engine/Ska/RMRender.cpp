@@ -89,7 +89,7 @@ static void CalculateRenderingData(CModelInstance &mi);
 static void ClearRenArrays();
 
 // load our 3x4 matrix from old-fashioned matrix+vector combination
-inline void MatrixVectorToMatrix12(Matrix12 &m12,const FLOATmatrix3D &m, const FLOAT3D &v)
+void MatrixVectorToMatrix12(Matrix12 &m12,const FLOATmatrix3D &m, const FLOAT3D &v)
 {
   m12[ 0] = m(1,1); m12[ 1] = m(1,2); m12[ 2] = m(1,3); m12[ 3] = v(1); 
   m12[ 4] = m(2,1); m12[ 5] = m(2,2); m12[ 6] = m(2,3); m12[ 7] = v(2); 
@@ -97,7 +97,7 @@ inline void MatrixVectorToMatrix12(Matrix12 &m12,const FLOATmatrix3D &m, const F
 }
 
 // convert matrix12 to old matrix 3x3 and vector
-inline void Matrix12ToMatrixVector(FLOATmatrix3D &c, FLOAT3D &v, const Matrix12 &m12)
+void Matrix12ToMatrixVector(FLOATmatrix3D &c, FLOAT3D &v, const Matrix12 &m12)
 {
   c(1,1) = m12[ 0]; c(1,2) = m12[ 1]; c(1,3) = m12[ 2]; v(1) = m12[ 3]; 
   c(2,1) = m12[ 4]; c(2,2) = m12[ 5]; c(2,3) = m12[ 6]; v(2) = m12[ 7]; 
