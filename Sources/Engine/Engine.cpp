@@ -255,7 +255,9 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   if (_strLogFile=="") {
     _strLogFile = _fnmApplicationExe.FileName();
   }
-  _pConsole->Initialize(_fnmApplicationPath+_strLogFile+".log", 90, 512);
+
+  // [Cecil] Save under the "Logs/" directory
+  _pConsole->Initialize(_fnmApplicationPath + "Logs\\" + _strLogFile + ".log", 90, 512);
 
   _pAnimStock        = new CStock_CAnimData;
   _pTextureStock     = new CStock_CTextureData;
