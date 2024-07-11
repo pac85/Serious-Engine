@@ -119,6 +119,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
@@ -127,6 +128,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)-Static</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -135,6 +137,7 @@
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -143,6 +146,7 @@
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
+    <TargetName>$(ProjectName)-Static</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
@@ -151,6 +155,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
@@ -159,6 +164,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)-Static</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -167,6 +173,7 @@
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -175,6 +182,7 @@
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
+    <TargetName>$(ProjectName)-Static</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
     <ClCompile>

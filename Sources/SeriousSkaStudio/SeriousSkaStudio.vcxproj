@@ -79,6 +79,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -87,6 +88,7 @@
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
@@ -95,6 +97,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -103,6 +106,7 @@
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
+    <TargetName>$(ProjectName)-Dynamic</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
     <ClCompile>
