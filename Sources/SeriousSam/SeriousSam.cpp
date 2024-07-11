@@ -1167,65 +1167,35 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
   _pInput->DisableInput();
   _pGame->StopGame();
   
-  if (_fnmModToLoad!="") {
-  
-    char strCmd [64] = {0};
-	char strParam [128] = {0};
-	STARTUPINFOA cif;
-	ZeroMemory(&cif,sizeof(STARTUPINFOA));
-	PROCESS_INFORMATION pi;
-	
-	strcpy(strCmd,"SeriousSam.exe");
-	strcpy(strParam," +game ");
-	strcat(strParam,_fnmModToLoad.FileName());
-	if (_strModServerJoin!="") {
-	  strcat(strParam," +connect ");
-	  strcat(strParam,_strModServerJoin);
-	  strcat(strParam," +quickjoin");
-  }	
+  if (_fnmModToLoad != "") {
+    STARTUPINFOA cif;
+    ZeroMemory(&cif, sizeof(STARTUPINFOA));
+    PROCESS_INFORMATION pi;
 
-	if (CreateProcessA(strCmd,strParam,NULL,NULL,FALSE,CREATE_DEFAULT_ERROR_MODE,NULL,NULL,&cif,&pi) == FALSE)
-	{
-	  MessageBox(0, "error launching the Mod!\n", "Serious Sam", MB_OK|MB_ICONERROR);		
-	}
+    const CTString strMod = _fnmModToLoad.FileName();
+
+    // [Cecil] Use executable filename
+    CTString strCmd = _fnmApplicationPath + _fnmApplicationExe;
+    CTString strParam = " +game " + strMod;
+
+    if (_strModServerJoin != "") {
+      strParam += " +connect " + _strModServerJoin + " +quickjoin";
+    }
+
+    if (!CreateProcessA(strCmd.str_String, strParam.str_String, NULL, NULL, FALSE, CREATE_DEFAULT_ERROR_MODE, NULL, NULL, &cif, &pi)) {
+      // [Cecil] Proper error message
+      CTString strError;
+      strError.PrintF("Cannot start '%s' mod:\n%s\n", strMod, GetWindowsError(GetLastError()));
+
+      MessageBoxA(0, strError, "Serious Sam", MB_OK | MB_ICONERROR);
+    }
   }
+
   // invoke quit screen if needed
   if( _bQuitScreen && _fnmModToLoad=="") QuitScreenLoop();
   
   End();
   return TRUE;
-}
-
-/*
-void CheckModReload(void)
-{
-  if (_fnmModToLoad!="") {
-    CTString strCommand = _fnmApplicationExe.FileDir()+"SeriousSam.exe";
-    //+mod "+_fnmModToLoad.FileName()+"\"";
-    CTString strMod = _fnmModToLoad.FileName();
-    const char *argv[7];
-    argv[0] = strCommand;
-    argv[1] = "+game";
-    argv[2] = strMod;
-    argv[3] = NULL;
-    if (_strModServerJoin!="") {
-      argv[3] = "+connect";
-      argv[4] = _strModServerJoin;
-      argv[5] = "+quickjoin";
-      argv[6] = NULL;
-    }
-
-    _execv(strCommand, argv);
-  }
-}*/
-
-void CheckTeaser(void)
-{
-  CTFileName fnmTeaser = _fnmApplicationExe.FileDir()+CTString("AfterSam.exe");
-  if (fopen(fnmTeaser, "r")!=NULL) {
-    Sleep(500);
-    _execl(fnmTeaser, "\""+fnmTeaser+"\"", NULL);
-  }
 }
 
 void CheckBrowser(void)
@@ -1244,10 +1214,6 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   CTSTREAM_BEGIN {
     iResult = SubMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
   } CTSTREAM_END;
-  
-  //CheckModReload();
-
-  CheckTeaser();
 
   CheckBrowser();
 
