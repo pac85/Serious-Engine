@@ -39,22 +39,19 @@ void DetermineAppPaths(void) {
   CTString strPath = strPathBuffer;
   strPath.Erase(strPath.RFind('\\'));
 
-  // Find Bin folder with a platform name
-  const char strBin86[] = "\\Bin\\x86";
-  const char strBin64[] = "\\Bin\\x64";
-  const size_t iDesiredPos = strPath.Length() - (sizeof(strBin86) - 1);
+  // Check if there's a Bin folder in the middle
+  size_t iPos = strPath.RFind("\\Bin\\");
 
-  size_t iPos = strPath.RFind(strBin86);
-
-  // x86 isn't found at the end
-  if (iPos != iDesiredPos) {
-    iPos = strPath.RFind(strBin64);
-  }
-
-  // Cut off x86 or x64, if found at the end
-  // E.g. "C:\\SeriousSam"
-  if (iPos == iDesiredPos) {
+  if (iPos != CTString::npos) {
     strPath.Erase(iPos);
+
+  } else {
+    // Check if there's a Bin folder at the end
+    iPos = strPath.RFind("\\Bin");
+
+    if (iPos == strPath.Length() - 4) {
+      strPath.Erase(iPos);
+    }
   }
 
   // Get cut-off position before the Bin directory
