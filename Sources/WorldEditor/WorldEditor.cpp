@@ -42,8 +42,6 @@ FLOAT _fLastMipBrushingOptionUsed = -10000.0f;
 extern INDEX wed_iMaxFPSActive = 500;
 extern FLOAT wed_fFrontClipDistance = 0.5f;
 
-static CTFileName fnmPersistentSymbols = CTString("Scripts\\PersistentSymbols.ini");
-
 // Macros used for ini i/o operations
 #define INI_PRIMITIVE_READ( strname, default_val)                               \
   strcpy( strIni, CStringA(theApp.GetProfileString( L"World editor prefs", CString(strPrimitiveType+" "+ strname ), CString( default_val ))))
@@ -648,7 +646,7 @@ BOOL CWorldEditorApp::SubInitInstance()
   _pShell->DeclareSymbol("user void WED_FindEmptyBrush(void);", &WED_FindEmptyBrushes);
 
   // load persistent symbols
-  _pShell->Execute(CTString("include \""+fnmPersistentSymbols+"\";"));
+  LoadPersistentSymbols(); // [Cecil]
 
   // prepare full screen mode
   _EngineGUI.GetFullScreenModeFromRegistry( "Display modes", m_dmFullScreen, m_gatFullScreen);

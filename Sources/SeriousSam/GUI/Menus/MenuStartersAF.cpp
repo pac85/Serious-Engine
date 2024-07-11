@@ -111,6 +111,13 @@ BOOL LSLoadPlayerModel(const CTFileName &fnm)
 BOOL LSLoadControls(const CTFileName &fnm)
 {
   try {
+    // [Cecil] Load user controls from user data
+    CTString fnmControls = fnm;
+
+    if (fnm.HasPrefix("Controls\\Controls")) {
+      fnmControls.PrintF("UserData\\Controls\\%s.ctl", fnm.FileName());
+    }
+
     ControlsMenuOn();
     _pGame->gm_ctrlControlsExtra.Load_t(fnm);
     ControlsMenuOff();

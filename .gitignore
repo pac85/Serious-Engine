@@ -57,13 +57,11 @@ Debug/*
 *.idb
 
 # Generated configuration files
-Controls/Controls*.ctl
 Data/*.bin
 Data/*.pri
-SaveGame/*
-Scripts/PersistentSymbols.ini
+Demos/*
 Temp/*
-Players/*.plr
+UserData/*
 *.log
 *.rpt
 *.gms

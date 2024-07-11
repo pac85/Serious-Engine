@@ -326,6 +326,9 @@ public:
 // [Cecil] Export the interface from here
 GAME_API extern CGame *_pGame;
 
+// [Cecil] Load shell symbols from the persistent symbols script
+GAME_API void LoadPersistentSymbols(void);
+
 // [Cecil] Shell functions used by SeriousSam and GameAgent
 GAME_API CTString GetGameTypeName(INDEX iMode);
 GAME_API CTString GetCurrentGameTypeName(void);
