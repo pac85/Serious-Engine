@@ -33,9 +33,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "DlgCreateEffectTexture.h"
 
 // this is needed for resource setting
-#ifndef NDEBUG
-  #define ENGINEGUI_DLL_NAME "EngineGUID.dll"
-#else
+#if defined(SE1_STATIC_BUILD)
+  #define ENGINEGUI_DLL_NAME NULL
+#elif defined(NDEBUG)
   #define ENGINEGUI_DLL_NAME "EngineGUI.dll"
+#else
+  #define ENGINEGUI_DLL_NAME "EngineGUID.dll"
 #endif
-

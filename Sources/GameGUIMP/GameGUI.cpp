@@ -18,10 +18,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "stdafx.h"
 
-#ifdef _DEBUG
-  #define GAMEGUI_DLL_NAME "GameGUIMPD.dll"
-#else
+#if defined(SE1_STATIC_BUILD)
+  #define GAMEGUI_DLL_NAME NULL
+#elif defined(NDEBUG)
   #define GAMEGUI_DLL_NAME "GameGUIMP.dll"
+#else
+  #define GAMEGUI_DLL_NAME "GameGUIMPD.dll"
 #endif
 
 static int iDialogResult;

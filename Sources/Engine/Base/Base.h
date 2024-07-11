@@ -14,7 +14,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 // [Cecil] Declaration specifiers for exporting and importing symbols from modules
-#if SE1_WIN
+#if defined(SE1_STATIC_BUILD)
+  #define SE1_API_EXPORT // No need to export or import anything when statically linked
+  #define SE1_API_IMPORT
+#elif SE1_WIN
   #define SE1_API_EXPORT __declspec(dllexport)
   #define SE1_API_IMPORT __declspec(dllimport)
 #else

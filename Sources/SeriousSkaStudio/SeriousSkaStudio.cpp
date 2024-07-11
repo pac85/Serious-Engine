@@ -31,6 +31,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Stock_CAnimSet.h>
 #include <Engine/Templates/Stock_CTextureData.h>
 
+// [Cecil] Link Shaders
+#include <StaticAPI/Shaders.inl>
+
 #ifdef _DEBUG
 #undef new
 #define new DEBUG_NEW

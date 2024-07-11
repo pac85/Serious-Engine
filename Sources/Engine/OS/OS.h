@@ -72,6 +72,13 @@ class ENGINE_API OS {
 
       EngineModule(HMODULE hOther = NULL) : hHandle(hOther) {};
 
+    #if defined(SE1_STATIC_BUILD)
+      inline BOOL IsLoaded(void) { return TRUE; };
+      inline void Load(const char *strLibrary) {};
+      inline void LoadOrThrow_t(const char *strLibrary) {};
+      inline BOOL Free(void) { return TRUE; };
+
+    #else
       inline BOOL IsLoaded(void) { return hHandle != NULL; };
       inline void Load(const char *strLibrary) { hHandle = LoadLib(strLibrary); };
       inline void LoadOrThrow_t(const char *strLibrary) { hHandle = LoadLibOrThrow_t(strLibrary); };
@@ -82,6 +89,7 @@ class ENGINE_API OS {
         hHandle = NULL;
         return bReturn;
       };
+    #endif // SE1_STATIC_BUILD
 
       inline EngineModule &operator=(const EngineModule &hOther) {
         hHandle = hOther.hHandle;

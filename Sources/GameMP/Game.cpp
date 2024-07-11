@@ -29,6 +29,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "Camera.h"
 #include "LCDDrawing.h"
 
+// [Cecil] Link EntitiesMP
+#include <StaticAPI/EntitiesMP.inl>
+
 extern FLOAT con_fHeightFactor = 0.5f;
 extern FLOAT con_tmLastLines   = 5.0f;
 extern INDEX con_bTalk = 0;
