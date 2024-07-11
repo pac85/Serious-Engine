@@ -1,20 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Dynamic-Debug|Win32">
+      <Configuration>Dynamic-Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Dynamic-Debug|x64">
+      <Configuration>Dynamic-Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Dynamic-Release|Win32">
+      <Configuration>Dynamic-Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Dynamic-Release|x64">
+      <Configuration>Dynamic-Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static-Debug|Win32">
+      <Configuration>Static-Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static-Debug|x64">
+      <Configuration>Static-Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static-Release|Win32">
+      <Configuration>Static-Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static-Release|x64">
+      <Configuration>Static-Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -28,47 +44,83 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Release.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicRelease.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Release.props" />
+    <Import Project="$(SolutionDir)Properties\StaticRelease.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Debug.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicRelease.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Debug.props" />
+    <Import Project="$(SolutionDir)Properties\StaticRelease.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicDebug.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\StaticDebug.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicDebug.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+    <Import Project="$(SolutionDir)Properties\StaticDebug.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
@@ -77,7 +129,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
@@ -86,7 +138,25 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)D</TargetName>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)D</TargetName>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
@@ -94,7 +164,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
@@ -102,7 +172,23 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
+    <OutDir>$(BinDir)</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
@@ -148,7 +234,53 @@
       <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <PreprocessorDefinitions>$(SE1Preproc);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\libvorbis\include\;$(SolutionDir)ThirdParty\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\Engine.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake />
+    <Link>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <GenerateMapFile>true</GenerateMapFile>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <IgnoreSpecificDefaultLibraries>libci.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuildStep />
+    <PreBuildEvent>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
@@ -191,7 +323,50 @@
       <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>$(SE1Preproc);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\libvorbis\include\;$(SolutionDir)ThirdParty\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\Engine.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake />
+    <Link>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <GenerateMapFile>true</GenerateMapFile>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libci.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuildStep />
+    <PreBuildEvent>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -238,7 +413,54 @@
       <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <WarningLevel>Level3</WarningLevel>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <OmitFramePointers>false</OmitFramePointers>
+      <PreprocessorDefinitions>$(SE1Preproc);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\libvorbis\include\;$(SolutionDir)ThirdParty\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\Engine.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake />
+    <Link>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <GenerateMapFile>true</GenerateMapFile>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <IgnoreSpecificDefaultLibraries>libci.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuildStep />
+    <PreBuildEvent>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -283,6 +505,51 @@
       <Command>copy "$(OutDir)$(TargetFileName)" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <WarningLevel>Level3</WarningLevel>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <OmitFramePointers>false</OmitFramePointers>
+      <PreprocessorDefinitions>$(SE1Preproc);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>StdH.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4603;4996;4812;4333</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\libvorbis\include\;$(SolutionDir)ThirdParty\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\Engine.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake />
+    <Link>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <GenerateMapFile>true</GenerateMapFile>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libci.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuildStep />
+    <PreBuildEvent>
+      <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying $(ProjectName) binaries into Bin</Message>
+      <Command>copy "$(SDLLibPath)SDL2.dll" "$(PostBuildCopyDir)" &gt;nul &amp;&amp; copy "$(GLEWBinPath)glew32.dll" "$(PostBuildCopyDir)" &gt;nul</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="API\API.cpp" />
     <ClCompile Include="Base\Anim.cpp" />
@@ -303,10 +570,14 @@
     <ClCompile Include="Base\Profiling.cpp" />
     <ClCompile Include="Base\ProgressHook.cpp" />
     <ClCompile Include="Base\Protection.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Base\Registry.cpp" />
     <ClCompile Include="Base\Relations.cpp" />
@@ -315,8 +586,10 @@
     <ClCompile Include="Base\Shell.cpp" />
     <ClCompile Include="Base\ShellTypes.cpp" />
     <ClCompile Include="Base\StackDump.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Base\Statistics.cpp" />
     <ClCompile Include="Base\Stream.cpp" />
@@ -359,16 +632,24 @@
     <ClCompile Include="Graphics\Gfx_OpenGL_Textures.cpp" />
     <ClCompile Include="Graphics\Gfx_wrapper.cpp" />
     <ClCompile Include="Graphics\Gfx_wrapper_Direct3D.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Graphics\Gfx_wrapper_OpenGL.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Graphics\GfxLibrary.cpp" />
     <ClCompile Include="Graphics\GfxProfile.cpp" />
@@ -415,67 +696,107 @@
     <ClCompile Include="World\WorldIO.cpp" />
     <ClCompile Include="World\WorldRayCasting.cpp" />
     <ClCompile Include="Templates\AllocationArray.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\BSP.cpp" />
     <ClCompile Include="Templates\DynamicArray.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\DynamicContainer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\DynamicStackArray.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\LinearAllocator.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\NameTable.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\NameTable_CTFileName.cpp" />
     <ClCompile Include="Templates\NameTable_CTranslationPair.cpp" />
     <ClCompile Include="Templates\Selection.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\StaticArray.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\StaticStackArray.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\Stock.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Templates\Stock_CAnimData.cpp" />
     <ClCompile Include="Templates\Stock_CAnimSet.cpp" />
@@ -502,48 +823,76 @@
     <ClCompile Include="Network\Server.cpp" />
     <ClCompile Include="Network\SessionState.cpp" />
     <ClCompile Include="Rendering\RenCache.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\RendASER.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\RendClip.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\Render.cpp" />
     <ClCompile Include="Rendering\RenderAdding.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\RenderBrushes.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\RenderModels.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\RenderProfile.cpp" />
     <ClCompile Include="Rendering\RendMisc.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\SelectOnRender.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
@@ -586,16 +935,24 @@
     <ClCompile Include="Terrain\TerrainTile.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="StdH.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Classes\BaseEvents.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Classes\MovableBrushEntity.cpp" />
     <ClCompile Include="Classes\MovableEntity.cpp" />
@@ -604,23 +961,39 @@
     <ClCompile Include="Classes\PlayerEntity.cpp" />
     <ClCompile Include="Base\SCANNER.CPP" />
     <ClCompile Include="Ska\smcPars.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Ska\Smcscan.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
@@ -863,165 +1236,297 @@
     </CustomBuild>
     <CustomBuild Include="Base\Parser.y">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">pushd $(SolutionDir)
 bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">pushd $(SolutionDir)
 bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating shell parser source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating shell parser source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">pushd $(SolutionDir)
 bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">pushd $(SolutionDir)
 bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating shell parser source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating shell parser source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Generating shell parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">Generating shell parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Generating shell parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">Generating shell parser source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">pushd $(SolutionDir)
+bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
+popd
+copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
+del %(RootDir)%(Directory)\Parser.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">pushd $(SolutionDir)
+bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
+popd
+copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
+del %(RootDir)%(Directory)\Parser.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">pushd $(SolutionDir)
+bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
+popd
+copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
+del %(RootDir)%(Directory)\Parser.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">pushd $(SolutionDir)
+bison -o$(ProjectName)/Base/Parser.c $(ProjectName)/Base/Parser.y -d
+popd
+copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
+del %(RootDir)%(Directory)\Parser.c /q</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Generating shell parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">Generating shell parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Generating shell parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">Generating shell parser source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RootDir)%(Directory)\Parser.cpp;%(RootDir)%(Directory)\Parser.h;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Base\Scanner.l">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating shell scanner source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating shell scanner source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating shell scanner source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating shell scanner source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Generating shell scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">Generating shell scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Generating shell scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">Generating shell scanner source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp -S%(RootDir)%(Directory)\Flex.skl %(RootDir)%(Directory)\Scanner.l</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Generating shell scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">Generating shell scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Generating shell scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">Generating shell scanner source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RootDir)%(Directory)\Scanner.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Ska\smcFlex.skl">
       <FileType>Document</FileType>
     </CustomBuild>
     <CustomBuild Include="Ska\smcPars.y">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">pushd $(SolutionDir)
 bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
 popd
 copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
 del %(RootDir)%(Directory)\smcPars.c /q</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">pushd $(SolutionDir)
 bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
 popd
 copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
 del %(RootDir)%(Directory)\smcPars.c /q</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">pushd $(SolutionDir)
 bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
 popd
 copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
 del %(RootDir)%(Directory)\smcPars.c /q</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">pushd $(SolutionDir)
 bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
 popd
 copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
 del %(RootDir)%(Directory)\smcPars.c /q</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">pushd $(SolutionDir)
+bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
+popd
+copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
+del %(RootDir)%(Directory)\smcPars.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">pushd $(SolutionDir)
+bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
+popd
+copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
+del %(RootDir)%(Directory)\smcPars.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">pushd $(SolutionDir)
+bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
+popd
+copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
+del %(RootDir)%(Directory)\smcPars.c /q</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">pushd $(SolutionDir)
+bison -psyy -o$(ProjectName)/Ska/smcPars.c $(ProjectName)/Ska/smcPars.y -d
+popd
+copy %(RootDir)%(Directory)\smcPars.c %(RootDir)%(Directory)\smcPars.cpp  
+del %(RootDir)%(Directory)\smcPars.c /q</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RootDir)%(Directory)\smcPars.cpp;%(RootDir)%(Directory)\smcPars.h;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Ska\smcScan.l">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">flex -o%(RootDir)%(Directory)\smcScan.cpp -S%(RootDir)%(Directory)\smcFlex.skl %(RootDir)%(Directory)\smcScan.l</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RootDir)%(Directory)\smcScan.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\BaseEvents.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\MovableBrushEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\MovableEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\MovableModelEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Classes\PlayerEntity.es">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Debug|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">cd "$(SolutionDir)" &amp;&amp; ecc "$(ProjectName)/%(RelativeDir)%(Filename).es"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">$(ProjectName)/%(RelativeDir)%(Filename).es</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|Win32'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static-Release|x64'">%(RelativeDir)%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

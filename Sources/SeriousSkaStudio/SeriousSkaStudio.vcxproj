@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Dynamic-Debug|Win32">
+      <Configuration>Dynamic-Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Dynamic-Debug|x64">
+      <Configuration>Dynamic-Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Dynamic-Release|Win32">
+      <Configuration>Dynamic-Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Dynamic-Release|x64">
+      <Configuration>Dynamic-Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -28,22 +28,22 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'" Label="Configuration">
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'" Label="Configuration">
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'" Label="Configuration">
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'" Label="Configuration">
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -51,28 +51,28 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Release.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicRelease.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Release.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicRelease.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Debug.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicDebug.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="$(SolutionDir)Properties\Debug.props" />
+    <Import Project="$(SolutionDir)Properties\DynamicDebug.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
@@ -80,7 +80,7 @@
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
@@ -88,7 +88,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(SE1Exe);$(ExecutablePath)</ExecutablePath>
@@ -96,7 +96,7 @@
     <IntDir>$(ObjDir)</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SE1Incl);$(IncludePath)</IncludePath>
     <LibraryPath>$(SE1Libs);$(LibraryPath)</LibraryPath>
@@ -104,7 +104,7 @@
     <OutDir>$(BinDir)</OutDir>
     <IntDir>$(ObjDir)</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
@@ -143,7 +143,7 @@
       <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
@@ -180,7 +180,7 @@
       <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -218,7 +218,7 @@
       <Command>del "$(PostBuildCopyDir)$(TargetFileName)" /q &gt;nul</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -271,32 +271,32 @@
     <ClCompile Include="SeriousSkaStudioView.cpp" />
     <ClCompile Include="SplitterFrame.cpp" />
     <ClCompile Include="StdAfx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TexView.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="scanner.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">
       </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="hlp\SeriousSkaStudio.hpj">
       <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">true</ExcludedFromBuild>
     </CustomBuild>
     <CustomBuild Include="res\bmp00001.bmp" />
     <CustomBuild Include="res\bmp00002.bmp" />
@@ -335,64 +335,64 @@
     <CustomBuild Include="hlp\Scmin.bmp" />
     <CustomBuild Include="hlp\SeriousSkaStudio.cnt">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying contents file...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying contents file...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying contents file...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying contents file...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Copying contents file...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Copying contents file...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">copy "hlp\%(Filename).cnt" "$(OutDir)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Copying contents file...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Copying contents file...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">$(OutDir)%(Filename).cnt;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Parser.y">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">pushd $(SolutionDir)
 bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">pushd $(SolutionDir)
 bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating parser source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating parser source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pushd $(SolutionDir)
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Creating parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Creating parser source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">pushd $(SolutionDir)
 bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pushd $(SolutionDir)
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">pushd $(SolutionDir)
 bison -pSKAyy -o$(ProjectName)/Parser.c $(ProjectName)/Parser.y -d
 popd
 copy %(RootDir)%(Directory)\Parser.c %(RootDir)%(Directory)\Parser.cpp  
 del %(RootDir)%(Directory)\Parser.c /q</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating parser source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating parser source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Creating parser source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Creating parser source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">$(InputDir)Parser.cpp;$(InputDir)Parser.h;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="Scanner.l">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating scanner source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating scanner source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Scanner.cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Scanner.cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating scanner source</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating scanner source</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Scanner.cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Scanner.cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Creating scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Creating scanner source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">.\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">.\Scanner.cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">flex -o%(RootDir)%(Directory)\Scanner.cpp  %(RootDir)%(Directory)\Scanner.l</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Creating scanner source</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Creating scanner source</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">.\Scanner.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">.\Scanner.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="SeriousSkaStudio.clw">
       <FileType>Document</FileType>
@@ -412,7 +412,7 @@ del %(RootDir)%(Directory)\Parser.c /q</Command>
     <ClInclude Include="ParsingSymbols.h" />
     <ClInclude Include="unistd.h" />
     <CustomBuild Include="Resource.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">echo. &gt;"hlp\$(TargetName).hm" 
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">echo. &gt;"hlp\$(TargetName).hm" 
 echo // Commands (ID_* and IDM_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm ID_,HID_,0x10000 IDM_,HIDM_,0x10000 resource.h &gt;&gt;"hlp\$(TargetName).hm" 
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
@@ -427,7 +427,7 @@ makehm IDD_,HIDD_,0x20000 resource.h &gt;&gt;"hlp\$(TargetName).hm"
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
 echo // Frame Controls (IDW_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm IDW_,HIDW_,0x50000 resource.h &gt;&gt;"hlp\$(TargetName).hm" </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">echo. &gt;"hlp\$(TargetName).hm" 
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">echo. &gt;"hlp\$(TargetName).hm" 
 echo // Commands (ID_* and IDM_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm ID_,HID_,0x10000 IDM_,HIDM_,0x10000 resource.h &gt;&gt;"hlp\$(TargetName).hm" 
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
@@ -442,11 +442,11 @@ makehm IDD_,HIDD_,0x20000 resource.h &gt;&gt;"hlp\$(TargetName).hm"
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
 echo // Frame Controls (IDW_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm IDW_,HIDW_,0x50000 resource.h &gt;&gt;"hlp\$(TargetName).hm" </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Making help include file...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Making help include file...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">echo. &gt;"hlp\$(TargetName).hm" 
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">Making help include file...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">Making help include file...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|x64'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">echo. &gt;"hlp\$(TargetName).hm" 
 echo // Commands (ID_* and IDM_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm ID_,HID_,0x10000 IDM_,HIDM_,0x10000 resource.h &gt;&gt;"hlp\$(TargetName).hm" 
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
@@ -461,7 +461,7 @@ makehm IDD_,HIDD_,0x20000 resource.h &gt;&gt;"hlp\$(TargetName).hm"
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
 echo // Frame Controls (IDW_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm IDW_,HIDW_,0x50000 resource.h &gt;&gt;"hlp\$(TargetName).hm" </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">echo. &gt;"hlp\$(TargetName).hm" 
+      <Command Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">echo. &gt;"hlp\$(TargetName).hm" 
 echo // Commands (ID_* and IDM_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm ID_,HID_,0x10000 IDM_,HIDM_,0x10000 resource.h &gt;&gt;"hlp\$(TargetName).hm" 
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
@@ -476,10 +476,10 @@ makehm IDD_,HIDD_,0x20000 resource.h &gt;&gt;"hlp\$(TargetName).hm"
 echo. &gt;&gt;"hlp\$(TargetName).hm" 
 echo // Frame Controls (IDW_*) &gt;&gt;"hlp\$(TargetName).hm" 
 makehm IDW_,HIDW_,0x50000 resource.h &gt;&gt;"hlp\$(TargetName).hm" </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Making help include file...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Making help include file...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">Making help include file...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">Making help include file...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|Win32'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Dynamic-Release|x64'">hlp\$(TargetName).hm;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="SeriousSkaStudio.h" />
     <ClInclude Include="SeriousSkaStudioDoc.h" />
