@@ -30,26 +30,36 @@ const CTFileName &_fnmApplicationExe = _fnmInternalAppExe;
 // Determine application paths for the first time
 void DetermineAppPaths(void) {
   // Get full path to the executable module
+  // E.g. "C:\\SeriousSam\\Bin\\x64\\SeriousSam.exe"
   char strPathBuffer[1024];
   GetModuleFileNameA(NULL, strPathBuffer, sizeof(strPathBuffer));
 
-  // Cut off module filename to end up with Bin
-  // E.g. "C:\\SeriousSam\\Bin" in Release and "C:\\SeriousSam\\Bin\\Debug" in Debug
+  // Cut off module filename to end up with the directory
+  // E.g. "C:\\SeriousSam\\Bin\\x64"
   CTString strPath = strPathBuffer;
-  strPath.Erase(strPath.RFind("\\"));
+  strPath.Erase(strPath.RFind('\\'));
 
-#ifndef NDEBUG
-  // If found Debug directory at the very end, cut it off
-  const size_t iDebug = strPath.RFind("\\Debug");
+  // Find Bin folder with a platform name
+  const char strBin86[] = "\\Bin\\x86";
+  const char strBin64[] = "\\Bin\\x64";
+  const size_t iDesiredPos = strPath.Length() - (sizeof(strBin86) - 1);
 
-  if (iDebug == strPath.Length() - 6) {
-    strPath.Erase(iDebug);
+  size_t iPos = strPath.RFind(strBin86);
+
+  // x86 isn't found at the end
+  if (iPos != iDesiredPos) {
+    iPos = strPath.RFind(strBin64);
   }
-#endif
 
-  // Get cut-off position before the Bin directory by going up to the root directory
-  // E.g. "C:\\SeriousSam\\" without "Bin\\SeriousSam.exe" at the end
-  const size_t iBinDir = strPath.RFind("\\") + 1;
+  // Cut off x86 or x64, if found at the end
+  // E.g. "C:\\SeriousSam"
+  if (iPos == iDesiredPos) {
+    strPath.Erase(iPos);
+  }
+
+  // Get cut-off position before the Bin directory
+  // E.g. between "C:\\SeriousSam\\" and "Bin\\x64\\SeriousSam.exe"
+  const size_t iBinDir = strPath.Length() + 1;
 
   // Copy absolute path to the game directory and relative path to the executable
   CTString(strPathBuffer).Split(iBinDir, _fnmInternalAppPath, _fnmInternalAppExe);

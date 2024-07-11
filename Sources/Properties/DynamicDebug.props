@@ -4,7 +4,7 @@
     <Import Project="Common.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <PostBuildCopyDir>$(SolutionDir)..\Bin\Debug\</PostBuildCopyDir>
+    <PostBuildCopyDir>$(SolutionDir)..\Bin\$(SE1Platform).Debug\</PostBuildCopyDir>
 
     <SE1Preproc>_DEBUG;$(SE1GenericPreproc);</SE1Preproc>
   </PropertyGroup>
