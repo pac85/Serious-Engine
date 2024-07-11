@@ -1288,7 +1288,6 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     const PIX pixYEndAdj = pdp->GetHeight() * 3/24;
     const PIX pixXEnd    = pdp->GetWidth();
     pdpWideScreen = new CDrawPort( pdp, PIXaabbox2D( PIX2D(0,pixYBegAdj), PIX2D(pixXEnd, pixYEndAdj)));
-    pdpWideScreen->dp_fWideAdjustment = 9.0f / 12.0f;
     if( sam_bWideScreen) pdp = pdpWideScreen;
 
     // initial screen fill and swap, just to get context running

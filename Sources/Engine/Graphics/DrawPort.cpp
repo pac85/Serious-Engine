@@ -120,8 +120,11 @@ void CDrawPort::InitCloned( CDrawPort *pdpBase, DOUBLE rMinI,DOUBLE rMinJ, DOUBL
   dp_fTextScaling = pdpBase->dp_fTextScaling;
   dp_fTextAspect  = pdpBase->dp_fTextAspect;
   dp_iTextMode    = pdpBase->dp_iTextMode;
-  dp_fWideAdjustment   = pdpBase->dp_fWideAdjustment;
   dp_bRenderingOverlay = pdpBase->dp_bRenderingOverlay;
+
+  // [Cecil] Recalculate wide adjustment dynamically based on the aspect ratio (4:3 = 1.0)
+  dp_fWideAdjustment = ((FLOAT)dp_Height / (FLOAT)dp_Width) * (4.0f / 3.0f);
+
   // reset rest of vars
   dp_ulBlendingRA = 0;
   dp_ulBlendingGA = 0;
@@ -191,8 +194,11 @@ CDrawPort::CDrawPort( CDrawPort *pdpBase, const PIXaabbox2D &box)
   dp_fTextScaling = pdpBase->dp_fTextScaling;
   dp_fTextAspect  = pdpBase->dp_fTextAspect;
   dp_iTextMode    = pdpBase->dp_iTextMode;
-  dp_fWideAdjustment   = pdpBase->dp_fWideAdjustment;
   dp_bRenderingOverlay = pdpBase->dp_bRenderingOverlay;
+
+  // [Cecil] Recalculate wide adjustment dynamically based on the aspect ratio (4:3 = 1.0)
+  dp_fWideAdjustment = ((FLOAT)dp_Height / (FLOAT)dp_Width) * (4.0f / 3.0f);
+
   // reset rest of vars
   dp_ulBlendingRA = 0;
   dp_ulBlendingGA = 0;
@@ -280,7 +286,6 @@ void CDrawPort::MakeWideScreen(CDrawPort *pdp)
     }
     // init
     pdp->InitCloned( this, 0, FLOAT(pixJ0)/pixSizeJ, 1, FLOAT(pixSizeJW)/pixSizeJ);
-    pdp->dp_fWideAdjustment = 9.0f / 12.0f;
   }
 }
 

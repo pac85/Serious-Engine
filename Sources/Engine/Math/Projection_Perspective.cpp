@@ -126,57 +126,40 @@ void CPerspectiveProjection3D::Prepare(void)
 
     vMin = pr_ScreenBBox.Min();
     vMax = pr_ScreenBBox.Max();
-  // if using normal projection
-  } else if (ppr_boxSubScreen.IsEmpty()) {
-    // calculate perspective constants
-    FLOAT2D v2dScreenSize = pr_ScreenBBox.Size();
-    pr_ScreenCenter = pr_ScreenBBox.Center();
-    /* calculate FOVHeight from FOVWidth by formula:
-       halfanglej = atan( tan(halfanglei)*jsize*aspect/isize ) */
-    ANGLE aHalfI = ppr_FOVWidth/2;
-    ANGLE aHalfJ = ATan(TanFast(aHalfI)*v2dScreenSize(2)*pr_AspectRatio/v2dScreenSize(1));
 
-    /* calc. perspective ratios by formulae:
-       xratio = isize/(2*tan(anglei/2))
-       yratio = jsize/(2*tan(anglej/2))
-      sign is negative since viewer is looking down the -z axis
-    */
-    ppr_PerspectiveRatios(1) = -v2dScreenSize(1)/(2.0f*TanFast(aHalfI))*pr_fViewStretch;
-    ppr_PerspectiveRatios(2) = -v2dScreenSize(2)/(2.0f*TanFast(aHalfJ))*pr_fViewStretch;
-
-    vMin = pr_ScreenBBox.Min()-pr_ScreenCenter;
-    vMax = pr_ScreenBBox.Max()-pr_ScreenCenter;
-  // if using sub-drawport projection
+  // [Cecil] Unified two 'else' blocks for normal or sub-drawport projection
   } else {
-    // calculate perspective constants
     FLOAT2D v2dScreenSize = pr_ScreenBBox.Size();
     pr_ScreenCenter = pr_ScreenBBox.Center();
-    /* calculate FOVHeight from FOVWidth by formula:
-       halfanglej = atan( tan(halfanglei)*jsize*aspect/isize ) */
-    ANGLE aHalfI = ppr_FOVWidth/2;
-    ANGLE aHalfJ = ATan(TanFast(aHalfI)*v2dScreenSize(2)*pr_AspectRatio/v2dScreenSize(1));
 
-    /* calc. perspective ratios by formulae:
-       xratio = isize/(2*tan(anglei/2))
-       yratio = jsize/(2*tan(anglej/2))
-      sign is negative since viewer is looking down the -z axis
-    */
-    ppr_PerspectiveRatios(1) = -v2dScreenSize(1)/(2.0f*TanFast(aHalfI))*pr_fViewStretch;
-    ppr_PerspectiveRatios(2) = -v2dScreenSize(2)/(2.0f*TanFast(aHalfJ))*pr_fViewStretch;
+    // [Cecil] Calculate VFOV from HFOV on 4:3 resolution (e.g. 90 -> ~73.74)
+    ANGLE aHalfVer = ATan(Tan(ppr_FOVWidth * 0.5f) * 3.0f * pr_AspectRatio / 4.0f);
 
-    vMin = ppr_boxSubScreen.Min()-pr_ScreenCenter;
-    vMax = ppr_boxSubScreen.Max()-pr_ScreenCenter;
+    // [Cecil] Recalculate HFOV from VFOV (e.g. ~73.74 -> 90 on 4:3 / ~106.26 on 16:9)
+    ANGLE aHalfHor = ATan(Tan(aHalfVer) * v2dScreenSize(1) * pr_AspectRatio / v2dScreenSize(2));
 
-    pr_ScreenCenter -= ppr_boxSubScreen.Min();
+    ppr_PerspectiveRatios(1) = -v2dScreenSize(1) / (2.0f * Tan(aHalfHor)) * pr_fViewStretch;
+    ppr_PerspectiveRatios(2) = -v2dScreenSize(2) / (2.0f * Tan(aHalfVer)) * pr_fViewStretch;
+
+    // For normal projection
+    if (ppr_boxSubScreen.IsEmpty()) {
+      vMin = pr_ScreenBBox.Min() - pr_ScreenCenter;
+      vMax = pr_ScreenBBox.Max() - pr_ScreenCenter;
+
+    // For sub-drawport projection
+    } else {
+      vMin = ppr_boxSubScreen.Min() - pr_ScreenCenter;
+      vMax = ppr_boxSubScreen.Max() - pr_ScreenCenter;
+
+      pr_ScreenCenter -= ppr_boxSubScreen.Min();
+    }
   }
-  // find factors for left, right, up and down clipping
 
+  // find factors for left, right, up and down clipping
   FLOAT fMinI = vMin(1); FLOAT fMinJ = vMin(2);
   FLOAT fMaxI = vMax(1); FLOAT fMaxJ = vMax(2);
   FLOAT fRatioX = ppr_PerspectiveRatios(1);
   FLOAT fRatioY = ppr_PerspectiveRatios(2);
-
-#define MySgn(x) ((x)>=0?1:-1)
 
   FLOAT fDZ = -1.0f;
   FLOAT fDXL = fDZ*fMinI/fRatioX;
@@ -218,8 +201,8 @@ void CPerspectiveProjection3D::Prepare(void)
   pr_fDepthBufferMul = pr_fDepthBufferFar-pr_fDepthBufferNear;
   pr_fDepthBufferAdd = pr_fDepthBufferNear;
 
-  // calculate ratio for mip factor calculation
-  ppr_fMipRatio = pr_ScreenBBox.Size()(1)/(ppr_PerspectiveRatios(1)*640.0f);
+  // [Cecil] Rely on height ratio for mip factor calculation
+  ppr_fMipRatio = pr_ScreenBBox.Size()(2) / (ppr_PerspectiveRatios(2) * 480.0f);
 }
 
 /*

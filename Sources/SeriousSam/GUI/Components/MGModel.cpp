@@ -52,7 +52,7 @@ void CMGModel::Render(CDrawPort *pdp)
   // prepare projection
   CRenderModel rmRenderModel;
   CPerspectiveProjection3D pr;
-  pr.FOVL() = sam_bWideScreen ? AngleDeg(45.0f) : AngleDeg(30.0f);
+  pr.FOVL() = 55.0f;
   pr.ScreenBBoxL() = FLOATaabbox2D(
     FLOAT2D(0.0f, 0.0f),
     FLOAT2D((float)dpModel.GetWidth(), (float)dpModel.GetHeight())
