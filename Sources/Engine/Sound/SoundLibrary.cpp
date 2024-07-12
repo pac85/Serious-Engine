@@ -462,8 +462,8 @@ CSoundLibrary::SoundFormat CSoundLibrary::SetFormat( CSoundLibrary::SoundFormat 
 /* Update all 3d effects and copy internal data. */
 void CSoundLibrary::UpdateSounds(void)
 {
-  // [Cecil] Ignore sounds on a dedicated server
-  if (_eEngineAppType == E_SEAPP_SERVER) return;
+  // [Cecil] Ignore sounds on a dedicated server or when there's no sound interface
+  if (_eEngineAppType == E_SEAPP_SERVER || this == NULL || sl_pInterface == NULL) return;
 
 #if SE1_WIN
   // see if we have valid handle for direct sound and eventually reinit sound
@@ -544,8 +544,8 @@ void CSoundTimerHandler::HandleTimer(void)
 /* Update Mixer */
 void CSoundLibrary::MixSounds(void)
 {
-  // [Cecil] Ignore sounds on a dedicated server
-  if (_eEngineAppType == E_SEAPP_SERVER) return;
+  // [Cecil] Ignore sounds on a dedicated server or when there's no sound interface
+  if (_eEngineAppType == E_SEAPP_SERVER || this == NULL || sl_pInterface == NULL) return;
 
   // synchronize access to sounds
   CTSingleLock slSounds( &sl_csSound, TRUE);
