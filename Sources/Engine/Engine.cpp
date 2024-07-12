@@ -257,6 +257,7 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   }
 
   // [Cecil] Save under the "Logs/" directory
+  CreateAllDirectories("Logs\\");
   _pConsole->Initialize(_fnmApplicationPath + "Logs\\" + _strLogFile + ".log", 90, 512);
 
   _pAnimStock        = new CStock_CAnimData;
