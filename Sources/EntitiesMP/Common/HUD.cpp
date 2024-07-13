@@ -314,9 +314,8 @@ static COLOR AddShaker( PIX const pixAmmount, INDEX const iCurrentValue, INDEX &
   }
   
   // no shaker?
-  const TIME tmDelta = tmNow - tmChanged;
+  const TIME tmDelta = ClampDn(tmNow - tmChanged, 0.0); // [Cecil] Down to zero
   if( tmDelta > SHAKE_TIME) return NONE;
-  ASSERT( tmDelta>=0);
   // shake, baby shake!
   const FLOAT fAmmount    = _fResolutionScaling * _fCustomScaling * pixAmmount;
   const FLOAT fMultiplier = (SHAKE_TIME-tmDelta)/SHAKE_TIME *fAmmount;
@@ -986,8 +985,9 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
 
   // draw powerup(s) if needed
   PrepareColorTransitions( colMax, colTop, colMid, C_RED, 0.66f, 0.33f, FALSE);
-  TIME *ptmPowerups = (TIME*)&_penPlayer->m_tmInvisibility;
-  TIME *ptmPowerupsMax = (TIME*)&_penPlayer->m_tmInvisibilityMax;
+  // [Cecil] Pointers to constant FLOAT
+  const FLOAT *ptmPowerups = &_penPlayer->m_tmInvisibility;
+  const FLOAT *ptmPowerupsMax = &_penPlayer->m_tmInvisibilityMax;
   fRow = pixBottomBound-fOneUnitS-fAdvUnitS;
   fCol = pixRightBound -fHalfUnitS;
   for( i=0; i<MAX_POWERUPS; i++)
