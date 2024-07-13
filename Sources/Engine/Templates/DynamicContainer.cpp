@@ -130,7 +130,7 @@ Type *CDynamicContainer<Type>::Pointer(INDEX iObject) {
   ASSERT(this != NULL);
 
   // Check if the index is currently valid
-  ASSERT(iObject >= 0 && iObject < Count());
+  ASSERT(iObject >= 0 && iObject < this->Count());
 
 #if CHECKARRAYLOCKING
   // Check if locked
@@ -146,7 +146,7 @@ const Type *CDynamicContainer<Type>::Pointer(INDEX iObject) const {
   ASSERT(this != NULL);
 
   // Check if the index is currently valid
-  ASSERT(iObject >= 0 && iObject < Count());
+  ASSERT(iObject >= 0 && iObject < this->Count());
 
 #if CHECKARRAYLOCKING
   // Check if locked
@@ -160,7 +160,7 @@ const Type *CDynamicContainer<Type>::Pointer(INDEX iObject) const {
 template<class Type>
 Type &CDynamicContainer<Type>::GetFirst(void)
 {
-  ASSERT(Count() >= 1);
+  ASSERT(this->Count() >= 1);
   return *this->sa_Array[0];
 };
 

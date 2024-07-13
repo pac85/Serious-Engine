@@ -122,11 +122,11 @@ public:
   inline void Resume(void) { so_slFlags &= ~SOF_PAUSED; };
   // check if sound is playing
   inline BOOL IsPlaying(void) { 
-    return (so_slFlags&SOF_PLAY); 
+    return (so_slFlags & SOF_PLAY) != 0;
   };
   // check if sound is paused
   inline BOOL IsPaused(void) { 
-    return (so_slFlags&SOF_PAUSED); 
+    return (so_slFlags & SOF_PAUSED) != 0;
   };
 
   // Check if hooked

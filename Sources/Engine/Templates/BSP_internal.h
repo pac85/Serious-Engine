@@ -143,7 +143,7 @@ public:
 
 public:
   /* Defualt constructor (for arrays only). */
-  inline BSPNode(void) : bn_ulPlaneTag(-1), bn_pbnBack(NULL), bn_pbnFront(NULL), bn_bnlLocation(BNL_ILLEGAL) {};
+  inline BSPNode(void) : bn_bnlLocation(BNL_ILLEGAL), bn_pbnFront(NULL), bn_pbnBack(NULL), bn_ulPlaneTag(-1) {};
   /* Constructor for a leaf node. */
   inline BSPNode(enum BSPNodeLocation bnl);
   /* Constructor for a branch node. */

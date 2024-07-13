@@ -302,8 +302,10 @@ public:
   // [Cecil] Check currently used API for debugging
   inline void CheckAPI(void)
   {
+  #ifndef NDEBUG
     const GfxAPIType eAPI = GetCurrentAPI();
     ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
+  #endif
   };
 
   // canvas functions
