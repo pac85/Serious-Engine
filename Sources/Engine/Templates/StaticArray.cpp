@@ -58,17 +58,7 @@ inline void CStaticArray<Type>::New(INDEX iCount) {
     return;
   }
 
-  //ASSERT(sa_Count == 0 && sa_Array == NULL);
-
-#ifndef NDEBUG
-  if (sa_Count != 0 || sa_Array != NULL) {
-    if (sa_Array == NULL) {
-      CPutString("CStaticArray array not set!\n");
-    } else {
-      CPrintF("CStaticArray new(%d) called while already holding %d elements!\n", iCount, sa_Count);
-    }
-  }
-#endif
+  ASSERT(sa_Count == 0 && sa_Array == NULL);
 
   sa_Count = iCount;
   sa_Array = new Type[iCount + 1]; // (+1 for cache-prefetch opt)
