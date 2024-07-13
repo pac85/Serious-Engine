@@ -1076,16 +1076,8 @@ functions:
     } else {
       // has reference (floor)
       if (m_bReference) {
-        // jump
-        if (pl.en_tmJumped+_pTimer->TickQuantum>=_pTimer->CurrentTick() &&
-            pl.en_tmJumped<=_pTimer->CurrentTick()) {
-          m_bReference = FALSE;
-          pl.StartModelAnim(PLAYER_ANIM_JUMPSTART, AOF_NORESTART);
-          BodyStillAnimation();
-          m_fLastActionTime = _pTimer->CurrentTick();
-
         // not in jump anim and in stand mode change
-        } else if (!m_bWaitJumpAnim && m_iCrouchDownWait==0 && m_iRiseUpWait==0) {
+        if (!m_bWaitJumpAnim && m_iCrouchDownWait==0 && m_iRiseUpWait==0) {
           // standing
           if (!m_bCrouch) {
             // running anim

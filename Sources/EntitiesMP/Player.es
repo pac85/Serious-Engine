@@ -2812,6 +2812,26 @@ functions:
     m_ulFlags&=~PLF_APPLIEDACTION;
   }
 
+  // [Cecil] Indicate that the player has jumped
+  virtual void OnJump(void) {
+    CPlayerEntity::OnJump();
+
+    // From CPlayer::ActiveActions()
+
+    // Play jump sound and disallow jumping
+    SetDefaultMouthPitch();
+    PlaySound(m_soMouth, GenderSound(SOUND_JUMP), SOF_3D);
+    if (_pNetwork->IsPlayerLocal(this)) { IFeel_PlayEffect("Jump"); }
+    m_ulFlags &= ~PLF_JUMPALLOWED;
+
+    // From CPlayerAnimator::AnimatePlayer()
+
+    StartModelAnim(PLAYER_ANIM_JUMPSTART, AOF_NORESTART);
+    GetPlayerAnimator()->m_bReference = FALSE;
+    GetPlayerAnimator()->BodyStillAnimation();
+    GetPlayerAnimator()->m_fLastActionTime = _pTimer->CurrentTick();
+  };
+
   // set player parameters for unconnected state (between the server loads and player reconnects)
   void SetUnconnected(void)
   {
@@ -4191,16 +4211,6 @@ functions:
         } else if (pstOld==PST_DIVE) {
           m_soLocalAmbientLoop.Stop();
         }
-      }
-      // if just jumped
-      if (en_tmJumped+_pTimer->TickQuantum>=_pTimer->CurrentTick() &&
-          en_tmJumped<=_pTimer->CurrentTick() && en_penReference==NULL) {
-        // play jump sound
-        SetDefaultMouthPitch();
-        PlaySound(m_soMouth, GenderSound(SOUND_JUMP), SOF_3D);
-        if(_pNetwork->IsPlayerLocal(this)) {IFeel_PlayEffect("Jump");}
-        // disallow jumping
-        m_ulFlags&=~PLF_JUMPALLOWED;
       }
 
       // set density
