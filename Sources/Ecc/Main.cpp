@@ -299,6 +299,8 @@ int main(int argc, char *argv[])
   _fTables         = FOpen(strTables        , "w");
   // get the filename as preprocessor usable identifier
   _strFileNameBase = ChangeFileNameExtension(argv[1], "");
+  TranslateBackSlashes(_strFileNameBase); // [Cecil] Convert path slashes for includes
+
   _strFileNameBaseIdentifier = strdup(_strFileNameBase);
   {char *strNextSlash = _strFileNameBaseIdentifier;
   while((strNextSlash = strchr(strNextSlash, '/'))!=NULL) {
