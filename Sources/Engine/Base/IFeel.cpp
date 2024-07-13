@@ -105,6 +105,7 @@ CTString IFeel_GetProjectFileName()
 
 // [Cecil] Initialize IFeel in the engine
 void SE_IFeelInit(void) {
+#if SE1_WIN
   HWND hwnd = NULL; //GetDesktopWindow();
   HINSTANCE hInstance = GetModuleHandleA(NULL);
 
@@ -125,6 +126,7 @@ void SE_IFeelInit(void) {
   }
 
   CPrintF("\n");
+#endif // SE1_WIN
 };
 
 // inits imm ifeel device
