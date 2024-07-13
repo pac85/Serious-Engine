@@ -34,7 +34,7 @@ These have been modified to run correctly under the recent versions of Windows. 
 
 To build Serious Engine 1, you will need **Visual Studio 2010** or later. The engine was originally written using **Visual C++ 6.0** and released to the public modified to build and run correctly using **Visual Studio 2013**.
 
-Once you've installed **Visual Studio** and (optionally) DirectX8 SDK, you can build the engine solution (`Sources/All.sln`). Press F7 or **Build** -> **Build solution**. Once the project is build, the libraries and executables will be put under the `Bin` directory (or `Bin/Debug` if you are using the Debug configuration).
+Once you've installed **Visual Studio** and (optionally) DirectX8 SDK, you can build the engine solution (`Sources/All.sln`). Press F7 or **Build** -> **Build solution**. Once the project is build, the libraries and executables will be copied under the `Bin/` directory.
 
 # Optional features
 
@@ -46,9 +46,9 @@ Some features that can be customized using macros can be toggled by modifying th
   - `Tools.Win32/Libraries/DX8SDK/Include/`
   - `Tools.Win32/Libraries/DX8SDK/Lib/`
 - **3Dfx:** Support for this outdated driver for outdated graphics cards is still present but is disabled in favor of modernity. To enable it, define a `SE1_3DFX` macro for all projects in the solution.
-- **MP3 playback:** Copy `amp11lib.dll` library into the `Bin/` directory (and `Bin/Debug/` in Debug mode) that used to be distributed with older versions of **Serious Sam Classic: The First Encounter**.
+- **MP3 playback:** Copy `amp11lib.dll` library that used to be distributed with older versions of **Serious Sam Classic: The First Encounter** near the executable files under the `Bin/` directory.
 - **3D Exploration**: Support is disabled due to copyright issues. If you need to create new models, either use editing tools from any of the original games or write your own code for 3D object import/export.
-- **IFeel:** Support is disabled due to copyright issues. If you need IFeel support, copy `IFC22.dll` and `ImmWrapper.dll` from the original games into the `Bin/` folder.
+- **IFeel:** Support is disabled due to copyright issues. If you need IFeel support, copy `IFC22.dll` and `ImmWrapper.dll` from the original games near the executable files under the `Bin/` directory.
 - **Truform:** Its functionality is disabled by default. To enable it, you need to switch the `SE1_TRUFORM` macro to `1` (or define it as such for all projects).
 - **Simple DirectMedia Layer (SDL):** It's included with the source code and is initialized by the engine but its functionality is mostly unused by default for the Windows platform. To prioritize it over Win32 API, you need to switch the `SE1_USE_SDL` macro to `1` (or define it as such for all projects).
   - It is always prioritized on non-Windows platforms because cross-platform code cannot function without it.
@@ -66,12 +66,24 @@ When running a selected project, make sure that its project settings under **Deb
 # Common problems
 
 - `SeriousSkaStudio` has some issues with MFC windows that can prevent the main window from being displayed properly.
+- Static building works with MFC applications but applications themselves don't function properly because resource files from `EngineGUI` and `GameGUIMP` modules are being omitted when executables link them (e.g. no dialogs for opening/saving files or creating textures).
+  - Because of this, `EngineGUI`, `GameGUIMP`, `Modeler`, `SeriousSkaStudio` and `WorldEditor` projects lack static build configurations for now.
 - Even though **Visual Studio 2010** can be used for building, its compiler seems to be introducing certain bugs that are not ironed out yet, so it's suggested that you use **Visual Studio 2013** or higher. Serious Engine 1.10 was initially released for these versions.
   - Projects use `$(DefaultPlatformToolset)` property for automatically selecting the toolset from the studio that you're using, which doesn't exist in **Visual Studio 2010**. You will have to manually change it to `v100`.
 
 # License
 
 Serious Engine is licensed under the GNU GPL v2 license (see `LICENSE` file).
+
+### Serious Engine forks
+
+Some code in this fork has been borrowed from other Serious Engine projects:
+
+- [Original Linux port](https://github.com/icculus/Serious-Engine) by icculus
+- [Serious Engine: Ray Traced](https://github.com/sultim-t/Serious-Engine-RT) by Sultim
+- [Serious Sam Evolution](https://gitlab.com/TwilightWingsStudio/SSE/SuperProject) by Twilight Wings Studio
+
+### Third-party
 
 Some of the code included with the engine sources under `Sources/ThirdParty/` is not licensed under GNU GPL v2:
 
