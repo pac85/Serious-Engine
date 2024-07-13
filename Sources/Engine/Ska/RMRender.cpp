@@ -56,6 +56,7 @@ extern FLOAT ska_fLODAdd;
 
 // mask shader (for rendering models' shadows to shadowmaps)
 static CShader _shMaskShader;
+static BOOL _bMaskShaderSet = FALSE; // [Cecil] Flag for setting the shader above only once
 
 // temporary rendering structures
 static CStaticStackArray<struct RenModel> _aRenModels;
@@ -1390,11 +1391,15 @@ void RM_BeginModelRenderingMask( CAnyProjection3D &prProjection, UBYTE *pubMask,
     _aprProjection->pr_ViewerRotationMatrix, 
     -_aprProjection->pr_vViewerPosition*_aprProjection->pr_ViewerRotationMatrix);
 
-  // set mask shader
-  extern void InternalShader_Mask(void);
-  extern void InternalShaderDesc_Mask(ShaderDesc &shDesc);
-  _shMaskShader.pShaderFunc = InternalShader_Mask;
-  InternalShaderDesc_Mask(_shMaskShader.shDesc); // [Cecil]
+  // [Cecil] Set mask shader only once
+  if (!_bMaskShaderSet) {
+    _bMaskShaderSet = TRUE;
+
+    extern void InternalShader_Mask(void);
+    extern void InternalShaderDesc_Mask(ShaderDesc &shDesc);
+    _shMaskShader.pShaderFunc = InternalShader_Mask;
+    InternalShaderDesc_Mask(_shMaskShader.shDesc); // [Cecil]
+  }
 }
 
 
