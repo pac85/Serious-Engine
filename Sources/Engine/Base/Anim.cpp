@@ -342,7 +342,12 @@ void CAnimData::LoadFromScript_t( CTStream *File, CListHead *pFrameFileList) // 
 				throw("Expecting key word \"SPEED\" after key word \"ANIMATION\".");
       }
 			_strupr( ld_line);
-			sscanf(ld_line, (sizeof(TIME) == 8 ? "SPEED %lf" : "SPEED %f"), &poaOneAnim->oa_SecsPerFrame);
+
+      #if SE1_DOUBLE_TIMER
+        sscanf(ld_line, "SPEED %lf", &poaOneAnim->oa_SecsPerFrame);
+      #else
+        sscanf(ld_line, "SPEED %f", &poaOneAnim->oa_SecsPerFrame);
+      #endif
 
       CDynamicArray<CTString> astrFrames;
       SLONG slLastPos;

@@ -97,9 +97,15 @@ typedef SLONG   MEX;    // texels in mip-level 0
 typedef float   FLOAT;
 typedef double  DOUBLE;
 typedef float   ANGLE;
-typedef float   TIME;
 typedef FLOAT   RANGE;
 typedef ULONG   COLOR;  // color is always in 32 bit true-color format
+
+// [Cecil] Select timer precision
+#if SE1_DOUBLE_TIMER
+  typedef double TIME;
+#else
+  typedef float TIME;
+#endif
 
 // macros for windows/croteam true color conversion
 #define CLRF_CLR(clr) ( ((clr & 0xff000000) >> 24) | \
