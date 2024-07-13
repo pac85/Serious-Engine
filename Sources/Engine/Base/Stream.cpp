@@ -967,7 +967,7 @@ void CTFileStream::Close(void)
 {
   // if file is not open
   if (fstrm_pFile==NULL && fstrm_iZipHandle==-1) {
-    ASSERT(FALSE);
+    //ASSERT(FALSE);
     return;
   }
 
