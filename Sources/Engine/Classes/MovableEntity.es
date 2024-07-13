@@ -732,6 +732,8 @@ functions:
 
     // add to movers
     AddToMovers();
+
+    OnJump(); // [Cecil] Just jumped
   }
 
   /* Get relative angles from direction angles. */
@@ -2350,6 +2352,8 @@ out:;
           vTranslationAbsolute += en_vGravityDir*fJump;
           en_tmJumped = _pTimer->CurrentTick();
           en_pbpoStandOn = NULL;
+
+          OnJump(); // [Cecil] Just jumped
         }
 
       // if it doesn't have a reference entity
@@ -2372,6 +2376,8 @@ out:;
           vTranslationAbsolute += en_vGravityDir*fJump;
           en_tmJumped = _pTimer->CurrentTick();
           en_pbpoStandOn = NULL;
+
+          OnJump(); // [Cecil] Just jumped
         }
       }
     }
@@ -3098,6 +3104,8 @@ out:;
     cm.CacheNearPolygons();
   }
 
+  // [Cecil] Called when entity performs a jump (after setting new en_tmJumped time)
+  virtual void OnJump(void) {};
 
   // returns bytes of memory used by this object
   SLONG GetUsedMemory(void)
