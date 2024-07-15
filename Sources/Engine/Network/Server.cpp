@@ -1385,6 +1385,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
       extern INDEX ser_bReportSyncLate;
       extern INDEX ser_bReportSyncEarly;
       extern INDEX ser_bPauseOnSyncBad;
+      extern INDEX ser_bRequestSyncDump; // [Cecil]
       extern INDEX ser_iKickOnSyncBad;
 
       // read sync check from the packet
@@ -1412,6 +1413,15 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
             CPrintF( TRANS("SYNCBAD: Client '%s', Sequence %d Tick %.2f - bad %d\n"), 
               _cmiComm.Server_GetClientName(iClient), scRemote.sc_iSequence , scRemote.sc_tmTick, sso.sso_ctBadSyncs);
           }
+
+          // [Cecil] Request client to dump their local synchronization data
+          if (ser_bRequestSyncDump) {
+            CNetworkMessage nmDumpSync(MSG_DUMPSYNC);
+            nmDumpSync << iClient;
+            _pNetwork->SendToClientReliable(iClient, nmDumpSync);
+            _pNetwork->SendToClientReliable(0, nmDumpSync); // Make server sync dump for comparisons
+          }
+
           if (ser_iKickOnSyncBad>0) {
             if (sso.sso_ctBadSyncs>=ser_iKickOnSyncBad) {
               SendDisconnectMessage(iClient, TRANS("Too many bad syncs"));

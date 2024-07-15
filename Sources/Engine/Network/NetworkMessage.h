@@ -74,6 +74,9 @@ typedef enum NetworkMessageType {
   // a copy of action stored for prediction
   MSG_ACTIONPREDICT,
 
+  // [Cecil] Request clients to dump synchronization data
+  MSG_DUMPSYNC,
+
   // sequenced packets from server to session states
   MSG_SEQ_ALLACTIONS,    // packed actions of all players from server to clients
   MSG_SEQ_ADDPLAYER,     // instructions for adding a new player to session states

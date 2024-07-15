@@ -98,6 +98,7 @@ extern INDEX ser_bReportSyncBad  = TRUE;
 extern INDEX ser_bReportSyncLate = FALSE;
 extern INDEX ser_bReportSyncEarly = FALSE;
 extern INDEX ser_bPauseOnSyncBad = FALSE;
+extern INDEX ser_bRequestSyncDump = TRUE; // [Cecil]
 extern INDEX ser_iKickOnSyncBad = 10;
 extern INDEX ser_bKickOnSyncLate = 1;
 extern INDEX ser_iRememberBehind = 3000;
@@ -765,6 +766,7 @@ void CNetworkLibrary::Init(void)
   _pShell->DeclareSymbol("user INDEX ser_bReportSyncLate;",  &ser_bReportSyncLate);
   _pShell->DeclareSymbol("user INDEX ser_bReportSyncEarly;", &ser_bReportSyncEarly);
   _pShell->DeclareSymbol("user INDEX ser_bPauseOnSyncBad;",  &ser_bPauseOnSyncBad);
+  _pShell->DeclareSymbol("persistent user INDEX ser_bRequestSyncDump;", &ser_bRequestSyncDump); // [Cecil]
   _pShell->DeclareSymbol("user INDEX ser_iKickOnSyncBad;",   &ser_iKickOnSyncBad);
   _pShell->DeclareSymbol("user INDEX ser_bKickOnSyncLate;",  &ser_bKickOnSyncLate);
   _pShell->DeclareSymbol("persistent user FLOAT ser_tmSyncCheckFrequency;", &ser_tmSyncCheckFrequency);

@@ -2034,8 +2034,10 @@ void CSessionState::SessionStateLoop(void)
     // if there is some reliable message
     if (_pNetwork->ReceiveFromServerReliable(nmReliable)) {
       bSomethingToDo = TRUE;
+      const MESSAGETYPE eType = nmReliable.GetType();
+
       // if this is disconnect message
-      if (nmReliable.GetType() == MSG_INF_DISCONNECTED) {
+      if (eType == MSG_INF_DISCONNECTED) {
 				// confirm disconnect
 				CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);			
 				_pNetwork->SendToServerReliable(nmConfirmDisconnect);
@@ -2047,15 +2049,40 @@ void CSessionState::SessionStateLoop(void)
         // disconnect
         _cmiComm.Client_Close();
       // if this is recon response
-      } else if (nmReliable.GetType() == MSG_ADMIN_RESPONSE) {
+      } else if (eType == MSG_ADMIN_RESPONSE) {
         // just print it
         CTString strResponse;
         nmReliable>>strResponse;
         CPrintF("%s", "|"+strResponse+"\n");
+
+      // [Cecil] Dump local synchronization data
+      } else if (eType == MSG_DUMPSYNC) {
+        INDEX iClient;
+        nmReliable >> iClient;
+
+        // Get indices of local players
+        CTString strPlayers = "";
+
+        FOREACHINSTATICARRAY(_pNetwork->ga_aplsPlayers, CPlayerSource, itpls) {
+          INDEX iPlayer = itpls->pls_Index;
+          if (iPlayer < 0) continue;
+
+          strPlayers += CTString(0, "%d", iPlayer);
+        }
+
+        CTString strClient(0, "_%s%d", (_pNetwork->IsServer() ? "ser" : "cli"), iClient);
+        if (strPlayers != "") strPlayers = "_pl" + strPlayers;
+
+        CTString strFile(0, "Temp\\SyncDump%s%s.txt", strClient, strPlayers);
+
+        CTFileStream strmFile;
+        strmFile.Create_t(strFile);
+        DumpSyncToFile_t(strmFile, ses_iExtensiveSyncCheck);
+
       // otherwise
       } else {
         CPrintF(TRANS("Session state: Unexpected reliable message during game: %s(%d)\n"),
-          ErrorDescription(&MessageTypes, nmReliable.GetType()), nmReliable.GetType());
+          ErrorDescription(&MessageTypes, eType), eType);
       }
     }
   }
