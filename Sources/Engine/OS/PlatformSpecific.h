@@ -28,6 +28,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #endif
 #endif // SE1_THREADLOCAL
 
+// 'noexcept' doesn't work in MSVC 12.0 and prior
+#if defined(_MSC_VER) && _MSC_VER <= 1800
+  #define SE1_NOEXCEPT
+#else
+  #define SE1_NOEXCEPT noexcept
+#endif
+
 // Unix-specific
 #if SE1_UNIX
 

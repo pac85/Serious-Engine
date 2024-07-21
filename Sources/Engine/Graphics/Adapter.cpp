@@ -68,7 +68,7 @@ static CResolution _areResolutions[] =
 };
 
 // [Cecil] Don't go over the adapter limit
-static const INDEX MAX_RESOLUTIONS = ClampUp(ARRAYCOUNT(_areResolutions), ARRAYCOUNT(CDisplayAdapter::da_admDisplayModes));
+static const INDEX MAX_RESOLUTIONS = ClampUp(ARRAYCOUNT(_areResolutions), MAX_DA_DISPLAYMODES);
 
 #ifdef SE1_3DFX
 
@@ -260,7 +260,7 @@ void CGfxLibrary::InitAPIs(void)
   // Go in the reverse order (from lowest resolution to highest)
   for (INDEX iMode = ctDisplayModes - 1; iMode >= 0; iMode--)
   {
-    if (ctModes >= ARRAYCOUNT(pda->da_admDisplayModes)) break;
+    if (ctModes >= MAX_DA_DISPLAYMODES) break;
 
     SDL_DisplayMode mode;
     if (SDL_GetDisplayMode(iDisplayIndex, iMode, &mode) != 0) continue;

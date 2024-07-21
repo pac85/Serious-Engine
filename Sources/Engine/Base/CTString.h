@@ -249,7 +249,7 @@ namespace std {
   template<class Key> struct hash;
 
   template<> struct hash<CTString> {
-    inline size_t operator()(const CTString &str) const noexcept {
+    inline size_t operator()(const CTString &str) const SE1_NOEXCEPT {
       return str.GetHash();
     };
   };
