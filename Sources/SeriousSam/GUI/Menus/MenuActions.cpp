@@ -23,6 +23,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "LevelInfo.h"
 #include "VarList.h"
 
+// [Cecil] Screen resolution lists and window modes
+#include "ScreenResolutions.h"
+#include "WindowModes.h"
+
 ENGINE_API extern INDEX snd_iFormat;
 extern BOOL _bMouseUsedLast;
 
@@ -52,6 +56,12 @@ static CTString GetResolutionDescription(CDisplayMode &dm)
   } else {
     str.PrintF("%dx%d", dm.dm_pixSizeI, dm.dm_pixSizeJ);
   }
+
+  // [Cecil] Resolution matches the screen
+  if (dm.dm_pixSizeI == _vpixScreenRes(1) && dm.dm_pixSizeJ == _vpixScreenRes(2)) {
+    str += TRANS(" (Native)");
+  }
+
   return str;
 }
 
@@ -96,6 +106,21 @@ static void SizeToResolution(PIX pixSizeI, PIX pixSizeJ, INDEX &iRes)
   // return first one
   iRes = 0;
 }
+
+// [Cecil] Set all resolutions of some aspect ratio in list
+static void SetAspectRatioResolutions(const CAspectRatio &arAspectRatio, INDEX &ctResCounter) {
+  const INDEX ctResolutions = arAspectRatio.Count();
+
+  for (INDEX iRes = 0; iRes < ctResolutions; iRes++) {
+    const PIX2D &vpix = arAspectRatio[iRes];
+
+    if (vpix(1) > _vpixScreenRes(1) || vpix(2) > _vpixScreenRes(2)) {
+      continue; // Skip resolutions bigger than the screen
+    }
+
+    SetResolutionInList(ctResCounter++, vpix(1), vpix(2));
+  }
+};
 
 // ------------------------ CConfirmMenu implementation
 extern CTFileName _fnmModToLoad;
@@ -604,7 +629,7 @@ void InitActionsForOptionsMenu()
 }
 
 // ------------------------ CVideoOptionsMenu implementation
-static INDEX sam_old_bFullScreenActive;
+static INDEX sam_old_iWindowMode; // [Cecil] Different window modes
 static INDEX sam_old_iScreenSizeI;
 static INDEX sam_old_iScreenSizeJ;
 static INDEX sam_old_iDisplayDepth;
@@ -625,34 +650,42 @@ static void FillResolutionsList(void)
   }
   _ctResolutions = 0;
 
-  // if window
-  if (gmCurrent.gm_mgFullScreenTrigger.mg_iSelected == 0) {
-    // always has fixed resolutions, but not greater than desktop
+  // [Cecil] Select current aspect ratio
+  const INDEX iAspectRatio = gmCurrent.gm_mgAspectRatiosTrigger.mg_iSelected;
+  const CAspectRatio &ar = *_aAspectRatios[iAspectRatio];
 
-    _ctResolutions = ARRAYCOUNT(apixWidths);
-    _astrResolutionTexts = new CTString[_ctResolutions];
-    _admResolutionModes = new CDisplayMode[_ctResolutions];
-    extern PIX _pixDesktopWidth;
-    INDEX iRes = 0;
-    for (; iRes<_ctResolutions; iRes++) {
-      if (apixWidths[iRes][0]>_pixDesktopWidth) break;
-      SetResolutionInList(iRes, apixWidths[iRes][0], apixWidths[iRes][1]);
-    }
-    _ctResolutions = iRes;
+  // [Cecil] If 4:3 in borderless or fullscreen
+  if (iAspectRatio == 0 && gmCurrent.gm_mgWindowModeTrigger.mg_iSelected != E_WM_WINDOWED) {
+    // Get resolutions from the engine
+    INDEX ctEngineRes = 0;
 
-    // if fullscreen
-  } else {
-    // get resolutions list from engine
-    CDisplayMode *pdm = _pGfx->EnumDisplayModes(_ctResolutions,
+    CDisplayMode *pdm = _pGfx->EnumDisplayModes(ctEngineRes,
       SwitchToAPI(gmCurrent.gm_mgDisplayAPITrigger.mg_iSelected), gmCurrent.gm_mgDisplayAdaptersTrigger.mg_iSelected);
-    // allocate that much
-    _astrResolutionTexts = new CTString[_ctResolutions];
-    _admResolutionModes = new CDisplayMode[_ctResolutions];
-    // for each resolution
-    for (INDEX iRes = 0; iRes<_ctResolutions; iRes++) {
-      // add it to list
+
+    _astrResolutionTexts = new CTString[ctEngineRes];
+    _admResolutionModes = new CDisplayMode[ctEngineRes];
+
+    // Add all engine resolutions to the list
+    for (INDEX iRes = 0; iRes < ctEngineRes; iRes++) {
       SetResolutionInList(iRes, pdm[iRes].dm_pixSizeI, pdm[iRes].dm_pixSizeJ);
     }
+
+    // Remember current amount
+    _ctResolutions = ctEngineRes;
+    
+  // [Cecil] If any other aspect ratio or windowed mode
+  } else {
+    // Amount of resolutions under this aspect ratio
+    _ctResolutions = ar.Count();
+
+    _astrResolutionTexts = new CTString[_ctResolutions];
+    _admResolutionModes = new CDisplayMode[_ctResolutions];
+
+    // Add all resolutions from the selected aspect ratio
+    INDEX ctRes = 0;
+    SetAspectRatioResolutions(ar, ctRes);
+
+    _ctResolutions = ctRes;
   }
 
   gmCurrent.gm_mgResolutionsTrigger.mg_astrTexts = _astrResolutionTexts;
@@ -687,12 +720,8 @@ extern void UpdateVideoOptionsButtons(INDEX iSelected)
   const BOOL _bVideoOptionsChanged = (iSelected != -1);
 
   const BOOL bOGLEnabled = _pGfx->HasAPI(GAT_OGL);
-#ifdef SE1_D3D
   const BOOL bD3DEnabled = _pGfx->HasAPI(GAT_D3D);
   ASSERT(bOGLEnabled || bD3DEnabled);
-#else // 
-  ASSERT(bOGLEnabled);
-#endif // SE1_D3D
 
   CDisplayAdapter &da = _pGfx->gl_gaAPI[SwitchToAPI(gmCurrent.gm_mgDisplayAPITrigger.mg_iSelected)]
     .ga_adaAdapter[gmCurrent.gm_mgDisplayAdaptersTrigger.mg_iSelected];
@@ -705,28 +734,28 @@ extern void UpdateVideoOptionsButtons(INDEX iSelected)
   FillAdaptersList();
 
   // show or hide buttons
-  gmCurrent.gm_mgDisplayAPITrigger.mg_bEnabled = bOGLEnabled
-#ifdef SE1_D3D
-    && bD3DEnabled
-#endif // SE1_D3D
-    ;
-  gmCurrent.gm_mgDisplayAdaptersTrigger.mg_bEnabled = _ctAdapters>1;
+  gmCurrent.gm_mgDisplayAPITrigger.mg_bEnabled = bOGLEnabled && bD3DEnabled; // [Cecil] Check for D3D
+  gmCurrent.gm_mgDisplayAdaptersTrigger.mg_bEnabled = _ctAdapters > 1;
   gmCurrent.gm_mgApply.mg_bEnabled = _bVideoOptionsChanged;
-  // determine which should be visible
 
-  gmCurrent.gm_mgFullScreenTrigger.mg_bEnabled = TRUE;
-  if (da.da_ulFlags&DAF_FULLSCREENONLY) {
-    gmCurrent.gm_mgFullScreenTrigger.mg_bEnabled = FALSE;
-    gmCurrent.gm_mgFullScreenTrigger.mg_iSelected = 1;
-    gmCurrent.gm_mgFullScreenTrigger.ApplyCurrentSelection();
+  // determine which should be visible
+  gmCurrent.gm_mgWindowModeTrigger.mg_bEnabled = TRUE;
+
+  if (da.da_ulFlags & DAF_FULLSCREENONLY) {
+    gmCurrent.gm_mgWindowModeTrigger.mg_bEnabled = FALSE;
+    gmCurrent.gm_mgWindowModeTrigger.mg_iSelected = E_WM_FULLSCREEN;
+    gmCurrent.gm_mgWindowModeTrigger.ApplyCurrentSelection();
   }
 
   gmCurrent.gm_mgBitsPerPixelTrigger.mg_bEnabled = TRUE;
-  if (gmCurrent.gm_mgFullScreenTrigger.mg_iSelected == 0) {
+
+  // [Cecil] If not fullscreen
+  if (gmCurrent.gm_mgWindowModeTrigger.mg_iSelected != E_WM_FULLSCREEN) {
     gmCurrent.gm_mgBitsPerPixelTrigger.mg_bEnabled = FALSE;
     gmCurrent.gm_mgBitsPerPixelTrigger.mg_iSelected = DepthToSwitch(DD_DEFAULT);
     gmCurrent.gm_mgBitsPerPixelTrigger.ApplyCurrentSelection();
-  } else if (da.da_ulFlags&DAF_16BITONLY) {
+
+  } else if (da.da_ulFlags & DAF_16BITONLY) {
     gmCurrent.gm_mgBitsPerPixelTrigger.mg_bEnabled = FALSE;
     gmCurrent.gm_mgBitsPerPixelTrigger.mg_iSelected = DepthToSwitch(DD_16BIT);
     gmCurrent.gm_mgBitsPerPixelTrigger.ApplyCurrentSelection();
@@ -743,31 +772,35 @@ extern void UpdateVideoOptionsButtons(INDEX iSelected)
   // apply adapter and resolutions
   gmCurrent.gm_mgDisplayAdaptersTrigger.ApplyCurrentSelection();
   gmCurrent.gm_mgResolutionsTrigger.ApplyCurrentSelection();
+  gmCurrent.gm_mgAspectRatiosTrigger.ApplyCurrentSelection(); // [Cecil]
 }
 
 extern void InitVideoOptionsButtons(void)
 {
   CVideoOptionsMenu &gmCurrent = _pGUIM->gmVideoOptionsMenu;
 
-  if (sam_bFullScreenActive) {
-    gmCurrent.gm_mgFullScreenTrigger.mg_iSelected = 1;
-  } else {
-    gmCurrent.gm_mgFullScreenTrigger.mg_iSelected = 0;
-  }
+  // [Cecil] Limit to existing window modes
+  INDEX iWindowMode = Clamp(sam_iWindowMode, (INDEX)E_WM_WINDOWED, (INDEX)E_WM_FULLSCREEN);
+  gmCurrent.gm_mgWindowModeTrigger.mg_iSelected = iWindowMode;
 
   gmCurrent.gm_mgDisplayAPITrigger.mg_iSelected = APIToSwitch((GfxAPIType)(INDEX)sam_iGfxAPI);
   gmCurrent.gm_mgDisplayAdaptersTrigger.mg_iSelected = sam_iDisplayAdapter;
   gmCurrent.gm_mgBitsPerPixelTrigger.mg_iSelected = DepthToSwitch((enum DisplayDepth)(INDEX)sam_iDisplayDepth);
 
+  // [Cecil] Find aspect ratio and the resolution within it
+  PIX2D vScreen(sam_iScreenSizeI, sam_iScreenSizeJ);
+  SizeToAspectRatio(vScreen, gmCurrent.gm_mgAspectRatiosTrigger.mg_iSelected);
+
   FillResolutionsList();
-  SizeToResolution(sam_iScreenSizeI, sam_iScreenSizeJ, gmCurrent.gm_mgResolutionsTrigger.mg_iSelected);
+  SizeToResolution(vScreen(1), vScreen(2), gmCurrent.gm_mgResolutionsTrigger.mg_iSelected);
   gmCurrent.gm_mgDisplayPrefsTrigger.mg_iSelected = Clamp(int(sam_iVideoSetup), 0, 3);
 
-  gmCurrent.gm_mgFullScreenTrigger.ApplyCurrentSelection();
+  gmCurrent.gm_mgWindowModeTrigger.ApplyCurrentSelection();
   gmCurrent.gm_mgDisplayPrefsTrigger.ApplyCurrentSelection();
   gmCurrent.gm_mgDisplayAPITrigger.ApplyCurrentSelection();
   gmCurrent.gm_mgDisplayAdaptersTrigger.ApplyCurrentSelection();
   gmCurrent.gm_mgResolutionsTrigger.ApplyCurrentSelection();
+  gmCurrent.gm_mgAspectRatiosTrigger.ApplyCurrentSelection(); // [Cecil]
   gmCurrent.gm_mgBitsPerPixelTrigger.ApplyCurrentSelection();
 }
 
@@ -776,7 +809,7 @@ static void ApplyVideoOptions(void)
   CVideoOptionsMenu &gmCurrent = _pGUIM->gmVideoOptionsMenu;
 
   // Remember old video settings
-  sam_old_bFullScreenActive = sam_bFullScreenActive;
+  sam_old_iWindowMode = sam_iWindowMode;
   sam_old_iScreenSizeI = sam_iScreenSizeI;
   sam_old_iScreenSizeJ = sam_iScreenSizeJ;
   sam_old_iDisplayDepth = sam_iDisplayDepth;
@@ -784,7 +817,8 @@ static void ApplyVideoOptions(void)
   sam_old_iGfxAPI = sam_iGfxAPI;
   sam_old_iVideoSetup = sam_iVideoSetup;
 
-  BOOL bFullScreenMode = gmCurrent.gm_mgFullScreenTrigger.mg_iSelected == 1;
+  // [Cecil] Different window modes
+  INDEX iWindowMode = gmCurrent.gm_mgWindowModeTrigger.mg_iSelected;
   PIX pixWindowSizeI, pixWindowSizeJ;
   ResolutionToSize(gmCurrent.gm_mgResolutionsTrigger.mg_iSelected, pixWindowSizeI, pixWindowSizeJ);
   enum GfxAPIType gat = SwitchToAPI(gmCurrent.gm_mgDisplayAPITrigger.mg_iSelected);
@@ -798,26 +832,26 @@ static void ApplyVideoOptions(void)
 
   // force fullscreen mode if needed
   CDisplayAdapter &da = _pGfx->gl_gaAPI[gat].ga_adaAdapter[iAdapter];
-  if (da.da_ulFlags & DAF_FULLSCREENONLY) bFullScreenMode = TRUE;
+  if (da.da_ulFlags & DAF_FULLSCREENONLY) iWindowMode = E_WM_FULLSCREEN; // [Cecil]
   if (da.da_ulFlags & DAF_16BITONLY) dd = DD_16BIT;
   // force window to always be in default colors
-  if (!bFullScreenMode) dd = DD_DEFAULT;
+  if (iWindowMode != E_WM_FULLSCREEN) dd = DD_DEFAULT; // [Cecil]
 
   // (try to) set mode
-  StartNewMode(gat, iAdapter, pixWindowSizeI, pixWindowSizeJ, dd, bFullScreenMode);
+  StartNewMode(gat, iAdapter, pixWindowSizeI, pixWindowSizeJ, dd, iWindowMode);
 
   // refresh buttons
   InitVideoOptionsButtons();
   UpdateVideoOptionsButtons(-1);
 
   // ask user to keep or restore
-  if (bFullScreenMode) VideoConfirm();
+  if (iWindowMode == E_WM_FULLSCREEN) VideoConfirm(); // [Cecil]
 }
 
 static void RevertVideoSettings(void)
 {
   // restore previous variables
-  sam_bFullScreenActive = sam_old_bFullScreenActive;
+  sam_iWindowMode = sam_old_iWindowMode; // [Cecil]
   sam_iScreenSizeI = sam_old_iScreenSizeI;
   sam_iScreenSizeJ = sam_old_iScreenSizeJ;
   sam_iDisplayDepth = sam_old_iDisplayDepth;
@@ -836,12 +870,16 @@ static void RevertVideoSettings(void)
 
 void InitActionsForVideoOptionsMenu()
 {
+  // [Cecil] Prepare arrays with window resolutions
+  PrepareVideoResolutions();
+
   CVideoOptionsMenu &gmCurrent = _pGUIM->gmVideoOptionsMenu;
 
   gmCurrent.gm_mgDisplayPrefsTrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons;
   gmCurrent.gm_mgDisplayAPITrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons;
   gmCurrent.gm_mgDisplayAdaptersTrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons;
-  gmCurrent.gm_mgFullScreenTrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons;
+  gmCurrent.gm_mgWindowModeTrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons; // [Cecil]
+  gmCurrent.gm_mgAspectRatiosTrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons; // [Cecil]
   gmCurrent.gm_mgResolutionsTrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons;
   gmCurrent.gm_mgBitsPerPixelTrigger.mg_pOnTriggerChange = &UpdateVideoOptionsButtons;
   gmCurrent.gm_mgVideoRendering.mg_pActivatedFunction = &StartRenderingOptionsMenu;
