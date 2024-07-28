@@ -623,6 +623,8 @@ void CGfxLibrary::InitContext_D3D()
     if( d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE) gl_ulFlags |= GLF_VSYNC;  
   } else CPrintF( TRANS("  Vertical syncronization cannot be disabled.\n"));
 
+  INDEX ctMinStreams = GFX_MINSTREAMS; // set minimum number of required streams
+
 #if SE1_TRUFORM
   // determine support for N-Patches
   extern INDEX truform_iLevel;
@@ -631,7 +633,6 @@ void CGfxLibrary::InitContext_D3D()
   truform_bLinear = FALSE;
   gl_iTessellationLevel    = 0;
   gl_iMaxTessellationLevel = 0;
-  INDEX ctMinStreams = GFX_MINSTREAMS; // set minimum number of required streams
   if( d3dCaps.DevCaps & D3DDEVCAPS_NPATCHES) {
     if( gl_ctMaxStreams>GFX_MINSTREAMS) {
       gl_iMaxTessellationLevel = 7;
