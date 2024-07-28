@@ -34,7 +34,12 @@ void CloseMainWindow(void);
 
 // open the main application window for windowed mode
 void OpenMainWindowNormal(PIX pixSizeI, PIX pixSizeJ);
+
 // open the main application window for fullscreen mode
 void OpenMainWindowFullScreen(PIX pixSizeI, PIX pixSizeJ);
+
+// [Cecil] Open the main application window in borderless mode
+void OpenMainWindowBorderless(PIX pixSizeI, PIX pixSizeJ);
+
 // open the main application window invisible
 void OpenMainWindowInvisible(void);

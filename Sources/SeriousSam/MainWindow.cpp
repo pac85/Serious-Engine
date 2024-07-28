@@ -234,8 +234,8 @@ void OpenMainWindowNormal( PIX pixSizeI, PIX pixSizeJ)
 
 #else
   // [Cecil] SDL: Create normal window
-  _snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
-  _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
+  _snprintf(_achWindowTitle, sizeof(_achWindowTitle), TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
+  _hwndMain = SDL_CreateWindow(_achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
     SDL_WINDOW_OPENGL);
 
   AssertWindowCreation();
@@ -273,8 +273,8 @@ void OpenMainWindowFullScreen( PIX pixSizeI, PIX pixSizeJ)
 
 #else
   // [Cecil] SDL: Create fullscreen window
-  _snprintf(achWindowTitle, sizeof(achWindowTitle), TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
-  _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
+  _snprintf(_achWindowTitle, sizeof(_achWindowTitle), TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
+  _hwndMain = SDL_CreateWindow(_achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
     SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
 
   AssertWindowCreation();
@@ -283,6 +283,37 @@ void OpenMainWindowFullScreen( PIX pixSizeI, PIX pixSizeJ)
   SE_UpdateWindowHandle(_hwndMain);
 }
 
+// [Cecil] Open the main application window in borderless mode
+void OpenMainWindowBorderless(PIX pixSizeI, PIX pixSizeJ) {
+  ASSERT(_hwndMain==NULL);
+
+#if !SE1_PREFER_SDL
+  // Create an invisible window
+  _hwndMain = CreateWindowExA(WS_EX_APPWINDOW, APPLICATION_NAME, "",
+    WS_POPUP, 0, 0, pixSizeI, pixSizeJ, NULL, NULL, _hInstance, NULL);
+
+  AssertWindowCreation();
+
+  // Set window title and show it
+  sprintf(_achWindowTitle, TRANS("Serious Sam (Borderless %dx%d)"), pixSizeI, pixSizeJ);
+  SetWindowTextA(_hwndMain, _achWindowTitle);
+
+  _pixLastSizeI = pixSizeI;
+  _pixLastSizeJ = pixSizeJ;
+
+  ResetMainWindowNormal();
+
+#else
+  // [Cecil] SDL: Create normal window
+  _snprintf(_achWindowTitle, sizeof(_achWindowTitle), TRANS("Serious Sam (Borderless %dx%d)"), pixSizeI, pixSizeJ);
+  _hwndMain = SDL_CreateWindow(_achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ,
+    SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS);
+
+  AssertWindowCreation();
+#endif // !SE1_PREFER_SDL
+
+  SE_UpdateWindowHandle(_hwndMain);
+};
 
 // open the main application window invisible
 void OpenMainWindowInvisible(void)

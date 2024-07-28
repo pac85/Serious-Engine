@@ -28,8 +28,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "CmdLine.h"
 #include "Credits.h"
 
-// [Cecil] Window modes
-#include "WindowModes.h"
+// [Cecil] Screen resolution lists and window modes
+#include "ScreenResolutions.h"
 
 // application state variables
 extern BOOL _bRunning = TRUE;
@@ -813,6 +813,25 @@ void QuitScreenLoop(void)
   }
 }
 
+// [Cecil] Game application is DPI-aware
+static BOOL _bDPIAware = FALSE;
+
+// [Cecil] Make game application be aware of the DPI scaling on Windows Vista and later
+static void SetDPIAwareness(void) {
+  // Load the library
+  HMODULE hUser = LoadLibraryA("User32.dll");
+
+  if (hUser == NULL) return;
+
+  // Try to find the DPI awareness method
+  typedef BOOL (*CSetAwarenessFunc)(void);
+  CSetAwarenessFunc pFunc = (CSetAwarenessFunc)GetProcAddress(hUser, "SetProcessDPIAware");
+
+  if (pFunc == NULL) return;
+
+  // Mark game application as DPI-aware
+  _bDPIAware = pFunc();
+};
 
 int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {

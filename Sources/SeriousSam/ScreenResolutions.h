@@ -31,6 +31,16 @@ extern CAspectRatio _ar21_9;  // Very wide resolutions
 // Aspect ratio of the current resolution
 extern FLOAT _fAspectRatio;
 
+// Window modes
+enum EWindowModes {
+  E_WM_WINDOWED   = 0, // Normal
+  E_WM_BORDERLESS = 1,
+  E_WM_FULLSCREEN = 2,
+};
+
+// Window mode names
+extern CTString _astrWindowModes[3];
+
 // Prepare arrays with window resolutions
 void PrepareVideoResolutions(void);
 

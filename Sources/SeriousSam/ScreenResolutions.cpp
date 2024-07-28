@@ -16,7 +16,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdH.h"
 
 #include "ScreenResolutions.h"
-#include "WindowModes.h"
 
 // Initialize aspect ratio arrays
 CAspectRatio _ar4_3;
@@ -26,6 +25,9 @@ CAspectRatio _ar21_9;
 
 // Aspect ratio of the current resolution
 FLOAT _fAspectRatio = (4.0f / 3.0f);
+
+// Window mode names
+CTString _astrWindowModes[3] = { "", "", "" };
 
 // Compare two resolutions
 static int SortResolutions(const void *pRes1, const void *pRes2) {

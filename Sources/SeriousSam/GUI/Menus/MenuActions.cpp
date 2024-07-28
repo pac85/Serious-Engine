@@ -25,7 +25,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // [Cecil] Screen resolution lists and window modes
 #include "ScreenResolutions.h"
-#include "WindowModes.h"
 
 ENGINE_API extern INDEX snd_iFormat;
 extern BOOL _bMouseUsedLast;

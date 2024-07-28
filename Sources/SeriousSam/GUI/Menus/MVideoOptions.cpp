@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // [Cecil] Screen resolution lists and window modes
 #include "ScreenResolutions.h"
-#include "WindowModes.h"
 
 extern void InitVideoOptionsButtons();
 extern void UpdateVideoOptionsButtons(INDEX iSelected);
