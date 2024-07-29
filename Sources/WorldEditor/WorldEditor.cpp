@@ -659,7 +659,7 @@ BOOL CWorldEditorApp::SubInitInstance()
   _pGfx->ResetDisplayMode((enum GfxAPIType) m_iApi);
 
   // initialize game itself (GameShell interface) and load settings
-  _pGame->Initialize("Data\\WorldEditor.gms"); // [Cecil]
+  _pGame->Initialize("UserData\\Game\\WorldEditor.gms"); // [Cecil]
   // load startup script
   _pShell->Execute( "include \"Scripts\\WorldEditor_startup.ini\"");
 
@@ -668,7 +668,7 @@ BOOL CWorldEditorApp::SubInitInstance()
   ReadDefaultPolygonValues();
 
   // load primitives history buffer
-  CTString strPrimitives("Data\\PrimitivesHistory.pri");
+  CTString strPrimitives("UserData\\Editor\\PrimitivesHistory.pri");
   if (FileExists(strPrimitives)) {
     CTFileStream strmFile;
     try
@@ -1719,7 +1719,7 @@ void CAppPrefs::WriteToIniFile()
 
 BOOL CWorldEditorApp::LoadRenderingPreferences()
 {
-  CTFileName fnRenderingPrefs = CTString("Data\\WEDRenderingPrefs.bin");
+  CTFileName fnRenderingPrefs = CTString("UserData\\Editor\\WEDRenderingPrefs.bin");
 
   // if rendering preferences file does not exist
   if (!FileExists(fnRenderingPrefs)) {
@@ -1766,7 +1766,7 @@ void CWorldEditorApp::SaveRenderingPreferences(void)
   try
   {
     // open binary file to save rendering preferences
-  	CTFileName fnRenderingPrefs = CTString("Data\\WEDRenderingPrefs.bin");
+  	CTFileName fnRenderingPrefs = CTString("UserData\\Editor\\WEDRenderingPrefs.bin");
     strmFile.Create_t( fnRenderingPrefs, CTStream::CM_BINARY);
     // write file ID
     strmFile.WriteID_t( CChunkID( "RPRF"));  // child configurations
@@ -1812,7 +1812,7 @@ void CChildConfiguration::ClearInvalidConfigPointers(void)
 
 BOOL CWorldEditorApp::LoadChildConfigurations(void)
 {
-  CTFileName fnChildConfigurations = CTString("Data\\WEDChildConfigurations.bin");
+  CTFileName fnChildConfigurations = CTString("UserData\\Editor\\WEDChildConfigurations.bin");
 
   // if child configuration file does not exist
   if (!FileExists(fnChildConfigurations)) {
@@ -1859,7 +1859,7 @@ void CWorldEditorApp::SaveChildConfigurations(void)
   CTFileStream strmFile;
   try
   {
-  	CTFileName fnChildConfigurations = CTString("Data\\WEDChildConfigurations.bin");
+  	CTFileName fnChildConfigurations = CTString("UserData\\Editor\\WEDChildConfigurations.bin");
     // create binary file to receive child configurations
     strmFile.Create_t( fnChildConfigurations, CTStream::CM_BINARY);
     // write file ID

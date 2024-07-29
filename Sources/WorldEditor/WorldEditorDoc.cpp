@@ -839,7 +839,7 @@ void CWorldEditorDoc::ApplyCSG(enum CSGType CSGType)
     CTFileStream strmFile;
     try
     {
-      strmFile.Create_t( CTString("Data\\PrimitivesHistory.pri"));
+      strmFile.Create_t( CTString("UserData\\Editor\\PrimitivesHistory.pri"));
       INDEX ctHistory = theApp.m_lhPrimitiveHistory.Count();
       strmFile << ctHistory;
       // write history primitives list

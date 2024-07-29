@@ -209,7 +209,7 @@ BOOL Init(int argc, char* argv[])
   _pShell->DeclareSymbol("user CTString sam_strFirstLevel;", &sam_strFirstLevel);
 
   // init game - this will load persistent symbols
-  _pGame->Initialize("Data\\DedicatedServer.gms"); // [Cecil]
+  _pGame->Initialize("UserData\\Game\\DedicatedServer.gms"); // [Cecil]
 
   LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), _strSamVersion);
   CPrintF(TRANS("Serious Sam version: %s\n"), _strSamVersion);
