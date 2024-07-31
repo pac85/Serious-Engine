@@ -1425,100 +1425,86 @@ static BOOL SubstExt_internal(CTFileName &fnmFullFileName)
   } else if (fnmFullFileName.FileExt()==".ogg") {
     fnmFullFileName = fnmFullFileName.NoExt()+".mp3";
     return TRUE;
-  } else {
-    return TRUE;
   }
+
+  // [Cecil] TRUE -> FALSE
+  return FALSE;
 }
 
+// [Cecil] Check if file exists at a specific path (relative or absolute)
+static inline BOOL CheckFileAt(const CTString &strBaseDir, const CTFileName &fnmFile, CTFileName &fnmExpanded) {
+  if (fnmFile.HasPrefix(strBaseDir)) {
+    fnmExpanded = fnmFile;
+  } else {
+    fnmExpanded = strBaseDir + fnmFile;
+  }
+
+  return IsFileReadable_internal(fnmExpanded);
+};
 
 static INDEX ExpandFilePath_read(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExpanded)
 {
-  // search for the file in zips
-  INDEX iFileInZip = UNZIPGetFileIndex(fnmFile);
+  // Search for the file in archives
+  const INDEX iFileInZip = UNZIPGetFileIndex(fnmFile);
+  const BOOL bFoundInZip = (iFileInZip >= 0);
 
-  // if a mod is active
-  if (_fnmMod!="") {
+  // [Cecil] Check file at a specific directory and return if it exists
+  #define RETURN_FILE_AT(_Dir) \
+    { if (CheckFileAt(_Dir, fnmFile, fnmExpanded)) return EFP_FILE; }
 
-    // first try in the mod's dir
+  // If a mod is active
+  if (_fnmMod != "") {
+    // Try mod directory before archives
     if (!fil_bPreferZips) {
-      fnmExpanded = _fnmApplicationPath+_fnmMod+fnmFile;
-      if (IsFileReadable_internal(fnmExpanded)) {
-        return EFP_FILE;
-      }
+      RETURN_FILE_AT(_fnmApplicationPath + _fnmMod);
     }
 
-    // if not disallowing zips
-    if (!(ulType&EFP_NOZIPS)) {
-      // if exists in mod's zip
-      if (iFileInZip>=0 && UNZIPIsFileAtIndexMod(iFileInZip)) {
-        // use that one
+    // If allowing archives
+    if (!(ulType & EFP_NOZIPS)) {
+      // Use if it exists in the mod archive
+      if (bFoundInZip && UNZIPIsFileAtIndexMod(iFileInZip)) {
         fnmExpanded = fnmFile;
         return EFP_MODZIP;
       }
     }
 
-    // try in the mod's dir after
+    // Try mod directory after archives
     if (fil_bPreferZips) {
-      fnmExpanded = _fnmApplicationPath+_fnmMod+fnmFile;
-      if (IsFileReadable_internal(fnmExpanded)) {
-        return EFP_FILE;
-      }
+      RETURN_FILE_AT(_fnmApplicationPath + _fnmMod);
     }
   }
 
-  // try in the app's base dir
+  // Try game root directory before archives
   if (!fil_bPreferZips) {
-    CTFileName fnmAppPath = _fnmApplicationPath;
-    fnmAppPath.SetAbsolutePath();
-
-    if(fnmFile.HasPrefix(fnmAppPath)) {
-      fnmExpanded = fnmFile;
-    } else {
-      fnmExpanded = _fnmApplicationPath+fnmFile;
-    }
-
-    if (IsFileReadable_internal(fnmExpanded)) {
-      return EFP_FILE;
-    }
+    RETURN_FILE_AT(_fnmApplicationPath);
   }
 
-  // if not disallowing zips
-  if (!(ulType&EFP_NOZIPS)) {
-    // if exists in any zip
-    if (iFileInZip>=0) {
-      // use that one
+  // If allowing archives
+  if (!(ulType & EFP_NOZIPS)) {
+    // Use it if exists in any archive
+    if (bFoundInZip) {
       fnmExpanded = fnmFile;
       return EFP_BASEZIP;
     }
   }
 
-  // try in the app's base dir
+  // Try game root directory after archives
   if (fil_bPreferZips) {
-    fnmExpanded = _fnmApplicationPath+fnmFile;
-    if (IsFileReadable_internal(fnmExpanded)) {
-      return EFP_FILE;
-    }
+    RETURN_FILE_AT(_fnmApplicationPath);
   }
 
-  // finally, try in the CD path
-  if (_fnmCDPath!="") {
-
-    // if a mod is active
-    if (_fnmMod!="") {
-      // first try in the mod's dir
-      fnmExpanded = _fnmCDPath+_fnmMod+fnmFile;
-      if (IsFileReadable_internal(fnmExpanded)) {
-        return EFP_FILE;
-      }
+  // Finally, try the CD path
+  if (_fnmCDPath != "") {
+    // Prioritize the mod directory
+    if (_fnmMod != "") {
+      RETURN_FILE_AT(_fnmCDPath + _fnmMod);
     }
 
-    fnmExpanded = _fnmCDPath+fnmFile;
-    if (IsFileReadable_internal(fnmExpanded)) {
-      return EFP_FILE;
-    }
+    RETURN_FILE_AT(_fnmCDPath);
   }
+
   return EFP_NONE;
-}
+};
 
 // Expand a file's filename to full path
 INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExpanded)
