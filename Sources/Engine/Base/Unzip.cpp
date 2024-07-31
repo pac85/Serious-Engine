@@ -17,6 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 //
 
 #include "stdh.h"
+#include <Engine/Base/Unzip.h>
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/Translation.h>
@@ -104,25 +105,6 @@ struct EndOfDir {
 };
 
 #pragma pack()
-
-// one entry (a zipped file) in a zip archive
-class CZipEntry {
-public:
-  CTFileName *ze_pfnmArchive;   // path of the archive
-  CTFileName ze_fnm;            // file name with path inside archive
-  SLONG ze_slCompressedSize;    // size of file in the archive
-  SLONG ze_slUncompressedSize;  // size when uncompressed
-  SLONG ze_slDataOffset;        // position of compressed data inside archive
-  ULONG ze_ulCRC;               // checksum of the file
-  BOOL ze_bStored;              // set if file is not compressed, but stored
-  BOOL ze_bMod;                 // set if from a mod's archive
-
-  void Clear(void)
-  {
-    ze_pfnmArchive = NULL;
-    ze_fnm.Clear();
-  }
-};
 
 // an open instance of a file inside a zip
 class CZipHandle {
@@ -478,6 +460,11 @@ const CTFileName &UNZIPGetFileAtIndex(INDEX i)
 {
   return _azeFiles[i].ze_fnm;
 }
+
+// [Cecil] Get ZIP file entry at a specific position
+const CZipEntry &UNZIPGetEntry(INDEX i) {
+  return _azeFiles[i];
+};
 
 BOOL UNZIPIsFileAtIndexMod(INDEX i)
 {

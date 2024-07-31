@@ -19,6 +19,25 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
+// [Cecil] A file entry in a ZIP archive (moved from Unzip.cpp)
+class CZipEntry {
+  public:
+    const CTFileName *ze_pfnmArchive; // Path of the archive
+    CTFileName ze_fnm;           // File name with path inside archive
+    SLONG ze_slCompressedSize;   // Size of file in the archive
+    SLONG ze_slUncompressedSize; // Size when uncompressed
+    SLONG ze_slDataOffset;       // Position of compressed data inside archive
+    ULONG ze_ulCRC;              // Checksum of the file
+    BOOL ze_bStored;             // Set if file is not compressed, but stored
+    BOOL ze_bMod;                // Set if from a mod's archive
+
+  public:
+    void Clear(void) {
+      ze_pfnmArchive = NULL;
+      ze_fnm.Clear();
+    };
+};
+
 // add one zip archive to current active set
 void UNZIPAddArchive(const CTFileName &fnm);
 // read directories of all currently added archives, in reverse alphabetical order
@@ -42,6 +61,9 @@ void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip,
 // enumeration for all files in all zips
 INDEX UNZIPGetFileCount(void);
 const CTFileName &UNZIPGetFileAtIndex(INDEX i);
+
+// [Cecil] Get ZIP file entry at a specific position
+const CZipEntry &UNZIPGetEntry(INDEX i);
 
 // get index of a file (-1 for no file)
 INDEX UNZIPGetFileIndex(const CTFileName &fnm);
