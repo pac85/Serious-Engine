@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   // Undefine 'new' operator in debug
   #ifndef NDEBUG
     #undef new
@@ -34,7 +34,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #else
   #include <d3d8_disabled.h>
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 #include <Engine/Base/Timer.h>
 #include <Engine/Base/CTString.h>
@@ -72,7 +72,7 @@ struct CTVERTEX {
   FLOAT fU,fV;     // texture coordinates
 };
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   #define D3DFVF_CTVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 #endif
 
@@ -207,7 +207,7 @@ private:
   void SwapBuffers_OGL( CViewPort *pvpToSwap);
 
   // Direct3D specific
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   BOOL InitDriver_D3D(void);
   void EndDriver_D3D(void);
   BOOL InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth eColorDepth);

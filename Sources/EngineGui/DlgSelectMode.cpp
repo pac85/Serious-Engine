@@ -245,11 +245,11 @@ void CDlgSelectMode::DoDataExchange(CDataExchange* pDX)
     i = m_ctrlDriverCombo.AddString(CString(_pGfx->GetApiName(GAT_OGL).ConstData()));
     m_ctrlDriverCombo.SetItemData(i, GAT_OGL);
     if( *m_pGfxAPI==GAT_OGL) iSelect = i;
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
     i = m_ctrlDriverCombo.AddString(CString(_pGfx->GetApiName(GAT_D3D).ConstData()));
     m_ctrlDriverCombo.SetItemData(i, GAT_D3D);
     if( *m_pGfxAPI==GAT_D3D) iSelect = i;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
     // set old driver to be default
     m_ctrlDriverCombo.SetCurSel( iSelect);
   

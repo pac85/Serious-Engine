@@ -1293,7 +1293,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     &OpenMainWindowFullScreen, // Fullscreen
   };
   
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   // [Cecil] Open main window for Direct3D
   if (eGfxAPI == GAT_D3D) {
     (apWindowMethods[eWindowMode])(pixSizeI, pixSizeJ);
@@ -1312,7 +1312,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     (apWindowMethods[eWindowMode])(pixSizeI, pixSizeJ);
   }
   
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   // [Cecil] Reset main window for Direct3D for non-fullscreen modes
   if (bSuccess && !bFullscreen && eGfxAPI == GAT_D3D) {
     ResetMainWindowNormal();
@@ -1402,11 +1402,11 @@ const INDEX aDefaultModes[][3] =
   { DD_16BIT,   GAT_OGL, 1}, // 3dfx Voodoo2
 #endif
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   { DD_DEFAULT, GAT_D3D, 0},
   { DD_16BIT,   GAT_D3D, 0},
   { DD_16BIT,   GAT_D3D, 1},
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 };
 const INDEX ctDefaultModes = ARRAYCOUNT(aDefaultModes);
 

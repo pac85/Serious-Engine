@@ -886,12 +886,12 @@ void CRenderer::Render(void)
 
   // for D3D (or mirror) we have to check depth points now, because we need back (not depth!) buffer for it,
   // and D3D can't guarantee that it won't be discarded upon swapbuffers (especially if multisampling is on!) :(
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if (!re_bRenderingShadows && ((_pGfx->GetCurrentAPI() == GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex > 0)) {
     extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel=0);
     CheckDelayedDepthPoints( re_pdpDrawPort, re_iIndex);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   
   // end select-on-render functionality
   extern void EndSelectOnRender(void);

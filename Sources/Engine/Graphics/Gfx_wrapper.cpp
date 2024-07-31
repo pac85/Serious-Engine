@@ -96,7 +96,7 @@ extern void OGL_CheckError(void)
 #endif
 }
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 extern void D3D_CheckError(HRESULT hr)
 {
 #ifndef NDEBUG
@@ -105,13 +105,13 @@ extern void D3D_CheckError(HRESULT hr)
   else ASSERT( eAPI==GAT_NONE);
 #endif
 }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 
 // TEXTURE MANAGEMENT
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 static LPDIRECT3DTEXTURE8 *_ppd3dCurrentTexture;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 extern INDEX GetTexturePixRatio_OGL( GLuint uiBindNo);
 extern INDEX GetFormatPixRatio_OGL( GLenum eFormat);
@@ -119,13 +119,13 @@ extern void  MimicTexParams_OGL( CTexParams &tpLocal);
 extern void  UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
                                 GLenum eInternalFormat, BOOL bUseSubImage);
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 extern INDEX GetTexturePixRatio_D3D( LPDIRECT3DTEXTURE8 pd3dTexture);
 extern INDEX GetFormatPixRatio_D3D( D3DFORMAT d3dFormat);
 extern void  MimicTexParams_D3D( CTexParams &tpLocal);
 extern void  UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTexture,
                                 PIX pixSizeU, PIX pixSizeV, D3DFORMAT eInternalFormat, BOOL bDiscard);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 // update texture LOD bias
 extern FLOAT _fCurrentLODBias = 0;  // LOD bias adjuster
@@ -160,7 +160,7 @@ extern void UpdateLODBias( const FLOAT fLODBias)
     }
   }
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D)
   { // just set it
     HRESULT hr;
@@ -169,7 +169,7 @@ extern void UpdateLODBias( const FLOAT fLODBias)
       D3D_CHECKERROR(hr);
     }
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
@@ -199,7 +199,7 @@ void IGfxInterface::SetTextureFiltering( INDEX &iFilterType, INDEX &iAnisotropyD
   _tpGlobal[0].tp_iAnisotropy = iAnisotropyDegree;
 
   // for OpenGL, that's about it
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if (_pGfx->GetCurrentAPI() != GAT_D3D) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -224,7 +224,7 @@ void IGfxInterface::SetTextureFiltering( INDEX &iFilterType, INDEX &iAnisotropyD
   }
   // done
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -303,14 +303,14 @@ void IGfxInterface::SetTexture( ULONG &ulTexObject, CTexParams &tpLocal)
     pglBindTexture( GL_TEXTURE_2D, ulTexObject);
     MimicTexParams_OGL(tpLocal);
   } 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) { // Direct3D
     _ppd3dCurrentTexture = (LPDIRECT3DTEXTURE8*)&ulTexObject;
     HRESULT hr = _pGfx->gl_pd3dDevice->SetTexture( GFX_iActiveTexUnit, *_ppd3dCurrentTexture);
     D3D_CHECKERROR(hr);
     MimicTexParams_D3D(tpLocal);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   // done
   _pfGfxProfile.StopTimer(CGfxProfile::PTI_SETCURRENTTEXTURE);
   _sfStats.StopTimer(CStatForm::STI_BINDTEXTURE);
@@ -331,7 +331,7 @@ void IGfxInterface::UploadTexture( ULONG *pulTexture, PIX pixWidth, PIX pixHeigh
   if( eAPI==GAT_OGL) { // OpenGL
     UploadTexture_OGL( pulTexture, pixWidth, pixHeight, (GLenum)ulFormat, bNoDiscard);
   }
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) { // Direct3D
     const LPDIRECT3DTEXTURE8 _pd3dLastTexture = *_ppd3dCurrentTexture;
     UploadTexture_D3D( _ppd3dCurrentTexture, pulTexture, pixWidth, pixHeight, (D3DFORMAT)ulFormat, !bNoDiscard);
@@ -341,7 +341,7 @@ void IGfxInterface::UploadTexture( ULONG *pulTexture, PIX pixWidth, PIX pixHeigh
       D3D_CHECKERROR(hr);
     }
   } 
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
@@ -387,7 +387,7 @@ SLONG IGfxInterface::GetTextureSize( ULONG ulTexObject, BOOL bHasMipmaps/*=TRUE*
     }
   }
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D)
   {
     // we can determine exact size from texture surface (i.e. mipmap)
@@ -396,7 +396,7 @@ SLONG IGfxInterface::GetTextureSize( ULONG ulTexObject, BOOL bHasMipmaps/*=TRUE*
     D3D_CHECKERROR(hr);
     slMipSize = d3dSurfDesc.Size;
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
   // eventually count in all the mipmaps (takes extra 33% of texture size)
   extern INDEX gap_bAllowSingleMipmap;
@@ -418,9 +418,9 @@ INDEX IGfxInterface::GetTexturePixRatio( ULONG ulTextureObject)
   if( eAPI==GAT_OGL) {
     return GetTexturePixRatio_OGL( (GLuint)ulTextureObject);
   } 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) return GetTexturePixRatio_D3D( (LPDIRECT3DTEXTURE8)ulTextureObject);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   else return 0;
 }
 
@@ -435,9 +435,9 @@ INDEX IGfxInterface::GetFormatPixRatio( ULONG ulTextureFormat)
   if( eAPI==GAT_OGL) {
     return GetFormatPixRatio_OGL( (GLenum)ulTextureFormat);
   } 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) return GetFormatPixRatio_D3D( (D3DFORMAT)ulTextureFormat);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   else return 0;
 }
 
@@ -587,13 +587,13 @@ void IGfxInterface::SetTruform(INDEX iLevel, BOOL bLinearNormals)
     OGL_CHECKERROR;
   }
   // if disabled, Direct3D will set tessellation level at "enable" call
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D && GFX_bTruform) { 
     FLOAT fSegments = iLevel+1;
     HRESULT hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_PATCHSEGMENTS, *((DWORD*)&fSegments));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
   // keep current truform params
   truform_iLevel  = iLevel;

@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "stdh.h"
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 
 // Undefine 'new' operator in debug
 #ifndef NDEBUG
@@ -293,4 +293,4 @@ extern INDEX AdjustDitheringType_D3D( D3DFORMAT eFormat, INDEX iDitheringType)
   }
 }
 
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D

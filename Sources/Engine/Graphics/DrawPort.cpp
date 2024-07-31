@@ -475,7 +475,7 @@ void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) c
     pglEnd();
     OGL_CHECKERROR;
   } // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) {
     HRESULT hr;
     const FLOAT fI = pixI+0.75f;
@@ -489,7 +489,7 @@ void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) c
     hr = _pGfx->gl_pd3dDevice->DrawPrimitiveUP( D3DPT_POINTLIST, 1, &avtx, sizeof(CTVERTEX));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -522,7 +522,7 @@ void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
     pglEnd();
     OGL_CHECKERROR;
   } // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) {
     HRESULT hr;
     const ULONG d3dColor = rgba2argb(col);
@@ -534,7 +534,7 @@ void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
     hr = _pGfx->gl_pd3dDevice->DrawPrimitiveUP( D3DPT_POINTLIST, 1, &avtx, sizeof(CTVERTEX));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -583,7 +583,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
     pglEnd();
     OGL_CHECKERROR;
   } // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) {
     HRESULT hr;
     const FLOAT fI0 = pixI0+0.75f;  const FLOAT fJ0 = pixJ0+0.75f;
@@ -597,7 +597,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
     hr = _pGfx->gl_pd3dDevice->DrawPrimitiveUP( D3DPT_LINELIST, 1, avtxLine, sizeof(CTVERTEX));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   // revert to old filtering
   if( typ!=_FULL_) gfxSetTextureFiltering( iTexFilter, iTexAnisotropy);
 }
@@ -629,7 +629,7 @@ void CDrawPort::DrawLine3D( FLOAT3D v0, FLOAT3D v1, COLOR col) const
     pglEnd();
     OGL_CHECKERROR;
   } // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) {
     HRESULT hr;
     const ULONG d3dColor = rgba2argb(col);
@@ -641,7 +641,7 @@ void CDrawPort::DrawLine3D( FLOAT3D v0, FLOAT3D v1, COLOR col) const
     hr = _pGfx->gl_pd3dDevice->DrawPrimitiveUP( D3DPT_LINELIST, 1, avtxLine, sizeof(CTVERTEX));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -697,7 +697,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
     OGL_CHECKERROR;
   }
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) {
     HRESULT hr;
     const ULONG d3dColor = rgba2argb(col);
@@ -711,7 +711,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
     hr = _pGfx->gl_pd3dDevice->DrawPrimitiveUP( D3DPT_LINELIST, 4, avtxLines, sizeof(CTVERTEX));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   // revert to old filtering
   if( typ!=_FULL_) gfxSetTextureFiltering( iTexFilter, iTexAnisotropy);
 }
@@ -751,7 +751,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col
     ResetScissor(this);
   }
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D)
   {
     HRESULT hr;
@@ -770,7 +770,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col
     } // done
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -817,7 +817,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
     pvtx[3].x = fI1;  pvtx[3].y = fJ0;  pvtx[3].z = 0;  pcol[3] = glcolUR;
     gfxFlushQuads();
   }
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D) { 
     // thru Direct3D
     HRESULT hr;
@@ -831,7 +831,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
     hr = _pGfx->gl_pd3dDevice->DrawPrimitiveUP( D3DPT_TRIANGLELIST, 2, avtxTris, sizeof(CTVERTEX));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -862,14 +862,14 @@ void CDrawPort::Fill( COLOR col) const
     pglClear( GL_COLOR_BUFFER_BIT);
   }
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D)
   {
     const ULONG d3dColor = rgba2argb(col);
     HRESULT hr = _pGfx->gl_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET, d3dColor,0,0);
     D3D_CHECKERROR(hr);
   }
-#endif SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -899,14 +899,14 @@ void CDrawPort::FillZBuffer( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, FL
     OGL_CHECKERROR;
   }
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D)
   {
     D3DRECT d3dRect = { pixI, pixJ, pixI+pixWidth, pixJ+pixHeight };
     HRESULT hr = _pGfx->gl_pd3dDevice->Clear( 1, &d3dRect, D3DCLEAR_ZBUFFER, 0,zval,0);
     D3D_CHECKERROR(hr);
   }
-#endif SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -928,13 +928,13 @@ void CDrawPort::FillZBuffer( FLOAT zval) const
     pglClear( GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
   }
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D)
   {
     HRESULT hr = _pGfx->gl_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER, 0,zval,0);
     D3D_CHECKERROR(hr);
   }
-#endif SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -988,7 +988,7 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
   }
 
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   else if( eAPI==GAT_D3D)
   {
     // get back buffer
@@ -1028,7 +1028,7 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
     pBackBuffer->UnlockRect();
     D3DRELEASE( pBackBuffer, TRUE);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 

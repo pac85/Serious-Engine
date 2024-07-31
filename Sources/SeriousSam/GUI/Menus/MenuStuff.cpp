@@ -167,9 +167,9 @@ INDEX APIToSwitch(enum GfxAPIType gat)
 {
   switch (gat) {
   case GAT_OGL: return 0;
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   case GAT_D3D: return 1;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   default: ASSERT(FALSE); return 0;
   }
 }
@@ -178,9 +178,9 @@ enum GfxAPIType SwitchToAPI(INDEX i)
 {
   switch (i) {
   case 0: return GAT_OGL;
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   case 1: return GAT_D3D;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   default: ASSERT(FALSE); return GAT_OGL;
   }
 }

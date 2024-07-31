@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "stdh.h"
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 
 // Undefine 'new' operator in debug
 #ifndef NDEBUG
@@ -365,4 +365,4 @@ extern COLOR UnpackColor_D3D( UBYTE *pd3dColor, D3DFORMAT d3dFormat, SLONG &slCo
   return RGBToColor(ubR,ubG,ubB);
 }
 
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D

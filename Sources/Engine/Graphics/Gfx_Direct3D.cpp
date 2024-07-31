@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicContainer.cpp>
 #include <Engine/Templates/Stock_CTextureData.h>
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 
 
 // asm shortcuts
@@ -1368,4 +1368,4 @@ elemEnd:
   _iIdxOffset += ctIndices;
 }
 
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D

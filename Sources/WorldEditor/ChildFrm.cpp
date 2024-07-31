@@ -527,7 +527,7 @@ void CChildFrame::TestGame( BOOL bFullScreen)
     ::ShowWindow(    hWndFullScreen, SW_SHOWNORMAL);
 
     // set Direct3D full screen (after window)
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
     if( gat==GAT_D3D) {
       const BOOL bRes = _pGfx->SetDisplayMode( gat, 0, pixSizeI, pixSizeJ, dd);
       if( !bRes) {
@@ -537,7 +537,7 @@ void CChildFrame::TestGame( BOOL bFullScreen)
         return;
       }
     }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
     // create canvas
     _pGfx->CreateWindowCanvas( hWndFullScreen, &pvp, &pdp);
     // initial screen fill and swap, just to get context running

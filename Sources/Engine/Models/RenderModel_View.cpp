@@ -1755,11 +1755,8 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
 {
   // cache API
   _eAPI = _pGfx->GetCurrentAPI();
-#ifdef SE1_D3D
-  ASSERT( _eAPI==GAT_OGL || _eAPI==GAT_D3D || _eAPI==GAT_NONE);
-#else // SE1_D3D
-  ASSERT( _eAPI==GAT_OGL || _eAPI==GAT_NONE);
-#endif // SE1_D3D
+  _pGfx->CheckAPI();
+
   if( _eAPI==GAT_NONE) return;  // must have API
 
 #if SE1_TRUFORM

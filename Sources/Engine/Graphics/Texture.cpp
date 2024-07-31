@@ -66,7 +66,7 @@ extern void DetermineSupportedTextureFormats( GfxAPIType eAPI)
     TS.ts_tfLA8    = GL_LUMINANCE8_ALPHA8;
     TS.ts_tfL8     = GL_LUMINANCE8;
   }
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if( eAPI==GAT_D3D) {
     extern D3DFORMAT FindClosestFormat_D3D(D3DFORMAT d3df);
     TS.ts_tfRGBA8  = FindClosestFormat_D3D(D3DFMT_A8R8G8B8);
@@ -77,7 +77,7 @@ extern void DetermineSupportedTextureFormats( GfxAPIType eAPI)
     TS.ts_tfLA8    = FindClosestFormat_D3D(D3DFMT_A8L8);
     TS.ts_tfL8     = FindClosestFormat_D3D(D3DFMT_L8);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -111,9 +111,9 @@ extern void UpdateTextureSettings(void)
     iTCType = iTC;   // set it
   }
   // Direct3D (just force DXTC - it's the only one)
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if( eAPI==GAT_D3D && bHasTC) iTCType = 5;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
   // clamp and cache cvar
   extern INDEX tex_bCompressAlphaChannel; 
@@ -138,13 +138,13 @@ extern void UpdateTextureSettings(void)
     TS.ts_tfCRGBA = bCAC ? GL_RGBA4_DXT5_S3TC : GL_RGBA_S3TC;
     TS.ts_tfCRGB  = GL_RGB_S3TC;
     break;
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   case 5:  // DXTC
     extern D3DFORMAT FindClosestFormat_D3D(D3DFORMAT d3df);
     TS.ts_tfCRGBA = bCAC ? FindClosestFormat_D3D(D3DFMT_DXT5) : FindClosestFormat_D3D(D3DFMT_DXT3);
     TS.ts_tfCRGB  = D3DFMT_DXT1;
     break;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   default: // none
     TS.ts_tfCRGBA = NONE;
     TS.ts_tfCRGB  = NONE;
@@ -974,10 +974,10 @@ void CTextureData::Read_t( CTStream *inFile)
   if( !(td_ulFlags&TEX_STATIC) || !(td_ulFlags&TEX_CONSTANT)) { // only non-static-constant textures can be dithered
     extern INDEX AdjustDitheringType_OGL(    GLenum eFormat, INDEX iDitheringType);
     if( eAPI==GAT_OGL) iDitherType = AdjustDitheringType_OGL(    (GLenum)td_ulInternalFormat, tex_iDithering);
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
     extern INDEX AdjustDitheringType_D3D( D3DFORMAT eFormat, INDEX iDitheringType);
     if( eAPI==GAT_D3D) iDitherType = AdjustDitheringType_D3D( (D3DFORMAT)td_ulInternalFormat, tex_iDithering);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   }
   // eventually dither texture
   if( !_bExport && iDitherType!=0) {

@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#ifndef SE1_D3D
+#if !SE1_DIRECT3D
 
 // Define types used internally in the engine as dummies
 typedef enum _D3DFORMAT {} D3DFORMAT;
@@ -32,6 +32,6 @@ typedef void *LPDIRECT3DSURFACE8;
 typedef void *LPDIRECT3DSWAPCHAIN8;
 typedef void *LPDIRECT3DVERTEXBUFFER8;
 
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 #endif

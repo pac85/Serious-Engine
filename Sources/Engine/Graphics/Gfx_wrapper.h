@@ -131,7 +131,7 @@ public:
   extern void OGL_CheckError(void);
   #define OGL_CHECKERROR OGL_CheckError();
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   extern void D3D_CheckError(HRESULT hr);
   #define D3D_CHECKERROR(hr) D3D_CheckError(hr);
 #endif

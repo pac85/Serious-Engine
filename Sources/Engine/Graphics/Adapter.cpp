@@ -21,9 +21,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Console.h>
 
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 extern const D3DDEVTYPE d3dDevType;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 // list of all modes avaliable through CDS
 static CListHead _lhCDSModes;
@@ -98,7 +98,7 @@ static inline void Setup3dfx(CGfxAPI &api) {
 
 #endif // SE1_3DFX
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 
 // [Cecil] Setup Direct3D in a separate method
 static inline void SetupD3D(void) {
@@ -186,7 +186,7 @@ static inline void SetupD3D(void) {
   }
 };
 
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 #endif // !SE1_PREFER_SDL
 
@@ -246,7 +246,7 @@ void CGfxLibrary::InitAPIs(void)
     Setup3dfx(apiOGL);
   #endif
 
-  #ifdef SE1_D3D
+  #if SE1_DIRECT3D
     if (InitDriver_D3D()) SetupD3D();
   #endif
 

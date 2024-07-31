@@ -25,7 +25,7 @@ extern INDEX ogl_bExclusive;
 
 
 // helper for D3D surface
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 static void CreateSwapChain_D3D( CViewPort *pvp, PIX pixSizeI, PIX pixSizeJ)
 {
   HRESULT hr;
@@ -60,7 +60,7 @@ static void SetAsRenderTarget_D3D( CViewPort *pvp)
   D3D_CHECKERROR(hr);
   D3DRELEASE( pColorSurface, TRUE);
 }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 /*
  *   ViewPort functions
@@ -71,10 +71,10 @@ CViewPort::CViewPort( PIX pixWidth, PIX pixHeight, OS::Window hWnd) :
 {
   vp_hWnd = NULL;
   vp_hWndParent = hWnd;
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   vp_pSwapChain = NULL;
   vp_pSurfDepth = NULL;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
   vp_ctDisplayChanges = 0;
   OpenCanvas();
   vp_Raster.ra_pvpViewPort = this;
@@ -184,18 +184,18 @@ void CViewPort::OpenCanvas(void)
   #endif
 	  NULL);
   ASSERT( vp_hWnd!=NULL);
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   // prepare new swap chain for D3D
   if (_pGfx->GetCurrentAPI() == GAT_D3D && !bFullScreen) CreateSwapChain_D3D(this, pixWinSizeI, pixWinSizeJ);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
   // resize raster
   Resize();
   ShowWindow( vp_hWnd, SW_SHOW);
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   // set as rendering target
   if (_pGfx->GetCurrentAPI() == GAT_D3D && vp_pSwapChain != NULL) SetAsRenderTarget_D3D(this);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 #else
   // [Cecil] SDL: No need to open a new window, reuse the parent
@@ -208,12 +208,12 @@ void CViewPort::OpenCanvas(void)
 void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
 {
   // release D3D swap chain if allocated
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if (_pGfx->GetCurrentAPI() == GAT_D3D && bRelease) {
     if (vp_pSwapChain != NULL) D3DRELEASE(vp_pSwapChain, TRUE);
     if (vp_pSurfDepth != NULL) D3DRELEASE(vp_pSurfDepth, TRUE);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
   // [Cecil] SDL: No new window has been created
 #if !SE1_PREFER_SDL
@@ -226,10 +226,10 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
 
   // mark
   vp_hWnd = NULL;
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   vp_pSwapChain = NULL;
   vp_pSurfDepth = NULL;
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 
@@ -254,7 +254,7 @@ void CViewPort::Resize(void)
   vp_Raster.Resize( pixNewWidth, pixNewHeight);
 
   // "resize" D3D surface (if any)
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if (_pGfx->GetCurrentAPI() == GAT_D3D && vp_pSwapChain != NULL) {
     // release old surface
     ASSERT(vp_pSurfDepth!=NULL);
@@ -264,7 +264,7 @@ void CViewPort::Resize(void)
     CreateSwapChain_D3D(this, pixNewWidth, pixNewHeight);
     SetAsRenderTarget_D3D(this);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 #endif // !SE1_PREFER_SDL
 }
 

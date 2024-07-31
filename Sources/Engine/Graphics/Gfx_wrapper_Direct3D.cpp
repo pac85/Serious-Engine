@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 
 #include <Engine/Graphics/Gfx_wrapper_Direct3D.h>
 
@@ -1234,4 +1234,4 @@ void IGfxInterface::SetVertexShader( DWORD dwHandle)
   _pGfx->gl_dwVertexShader = dwHandle;
 }
 
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D

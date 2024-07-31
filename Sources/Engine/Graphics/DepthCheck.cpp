@@ -27,9 +27,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 extern INDEX gap_iOptimizeDepthReads;
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
 extern COLOR UnpackColor_D3D( UBYTE *pd3dColor, D3DFORMAT d3dFormat, SLONG &slColorSize);
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 static INDEX _iCheckIteration = 0;
 static CTimerValue _tvLast[8];  // 8 is max mirror recursion
@@ -82,7 +82,7 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
   }
 
   // Direct3D
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if( eAPI==GAT_D3D)
   {
     _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -189,7 +189,7 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
     _sfStats.StopTimer(CStatForm::STI_GFXAPI);
     return;
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 }
 
 

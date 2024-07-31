@@ -87,6 +87,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE1_DOUBLE_TIMER
 #define SE1_DOUBLE_TIMER  0 // Use double-precision floating-point type for timer values
 #endif
+#ifndef SE1_DIRECT3D
+#define SE1_DIRECT3D      0 // Implement rendering using Direct3D 8
+#endif
 #ifndef SE1_TRUFORM
 #define SE1_TRUFORM       0 // Truform support (0 - Disabled; 1 - Enabled)
 #endif

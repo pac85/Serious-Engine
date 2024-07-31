@@ -224,13 +224,13 @@ BOOL CDlgPreferences::OnInitDialog()
     INDEX iAddedAs = m_ctrGfxApi.AddString(CString(_pGfx->GetApiName(GAT_OGL).ConstData()));
     m_ctrGfxApi.SetItemData(iAddedAs, GAT_OGL);
   }
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   if( _pGfx->HasAPI( GAT_D3D))
   {
     INDEX iAddedAs = m_ctrGfxApi.AddString(CString(_pGfx->GetApiName(GAT_D3D).ConstData()));
     m_ctrGfxApi.SetItemData(iAddedAs, GAT_D3D);
   }
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
   m_ctrlTerrainSelectionVisible.ResetContent();
   m_ctrlTerrainSelectionVisible.AddString(L"Texture");

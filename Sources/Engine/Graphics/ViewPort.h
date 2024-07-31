@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Graphics/Raster.h>
 
-#ifdef SE1_D3D
+#if SE1_DIRECT3D
   // Undefine 'new' operator in debug
   #ifndef NDEBUG
     #undef new
@@ -36,7 +36,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #else
   #include <d3d8_disabled.h>
-#endif // SE1_D3D
+#endif // SE1_DIRECT3D
 
 /*
  *  ViewPort
