@@ -380,9 +380,21 @@ ENGINE_API BOOL RemoveFile(const CTFileName &fnmFile);
 #define EFP_MODZIP     3  // file in one of mod zips
 ENGINE_API INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExpanded);
 
-// these are input flags for directory reading
-#define DLI_RECURSIVE  (1UL<<0)  // recurse into subdirs
-#define DLI_SEARCHCD   (1UL<<1)  // search the CD path also
+// [Cecil] New flags for listing files in some directory using MakeDirList()
+enum EDirListFlags {
+  // Old generic flags
+  DLI_RECURSIVE   = (1 << 0), // Look into subdirectories
+  DLI_SEARCHCD    = (1 << 1), // List extra files from the CD
+
+  // New flags
+  DLI_REUSELIST   = (1 << 2), // Reuse existing entries in the provided list
+  DLI_ONLYMOD     = (1 << 3), // List files exclusively from the mod directory
+  DLI_ONLYGRO     = (1 << 4), // List files exclusively from GRO packages
+  DLI_IGNOREMOD   = (1 << 5), // Ignore extra files from the mod
+  DLI_IGNORELISTS = (1 << 6), // Ignore include/exclude lists, if playing a mod
+  DLI_IGNOREGRO   = (1 << 7), // Ignore files from GRO packages
+};
+
 // make a list of all files in a directory
 ENGINE_API void MakeDirList(
   CDynamicStackArray<CTFileName> &adeDir, 

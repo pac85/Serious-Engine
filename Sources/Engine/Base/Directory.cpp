@@ -90,84 +90,127 @@ void FillDirList_internal(CTFileName fnmBasePath,
   }
 }
 
+// [Cecil] Moved code out of MakeDirList()
+static void ListFromGRO(CDynamicStackArray<CTFileName> &afnmTemp, const CTFileName &fnmDir, const CTString &strPattern, ULONG ulFlags) {
+  // [Cecil] Ignore packages
+  if (ulFlags & DLI_IGNOREGRO) return;
+
+  const BOOL bMod = (_fnmMod != "");
+  const BOOL bRecursive = (ulFlags & DLI_RECURSIVE);
+  const BOOL bLists = bMod && !(ulFlags & DLI_IGNORELISTS);
+
+  const INDEX ctFilesInZips = UNZIPGetFileCount();
+
+  for (INDEX iFileInZip = 0; iFileInZip < ctFilesInZips; iFileInZip++) {
+    // Get ZIP entry
+    const CZipEntry &ze = UNZIPGetEntry(iFileInZip);
+    const CTFileName &fnm = ze.ze_fnm;
+
+    // Skip if not under this directory
+    if (bRecursive) {
+      if (!fnm.HasPrefix(fnmDir)) continue;
+
+    // Skip if not the same directory
+    } else if (fnm.FileDir() != fnmDir) {
+      continue;
+    }
+
+    // Doesn't match the pattern
+    if (strPattern != "" && !fnm.Matches(strPattern)) continue;
+
+    const BOOL bFileFromMod = UNZIPIsFileAtIndexMod(iFileInZip);
+
+    // List files exclusively from the mod
+    if (ulFlags & DLI_ONLYMOD) {
+      if (bMod && bFileFromMod) {
+        afnmTemp.Push() = fnm;
+      }
+
+    // List files from the game
+    } else if (!bFileFromMod) {
+      // Not a mod file or shouldn't match mod's browse paths
+      if (!bLists) {
+        afnmTemp.Push() = fnm;
+
+      // Matches mod's browse paths
+      } else if (FileMatchesList(_afnmBaseBrowseInc, fnm) && FileMatchesList(_afnmBaseBrowseExc, fnm)) {
+        afnmTemp.Push() = fnm;
+      }
+
+    // List extras from the mod
+    } else if (!(ulFlags & DLI_IGNOREMOD) && bMod) {
+      afnmTemp.Push() = fnm;
+    }
+  }
+};
 
 // make a list of all files in a directory
 ENGINE_API void MakeDirList(
   CDynamicStackArray<CTFileName> &afnmDir, const CTFileName &fnmDir, const CTString &strPattern, ULONG ulFlags)
 {
+  // Make a temporary list
+  CDynamicStackArray<CTFileName> afnmTemp;
+
+  // [Cecil] Reuse the file list
+  if (ulFlags & DLI_REUSELIST) {
+    afnmTemp = afnmDir;
+  }
+
+  // Clear the final list
   afnmDir.PopAll();
-  BOOL bRecursive = ulFlags&DLI_RECURSIVE;
-  BOOL bSearchCD  = ulFlags&DLI_SEARCHCD;
 
-  // make one temporary array
-  CDynamicStackArray<CTFileName> afnm;
+  const BOOL bMod = (_fnmMod != "");
+  const BOOL bRecursive = (ulFlags & DLI_RECURSIVE);
 
-  if (_fnmMod!="") {
-    FillDirList_internal(_fnmApplicationPath, afnm, fnmDir, strPattern, bRecursive,
-      &_afnmBaseBrowseInc, &_afnmBaseBrowseExc);
-    if (bSearchCD) {
-      FillDirList_internal(_fnmCDPath, afnm, fnmDir, strPattern, bRecursive,
-      &_afnmBaseBrowseInc, &_afnmBaseBrowseExc);
+  // [Cecil] Determine whether browse lists from a mod should be used
+  const BOOL bLists = bMod && !(ulFlags & DLI_IGNORELISTS);
+  CDynamicStackArray<CTString> *paBaseBrowseInc = (bLists ? &_afnmBaseBrowseInc : NULL);
+  CDynamicStackArray<CTString> *paBaseBrowseExc = (bLists ? &_afnmBaseBrowseExc : NULL);
+
+  // [Cecil] List files exclusively from GRO packages (done afterwards)
+  if (ulFlags & DLI_ONLYGRO) {
+    NOTHING;
+
+  // [Cecil] List files exclusively from the mod
+  } else if (ulFlags & DLI_ONLYMOD) {
+    if (bMod) {
+      FillDirList_internal(_fnmApplicationPath + _fnmMod, afnmTemp, fnmDir, strPattern, bRecursive, NULL, NULL);
     }
-    FillDirList_internal(_fnmApplicationPath+_fnmMod, afnm, fnmDir, strPattern, bRecursive, NULL, NULL);
+
   } else {
-    FillDirList_internal(_fnmApplicationPath, afnm, fnmDir, strPattern, bRecursive, NULL, NULL);
-    if (bSearchCD) {
-      FillDirList_internal(_fnmCDPath, afnm, fnmDir, strPattern, bRecursive, NULL, NULL);
+    // List files from the game directory
+    FillDirList_internal(_fnmApplicationPath, afnmTemp, fnmDir, strPattern, bRecursive, paBaseBrowseInc, paBaseBrowseExc);
+
+    // List extra files from the CD
+    if (ulFlags & DLI_SEARCHCD && _fnmCDPath != "") {
+      FillDirList_internal(_fnmCDPath, afnmTemp, fnmDir, strPattern, bRecursive, paBaseBrowseInc, paBaseBrowseExc);
+    }
+
+    // List extra files from the mod directory
+    if (!(ulFlags & DLI_IGNOREMOD) && bMod) {
+      FillDirList_internal(_fnmApplicationPath + _fnmMod, afnmTemp, fnmDir, strPattern, bRecursive, NULL, NULL);
     }
   }
 
-  // for each file in zip archives
-  CTString strDirPattern = fnmDir;
-  INDEX ctFilesInZips = UNZIPGetFileCount();
-  for(INDEX iFileInZip=0; iFileInZip<ctFilesInZips; iFileInZip++) {
-    const CTFileName &fnm = UNZIPGetFileAtIndex(iFileInZip);
+  // [Cecil] Search for files in the packages
+  ListFromGRO(afnmTemp, fnmDir, strPattern, ulFlags);
 
-    // if not in this dir, skip it
-    if (bRecursive) {
-      if (!fnm.HasPrefix(strDirPattern)) {
-        continue;
-      }
-    } else {
-      if (fnm.FileDir()!=fnmDir) {
-        continue;
-      }
-    }
+  const INDEX ctFiles = afnmTemp.Count();
 
-    // Skip if doesn't match the pattern
-    if (strPattern != "" && !FileSystem::PathMatches(fnm, strPattern)) {
-      continue;
-    }
+  // Don't check for duplicates if no files
+  if (ctFiles == 0) return;
 
-    // if mod is active, and the file is not in mod
-    if (_fnmMod!="" && !UNZIPIsFileAtIndexMod(iFileInZip)) {
-      // if it doesn't match base browse path
-      if ( !FileMatchesList(_afnmBaseBrowseInc, fnm) || FileMatchesList(_afnmBaseBrowseExc, fnm) ) {
-        // skip it
-        continue;
-      }
-    }
+  // Sort the file list
+  qsort(afnmTemp.da_Pointers, afnmTemp.Count(), sizeof(CTFileName *), qsort_CompareCTFileName);
 
-    // add that file
-    afnm.Push() = fnm;
-  }
+  // Copy the first file into the final list
+  afnmDir.Push() = afnmTemp[0];
 
-  // if no files
-  if (afnm.Count()==0) {
-    // don't check for duplicates
-    return;
-  }
-
-  // resort the array
-  qsort(afnm.da_Pointers, afnm.Count(), sizeof(void*), qsort_CompareCTFileName);
-
-  // for each file
-  INDEX ctFiles = afnm.Count();
-  for (INDEX iFile=0; iFile<ctFiles; iFile++) {
-    // if not same as last one
-    if (iFile==0 || afnm[iFile]!=afnm[iFile-1]) {
-      // copy over to final array
-      afnmDir.Push() = afnm[iFile];
+  // Copy the rest of the files if they aren't matching previous files
+  for (INDEX iFile = 1; iFile < ctFiles; iFile++)
+  {
+    if (afnmTemp[iFile] != afnmTemp[iFile - 1]) {
+      afnmDir.Push() = afnmTemp[iFile];
     }
   }
-}
+};
