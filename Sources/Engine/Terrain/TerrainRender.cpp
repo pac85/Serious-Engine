@@ -109,21 +109,47 @@ inline static void SetMatrixDiagonal(Matrix12 &mat,FLOAT fValue)
 // Set texture matrix
 static inline void gfxSetTextureMatrix2(Matrix12 *pMatrix)
 {
-  pglMatrixMode( GL_TEXTURE);
-  if(pMatrix==NULL) {
-    pglLoadIdentity();
-  } else {
-    Matrix16 mrot16;
-    Matrix16 mtra16;
-    CreateOpenGLMatrix(*pMatrix,mrot16);
+  // [Cecil] Direct3D support for terrain rendering
+#if SE1_DIRECT3D
+  if (_pGfx->GetCurrentAPI() == GAT_D3D) {
+    extern INDEX GFX_iActiveTexUnit;
+    D3DTRANSFORMSTATETYPE tsMatrixNo = (D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + GFX_iActiveTexUnit);
 
-    Matrix12 mtr12;
-    SetMatrixDiagonal(mtr12,1);
-    CreateOpenGLMatrix(mtr12,mtra16);
-    pglLoadMatrixf(mtra16);
-    pglMultMatrixf(mrot16);
+    if (*pMatrix == NULL) {
+      extern const D3DMATRIX GFX_d3dIdentityMatrix;
+      _pGfx->gl_pd3dDevice->SetTransform(tsMatrixNo, &GFX_d3dIdentityMatrix);
+
+    } else {
+      Matrix16 mrot16;
+      Matrix16 mtra16;
+      CreateOpenGLMatrix(*pMatrix,mrot16);
+
+      Matrix12 mtr12;
+      SetMatrixDiagonal(mtr12, 1);
+      CreateOpenGLMatrix(mtr12, mtra16);
+      _pGfx->gl_pd3dDevice->SetTransform(tsMatrixNo, (_D3DMATRIX *)mtra16);
+      _pGfx->gl_pd3dDevice->MultiplyTransform(tsMatrixNo, (_D3DMATRIX *)mrot16);
+    }
+
+  } else
+#endif
+  {
+    pglMatrixMode(GL_TEXTURE);
+    if (pMatrix == NULL) {
+      pglLoadIdentity();
+    } else {
+      Matrix16 mrot16;
+      Matrix16 mtra16;
+      CreateOpenGLMatrix(*pMatrix, mrot16);
+
+      Matrix12 mtr12;
+      SetMatrixDiagonal(mtr12, 1);
+      CreateOpenGLMatrix(mtr12, mtra16);
+      pglLoadMatrixf(mtra16);
+      pglMultMatrixf(mrot16);
+    }
+    pglMatrixMode(GL_MODELVIEW);
   }
-  pglMatrixMode(GL_MODELVIEW);
 }
 
 
