@@ -240,9 +240,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
   }
 
   // check if the zip is from a mod
-  BOOL bMod = 
-    pfnmZip->HasPrefix(_fnmApplicationPath+"Mods\\") || 
-    pfnmZip->HasPrefix(_fnmCDPath+"Mods\\");
+  const BOOL bMod = pfnmZip->HasPrefix(_fnmApplicationPath + "Mods\\");
 
   // go to the beginning of the central dir
   fseek(f, eod.eod_slDirOffsetInFile, SEEK_SET);
@@ -358,51 +356,58 @@ void ReadOneArchiveDir_t(CTFileName &fnm)
   }
 }
 
-int qsort_ArchiveCTFileName_reverse(const void *elem1, const void *elem2 )
-{                   
-  // get the filenames
-  const CTFileName &fnm1 = *(CTFileName *)elem1;
-  const CTFileName &fnm2 = *(CTFileName *)elem2;
-  // find if any is in a mod or on CD
-  BOOL bMod1 = fnm1.HasPrefix(_fnmApplicationPath+"Mods\\");
-  BOOL bCD1 = fnm1.HasPrefix(_fnmCDPath);
-  BOOL bModCD1 = fnm1.HasPrefix(_fnmCDPath+"Mods\\");
-  BOOL bMod2 = fnm2.HasPrefix(_fnmApplicationPath+"Mods\\");
-  BOOL bCD2 = fnm2.HasPrefix(_fnmCDPath);
-  BOOL bModCD2 = fnm2.HasPrefix(_fnmCDPath+"Mods\\");
+// [Cecil] Get priority for a specific archive
+static INDEX ArchiveDirPriority(CTFileName fnm)
+{
+  #define PRI_MOD   10002 // Mod subdirectory
+  #define PRI_EXTRA 10001 // Extra content directories
+  #define PRI_ROOT  10000 // Main game directory
+  #define PRI_GAMES     0 // Extra game directories (PRI_GAMES + directory index inside _aContentDirs)
 
-  // calculate priorities based on location of gro file
-  INDEX iPriority1 = 0;
-  if (bMod1) {
-    iPriority1 = 3;
-  } else if (bModCD1) {
-    iPriority1 = 2;
-  } else if (bCD1) {
-    iPriority1 = 0;
-  } else {
-    iPriority1 = 1;
+  // Current game (overrides other games)
+  if (fnm.RemovePrefix(_fnmApplicationPath)) {
+    // Check for mod (overrides everything)
+    return fnm.HasPrefix("Mods\\") ? PRI_MOD : PRI_ROOT;
   }
 
-  INDEX iPriority2 = 0;
-  if (bMod2) {
-    iPriority2 = 3;
-  } else if (bModCD2) {
-    iPriority2 = 2;
-  } else if (bCD2) {
-    iPriority2 = 0;
-  } else {
-    iPriority2 = 1;
+  // Other game paths
+  const INDEX ctDirs = _aContentDirs.Count();
+
+  for (INDEX iDir = 0; iDir < ctDirs; iDir++) {
+    const ExtraContentDir_t &dir = _aContentDirs[iDir];
+    if (!dir.bGame) continue;
+
+    if (dir.fnmPath != "" && fnm.HasPrefix(dir.fnmPath)) {
+      // Sort by list index (doesn't override other files)
+      return PRI_GAMES + iDir;
+    }
   }
 
-  // find sorting order
-  if (iPriority1<iPriority2) {
+  // None of the above - extra content directory (overrides current game)
+  return PRI_EXTRA;
+};
+
+// [Cecil] Compare two ZIP file entries
+static int qsort_CompareContentDir(const void *pElement1, const void *pElement2)
+{
+  // Get the entries
+  const CTFileName &fnm1 = *(const CTFileName *)pElement1;
+  const CTFileName &fnm2 = *(const CTFileName *)pElement2;
+
+  // Sort archive directories with priority
+  INDEX iPriority1 = ArchiveDirPriority(fnm1);
+  INDEX iPriority2 = ArchiveDirPriority(fnm2);
+
+  if (iPriority1 < iPriority2) {
     return +1;
-  } else if (iPriority1>iPriority2) {
+  } else if (iPriority1 > iPriority2) {
     return -1;
-  } else {
-    return -stricmp(fnm1.ConstData(), fnm2.ConstData());
   }
-}
+
+  // Sort archives in reverse alphabetical order
+  return -stricmp(fnm1.ConstData(), fnm2.ConstData());
+};
+
 // read directories of all currently added archives, in reverse alphabetical order
 void UNZIPReadDirectoriesReverse_t(void)
 {
@@ -412,9 +417,12 @@ void UNZIPReadDirectoriesReverse_t(void)
     return;
   }
 
-  // sort the archive filenames reversely
-  qsort(&_afnmArchives[0], _afnmArchives.Count(), sizeof(CTFileName), 
-    qsort_ArchiveCTFileName_reverse);
+  // [Cecil] Sort archives by content directory. Order after sorting:
+  // 1. From mod
+  // 2. From extra content directories
+  // 3. From the game itself
+  // 4. From other game directories
+  qsort(&_afnmArchives[0], _afnmArchives.Count(), sizeof(CTFileName), qsort_CompareContentDir);
 
   CTString strAllErrors = "";
   // for each archive

@@ -118,6 +118,33 @@ static void ListFromGRO(CDynamicStackArray<CTFileName> &afnmTemp, const CTFileNa
     // Doesn't match the pattern
     if (strPattern != "" && !fnm.Matches(strPattern)) continue;
 
+    // [Cecil] Go through packages from other directories
+    const INDEX ctDirs = _aContentDirs.Count();
+    BOOL bSkipFromOtherDirs = FALSE;
+
+    for (INDEX iDir = 0; iDir < ctDirs; iDir++) {
+      const ExtraContentDir_t &dir = _aContentDirs[iDir];
+
+      if (dir.fnmPath == "") continue;
+
+      // If the package is from another directory
+      if (ze.ze_pfnmArchive->HasPrefix(dir.fnmPath)) {
+        // Skip if not searching game directories
+        if (!(ulFlags & DLI_SEARCHGAMES) && dir.bGame) {
+          bSkipFromOtherDirs = TRUE;
+          break;
+        }
+
+        // Skip if not searching extra directories
+        if (!(ulFlags & DLI_SEARCHEXTRA) && !dir.bGame) {
+          bSkipFromOtherDirs = TRUE;
+          break;
+        }
+      }
+    }
+
+    if (bSkipFromOtherDirs) continue;
+
     const BOOL bFileFromMod = UNZIPIsFileAtIndexMod(iFileInZip);
 
     // List files exclusively from the mod
@@ -181,9 +208,21 @@ ENGINE_API void MakeDirList(
     // List files from the game directory
     FillDirList_internal(_fnmApplicationPath, afnmTemp, fnmDir, strPattern, bRecursive, paBaseBrowseInc, paBaseBrowseExc);
 
-    // List extra files from the CD
-    if (ulFlags & DLI_SEARCHCD && _fnmCDPath != "") {
-      FillDirList_internal(_fnmCDPath, afnmTemp, fnmDir, strPattern, bRecursive, paBaseBrowseInc, paBaseBrowseExc);
+    // [Cecil] List files from other directories
+    const INDEX ctDirs = _aContentDirs.Count();
+
+    for (INDEX iDir = 0; iDir < ctDirs; iDir++) {
+      const ExtraContentDir_t &dir = _aContentDirs[iDir];
+
+      // Not searching game directories but it's a game directory
+      if (!(ulFlags & DLI_SEARCHGAMES) && dir.bGame) continue;
+
+      // Not searching extra directories but it's an extra directory
+      if (!(ulFlags & DLI_SEARCHEXTRA) && !dir.bGame) continue;
+
+      if (dir.fnmPath != "") {
+        FillDirList_internal(dir.fnmPath, afnmTemp, fnmDir, strPattern, bRecursive, paBaseBrowseInc, paBaseBrowseExc);
+      }
     }
 
     // List extra files from the mod directory

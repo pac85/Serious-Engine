@@ -115,8 +115,6 @@ void ParseCommandLine(CTString strCmd)
       if (strMod!="SeriousSam") { // (we ignore default mod - always use base dir in that case)
         _fnmMod = "Mods\\"+strMod+"\\";
       }
-    } else if (strWord=="+cdpath") {
-      _fnmCDPath = GetNextParam();
     } else if (strWord=="+password") {
       cmd_strPassword = GetNextParam();
     } else if (strWord=="+connect") {

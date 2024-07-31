@@ -66,8 +66,9 @@ CTString _strModName;
 CTString _strModURL;
 // global string with current MOD extension (for adding to dlls)
 CTString _strModExt;
-// global string with CD path (for minimal installations)
-CTFileName _fnmCDPath;
+
+// [Cecil] List of extra content directories
+CDynamicStackArray<ExtraContentDir_t> _aContentDirs;
 
 // include/exclude lists for base dir writing/browsing
 CDynamicStackArray<CTFileName> _afnmBaseWriteInc;
@@ -141,6 +142,29 @@ static void LoadPackages(const CTString &strDirectory, const CTString &strMatchF
   }
 };
 
+// [Cecil] Load packages from extra content directories
+static void LoadExtraPackages(const CTString &fnmDirList, BOOL bGameDir) {
+  CDynamicStackArray<CTString> afnmDirs;
+  LoadFileList(afnmDirs, fnmDirList);
+
+  const INDEX ctDirs = afnmDirs.Count();
+
+  for (INDEX iDir = 0; iDir < ctDirs; iDir++) {
+    // Make directory into a full path
+    CTString &fnmDir = afnmDirs[iDir];
+    fnmDir.SetFullDirectory();
+
+    if (FileSystem::IsDirectory(fnmDir)) {
+      // Load packages from the directory and add it to the list
+      LoadPackages(fnmDir, "*.gro");
+
+      ExtraContentDir_t &dir = _aContentDirs.Push();
+      dir.fnmPath = fnmDir;
+      dir.bGame = bGameDir;
+    }
+  }
+};
+
 void InitStreams(void)
 {
   // if no mod defined yet
@@ -189,17 +213,9 @@ void InitStreams(void)
     LoadPackages(_fnmApplicationPath + _fnmMod, "*.gro");
   }
 
-  // if there is a CD path
-  if (_fnmCDPath!="") {
-    // for each group file on the CD
-    LoadPackages(_fnmCDPath, "*.gro");
-
-    // if there is a mod active
-    if (_fnmMod!="") {
-      // for each group file in mod directory
-      LoadPackages(_fnmCDPath + _fnmMod, "*.gro");
-    }
-  }
+  // [Cecil] Load packages from extra content directories
+  LoadExtraPackages(CTFILENAME("UserData\\ContentDirs.lst"), FALSE); // Simple GRO packages
+  LoadExtraPackages(CTFILENAME("UserData\\GameDirs.lst"), TRUE); // Entire games
 
   // try to
   try {
@@ -1493,14 +1509,16 @@ static INDEX ExpandFilePath_read(ULONG ulType, const CTFileName &fnmFile, CTFile
     RETURN_FILE_AT(_fnmApplicationPath);
   }
 
-  // Finally, try the CD path
-  if (_fnmCDPath != "") {
-    // Prioritize the mod directory
-    if (_fnmMod != "") {
-      RETURN_FILE_AT(_fnmCDPath + _fnmMod);
-    }
+  // [Cecil] Try searching other game directories after the main one
+  const INDEX ctDirs = _aContentDirs.Count();
 
-    RETURN_FILE_AT(_fnmCDPath);
+  for (INDEX iDir = ctDirs - 1; iDir >= 0; iDir--) {
+    const ExtraContentDir_t &dir = _aContentDirs[iDir];
+
+    // No game directory
+    if (!dir.bGame || dir.fnmPath == "") continue;
+
+    RETURN_FILE_AT(dir.fnmPath);
   }
 
   return EFP_NONE;

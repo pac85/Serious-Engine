@@ -382,17 +382,15 @@ ENGINE_API INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileN
 
 // [Cecil] New flags for listing files in some directory using MakeDirList()
 enum EDirListFlags {
-  // Old generic flags
   DLI_RECURSIVE   = (1 << 0), // Look into subdirectories
-  DLI_SEARCHCD    = (1 << 1), // List extra files from the CD
-
-  // New flags
-  DLI_REUSELIST   = (1 << 2), // Reuse existing entries in the provided list
-  DLI_ONLYMOD     = (1 << 3), // List files exclusively from the mod directory
-  DLI_ONLYGRO     = (1 << 4), // List files exclusively from GRO packages
-  DLI_IGNOREMOD   = (1 << 5), // Ignore extra files from the mod
-  DLI_IGNORELISTS = (1 << 6), // Ignore include/exclude lists, if playing a mod
-  DLI_IGNOREGRO   = (1 << 7), // Ignore files from GRO packages
+  DLI_SEARCHGAMES = (1 << 1), // Search directories of other games
+  DLI_SEARCHEXTRA = (1 << 2), // Search extra content directories
+  DLI_REUSELIST   = (1 << 3), // Reuse existing entries in the provided list
+  DLI_ONLYMOD     = (1 << 4), // List files exclusively from the mod directory
+  DLI_ONLYGRO     = (1 << 5), // List files exclusively from GRO packages
+  DLI_IGNOREMOD   = (1 << 6), // Ignore extra files from the mod
+  DLI_IGNORELISTS = (1 << 7), // Ignore include/exclude lists, if playing a mod
+  DLI_IGNOREGRO   = (1 << 8), // Ignore files from GRO packages
 };
 
 // make a list of all files in a directory
@@ -418,8 +416,24 @@ ENGINE_API extern CTString _strModName;
 ENGINE_API extern CTString _strModURL;
 // global string with current MOD extension (for adding to dlls)
 ENGINE_API extern CTString _strModExt;
-// global string with CD path (for minimal installations)
-ENGINE_API extern CTFileName _fnmCDPath;
+
+// [Cecil] Extra content directory
+struct ExtraContentDir_t {
+  CTString fnmPath; // Absolute path to the directory
+  BOOL bGame; // Whether it's another game installation or a simple collection of packages
+
+  ExtraContentDir_t() {
+    Clear();
+  };
+
+  inline void Clear(void) {
+    fnmPath = "";
+    bGame = FALSE;
+  };
+};
+
+// [Cecil] List of extra content directories
+ENGINE_API extern CDynamicStackArray<ExtraContentDir_t> _aContentDirs;
 
 #endif  /* include-once check. */
 
