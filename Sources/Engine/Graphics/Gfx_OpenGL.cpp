@@ -900,7 +900,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
 #if !SE1_PREFER_SDL
   UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
 
-#ifdef SE1_3DFX
+#if SE1_3DFX
   const CTString strDriverFileName = b3Dfx ? "3DFXVGL.DLL" : "OPENGL32.DLL";
 #else
   const CTString strDriverFileName = "OPENGL32.DLL";
@@ -917,7 +917,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
     gl_hiDriver = OS::LoadLib(strDriverFileName.ConstData());
     // if it cannot be loaded (although it is present on disk)
     if( gl_hiDriver==NONE) {
-    #ifdef SE1_3DFX
+    #if SE1_3DFX
       // if it is 3dfx stand-alone driver
       if( b3Dfx) {
         // do a fatal error and inform user to deinstall it,
@@ -948,7 +948,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
   SetErrorMode(iOldErrorMode);
 
   // if default driver
-#ifdef SE1_3DFX
+#if SE1_3DFX
   if (!b3Dfx)
 #endif
   {

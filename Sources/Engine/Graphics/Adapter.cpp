@@ -70,7 +70,7 @@ static CResolution _areResolutions[] =
 // [Cecil] Don't go over the adapter limit
 static const INDEX MAX_RESOLUTIONS = ClampUp(ARRAYCOUNT(_areResolutions), MAX_DA_DISPLAYMODES);
 
-#ifdef SE1_3DFX
+#if SE1_3DFX
 
 // [Cecil] Setup 3Dfx driver in a separate method
 static inline void Setup3dfx(CGfxAPI &api) {
@@ -242,7 +242,7 @@ void CGfxLibrary::InitAPIs(void)
   }
 
   // [Cecil] Separate methods
-  #ifdef SE1_3DFX
+  #if SE1_3DFX
     Setup3dfx(apiOGL);
   #endif
 

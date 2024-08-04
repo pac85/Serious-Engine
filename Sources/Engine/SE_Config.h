@@ -88,10 +88,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SE1_DOUBLE_TIMER  0 // Use double-precision floating-point type for timer values
 #endif
 #ifndef SE1_DIRECT3D
-#define SE1_DIRECT3D      0 // Implement rendering using Direct3D 8
+#define SE1_DIRECT3D      0 // Implement rendering using Direct3D 8 (0 - Disabled; 1 - Enabled)
 #endif
 #ifndef SE1_TRUFORM
 #define SE1_TRUFORM       0 // Truform support (0 - Disabled; 1 - Enabled)
+#endif
+#ifndef SE1_3DFX
+#define SE1_3DFX          0 // 3Dfx graphics driver support for OpenGL (0 - Disabled; 1 - Enabled)
 #endif
 #ifndef SE1_GLEW
 #define SE1_GLEW          0 // GLEW support (0 - None; 1 - Available; 2 - Replace manual hooking of OpenGL in the engine)

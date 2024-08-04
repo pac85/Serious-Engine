@@ -1398,7 +1398,7 @@ const INDEX aDefaultModes[][3] =
   { DD_DEFAULT, GAT_OGL, 0},
   { DD_16BIT,   GAT_OGL, 0},
 
-#ifdef SE1_3DFX
+#if SE1_3DFX
   { DD_16BIT,   GAT_OGL, 1}, // 3dfx Voodoo2
 #endif
 
@@ -1429,7 +1429,7 @@ void StartNewMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI, PIX pi
     pixSizeJ = 480;
 
     // [Cecil] Fullscreen is only required for 3Dfx to work properly
-  #ifdef SE1_3DFX
+  #if SE1_3DFX
     iWindowMode = E_WM_FULLSCREEN;
   #else
     iWindowMode = E_WM_WINDOWED;
