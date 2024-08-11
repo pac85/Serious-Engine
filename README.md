@@ -1,6 +1,8 @@
 # Serious Engine
 
-This is a fork of Croteam's Serious Engine 1.10 that aims to provide code that is easier to maintain and build under any sort of configuration and that also includes many quality-of-life improvements over the original code without adding too much.
+This is a fork of Croteam's Serious Engine 1.10 with personal adjustments aimed at making the code easier to maintain and allowing the engine to be built under any sort of configuration. It also includes a lot of quality-of-life improvements over the original code without adding too much.
+
+**This project is constantly work-in-progress with currently no final goal or any intention of ever becoming commercially-ready. Fork at your own risk.**
 
 ### Engine components
 - `DedicatedServer` - Dedicated server application for hosting multiplayer game
@@ -25,7 +27,7 @@ This is a fork of Croteam's Serious Engine 1.10 that aims to provide code that i
 ### Other projects
 - `LWSkaExporter` - Exporter of SKA models in ASCII format for use in LightWave
 - `GameAgent` - Custom master server emulator written in Python
-- `libogg`, `libvorbis` - Third party libraries used for playing OGG-encoded ingame music
+- `libogg`, `libvorbis` - Third party libraries for playing OGG-encoded ingame music
 - `zlib` - Third party static library for working with ZIP archives
 
 These have been modified to run correctly under the recent versions of Windows. (Tested: Win7 x64, Win8 x64, Win8.1 x64, Win10 x64)
@@ -42,10 +44,10 @@ These features are disabled by default but can be enabled if you wish to extend 
 
 Some features that can be customized using macros can be toggled by modifying the `Sources/Engine/SE_Config.h` header file instead of property sheets or project files.
 
-- **DirectX:** Download DirectX8 SDK (headers & libraries) ( https://www.microsoft.com/en-us/download/details.aspx?id=6812 ) and then define a `SE1_D3D` macro for all projects in the solution (you can do it by adding it to the `SE1GenericPreproc` property inside `Sources/Properties/Common.props`). You will also need to make sure the DirectX8 headers and libraries are located in the following folders (make the folder structure if it doesn't exist):
+- **DirectX:** Download DirectX8 SDK (headers & libraries) ( https://www.microsoft.com/en-us/download/details.aspx?id=6812 ) and then switch the `SE1_DIRECT3D` macro to `1` (or define it as such for all projects). You will also need to make sure the DirectX8 headers and libraries are located in the following folders (make the folder structure if it doesn't exist):
   - `Tools.Win32/Libraries/DX8SDK/Include/`
   - `Tools.Win32/Libraries/DX8SDK/Lib/`
-- **3Dfx:** Support for this outdated driver for outdated graphics cards is still present but is disabled in favor of modernity. To enable it, define a `SE1_3DFX` macro for all projects in the solution.
+- **3Dfx:** Support for this outdated driver for outdated graphics cards is still present but is disabled in favor of modernity. To enable it, switch the `SE1_3DFX` macro to `1` (or define it as such for all projects).
 - **MP3 playback:** Copy `amp11lib.dll` library that used to be distributed with older versions of **Serious Sam Classic: The First Encounter** near the executable files under the `Bin/` directory.
 - **3D Exploration**: Support is disabled due to copyright issues. If you need to create new models, either use editing tools from any of the original games or write your own code for 3D object import/export.
 - **IFeel:** Support is disabled due to copyright issues. If you need IFeel support, copy `IFC22.dll` and `ImmWrapper.dll` from the original games near the executable files under the `Bin/` directory.
@@ -68,7 +70,7 @@ When running a selected project, make sure that its project settings under **Deb
 - `SeriousSkaStudio` has some issues with MFC windows that can prevent the main window from being displayed properly.
 - Static building works with MFC applications but applications themselves don't function properly because resource files from `EngineGUI` and `GameGUIMP` modules are being omitted when executables link them (e.g. no dialogs for opening/saving files or creating textures).
   - Because of this, `EngineGUI`, `GameGUIMP`, `Modeler`, `SeriousSkaStudio` and `WorldEditor` projects lack static build configurations for now.
-- Even though **Visual Studio 2010** can be used for building, its compiler seems to be introducing certain bugs that are not ironed out yet, so it's suggested that you use **Visual Studio 2013** or higher. Serious Engine 1.10 was initially released for these versions.
+- Even though **Visual Studio 2010** can be used for building, the code for its support is filled with many awkward workarounds and it generally hasn't been tested very well. Such an old IDE should only be used in very specific cases where a newer Visual Studio won't cut it.
   - Projects use `$(DefaultPlatformToolset)` property for automatically selecting the toolset from the studio that you're using, which doesn't exist in **Visual Studio 2010**. You will have to manually change it to `v100`.
 
 # License
