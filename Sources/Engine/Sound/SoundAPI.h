@@ -16,16 +16,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_SOUND_INTERFACE_H
 #define SE_INCL_SOUND_INTERFACE_H
 
-// [Cecil] Windows-specific
-#if SE1_WIN
-  #if !SE1_OLD_COMPILER
-    #include <initguid.h>
-  #endif
-
-  // [Cecil] Needed here for EAX_ENVIRONMENT_* enum values
-  #include <Engine/Sound/DSound.h>
-  #include <Engine/Sound/EAX.h>
-#endif
+// [Cecil] Needed here for EAX_ENVIRONMENT_* enum values
+#include <Engine/Sound/eax_envtypes.h>
 
 #define WAVEOUTBLOCKSIZE 1024
 

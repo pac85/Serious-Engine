@@ -1097,6 +1097,7 @@
     <ClInclude Include="Sound\al_functions.h" />
     <ClInclude Include="Sound\DSound.h" />
     <ClInclude Include="Sound\eax.h" />
+    <ClInclude Include="Sound\eax_envtypes.h" />
     <ClInclude Include="Sound\ov_functions.h" />
     <ClInclude Include="Sound\SoundAPI.h" />
     <ClInclude Include="Sound\SoundAPI_DSound.h" />

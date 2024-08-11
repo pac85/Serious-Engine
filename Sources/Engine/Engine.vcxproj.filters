@@ -1383,6 +1383,9 @@
     <ClInclude Include="Base\GameDir.h">
       <Filter>Header Files\Base Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Sound\eax_envtypes.h">
+      <Filter>Header Files\Sound Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Base\CTString.inl">

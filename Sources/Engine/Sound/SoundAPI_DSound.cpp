@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #if SE1_WIN
 
-#include <initguid.h>
+#include <Engine/Sound/EAX.h>
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dxguid.lib")

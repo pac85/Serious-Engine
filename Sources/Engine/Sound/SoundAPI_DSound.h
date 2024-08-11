@@ -21,6 +21,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #if SE1_WIN
 
+#if !SE1_OLD_COMPILER
+  #include <initguid.h>
+#endif
+
+#include <Engine/Sound/DSound.h>
+
 class CSoundAPI_DSound : public CAbstractSoundAPI {
   public:
     HINSTANCE m_hDSoundLib;
