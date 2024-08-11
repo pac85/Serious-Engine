@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicContainer.cpp>
 
 // Select one object
-template<class cType, unsigned long ulFlag>
+template<class cType, ULONG ulFlag>
 void CSelection<cType, ulFlag>::Select(cType &tToSelect)
 {
   // If the object is not selected
@@ -40,7 +40,7 @@ void CSelection<cType, ulFlag>::Select(cType &tToSelect)
 };
 
 // Deselect one object
-template<class cType, unsigned long ulFlag>
+template<class cType, ULONG ulFlag>
 void CSelection<cType, ulFlag>::Deselect(cType &tToSelect)
 {
   // If the object is selected
@@ -56,22 +56,25 @@ void CSelection<cType, ulFlag>::Deselect(cType &tToSelect)
 };
 
 // Check if an object is selected
-template<class cType, unsigned long ulFlag>
+template<class cType, ULONG ulFlag>
 BOOL CSelection<cType, ulFlag>::IsSelected(cType &tToSelect)
 {
   return tToSelect.IsSelected(ulFlag);
 };
 
 // Deselect all objects
-template<class cType, unsigned long ulFlag>
+template<class cType, ULONG ulFlag>
 void CSelection<cType, ulFlag>::Clear(void)
 {
   // Go through all objects
   FOREACHINDYNAMICCONTAINER(*this, cType, itObject) {
     // The object must be allocated and valid
-    ASSERT(_CrtIsValidPointer(&*itObject, sizeof(cType), TRUE));
+    //ASSERT(_CrtIsValidPointer(&*itObject, sizeof(cType), TRUE));
     //ASSERT(_CrtIsValidHeapPointer(&*itObject));
     //ASSERT(_CrtIsMemoryBlock(&*itObject, sizeof(cType), NULL, NULL, NULL));
+
+    // [Cecil] _CrtIsValidPointer() above is redundant since VS2010
+    ASSERT(&*itObject != NULL);
 
     // Deselect it
     itObject->Deselect(ulFlag);
@@ -82,7 +85,7 @@ void CSelection<cType, ulFlag>::Clear(void)
 };
 
 // Get first in selection (NULL if empty selection)
-template<class cType, unsigned long ulFlag>
+template<class cType, ULONG ulFlag>
 cType *CSelection<cType, ulFlag>::GetFirstInSelection(void)
 {
   // Empty selection

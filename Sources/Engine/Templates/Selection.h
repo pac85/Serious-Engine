@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicContainer.h>
 
 // A selection of some objects that support selecting
-template <class cType, unsigned long ulFlag>
+template <class cType, ULONG ulFlag>
 class CSelection : public CDynamicContainer<cType> {
   public:
     // Destructor
