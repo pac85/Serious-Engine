@@ -33,7 +33,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 extern FLOAT con_fHeightFactor = 0.5f;
 extern FLOAT con_tmLastLines   = 5.0f;
 extern INDEX con_bTalk = 0;
-CTimerValue _tvMenuQuickSave(0I64);
+CTimerValue _tvMenuQuickSave = SQUAD(0);
 
 // used filenames
 static CTFileName fnmPersistentSymbols = CTString("UserData\\PersistentSymbols.ini"); // [Cecil] From user data
@@ -2272,18 +2272,18 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
         strIndicator = TRANS("Game finished");
       } else if (_pNetwork->IsPaused() || _pNetwork->GetLocalPause()) {
         strIndicator = TRANS("Paused");
-      } else if (_tvMenuQuickSave.tv_llValue!=0I64 && 
+      } else if (_tvMenuQuickSave.tv_llValue != SQUAD(0) && 
         (_pTimer->GetHighPrecisionTimer()-_tvMenuQuickSave).GetSeconds()<3) {
         strIndicator = TRANS("Use F6 for QuickSave during game!");
       } else if (_pNetwork->ga_sesSessionState.ses_strMOTD!="") {
         CTString strMotd = _pNetwork->ga_sesSessionState.ses_strMOTD;
         static CTString strLastMotd = "";
-        static CTimerValue tvLastMotd(0I64);
+        static CTimerValue tvLastMotd = SQUAD(0);
         if (strLastMotd!=strMotd) {
           tvLastMotd = _pTimer->GetHighPrecisionTimer();
           strLastMotd = strMotd;
         }
-        if (tvLastMotd.tv_llValue!=0I64 && (_pTimer->GetHighPrecisionTimer()-tvLastMotd).GetSeconds()<3) {
+        if (tvLastMotd.tv_llValue != SQUAD(0) && (_pTimer->GetHighPrecisionTimer()-tvLastMotd).GetSeconds()<3) {
           strIndicator = strMotd;
         }
       }

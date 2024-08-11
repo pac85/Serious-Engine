@@ -157,7 +157,7 @@ CProfileForm::CProfileForm(
   FOREACHINSTATICARRAY(pf_aptTimers, CProfileTimer, itpt) {
     // clear the timer
     itpt->pt_tvElapsed.Clear();
-    itpt->pt_tvStarted.tv_llValue = -SQUAD(1);
+    itpt->pt_tvStarted.tv_llValue = SQUAD(-1);
     itpt->pt_ctAveraging = 0;
   }
 }
@@ -213,7 +213,7 @@ void CProfileForm::StopTimer_internal(INDEX iTimer)
   if (pf_ctRunningTimers==0) {
     pf_tvOverAllElapsed += tvNow-pf_tvOverAllStarted;
   }
-  IFDEBUG(pt.pt_tvStarted.tv_llValue = -SQUAD(1));
+  IFDEBUG(pt.pt_tvStarted.tv_llValue = SQUAD(-1));
   _tvCurrentProfilingEpsilon += _tvStopEpsilon;
 }
 
@@ -275,7 +275,7 @@ void CProfileForm::Reset(void)
   FOREACHINSTATICARRAY(pf_aptTimers, CProfileTimer, itpt) {
     // clear the timer
     itpt->pt_tvElapsed.Clear();
-    itpt->pt_tvStarted.tv_llValue = -SQUAD(1);
+    itpt->pt_tvStarted.tv_llValue = SQUAD(-1);
     itpt->pt_ctAveraging = 0;
   }
 }

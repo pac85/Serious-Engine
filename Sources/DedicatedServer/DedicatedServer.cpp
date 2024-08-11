@@ -31,7 +31,7 @@ extern CTString sam_strFirstLevel = "Levels\\KarnakDemo.wld";
 extern CTString sam_strIntroLevel = "Levels\\Intro.wld";
 extern CTString sam_strGameName = "serioussam";
 
-CTimerValue _tvLastLevelEnd(-1i64);
+CTimerValue _tvLastLevelEnd = SQUAD(-1);
 
 static void QuitGame(void)
 {
@@ -91,7 +91,7 @@ BOOL WINAPI HandlerRoutine(
 static void LoadingHook_t(CProgressHookInfo *pphi)
 {
   // measure time since last call
-  static CTimerValue tvLast(0I64);
+  static CTimerValue tvLast = SQUAD(0);
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
 
   if (!_bRunning) {
@@ -281,7 +281,7 @@ void RoundBegin(void)
     _bHadPlayers = 0;
     _bRestart = 0;
     DisableLoadingHook();
-    _tvLastLevelEnd = CTimerValue(-1i64);
+    _tvLastLevelEnd = SQUAD(-1);
     CPrintF(TRANS("\nALL OK: Dedicated server is now running!\n"));
     CPrintF(TRANS("Use Ctrl+C to shutdown the server.\n"));
     CPrintF(TRANS("DO NOT use the 'Close' button, it might leave the port hanging!\n\n"));
@@ -295,7 +295,7 @@ void ForceNextMap(void)
   _bHadPlayers = 0;
   _bRestart = 0;
   DisableLoadingHook();
-  _tvLastLevelEnd = CTimerValue(-1i64);
+  _tvLastLevelEnd = SQUAD(-1);
 }
 
 void RoundEnd(void)

@@ -52,9 +52,9 @@ CSeriousSkaStudioDoc::CSeriousSkaStudioDoc()
   bAnimLoop = TRUE;
   fCustomMeshLodDist = 0;
   fCustomSkeletonLodDist = 0;
-  m_tvStart=(-1I64);
-  m_tvPauseStart=(-1I64);
-  m_tvPauseTime=(0I64);
+  m_tvStart = SQUAD(-1);
+  m_tvPauseStart = SQUAD(-1);
+  m_tvPauseTime = SQUAD(0);
   m_bViewPaused = FALSE;
   bShowColisionBox = FALSE;
   bShowAllFramesBBox = FALSE;
@@ -101,7 +101,7 @@ void CSeriousSkaStudioDoc::SetTimerForDocument()
   if( _pTimer != NULL)
   {
     CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
-    if (m_tvStart.tv_llValue==-1I64) {
+    if (m_tvStart.tv_llValue == SQUAD(-1)) {
       m_tvStart = tvNow;
     }
     // if paused
