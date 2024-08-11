@@ -380,9 +380,6 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   _hInstance = hInstance;
   ShowSplashScreen(hInstance);
 
-  // [Cecil] Get screen resolution
-  _vpixScreenRes = PIX2D(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
-
   // prepare main window
   MainWindow_Init();
   OpenMainWindowInvisible();
@@ -392,6 +389,11 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 
   // initialize engine
   SE_InitEngine(E_SEAPP_GAME);
+
+  // [Cecil] Get screen resolution
+  SDL_DisplayMode mode;
+  SDL_GetDesktopDisplayMode(0, &mode);
+  _vpixScreenRes = PIX2D(mode.w, mode.h);
 
   SE_LoadDefaultFonts();
   // now print the output of command line parsing
