@@ -67,7 +67,7 @@ void TiledTexture( PIXaabbox2D &_boxScreen, FLOAT fStretch, const MEX2D &vScreen
   boxTexture+=vScreen;
 }
 
-extern void LCDDrawBox(PIX pixUL, PIX pixDR, PIXaabbox2D &box, COLOR col)
+extern void LCDDrawBox(PIX pixUL, PIX pixDR, const PIXaabbox2D &box, COLOR col)
 {
   // up
   _pdp->DrawLine(

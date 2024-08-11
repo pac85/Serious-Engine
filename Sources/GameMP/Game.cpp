@@ -1164,7 +1164,7 @@ BOOL CGame::NewGame(const CTString &strSessionName, const CTFileName &fnWorld,
   return TRUE;
 }
 
-BOOL CGame::JoinGame(CNetworkSession &session)
+BOOL CGame::JoinGame(const CNetworkSession &session)
 {
   CEnableUserBreak eub;
   gam_iObserverConfig = 0;
@@ -2748,7 +2748,7 @@ static FLOAT _tmNow_SE;
 static ULONG _ulA_SE;
 static BOOL  _bPopup;
 
-void TiledTextureSE( PIXaabbox2D &_boxScreen, FLOAT fStretch, MEX2D &vScreen, MEXaabbox2D &boxTexture)
+static void TiledTextureSE(const PIXaabbox2D &_boxScreen, FLOAT fStretch, const MEX2D &vScreen, MEXaabbox2D &boxTexture)
 {
   PIX pixW = _boxScreen.Size()(1);
   PIX pixH = _boxScreen.Size()(2);
@@ -2811,7 +2811,7 @@ void CGame::LCDSetDrawport(CDrawPort *pdp)
   
   ::LCDSetDrawport(pdp);
 }
-void CGame::LCDDrawBox(PIX pixUL, PIX pixDR, PIXaabbox2D &box, COLOR col)
+void CGame::LCDDrawBox(PIX pixUL, PIX pixDR, const PIXaabbox2D &box, COLOR col)
 {
   col = SE_COL_BLUE_NEUTRAL|255;
 

@@ -158,7 +158,7 @@ functions:
   }
 
   // shoot projectile on enemy
-  CEntity *ShootProjectile(enum ProjectileType pt, FLOAT3D &vOffset, ANGLE3D &aOffset) {
+  CEntity *ShootProjectile(enum ProjectileType pt) {
     // launch
     CPlacement3D pl;
     pl = GetPlacement();
@@ -256,7 +256,7 @@ procedures:
     
     switch (m_sftType) {
       case SFT_WOODEN_DART:
-        ShootProjectile(PRT_SHOOTER_WOODEN_DART, FLOAT3D (0.0f, 0.0f, 0.0f), ANGLE3D (0.0f, 0.0f, 0.0f));
+        ShootProjectile(PRT_SHOOTER_WOODEN_DART);
         break;
       case SFT_GAS:
         break;
@@ -264,7 +264,7 @@ procedures:
         ShootCannonball();
         break;
       case SFT_FIREBALL:
-        ShootProjectile(PRT_SHOOTER_FIREBALL, FLOAT3D (0.0f, 0.0f, 0.0f), ANGLE3D (0.0f, 0.0f, 0.0f));
+        ShootProjectile(PRT_SHOOTER_FIREBALL);
         break;
     }
     
