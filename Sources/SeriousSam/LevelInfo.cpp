@@ -15,7 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 #include "LevelInfo.h"
-#include <io.h>
 
 CListHead _lhAutoDemos;
 CListHead _lhAllLevels;

@@ -20,7 +20,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <fcntl.h>
 
 #if SE1_WIN && !SE1_OLD_COMPILER
-  #include <io.h>
   #include <DbgHelp.h>
 
   #pragma comment(lib, "DbgHelp.lib")

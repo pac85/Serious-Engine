@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <sys/timeb.h>
 #include <time.h>
 #include <locale.h>
-#include <io.h>
 #include <Engine/Base/Profiling.h>
 #include <Engine/Base/Statistics.h>
 #include <Engine/CurrentVersion.h>

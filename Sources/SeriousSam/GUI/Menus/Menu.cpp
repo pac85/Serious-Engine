@@ -17,7 +17,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Build.h>
 #include <sys/timeb.h>
 #include <time.h>
-#include <io.h>
 #include "MainWindow.h"
 #include <Engine/CurrentVersion.h>
 #include <Engine/Templates/Stock_CSoundData.h>
