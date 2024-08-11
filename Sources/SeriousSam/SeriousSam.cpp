@@ -252,7 +252,7 @@ void LimitFrameRate(void)
     iMaxFPS = ClampDn(iMaxFPS, 60L); // never go very slow if dedicated server
   }
   TIME tmWantedDelta = 1.0f / iMaxFPS;
-  if( tmCurrentDelta<tmWantedDelta) Sleep( (tmWantedDelta-tmCurrentDelta)*1000.0f);
+  if( tmCurrentDelta<tmWantedDelta) _pTimer->Suspend( (tmWantedDelta-tmCurrentDelta)*1000.0f);
   
   // remember new time
   tvLast = _pTimer->GetHighPrecisionTimer();
@@ -811,7 +811,7 @@ void QuitScreenLoop(void)
         return;
       }
     }
-    //Sleep(5);
+    //_pTimer->Suspend(5);
   }
 }
 
