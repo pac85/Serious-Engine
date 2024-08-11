@@ -94,6 +94,25 @@ void FatalError(const char *strFormat, ...)
   exit(EXIT_FAILURE);
 }
 
+// [Cecil] Report error without terminating the program
+void ErrorMessage(const char *strFormat, ...) {
+  // Format the message
+  va_list arg;
+  va_start(arg, strFormat);
+  CTString strBuffer;
+  strBuffer.VPrintF(strFormat, arg);
+
+  // Print it to console
+  CPutString(TRANS("Error:\n"));
+  CPrintF("%s\n", strBuffer.ConstData());
+
+  #if !SE1_PREFER_SDL
+    MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Error"), MB_OK|MB_ICONHAND|MB_SETFOREGROUND|MB_TASKMODAL);
+  #else
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, TRANS("Error"), strBuffer, _hwndCurrent);
+  #endif
+};
+
 /*
  * Report warning without terminating program (stops program until user responds).
  */

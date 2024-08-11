@@ -1220,10 +1220,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
 
     if (!CreateProcessA(strCmd.str_String, strParam.str_String, NULL, NULL, FALSE, CREATE_DEFAULT_ERROR_MODE, NULL, NULL, &cif, &pi)) {
       // [Cecil] Proper error message
-      CTString strError;
-      strError.PrintF("Cannot start '%s' mod:\n%s\n", strMod, GetWindowsError(GetLastError()));
-
-      MessageBoxA(0, strError, "Serious Sam", MB_OK | MB_ICONERROR);
+      ErrorMessage(TRANS("Cannot start '%s' mod:\n%s"), strMod.ConstData(), GetWindowsError(GetLastError()).ConstData());
     }
   }
 
