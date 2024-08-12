@@ -76,7 +76,7 @@ BOOL CConsoleSymbolsCombo::PreTranslateMessage(MSG* pMsg)
         }
       }
 
-      ((CDlgConsole *)GetParent())->m_ctrlEditConsole.ReplaceSel( CString(strSelectedSymbol), TRUE);
+      ((CDlgConsole *)GetParent())->m_ctrlEditConsole.ReplaceSel(CString(strSelectedSymbol.ConstData()), TRUE);
       ((CDlgConsole *)GetParent())->m_ctrlEditConsole.SetFocus();
       return TRUE;
     }

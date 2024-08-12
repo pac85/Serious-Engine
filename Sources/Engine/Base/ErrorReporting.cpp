@@ -85,7 +85,7 @@ void FatalError(const char *strFormat, ...)
 
 #else
   // [Cecil] SDL: Show fatal error
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, TRANS("Fatal Error"), strBuffer, NULL);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, TRANS("Fatal Error"), strBuffer.ConstData(), NULL);
   SDL_Quit();
 #endif
 
@@ -110,7 +110,7 @@ void ErrorMessage(const char *strFormat, ...) {
   #if !SE1_PREFER_SDL
     MessageBoxA(NULL, strBuffer.ConstData(), TRANS("Error"), MB_OK|MB_ICONHAND|MB_SETFOREGROUND|MB_TASKMODAL);
   #else
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, TRANS("Error"), strBuffer, _hwndCurrent);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, TRANS("Error"), strBuffer.ConstData(), _hwndCurrent);
   #endif
 };
 
@@ -126,7 +126,7 @@ void WarningMessage(const char *strFormat, ...)
   strBuffer.VPrintF(strFormat, arg);
 
   // print it to console
-  CPrintF("%s\n", strBuffer);
+  CPrintF("%s\n", strBuffer.ConstData());
   // if warnings are enabled
   if( !con_bNoWarnings) {
   #if !SE1_PREFER_SDL
@@ -135,7 +135,7 @@ void WarningMessage(const char *strFormat, ...)
 
   #else
     // [Cecil] SDL: Show warning
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANS("Warning"), strBuffer, _hwndCurrent);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANS("Warning"), strBuffer.ConstData(), _hwndCurrent);
   #endif
   }
 }
@@ -149,7 +149,7 @@ void InfoMessage(const char *strFormat, ...)
   strBuffer.VPrintF(strFormat, arg);
 
   // print it to console
-  CPrintF("%s\n", strBuffer);
+  CPrintF("%s\n", strBuffer.ConstData());
 
 #if !SE1_PREFER_SDL
   // create message box
@@ -157,7 +157,7 @@ void InfoMessage(const char *strFormat, ...)
 
 #else
   // [Cecil] SDL: Show information
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANS("Information"), strBuffer, _hwndCurrent);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANS("Information"), strBuffer.ConstData(), _hwndCurrent);
 #endif
 }
 
@@ -171,7 +171,7 @@ BOOL YesNoMessage(const char *strFormat, ...)
   strBuffer.VPrintF(strFormat, arg);
 
   // print it to console
-  CPrintF("%s\n", strBuffer);
+  CPrintF("%s\n", strBuffer.ConstData());
 
 #if !SE1_PREFER_SDL
   // create message box

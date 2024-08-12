@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Models/ModelObject.h>
 #include <Engine/Models/ModelData.h>
@@ -260,7 +260,7 @@ void CEditModel::LoadModelAnimationData_t( CTStream *pFile, const FLOATmatrix3D 
     // only triangles are supported!
     ASSERT( opo.opo_PolygonEdges.Count() == 3);  
     if( opo.opo_PolygonEdges.Count() != 3) {
-  		ThrowF_t( "Non-triangle polygon encountered in model file %s !", fnmFirstFrame);
+  		ThrowF_t( "Non-triangle polygon encountered in model file %s !", fnmFirstFrame.ConstData());
     }
     // get all 3 vetrices of current polygon and sorted them
     opo.opo_PolygonEdges.Lock();
@@ -514,7 +514,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
       edm_md.GetAnimInfo( iSound, aiInfo);
 
       CTString strWithQuotes;
-      strWithQuotes.PrintF( "\"%s\",", CTString(edm_aasAttachedSounds[iSound].as_fnAttachedSound));
+      strWithQuotes.PrintF( "\"%s\",", edm_aasAttachedSounds[iSound].as_fnAttachedSound.ConstData());
 
       sprintf(line, "//sound SOUND_%s_%-16s %-32s // %s, %s, %s\n",
         strDefinePrefix.ConstData(),
@@ -2090,7 +2090,7 @@ void CEditModel::ExportSurfaceNumbersAndNames( CTFileName fnFile)
   {
     MappingSurface *pms= &pMMI->mmpi_MappingSurfaces[iSurf];
     CTString strExportLine;
-    strExportLine.PrintF( "%d) %s\n", iSurf, pms->ms_Name);
+    strExportLine.PrintF( "%d) %s\n", iSurf, pms->ms_Name.ConstData());
     strExport+=strExportLine;
   }
 

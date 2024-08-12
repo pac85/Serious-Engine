@@ -133,7 +133,7 @@ void CDlgInfoPgRendering::DoDataExchange(CDataExchange* pDX)
     CTString strText;
     if( ctSelectedSurfaces == 0) strText = "No surfaces selected";
     else if( ctSelectedSurfaces > 1) strText.PrintF( "%d surfaces selected", ctSelectedSurfaces);
-    else strText.PrintF( "Surface: %s", strFirstName);
+    else strText.PrintF( "Surface: %s", strFirstName.ConstData());
     m_strSurfaceName = strText;
 
     strText.PrintF( "Mip: %d", pDoc->m_iCurrentMip);

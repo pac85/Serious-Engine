@@ -689,6 +689,14 @@ BOOL ENGINE_API IsOfSameClass(CEntity *pen1, CEntity *pen2);
 // check if entity is of given class or derived from
 BOOL ENGINE_API IsDerivedFromClass(CEntity *pen, const char *pstrClassName);
 
+// [Cecil] CTString alternatives
+__forceinline BOOL IsOfClass(CEntity *pen, const CTString &strClassName) {
+  return IsOfClass(pen, strClassName.ConstData());
+};
+__forceinline BOOL IsDerivedFromClass(CEntity *pen, const CTString &strClassName) {
+  return IsDerivedFromClass(pen, strClassName.ConstData());
+};
+
 // all standard smart pointer functions are here as inlines
 inline CEntityPointer::CEntityPointer(void) : ep_pen(NULL) {};
 inline CEntityPointer::~CEntityPointer(void) { ep_pen->RemReference(); };

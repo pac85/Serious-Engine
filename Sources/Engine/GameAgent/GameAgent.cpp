@@ -268,10 +268,10 @@ void _sendHeartbeat(INDEX iChallenge)
         iChallenge,
         _pNetwork->ga_srvServer.GetPlayersCount(),
         _pNetwork->ga_sesSessionState.ses_ctMaxPlayers,
-        _pNetwork->ga_World.wo_strName,
-        _getGameModeName(_getSP()->sp_gmGameMode),
+        _pNetwork->ga_World.wo_strName.ConstData(),
+        _getGameModeName(_getSP()->sp_gmGameMode).ConstData(),
         _SE_VER_STRING,
-        _pShell->GetString("sam_strGameName"));
+        _pShell->GetString("sam_strGameName").ConstData());
   } else {
     strPacket.PrintF("\\heartbeat\\%hu\\gamename\\serioussamse", (_pShell->GetINDEX("net_iPort") + 1));
   }
@@ -357,11 +357,11 @@ extern void GameAgent_ServerUpdate(void)
         strPacket.PrintF("0;players;%d;maxplayers;%d;level;%s;gametype;%s;version;%s;gamename;%s;sessionname;%s",
           _pNetwork->ga_srvServer.GetPlayersCount(),
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers,
-          _pNetwork->ga_World.wo_strName,
-          _getGameModeName(_getSP()->sp_gmGameMode),
+          _pNetwork->ga_World.wo_strName.ConstData(),
+          _getGameModeName(_getSP()->sp_gmGameMode).ConstData(),
           _SE_VER_STRING,
-          _pShell->GetString("sam_strGameName"),
-          _pShell->GetString("gam_strSessionName"));
+          _pShell->GetString("sam_strGameName").ConstData(),
+          _pShell->GetString("gam_strSessionName").ConstData());
         _sendPacketTo(strPacket.ConstData(), &_sinFrom);
         break;
       }
@@ -419,14 +419,14 @@ extern void GameAgent_ServerUpdate(void)
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKQUERY,
-          _pShell->GetString("sam_strGameName"),
+          _pShell->GetString("sam_strGameName").ConstData(),
           _SE_VER_STRING,
-          //_pShell->GetString("net_strLocalHost"),
-          strLocation,
-          _pShell->GetString("gam_strSessionName"),
+          //_pShell->GetString("net_strLocalHost").ConstData(),
+          strLocation.ConstData(),
+          _pShell->GetString("gam_strSessionName").ConstData(),
           _pShell->GetINDEX("net_iPort"),
-          _pNetwork->ga_World.wo_strName,
-          _getGameModeName(_getSP()->sp_gmGameMode),
+          _pNetwork->ga_World.wo_strName.ConstData(),
+          _getGameModeName(_getSP()->sp_gmGameMode).ConstData(),
           _pNetwork->ga_srvServer.GetPlayersCount(),
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers,
           _pShell->GetINDEX("gam_bFriendlyFire"),
@@ -462,10 +462,10 @@ extern void GameAgent_ServerUpdate(void)
 
         CTString strPacket;
         strPacket.PrintF( PCKINFO,
-          _pShell->GetString("gam_strSessionName"),
+          _pShell->GetString("gam_strSessionName").ConstData(),
           _pShell->GetINDEX("net_iPort"),
-          _pNetwork->ga_World.wo_strName,
-          _getGameModeName(_getSP()->sp_gmGameMode),
+          _pNetwork->ga_World.wo_strName.ConstData(),
+          _getGameModeName(_getSP()->sp_gmGameMode).ConstData(),
           _pNetwork->ga_srvServer.GetPlayersCount(),
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers);
         _sendPacketTo(strPacket.ConstData(), &_sinFrom);
@@ -479,10 +479,10 @@ extern void GameAgent_ServerUpdate(void)
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKBASIC,
-          _pShell->GetString("sam_strGameName"),
+          _pShell->GetString("sam_strGameName").ConstData(),
           _SE_VER_STRING,
-          //_pShell->GetString("net_strLocalHost"));
-          strLocation);
+          //_pShell->GetString("net_strLocalHost").ConstData());
+          strLocation.ConstData());
         _sendPacketTo(strPacket.ConstData(), &_sinFrom);
 
       } else if (sPch4){
@@ -908,7 +908,7 @@ extern void GameAgent_EnumUpdate(void)
                 } else if(strKey == "gamename") {
                   strGameName = strValue;
                 } else {
-                  CPrintF("Unknown GameAgent parameter key '%s'!", strKey);
+                  CPrintF("Unknown GameAgent parameter key '%s'!", strKey.ConstData());
                 }
 
                 // reset temporary holders

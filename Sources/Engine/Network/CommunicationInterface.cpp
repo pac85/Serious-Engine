@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Console.h>
 #include <Engine/Base/CTString.h>
@@ -318,7 +318,7 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
       }
     }
 
-    CPrintF(TRANS("  local addresses: %s (%s)\n"), cm_strName, cm_strAddress);
+    CPrintF(TRANS("  local addresses: %s (%s)\n"), cm_strName.ConstData(), cm_strAddress.ConstData());
     CPrintF(TRANS("  port: %d\n"), net_iPort);
 
     // try to open master UDP socket
@@ -771,7 +771,8 @@ BOOL CCommunicationInterface::Server_Update()
 					}
 				}
 			} else {
-        CPrintF(TRANS("Unable to deliver data to client '%s', disconnecting.\n"),AddressToString(cm_aciClients[iClient].ci_adrAddress.adr_ulAddress));
+        CTString strAddress = AddressToString(cm_aciClients[iClient].ci_adrAddress.adr_ulAddress);
+        CPrintF(TRANS("Unable to deliver data to client '%s', disconnecting.\n"), strAddress.ConstData());
         Server_ClearClient(iClient);
         _pNetwork->ga_srvServer.HandleClientDisconected(iClient);
 
@@ -816,7 +817,8 @@ BOOL CCommunicationInterface::Server_Update()
 				// warn about possible attack
 				extern INDEX net_bReportMiscErrors;
 				if (net_bReportMiscErrors) {
-					CPrintF(TRANS("WARNING: Invalid message from: %s\n"), AddressToString(ppaPacket->pa_adrAddress.adr_ulAddress));
+					CTString strAddress = AddressToString(ppaPacket->pa_adrAddress.adr_ulAddress);
+					CPrintF(TRANS("WARNING: Invalid message from: %s\n"), strAddress.ConstData());
 				}
 			}
  		}
@@ -1152,7 +1154,8 @@ BOOL CCommunicationInterface::Client_Update(void)
 				// warn about possible attack
 				extern INDEX net_bReportMiscErrors;
 				if (net_bReportMiscErrors) {
-					CPrintF(TRANS("WARNING: Invalid message from: %s\n"), AddressToString(ppaPacket->pa_adrAddress.adr_ulAddress));
+					CTString strAddress = AddressToString(ppaPacket->pa_adrAddress.adr_ulAddress);
+					CPrintF(TRANS("WARNING: Invalid message from: %s\n"), strAddress.ConstData());
 				}
 			}
  		}
@@ -1212,7 +1215,8 @@ void CCommunicationInterface::UpdateMasterBuffers()
 					// the packet is in error
           extern INDEX net_bReportMiscErrors;          
           if (net_bReportMiscErrors) {
-					  CPrintF(TRANS("WARNING: Bad UDP packet from '%s'\n"), AddressToString(adrIncomingAddress.adr_ulAddress));
+					  CTString strAddress = AddressToString(adrIncomingAddress.adr_ulAddress);
+					  CPrintF(TRANS("WARNING: Bad UDP packet from '%s'\n"), strAddress.ConstData());
           }
 					// there might be more to do
 					bSomethingDone = TRUE;
@@ -1225,7 +1229,8 @@ void CCommunicationInterface::UpdateMasterBuffers()
 					ppaNewPacket->pa_adrAddress.adr_uwPort = adrIncomingAddress.adr_uwPort;						
 
 					if (net_bReportPackets == TRUE) {
-						CPrintF("%lu: Received sequence: %d from ID: %d, reliable flag: %d\n",(ULONG) tvNow.GetMilliseconds(),ppaNewPacket->pa_ulSequence,ppaNewPacket->pa_adrAddress.adr_uwID,ppaNewPacket->pa_ubReliable);
+						CPrintF("%lu: Received sequence: %d from ID: %d, reliable flag: %d\n", (ULONG)tvNow.GetMilliseconds(),
+						  ppaNewPacket->pa_ulSequence, ppaNewPacket->pa_adrAddress.adr_uwID, ppaNewPacket->pa_ubReliable);
 					}
 
 					cci_pbMasterInput.AppendPacket(*ppaNewPacket,FALSE);

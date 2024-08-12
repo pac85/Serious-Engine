@@ -956,7 +956,7 @@ void CSeriousSkaStudioApp::SaveModelInstance_t(CModelInstance *pmi,CModelInstanc
   {
     ostrFile.FPrintF_t(MAKESPACE(iCurSpaces+2));
     ColisionBox &cb = pmi->mi_cbAABox[icb];
-    ostrFile.FPrintF_t("\"%s\"  {%g,%g,%g,%g,%g,%g;}\n",cb.GetName(),
+    ostrFile.FPrintF_t("\"%s\"  {%g,%g,%g,%g,%g,%g;}\n", cb.GetName().ConstData(),
       cb.Min()(1),cb.Min()(2),cb.Min()(3),
       cb.Max()(1),cb.Max()(2),cb.Max()(3));
   }

@@ -331,7 +331,7 @@ static void NetworkInfo(void)
       CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
       if (plb.plb_Active) {
         CPrintF("    %2d(%2d):'%s'@client%2d: (%dact)\n",
-          iplb, plb.plb_Index, plb.plb_pcCharacter.GetNameForPrinting(),
+          iplb, plb.plb_Index, plb.plb_pcCharacter.GetNameForPrinting().ConstData(),
           plb.plb_iClient, plb.plb_abReceived.GetCount());
       }
     }
@@ -339,7 +339,7 @@ static void NetworkInfo(void)
     for(INDEX iSession=0; iSession<_pNetwork->ga_srvServer.srv_assoSessions.Count(); iSession++) {
       CSessionSocket &sso = _pNetwork->ga_srvServer.srv_assoSessions[iSession];
       if (sso.sso_bActive) {
-        CPrintF("  %2d:'%s'\n", iSession, _cmiComm.Server_GetClientName(iSession)),
+        CPrintF("  %2d:'%s'\n", iSession, _cmiComm.Server_GetClientName(iSession).ConstData()),
         CPrintF("    buffer: %dblk=%dk\n",
           sso.sso_nsBuffer.GetUsedBlocks(),
           sso.sso_nsBuffer.GetUsedMemory()/1024);
@@ -396,7 +396,7 @@ static void ListPlayers(void)
   for(INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
     if (plb.plb_Active) {
-      CPrintF("     %-2d   %s\n", plb.plb_iClient, plb.plb_pcCharacter.GetNameForPrinting());
+      CPrintF("     %-2d   %s\n", plb.plb_iClient, plb.plb_pcCharacter.GetNameForPrinting().ConstData());
     }
   }
   CPrintF("  ----------------------\n");
@@ -417,7 +417,7 @@ static void KickClient(INDEX iClient, const CTString &strReason)
     CPrintF(TRANS("Can't kick local client!\n"));
     return;
   }
-  CPrintF( TRANS("Kicking %d with explanation '%s'...\n"), iClient, strReason);
+  CPrintF( TRANS("Kicking %d with explanation '%s'...\n"), iClient, strReason.ConstData());
   _pNetwork->ga_srvServer.SendDisconnectMessage(iClient, ("Admin: " + strReason).ConstData());
 }
 static void KickClientCfunc(void* pArgs)
@@ -631,7 +631,7 @@ static void StockDump(void)
     _pSoundStock->DumpMemoryUsage_t(strm);
     strm.PutLine_t("Classes:");
     _pEntityClassStock->DumpMemoryUsage_t(strm);
-    CPrintF("Dumped to '%s'\n", CTString(fnm));
+    CPrintF("Dumped to '%s'\n", fnm.ConstData());
   } catch (char *strError) {
     CPrintF("Error: %s\n", strError);
   }
@@ -974,7 +974,7 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
   _pSound->Mute();
 
   // go on
-  CPrintF( TRANS("Starting session: '%s'\n"), strSessionName);
+  CPrintF( TRANS("Starting session: '%s'\n"), strSessionName.ConstData());
   CPrintF( TRANS("  level: '%s'\n"), fnmWorld.ConstData());
   CPrintF( TRANS("  spawnflags: %08x\n"), ulSpawnFlags);
   CPrintF( TRANS("  max players: %d\n"), ctMaxPlayers);
@@ -1225,8 +1225,8 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   // mute all sounds
   _pSound->Mute();
 
-  // report session addres
-  CPrintF( TRANS("Joining session at: '%s'\n"), nsSesssion.ns_strAddress);
+  // report session address
+  CPrintF(TRANS("Joining session at: '%s'\n"), nsSesssion.ns_strAddress.ConstData());
 
   ga_bLocalPause = FALSE;
 
@@ -2194,7 +2194,7 @@ CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter)  // t
 {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
-  CPrintF( TRANS("Adding player: '%s'\n"), pcCharacter.GetNameForPrinting());
+  CPrintF(TRANS("Adding player: '%s'\n"), pcCharacter.GetNameForPrinting().ConstData());
 
   // for all local clients on this machine
   FOREACHINSTATICARRAY(ga_aplsPlayers, CPlayerSource, itcls) {
@@ -2270,7 +2270,7 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
   if (iCurrent<iSaved) {
     // it cannot be reinitialized
     ThrowF_t(TRANS("File '%s' was saved by a newer version of engine, it cannot be loaded"),
-      strm.GetDescription());
+      strm.GetDescription().ConstData());
     return;
   }
 
@@ -2289,7 +2289,7 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
     // if it may not be reinitialized
     if (!bAllowReinit) {
       ThrowF_t(TRANS("File '%s' was saved by an older version of engine, it cannot be loaded"),
-        strm.GetDescription());
+        strm.GetDescription().ConstData());
     }
     return;
   }

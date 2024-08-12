@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Graphics/GfxLibrary.h>
 
@@ -46,9 +46,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Stock_CTextureData.h>
 
 // [Cecil] Graphics APIs
-#include <Engine/Graphics/GFX_wrapper_Null.h>
-#include <Engine/Graphics/GFX_wrapper_OpenGL.h>
-#include <Engine/Graphics/GFX_wrapper_Direct3D.h>
+#include <Engine/Graphics/Gfx_wrapper_Null.h>
+#include <Engine/Graphics/Gfx_wrapper_OpenGL.h>
+#include <Engine/Graphics/Gfx_wrapper_Direct3D.h>
 
 // control for partial usage of compiled vertex arrays
 extern BOOL CVA_b2D     = FALSE;
@@ -441,11 +441,11 @@ static void TexturesInfo(void)
   CTString strTmp;
   strTmp = tex_bFineEffect ? "32-bit" : "16-bit";
   CPrintF( "\n");
-  CPrintF( "Normal-opaque textures quality:         %s\n", ReportQuality(TS.ts_iNormQualityO));
-  CPrintF( "Normal-translucent textures quality:    %s\n", ReportQuality(TS.ts_iNormQualityA));
-  CPrintF( "Animation-opaque textures quality:      %s\n", ReportQuality(TS.ts_iAnimQualityO));
-  CPrintF( "Animation-translucent textures quality: %s\n", ReportQuality(TS.ts_iAnimQualityA));
-  CPrintF( "Effect textures quality:                %s\n", strTmp);
+  CPrintF( "Normal-opaque textures quality:         %s\n", ReportQuality(TS.ts_iNormQualityO).ConstData());
+  CPrintF( "Normal-translucent textures quality:    %s\n", ReportQuality(TS.ts_iNormQualityA).ConstData());
+  CPrintF( "Animation-opaque textures quality:      %s\n", ReportQuality(TS.ts_iAnimQualityO).ConstData());
+  CPrintF( "Animation-translucent textures quality: %s\n", ReportQuality(TS.ts_iAnimQualityA).ConstData());
+  CPrintF( "Effect textures quality:                %s\n", strTmp.ConstData());
   CPrintF( "\n");
   CPrintF( "Max allowed normal texture area size:    %3dx%d\n", pixNormDim, pixNormDim);
   CPrintF( "Max allowed animation texture area size: %3dx%d\n", pixAnimDim, pixAnimDim);
@@ -508,7 +508,7 @@ static void GAPInfo(void)
   }
 
   // report API
-  CPrintF( "- Graphics API: %s\n", _pGfx->GetApiName(eAPI));
+  CPrintF( "- Graphics API: %s\n", _pGfx->GetApiName(eAPI).ConstData());
 
   // and number of adapters
   CPrintF( "- Adapters found: %d\n", _pGfx->gl_gaAPI[eAPI].ga_ctAdapters);
@@ -516,9 +516,9 @@ static void GAPInfo(void)
 
   // report renderer
   CDisplayAdapter &da = _pGfx->gl_gaAPI[eAPI].ga_adaAdapter[_pGfx->gl_iCurrentAdapter];
-  if( eAPI==GAT_OGL) CPrintF( "- Vendor:   %s\n", da.da_strVendor);
-  CPrintF( "- Renderer: %s\n", da.da_strRenderer);
-  CPrintF( "- Version:  %s\n", da.da_strVersion);
+  if( eAPI==GAT_OGL) CPrintF( "- Vendor:   %s\n", da.da_strVendor.ConstData());
+  CPrintF( "- Renderer: %s\n", da.da_strRenderer.ConstData());
+  CPrintF( "- Version:  %s\n", da.da_strVersion.ConstData());
   CPrintF( "\n");
 
   // Z-buffer depth
@@ -572,7 +572,8 @@ static void GAPInfo(void)
         if( gap_bForceTruform) CPrintF( "(for all models)\n");
         else CPrintF( "(only for Truform-ready models)\n");
         CTString strNormalMode = ogl_bTruformLinearNormals ? "linear" : "quadratic";
-        CPrintF( "- Tesselation level: %d of %d (%s normals)\n", _pGfx->gl_iTessellationLevel, _pGfx->gl_iMaxTessellationLevel, strNormalMode);
+        CPrintF( "- Tesselation level: %d of %d (%s normals)\n",
+          _pGfx->gl_iTessellationLevel, _pGfx->gl_iMaxTessellationLevel, strNormalMode.ConstData());
       } else CPrintF( "disabled\n");
     } else CPrintF( "not supported\n");
   #endif
@@ -605,7 +606,7 @@ static void GAPInfo(void)
         CTString strEffect = "Partial anti-aliasing";
         if( ogl_iTBufferEffect<1) strEffect = "none";
         if( ogl_iTBufferEffect>1) strEffect = "Motion blur";
-        CPrintF( "%s (%d buffers used)\n", strEffect, _pGfx->go_ctSampleBuffers);
+        CPrintF( "%s (%d buffers used)\n", strEffect.ConstData(), _pGfx->go_ctSampleBuffers);
       }
     }
 
@@ -618,9 +619,9 @@ static void GAPInfo(void)
       if( ogl_bUseCompiledVertexArrays) {
         CTString strSep="";
         CPrintF( "enabled (for ");
-        if( CVA_bWorld)  { CPrintF( "world");               strSep="/"; }
-        if( CVA_bModels) { CPrintF( "%smodels",    strSep); strSep="/"; }
-        if( CVA_b2D)     { CPrintF( "%sparticles", strSep); }
+        if( CVA_bWorld)  { CPrintF( "world");                           strSep="/"; }
+        if( CVA_bModels) { CPrintF( "%smodels",    strSep.ConstData()); strSep="/"; }
+        if( CVA_b2D)     { CPrintF( "%sparticles", strSep.ConstData()); }
         CPrintF( ")\n");
       } else CPrintF( "disabled\n");
     } else CPrintF( "not supported\n");
@@ -630,10 +631,10 @@ static void GAPInfo(void)
     if( !(_pGfx->gl_ulFlags&GLF_TEXTURECOMPRESSION)) CPrintF( "none\n");
     else {
       CTString strSep="";
-      if( _pGfx->gl_ulFlags & GLF_EXTC_ARB)    { CPrintF( "ARB");                strSep=", "; }
-      if( _pGfx->gl_ulFlags & GLF_EXTC_S3TC)   { CPrintF( "%sS3TC",     strSep); strSep=", "; }
-      if( _pGfx->gl_ulFlags & GLF_EXTC_FXT1)   { CPrintF( "%sFTX1",     strSep); strSep=", "; }
-      if( _pGfx->gl_ulFlags & GLF_EXTC_LEGACY) { CPrintF( "%sold S3TC", strSep); }
+      if( _pGfx->gl_ulFlags & GLF_EXTC_ARB)    { CPrintF( "ARB");                            strSep=", "; }
+      if( _pGfx->gl_ulFlags & GLF_EXTC_S3TC)   { CPrintF( "%sS3TC",     strSep.ConstData()); strSep=", "; }
+      if( _pGfx->gl_ulFlags & GLF_EXTC_FXT1)   { CPrintF( "%sFTX1",     strSep.ConstData()); strSep=", "; }
+      if( _pGfx->gl_ulFlags & GLF_EXTC_LEGACY) { CPrintF( "%sold S3TC", strSep.ConstData()); }
       CPrintF( "\n- Current texture compression system: ");
       switch( ogl_iTextureCompressionType) {
       case 0:   CPrintF( "none\n");         break;
@@ -663,9 +664,9 @@ static void GAPInfo(void)
     } */
     // report OpenGL externsions
     CPrintF("\n");
-    CPrintF("- Published extensions: %s", ReformatExtensionsString(_pGfx->go_strExtensions));
-    if( _pGfx->go_strWinExtensions != "") CPrintF("%s", ReformatExtensionsString(_pGfx->go_strWinExtensions));
-    CPrintF("\n- Supported extensions: %s\n", ReformatExtensionsString(_pGfx->go_strSupportedExtensions));
+    CPrintF("- Published extensions: %s", ReformatExtensionsString(_pGfx->go_strExtensions).ConstData());
+    if( _pGfx->go_strWinExtensions != "") CPutString(ReformatExtensionsString(_pGfx->go_strWinExtensions).ConstData());
+    CPrintF("\n- Supported extensions: %s\n", ReformatExtensionsString(_pGfx->go_strSupportedExtensions).ConstData());
   }
 
   // Direct3D only stuff

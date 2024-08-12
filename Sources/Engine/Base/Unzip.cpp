@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // unzip.cpp : Defines the entry point for the console application.
 //
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Base/Unzip.h>
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/FileName.h>
@@ -442,7 +442,7 @@ void UNZIPReadDirectoriesReverse_t(void)
   // if there were errors
   if (strAllErrors!="") {
     // report them
-    ThrowF_t("%s", strAllErrors);
+    strAllErrors.Throw_t();
   }
 }
 

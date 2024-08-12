@@ -41,8 +41,7 @@ void CVirtualTreeNode::Dump(CTStream *pFile)
   }
   if( vtn_bIsDirectory)
   {
-    CTString strDirectory;
-    strDirectory.PrintF("Directory: %s", vtn_strName);
+    CTString strDirectory = "Directory: " + vtn_strName;
     pFile->PutLine_t(strDirectory);
     _iTabs++;
     
@@ -54,8 +53,7 @@ void CVirtualTreeNode::Dump(CTStream *pFile)
   }
   else
   {
-    CTString strItem;
-    strItem.PrintF("Item: %s", vtn_fnItem);
+    CTString strItem = "Item: " + vtn_fnItem;
     pFile->PutLine_t(strItem);
   }
 }

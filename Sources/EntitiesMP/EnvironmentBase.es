@@ -123,7 +123,7 @@ functions:
 
     // assure valid target
     if (m_penTarget!=NULL && !IsOfClass(m_penTarget, "Environment Marker")) {
-      WarningMessage("Target '%s' is not of Environment Marker class!", m_penTarget->GetName());
+      WarningMessage("Target '%s' is not of Environment Marker class!", m_penTarget->GetName().ConstData());
       m_penTarget = NULL;
       return FALSE;
     }
@@ -262,7 +262,7 @@ functions:
 
     // assure valid target
     if (m_penTarget!=NULL && !IsOfClass(m_penTarget, "Environment Marker")) {
-      WarningMessage("Target '%s' is not of Environment Marker class!", m_penTarget->GetName());
+      WarningMessage("Target '%s' is not of Environment Marker class!", m_penTarget->GetName().ConstData());
       m_penTarget = NULL;
     }
 };

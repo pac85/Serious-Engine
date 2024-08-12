@@ -136,7 +136,7 @@ void CInGameMenu::StartMenu(void)
 
   if (_gmRunningGameMode == GM_SINGLE_PLAYER) {
     CPlayerCharacter &pc = _pGame->gm_apcPlayers[_pGame->gm_iSinglePlayer];
-    gm_mgLabel1.mg_strText.PrintF(TRANS("Player: %s"), pc.GetNameForPrinting());
+    gm_mgLabel1.mg_strText.PrintF(TRANS("Player: %s"), pc.GetNameForPrinting().ConstData());
     gm_mgLabel2.mg_strText = "";
 
   } else {

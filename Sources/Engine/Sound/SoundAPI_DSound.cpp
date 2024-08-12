@@ -329,7 +329,7 @@ BOOL CSoundAPI_DSound::StartUp(BOOL bReport) {
     CTString strDevice = TRANS("default device");
     if (snd_iDevice >= 0) strDevice.PrintF(TRANS("device %d"), snd_iDevice);
 
-    CPrintF(TRANS("  %dHz, %dbit, %s, mix-ahead: %gs\n"), wfe.nSamplesPerSec, wfe.wBitsPerSample, strDevice, snd_tmMixAhead);
+    CPrintF(TRANS("  %dHz, %dbit, %s, mix-ahead: %gs\n"), wfe.nSamplesPerSec, wfe.wBitsPerSample, strDevice.ConstData(), snd_tmMixAhead);
     CPrintF(TRANS("  mixer buffer size:  %d KB\n"), m_slMixerBufferSize / 1024);
     CPrintF(TRANS("  decode buffer size: %d KB\n"), m_slDecodeBufferSize / 1024);
     CPrintF(TRANS("  EAX: %s\n"), m_bUsingEAX ? TRANS("Enabled") : TRANS("Disabled"));

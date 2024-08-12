@@ -48,6 +48,6 @@ void CMGChangePlayer::SetPlayerText(void)
   if (iPlayer<0 || iPlayer>7) {
     mg_strText = "????";
   } else {
-    mg_strText.PrintF(TRANS("Player %d: %s\n"), mg_iLocalPlayer + 1, pc.GetNameForPrinting());
+    mg_strText.PrintF(TRANS("Player %d: %s\n"), mg_iLocalPlayer + 1, pc.GetNameForPrinting().ConstData());
   }
 }

@@ -174,7 +174,7 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   dpHook.SetTextAspect( 1.0f);
   // print status text
   setlocale(LC_ALL, "");
-  CTString strDesc(0, "%s", pphi->phi_strDescription);
+  CTString strDesc = pphi->phi_strDescription;
   _strupr(strDesc.Data());
   setlocale(LC_ALL, "C");
   CTString strPerc(0, "%3.0f%%", pphi->phi_fCompleted*100);
@@ -227,9 +227,8 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   dpBox.SetTextScaling( 1.0f);
   dpBox.SetTextAspect( 1.0f);
   // print status text
-  CTString strRes;
-  strRes.PrintF( "%s", pphi->phi_strDescription);
-  //strupr(strRes.Data());
+  CTString strRes = pphi->phi_strDescription;
+  //_strupr(strRes.Data());
   dpBox.PutTextC( strRes, 160, 17, C_GREEN|255);
   strRes.PrintF( "%3.0f%%", pphi->phi_fCompleted*100);
   dpBox.PutTextCXY( strRes, pixBarCentI, pixBarCentJ, C_GREEN|255);

@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Console.h>
 #include <Engine/Base/Timer.h>
@@ -358,7 +358,7 @@ void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp)
   CTString strAPI = _pGfx->GetApiName(_pGfx->GetCurrentAPI());
 
   CPrintF("=====================================\n");
-  CPrintF("%s performance testing ...\n", strAPI);
+  CPrintF("%s performance testing ...\n", strAPI.ConstData());
 
   InitTexture();
   InitTris();
@@ -401,36 +401,36 @@ void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp)
   _bMultiTexture = 0;
   _bBlend = 0; _bDepth = 0; _bTexture = 0;
   RunTest(FillRate, 10);
-  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
   _bBlend = 0; _bDepth = 0; _bTexture = 1;
   RunTest(FillRate, 10);
-  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
   _bBlend = 0; _bDepth = 1; _bTexture = 1;
   RunTest(FillRate, 10);
-  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
   _bBlend = 1; _bDepth = 1; _bTexture = 1;
   RunTest(FillRate, 10);
-  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+  CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
 
   if( _pGfx->gl_ctTextureUnits>1) {
     _bMultiTexture = 1;
     RunTest(FillRate, 10);
-    CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+    CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
   }
 
   CPrintF("\n--- Geometry speed (%dpix tris)\n", (_pixSizeI/_ctR)*(_pixSizeI/_ctC)/2);
   _bMultiTexture = 0;
   _bBlend = 0; _bDepth = 1; _bTexture = 1;
   RunTest(TrisTroughput, 10);
-  CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+  CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
   _bBlend = 1; _bDepth = 1; _bTexture = 1;
   RunTest(TrisTroughput, 10);
-  CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+  CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
 
   if( _pGfx->gl_ctTextureUnits>1) {
     _bMultiTexture = 1;
     RunTest(TrisTroughput, 10);
-    CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
+    CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString().ConstData(), _dX/1000/1000, _dD/1000/1000);
   }
 
   EndTris();

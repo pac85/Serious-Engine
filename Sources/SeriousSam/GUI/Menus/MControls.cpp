@@ -99,7 +99,7 @@ void CControlsMenu::StartMenu(void)
 
   ControlsMenuOn();
 
-  gm_mgNameLabel.mg_strText.PrintF(TRANS("CONTROLS FOR: %s"), _pGame->gm_apcPlayers[iPlayer].GetNameForPrinting());
+  gm_mgNameLabel.mg_strText.PrintF(TRANS("CONTROLS FOR: %s"), _pGame->gm_apcPlayers[iPlayer].GetNameForPrinting().ConstData());
 
   ObtainActionSettings();
   CGameMenu::StartMenu();

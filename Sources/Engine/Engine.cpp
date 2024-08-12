@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Protection.h>
 #include <Engine/Base/Console.h>
 #include <Engine/Base/Console_internal.h>
-#include <Engine/Base/Statistics_Internal.h>
+#include <Engine/Base/Statistics_internal.h>
 #include <Engine/Base/Shell.h>
 #include <Engine/Base/CRC.h>
 #include <Engine/Base/CRCTable.h>
@@ -32,7 +32,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/GfxLibrary.h>
 #include <Engine/Graphics/Font.h>
 #include <Engine/Network/Network.h>
-#include <Engine/templates/DynamicContainer.cpp>
+#include <Engine/Templates/DynamicContainer.cpp>
 #include <Engine/Templates/Stock_CAnimData.h>
 #include <Engine/Templates/Stock_CTextureData.h>
 #include <Engine/Templates/Stock_CSoundData.h>
@@ -159,8 +159,8 @@ static void DetectCPU(void)
   BOOL bMMX  = ulFeatures & (1<<23);
   BOOL bCMOV = ulFeatures & (1<<15);
 
-  CTString strYes = TRANS("Yes");
-  CTString strNo = TRANS("No");
+  const char *strYes = TRANS("Yes");
+  const char *strNo = TRANS("No");
 
   CPrintF(TRANS("  MMX : %s\n"), bMMX ?strYes:strNo);
   CPrintF(TRANS("  CMOV: %s\n"), bCMOV?strYes:strNo);
@@ -270,16 +270,16 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
 
   // print basic engine info
   CPrintF(TRANS("--- Serious Engine Startup ---\n"));
-  CPrintF("  %s\n\n", _strEngineBuild);
+  CPrintF("  %s\n\n", _strEngineBuild.ConstData());
 
   // print info on the started application
-  CPrintF(TRANS("Executable: %s\n"), _fnmApplicationPath + _fnmApplicationExe);
-  CPrintF(TRANS("Assumed engine directory: %s\n"), _fnmApplicationPath);
+  CPrintF(TRANS("Executable: %s\n"), (_fnmApplicationPath + _fnmApplicationExe).ConstData());
+  CPrintF(TRANS("Assumed engine directory: %s\n"), _fnmApplicationPath.ConstData());
 
-  CPrintF("\n");
+  CPutString("\n");
 
   // report os info
-  CPrintF(TRANS("Examining underlying OS...\n"));
+  CPutString(TRANS("Examining underlying OS...\n"));
   OSVERSIONINFOA osv;
   memset(&osv, 0, sizeof(osv));
   osv.dwOSVersionInfoSize = sizeof(osv);
@@ -301,14 +301,14 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
       osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
     CPrintF(TRANS("  Misc: %s\n"), osv.szCSDVersion);
   } else {
-    CPrintF(TRANS("Error getting OS info: %s\n"), GetWindowsError(GetLastError()) );
+    CPrintF(TRANS("Error getting OS info: %s\n"), GetWindowsError(GetLastError()).ConstData());
   }
-  CPrintF("\n");
+  CPutString("\n");
 
   // report CPU
-  CPrintF(TRANS("Detecting CPU...\n"));
+  CPutString(TRANS("Detecting CPU...\n"));
   DetectCPUWrapper();
-  CPrintF("\n");
+  CPutString("\n");
 
   // report memory info
   extern void ReportGlobalMemoryStatus(void);
@@ -449,7 +449,7 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
   if( !bOK) {
     _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
-    CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
+    CPutString( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
   } // done
   ReleaseDC( NULL, hdc);
 #endif

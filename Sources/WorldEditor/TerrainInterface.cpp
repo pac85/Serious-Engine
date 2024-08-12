@@ -1276,7 +1276,7 @@ CTString GetStretchInfo(CTIButton *ptib, CPoint pt, CDrawPort *pdp, BOOL bLmb)
 CTString GetEditedData(CTIButton *ptib, CPoint pt, CDrawPort *pdp, BOOL bLmb)
 {
   CTString strInfo;
-  if(ptib->tib_pfData1!=NULL)  strInfo.PrintF("%f", ptib->tib_pfData1);
+  if(ptib->tib_pfData1!=NULL)  strInfo.PrintF("%f", *ptib->tib_pfData1);
   return strInfo;
 }
 
@@ -1376,7 +1376,7 @@ CTString GetNormalizedPercentageInfo(CTIButton *ptib, CPoint pt, CDrawPort *pdp,
     {
       FLOAT *pfNormalized = (FLOAT *)((UBYTE *)ptlLayer + (UINT_PTR)ptib->tib_pfData1);
       FLOAT fValue=*pfNormalized;
-      strInfo.PrintF("%s: %d%%", ptib->tib_strToolTip, INDEX(floor(fValue*100.0f+0.5f)));
+      strInfo.PrintF("%s: %d%%", ptib->tib_strToolTip.ConstData(), INDEX(floor(fValue*100.0f+0.5f)));
       return strInfo;
     }
   }

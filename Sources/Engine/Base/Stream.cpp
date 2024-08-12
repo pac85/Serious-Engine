@@ -1357,7 +1357,7 @@ SLONG GetFileTimeStamp_t(const CTFileName &fnm)
   // try to open file for reading
   file_handle = _open(fnmExpanded.ConstData(), _O_RDONLY | _O_BINARY);
   if(file_handle==-1) {
-    ThrowF_t(TRANS("Cannot open file '%s' for reading"), CTString(fnm));
+    ThrowF_t(TRANS("Cannot open file '%s' for reading"), fnm.ConstData());
     return -1;
   }
   struct stat statFileStatus;

@@ -101,7 +101,7 @@ BOOL LSLoadPlayerModel(const CTFileName &fnm)
   CPlayerCharacter &pc = _pGame->gm_apcPlayers[*_pGUIM->gmPlayerProfile.gm_piCurrentPlayer];
   CPlayerSettings *pps = (CPlayerSettings *)pc.pc_aubAppearance;
   memset(pps->ps_achModelFile, 0, sizeof(pps->ps_achModelFile));
-  strncpy(pps->ps_achModelFile, strBaseName, sizeof(pps->ps_achModelFile));
+  strncpy(pps->ps_achModelFile, strBaseName.ConstData(), sizeof(pps->ps_achModelFile));
 
   void MenuGoToParent(void);
   MenuGoToParent();
@@ -115,7 +115,7 @@ BOOL LSLoadControls(const CTFileName &fnm)
     CTString fnmControls = fnm;
 
     if (fnm.HasPrefix("Controls\\Controls")) {
-      fnmControls.PrintF("UserData\\Controls\\%s.ctl", fnm.FileName());
+      fnmControls.PrintF("UserData\\Controls\\%s.ctl", fnm.FileName().ConstData());
     }
 
     ControlsMenuOn();
@@ -123,7 +123,7 @@ BOOL LSLoadControls(const CTFileName &fnm)
     ControlsMenuOff();
   }
   catch (char *strError) {
-    CPrintF("%s", strError);
+    CPutString(strError);
   }
 
   void MenuGoToParent(void);

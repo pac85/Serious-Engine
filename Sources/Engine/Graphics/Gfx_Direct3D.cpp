@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Translation.h>
 #include <Engine/Base/ErrorReporting.h>
@@ -507,7 +507,7 @@ void CGfxLibrary::InitContext_D3D()
   // report header
   CPrintF( TRANS("\n* Direct3D context created: *----------------------------------\n"));
   CDisplayAdapter &da = gl_gaAPI[GAT_D3D].ga_adaAdapter[gl_iCurrentAdapter];
-  CPrintF( "  (%s, %s, %s)\n\n", da.da_strVendor, da.da_strRenderer, da.da_strVersion);
+  CPrintF( "  (%s, %s, %s)\n\n", da.da_strVendor.ConstData(), da.da_strRenderer.ConstData(), da.da_strVersion.ConstData());
   HRESULT hr;
 
   // reset engine's internal Direct3D state variables

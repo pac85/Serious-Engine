@@ -190,7 +190,7 @@ static void DumpDemoProfile(void)
     strm.FPrintF_t(strFragment.ConstData());
     strm.FPrintF_t(strAnalyzed.ConstData());
     // done!
-    CPrintF( TRANS("Demo profile data dumped to '%s'.\n"), strFileName);
+    CPrintF( TRANS("Demo profile data dumped to '%s'.\n"), strFileName.ConstData());
   } 
   catch (char *strError) {
     // something went wrong :(
@@ -1219,7 +1219,7 @@ BOOL CGame::LoadGame(const CTFileName &fnGame)
   // start the new session
   try {
     _pNetwork->Load_t( fnGame);
-    CPrintF(TRANS("Loaded game: %s\n"), fnGame);
+    CPrintF(TRANS("Loaded game: %s\n"), fnGame.ConstData());
   } catch (char *strError) {
     // stop network provider
     _pNetwork->StopProvider();
@@ -1269,7 +1269,7 @@ BOOL CGame::StartDemoPlay(const CTFileName &fnDemo)
   // start the new session
   try {
     _pNetwork->StartDemoPlay_t( fnDemo);
-    CPrintF(TRANS("Started playing demo: %s\n"), fnDemo);
+    CPrintF(TRANS("Started playing demo: %s\n"), fnDemo.ConstData());
   } catch (char *strError) {
     // stop network provider
     _pNetwork->StopProvider();
@@ -1313,7 +1313,7 @@ BOOL CGame::StartDemoRec(const CTFileName &fnDemo)
   // save demo recording
   try {
     _pNetwork->StartDemoRec_t( fnDemo);
-    CPrintF(TRANS("Started recording demo: %s\n"), fnDemo);
+    CPrintF(TRANS("Started recording demo: %s\n"), fnDemo.ConstData());
     // save a thumbnail
     SaveThumbnail(fnDemo.NoExt()+"Tbn.tex");
     return TRUE;
@@ -1349,7 +1349,7 @@ BOOL CGame::SaveGame(const CTFileName &fnGame)
   // save new session
   try {
     _pNetwork->Save_t( fnGame);
-    CPrintF(TRANS("Saved game: %s\n"), fnGame);
+    CPrintF(TRANS("Saved game: %s\n"), fnGame.ConstData());
     SaveThumbnail(fnGame.NoExt()+"Tbn.tex");
     return TRUE;
   } catch (char *strError) {
@@ -1477,7 +1477,7 @@ void CGame::UnpackHighScoreTable(SLONG slSize)
   UBYTE *pub = _aubHighScoreBuffer;
   // for each entry
   for (INDEX i=0; i<HIGHSCORE_COUNT; i++) {
-    gm_ahseHighScores[i].hse_strPlayer = (const char*)pub;
+    gm_ahseHighScores[i].hse_strPlayer = (const char *)pub;
     pub += MAX_HIGHSCORENAME+1;
     memcpy(&gm_ahseHighScores[i].hse_gdDifficulty, pub, sizeof(INDEX));
     pub += sizeof(INDEX);
@@ -1766,7 +1766,7 @@ static void PrintStats( CDrawPort *pdpDrawPort)
   // display resolution info (if needed)
   if( hud_bShowResolution) {
     CTString strRes;
-    strRes.PrintF( "%dx%dx%s", slDPWidth, slDPHeight, _pGfx->gl_dmCurrentDisplayMode.DepthString());
+    strRes.PrintF( "%dx%dx%s", slDPWidth, slDPHeight, _pGfx->gl_dmCurrentDisplayMode.DepthString().ConstData());
     pdpDrawPort->SetFont( _pfdDisplayFont);
     pdpDrawPort->SetTextScaling( fTextScale);
     pdpDrawPort->SetTextAspect( 1.0f);
@@ -2510,7 +2510,7 @@ CTString CGame::GetDefaultGameDescription(BOOL bWithInfo)
   strTimeline = achTimeLine;
   setlocale(LC_ALL, "C");
 
-  strDescription.PrintF( "%s - %s", TranslateConst(_pNetwork->ga_World.GetName(), 0), strTimeline);
+  strDescription.PrintF("%s - %s", TranslateConst(_pNetwork->ga_World.GetName(), 0), strTimeline.ConstData());
 
   if (bWithInfo) {
     CPlayer *penPlayer = (CPlayer *)&*CEntity::GetPlayerEntity(0);

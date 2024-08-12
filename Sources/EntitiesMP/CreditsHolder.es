@@ -362,7 +362,7 @@ procedures:
 
     if( !Credits_On(m_fnmMessage))
     {
-      CPrintF("Error loading credits file '%s'!\n", m_fnmMessage);
+      CPrintF("Error loading credits file '%s'!\n", m_fnmMessage.ConstData());
       Credits_Off();
       return;
     }

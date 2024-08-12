@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/Console.h>
@@ -64,7 +64,7 @@ static CTString GetPred(CEntity*pen)
     str1 = "???";
   }
   CTString str;
-  str.PrintF("%08x-%s", pen, str1);
+  str.PrintF("%08x-%s", pen, str1.ConstData());
   return str;
 }
 /* ====================================================

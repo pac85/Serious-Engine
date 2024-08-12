@@ -99,7 +99,7 @@ void CVirtualTreeCtrl::OnLButtonDown(UINT nFlags, CPoint point)
   if( pVTN!=NULL && pVTN->vnt_pvtnParent!=NULL)
   {
     CTString strAddr;
-    strAddr.PrintF("VTN%d", pVTN);
+    strAddr.PrintF("VTN%d", (char *)pVTN);
     HGLOBAL hglobal = CreateHDrop( strAddr, FALSE);
     m_DataSource.CacheGlobalData( CF_HDROP, hglobal);
     m_DataSource.DoDragDrop( DROPEFFECT_COPY);

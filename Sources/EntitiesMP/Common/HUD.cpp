@@ -741,7 +741,7 @@ static void HUD_DrawEntityStack()
       _pDP->SetTextScaling( 1.0f);
     
       INDEX ctStates = DBG_prenStackOutputEntity->en_stslStateStack.Count();
-      strTemp.PrintF("-- stack of '%s'(%s)@%gs\n", DBG_prenStackOutputEntity->GetName(),
+      strTemp.PrintF("-- stack of '%s'(%s)@%gs\n", DBG_prenStackOutputEntity->GetName().ConstData(),
         DBG_prenStackOutputEntity->en_pecClass->ec_pdecDLLClass->dec_strName,
         _pTimer->CurrentTick());
       _pDP->PutText( strTemp, 1, pixTextBottom-pixFontHeight*(ctStates+1), _colHUD|_ulAlphaHUD);
@@ -1207,7 +1207,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       CTString strLimitsInfo="";  
       if (GetSP()->sp_iTimeLimit>0) {
         FLOAT fTimeLeft = ClampDn(GetSP()->sp_iTimeLimit*60.0f - _pNetwork->GetGameTime(), 0.0f);
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo, TRANS("TIME LEFT"), TimeToString(fTimeLeft));
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo.ConstData(), TRANS("TIME LEFT"), TimeToString(fTimeLeft).ConstData());
       }
       extern INDEX SetAllPlayersStats( INDEX iSortKey);
       // fill players table
@@ -1222,11 +1222,11 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       }}
       if (GetSP()->sp_iFragLimit>0) {
         INDEX iFragsLeft = ClampDn(GetSP()->sp_iFragLimit-iMaxFrags, INDEX(0));
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("FRAGS LEFT"), iFragsLeft);
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo.ConstData(), TRANS("FRAGS LEFT"), iFragsLeft);
       }
       if (GetSP()->sp_iScoreLimit>0) {
         INDEX iScoreLeft = ClampDn(GetSP()->sp_iScoreLimit-iMaxScore, INDEX(0));
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("SCORE LEFT"), iScoreLeft);
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo.ConstData(), TRANS("SCORE LEFT"), iScoreLeft);
       }
       _pfdDisplayFont->SetFixedWidth();
       _pDP->SetFont( _pfdDisplayFont);

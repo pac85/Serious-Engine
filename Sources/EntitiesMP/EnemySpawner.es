@@ -461,13 +461,13 @@ procedures:
     // check target
     if (m_penTarget!=NULL) {
       if (!IsDerivedFromClass(m_penTarget, "Enemy Base")) {
-        WarningMessage("Target '%s' is of wrong class!", m_penTarget->GetName());
+        WarningMessage("Target '%s' is of wrong class!", m_penTarget->GetName().ConstData());
         m_penTarget = NULL;
       }
     }
     if (m_penSeriousTarget!=NULL) {
       if (!IsDerivedFromClass(m_penSeriousTarget, "Enemy Base")) {
-        WarningMessage("Target '%s' is of wrong class!", m_penSeriousTarget->GetName());
+        WarningMessage("Target '%s' is of wrong class!", m_penSeriousTarget->GetName().ConstData());
         m_penSeriousTarget = NULL;
       }
     }

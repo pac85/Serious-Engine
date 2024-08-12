@@ -260,7 +260,7 @@ void CreateCurrentAnimationList(CModelInstance *pmi,CTString &strAnimations)
 
         FLOAT fAnimLength = an.an_iFrames * an.an_fSecPerFrame;
         FLOAT fFadeFactor = CalculateFadeFactor(alList);
-        strText.PrintF("%s %g - %g",ska_GetStringFromTable(pa.pa_iAnimID),f,fFadeFactor);
+        strText.PrintF("%s %g - %g", ska_GetStringFromTable(pa.pa_iAnimID).ConstData(), f, fFadeFactor);
         INDEX iLength = strText.Length();
         if(iLength<30) {
           strTemp.PrintF(MAKESPACE(30-iLength));

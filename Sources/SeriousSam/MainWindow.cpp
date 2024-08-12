@@ -146,7 +146,7 @@ void MainWindow_Init(void)
   wc.hIconSm = NULL;
   if (0 == RegisterClassExA(&wc)) {
     // [Cecil] Simplified and more informative error message
-    FatalError(TRANS("Cannot open main window:\n%s"), GetWindowsError(GetLastError()));
+    FatalError(TRANS("Cannot open main window:\n%s"), GetWindowsError(GetLastError()).ConstData());
   }
 
   // load bitmaps

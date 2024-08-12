@@ -119,7 +119,7 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
   CTString strIncludeFile;
   try {
     strIncludeFile.Load_t(CTString(strFileName));
-    SMCPushBuffer(strFileName, strIncludeFile, FALSE);
+    SMCPushBuffer(strFileName, strIncludeFile.ConstData(), FALSE);
 
   } catch(char *strError) {
     (void)strError;
@@ -153,7 +153,7 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
   // remove double-quotes
   yytext[strlen(yytext)-1] = 0;
   strNew = yytext+1;
-  syylval.str = (const char*)strNew;
+  syylval.str = strNew;
   return(c_string); 
 }
 

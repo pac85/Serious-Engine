@@ -286,7 +286,7 @@ functions:
   virtual CTString GetPlayerKillDescription(const CTString &strPlayerName, const EDeath &eDeath)
   {
     CTString str;
-    str.PrintF(TRANS("%s was killed by a Lava Golem"), strPlayerName);
+    str.PrintF(TRANS("%s was killed by a Lava Golem"), strPlayerName.ConstData());
     return str;
   }
   virtual const CTFileName &GetComputerMessageName(void) const {
@@ -1515,7 +1515,7 @@ procedures:
       // fire count
       if (m_iFireCount <= 0)
       {
-        WarningMessage("Entity: %s - Fire count must be greater than zero", GetName());
+        WarningMessage("Entity: %s - Fire count must be greater than zero", GetName().ConstData());
         m_iFireCount = 1;
       }
     }

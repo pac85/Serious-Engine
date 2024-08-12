@@ -104,9 +104,9 @@ functions:
   {
     CTString str;
     if (eDeath.eLastDamage.dmtType==DMT_CLOSERANGE) {
-      str.PrintF(TRANS("%s was stabbed by an Arachnoid"), strPlayerName);
+      str.PrintF(TRANS("%s was stabbed by an Arachnoid"), strPlayerName.ConstData());
     } else {
-      str.PrintF(TRANS("An Arachnoid poured lead into %s"), strPlayerName);
+      str.PrintF(TRANS("An Arachnoid poured lead into %s"), strPlayerName.ConstData());
     }
     return str;
   }

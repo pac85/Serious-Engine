@@ -35,7 +35,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "EntitiesMP/Switch.h"
 #include "EntitiesMP/MessageHolder.h"
 #include "EntitiesMP/Camera.h"
-#include "EntitiesMP/WorldLink.h"
 #include "EntitiesMP/HealthItem.h"
 #include "EntitiesMP/ArmorItem.h"
 #include "EntitiesMP/WeaponItem.h"
@@ -65,6 +64,8 @@ extern void JumpFromBouncer(CEntity *penToBounce, CEntity *penBouncer);
 #define GENDEROFFSET    100   // sound components for genders are offset by this value
 
 %}
+
+uses "EntitiesMP/WorldLink";
 
 enum PlayerViewType {
   0 PVT_PLAYEREYES      "",
@@ -928,7 +929,9 @@ const char *NameForState(PlayerState pst)
 // print explanation on how a player died
 void PrintPlayerDeathMessage(CPlayer *ppl, const EDeath &eDeath)
 {
-  CTString strMyName = ppl->GetPlayerName();
+  CTString strMyNameTemp = ppl->GetPlayerName();
+  const char *strMyName = strMyNameTemp.ConstData();
+
   CEntity *penKiller = eDeath.eLastDamage.penInflictor;
   // if killed by a valid entity
   if (penKiller!=NULL) {
@@ -936,7 +939,8 @@ void PrintPlayerDeathMessage(CPlayer *ppl, const EDeath &eDeath)
     if (IsOfClass(penKiller, "Player")) {
       // if not self
       if (penKiller!=ppl) {
-        CTString strKillerName = ((CPlayer*)penKiller)->GetPlayerName();
+        CTString strKillerNameTemp = ((CPlayer*)penKiller)->GetPlayerName();
+        const char *strKillerName = strKillerNameTemp.ConstData();
 
         if(eDeath.eLastDamage.dmtType==DMT_TELEPORT) {
           CPrintF(TRANS("%s telefragged %s\n"), strKillerName, strMyName);
@@ -966,7 +970,7 @@ void PrintPlayerDeathMessage(CPlayer *ppl, const EDeath &eDeath)
         case DMT_PROJECTILE:
         case DMT_EXPLOSION:
           CPrintF(TRANS("%s blew himself away\n"), strMyName); break;
-        default:            CPrintF(TRANS("%s has committed suicide\n"), strMyName);
+        default: CPrintF(TRANS("%s has committed suicide\n"), strMyName);
         }
       }
     // if killed by an enemy
@@ -1682,7 +1686,7 @@ functions:
   void GetShortStats(CTString &strStats)
   {
     strStats.PrintF( TRANS("%s %s Score: %d Kills: %d/%d"), 
-                     GetDifficultyString(), TimeToString(GetStatsInGameTimeLevel()), 
+                     GetDifficultyString().ConstData(), TimeToString(GetStatsInGameTimeLevel()).ConstData(), 
                      m_psLevelStats.ps_iScore, m_psLevelStats.ps_iKills, m_psLevelTotal.ps_iKills);
   }
 
@@ -2488,7 +2492,7 @@ functions:
       pdp->SetTextScaling( fScale);
       pdp->SetTextAspect( 1.0f);
       CTString strMsg;
-      strMsg.PrintF(TRANS("%s connected"), GetPlayerName());
+      strMsg.PrintF(TRANS("%s connected"), GetPlayerName().ConstData());
       pdp->PutTextCXY( strMsg, pixDPWidth*0.5f, pixDPHeight*0.5f, SE_COL_BLUE_NEUTRAL_LT|CT_OPAQUE);
     }
   }
@@ -2559,7 +2563,7 @@ functions:
       if (m_fPickedAmmount==0) {
         strPicked = m_strPickedName;
       } else {
-        strPicked.PrintF("%s +%d", m_strPickedName, int(m_fPickedAmmount));
+        strPicked.PrintF("%s +%d", m_strPickedName.ConstData(), int(m_fPickedAmmount));
       }
       pdp->PutTextCXY( strPicked, pixDPWidth*0.5f, pixDPHeight*0.82f, C_WHITE|0xDD);
       if (!GetSP()->sp_bCooperative && !GetSP()->sp_bUseFrags && m_fPickedMana>=1) {
@@ -3422,7 +3426,7 @@ functions:
         ItemPicked(strKey, 0);
         // if in cooperative
         if (GetSP()->sp_bCooperative && !GetSP()->sp_bSinglePlayer) {
-          CPrintF(TRANS("^cFFFFFF%s - %s^r\n"), GetPlayerName(), strKey);
+          CPrintF(TRANS("^cFFFFFF%s - %s^r\n"), GetPlayerName().ConstData(), strKey.ConstData());
         }
         return TRUE;
       }
@@ -3822,14 +3826,14 @@ functions:
     if (pcOrg.GetName()!=pcNew.GetName()) {
       // report that
       CPrintF(TRANS("%s is now known as %s\n"), 
-        pcOrg.GetNameForPrinting(), pcNew.GetNameForPrinting());
+        pcOrg.GetNameForPrinting().ConstData(), pcNew.GetNameForPrinting().ConstData());
     }
 
     // if the team has changed
     if (pcOrg.GetTeam()!=pcNew.GetTeam()) {
       // report that
       CPrintF(TRANS("%s switched to team %s\n"), 
-        pcNew.GetNameForPrinting(), pcNew.GetTeamForPrinting());
+        pcNew.GetNameForPrinting().ConstData(), pcNew.GetTeamForPrinting().ConstData());
     }
 
     // if appearance changed
@@ -4472,7 +4476,7 @@ functions:
             }
 
             // initiate respawn
-            CPrintF(TRANS("%s is riding the gun again\n"), GetPlayerName());
+            CPrintF(TRANS("%s is riding the gun again\n"), GetPlayerName().ConstData());
             SendEvent(EEnd());
 
             // report number of credits left
@@ -4486,7 +4490,7 @@ functions:
           // if no more credits left
           } else {
             // report that you cannot respawn
-            CPrintF(TRANS("%s rests in peace - out of credits\n"), GetPlayerName());
+            CPrintF(TRANS("%s rests in peace - out of credits\n"), GetPlayerName().ConstData());
           }
         }
       }
@@ -5122,7 +5126,7 @@ functions:
   }
   
   
-  void TeleportPlayer(enum WorldLinkType EwltType) 
+  void TeleportPlayer(WorldLinkType EwltType) 
   {
     INDEX iLevel = -1;
     CTString strLevelName = GetWorld()->wo_fnmFileName.FileName();
@@ -5193,7 +5197,7 @@ functions:
       if (pen==NULL) {
         // try to find normal start marker
         CTString strPlayerStart;
-        strPlayerStart.PrintF("Player Start - %s", m_strGroup);
+        strPlayerStart.PrintF("Player Start - %s", m_strGroup.ConstData());
         pen = _pNetwork->GetEntityWithName(strPlayerStart, 0);
         if (m_strGroup=="") {
           bSetHealth = TRUE;
@@ -5394,7 +5398,7 @@ functions:
     // record stats for this level and add to global table
     CTString strStats;
     strStats.PrintF(TRANS("%s\n  Time:   %s\n  Score: %9d\n  Kills:   %03d/%03d\n  Secrets:   %02d/%02d\n"), 
-        TranslateConst(en_pwoWorld->GetName(), 0), TimeToString(tmLevelTime), 
+        TranslateConst(en_pwoWorld->GetName(), 0), TimeToString(tmLevelTime).ConstData(), 
         m_psLevelStats.ps_iScore,
         m_psLevelStats.ps_iKills, m_psLevelTotal.ps_iKills,
         m_psLevelStats.ps_iSecrets, m_psLevelTotal.ps_iSecrets);
@@ -5679,11 +5683,11 @@ procedures:
         // if killed by a player
         if (pplKillerPlayer!=NULL) {
           // print how much that player gained
-          CPrintF(TRANS("  %s: +%d points\n"), pplKillerPlayer->GetPlayerName(), m_iMana);
+          CPrintF(TRANS("  %s: +%d points\n"), pplKillerPlayer->GetPlayerName().ConstData(), m_iMana);
         // if it was a suicide, or an accident
         } else {
           // print how much you lost
-          CPrintF(TRANS("  %s: -%d points\n"), GetPlayerName(), m_iMana);
+          CPrintF(TRANS("  %s: -%d points\n"), GetPlayerName().ConstData(), m_iMana);
         }
       }
 

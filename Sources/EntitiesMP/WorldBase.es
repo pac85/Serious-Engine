@@ -100,10 +100,10 @@ static void MakeWorldStatistics(void)
       EntityStats &es = *ites;
       CTString strLine;
       strLine.PrintF("%-40s: %8d %8d %10g %10d", 
-        es.es_strName, es.es_ctCount, es.es_ctAmmount, es.es_fValue, es.es_iScore);
+        es.es_strName.ConstData(), es.es_ctCount, es.es_ctAmmount, es.es_fValue, es.es_iScore);
       strm.PutLine_t(strLine.ConstData());
     }}
-    CPrintF("Dumped to '%s'\n", CTString(fnm));
+    CPrintF("Dumped to '%s'\n", fnm.ConstData());
   } catch (char *strError) {
     CPrintF("Error: %s\n", strError);
   }
@@ -155,7 +155,7 @@ static void DoLevelSafetyChecks()
       CModelHolder2 *mh = (CModelHolder2*)&*iten;
       FLOAT3D vPos = mh->GetPlacement().pl_PositionVector;
       if (mh->m_penDestruction == NULL) {
-        CPrintF("  model holder '%s' at (%2.2f, %2.2f, %2.2f) has no destruction\n", mh->m_strName, vPos(1), vPos(2), vPos(3));
+        CPrintF("  model holder '%s' at (%2.2f, %2.2f, %2.2f) has no destruction\n", mh->m_strName.ConstData(), vPos(1), vPos(2), vPos(3));
       }
     }
   }}
@@ -167,7 +167,7 @@ static void DoLevelSafetyChecks()
       CSoundHolder *sh = (CSoundHolder *)&*iten;
       FLOAT3D vPos = sh->GetPlacement().pl_PositionVector;
       if (sh->m_fnSound == CTFILENAME("Sounds\\Default.wav")) {
-        CPrintF("  sound holder '%s' at (%2.2f, %2.2f, %2.2f) has default sound!\n", sh->m_strName, vPos(1), vPos(2), vPos(3));
+        CPrintF("  sound holder '%s' at (%2.2f, %2.2f, %2.2f) has default sound!\n", sh->m_strName.ConstData(), vPos(1), vPos(2), vPos(3));
       }
     }
   }}

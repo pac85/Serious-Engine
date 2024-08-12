@@ -313,12 +313,12 @@ procedures:
 
     // assure valid target
     if (m_penTarget!=NULL && !IsOfClass(m_penTarget, "Ship Marker")) {
-      WarningMessage("Target '%s' is not of ShipMarker class!", m_penTarget->GetName());
+      WarningMessage("Target '%s' is not of ShipMarker class!", m_penTarget->GetName().ConstData());
       m_penTarget = NULL;
     }
     // assure valid sail
     if (m_penSail!=NULL && m_penSail->GetRenderType()!=RT_MODEL) {
-      WarningMessage("Sail '%s' is not a model!", m_penSail->GetName());
+      WarningMessage("Sail '%s' is not a model!", m_penSail->GetName().ConstData());
       m_penSail = NULL;
     }
 

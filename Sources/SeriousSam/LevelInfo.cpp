@@ -93,7 +93,7 @@ int qsort_CompareLevels(const void *elem1, const void *elem2 )
 {
   const CLevelInfo &li1 = **(CLevelInfo **)elem1;
   const CLevelInfo &li2 = **(CLevelInfo **)elem2;
-  return strcmp(li1.li_fnLevel, li2.li_fnLevel);
+  return strcmp(li1.li_fnLevel.ConstData(), li2.li_fnLevel.ConstData());
 }
 
 // init level-info subsystem
@@ -109,11 +109,11 @@ void LoadLevelsList(void)
   for (INDEX i=0; i<afnmDir.Count(); i++) {
     CTFileName fnm = afnmDir[i];
 
-    CPrintF(TRANS("  file '%s' : "), (const char *)fnm);
+    CPrintF(TRANS("  file '%s' : "), fnm.ConstData());
     // try to load its info, and if valid
     CLevelInfo li;
     if (GetLevelInfo(li, fnm)) {
-      CPrintF(TRANS("'%s' spawn=0x%08x\n"), li.li_strName, li.li_ulSpawnFlags);
+      CPrintF(TRANS("'%s' spawn=0x%08x\n"), li.li_strName.ConstData(), li.li_ulSpawnFlags);
 
       // create new info for that file
       CLevelInfo *pliNew = new CLevelInfo;
@@ -230,7 +230,7 @@ int qsort_CompareDemos(const void *elem1, const void *elem2 )
 {
   const CLevelInfo &li1 = **(CLevelInfo **)elem1;
   const CLevelInfo &li2 = **(CLevelInfo **)elem2;
-  return strcmp(li1.li_fnLevel, li2.li_fnLevel);
+  return strcmp(li1.li_fnLevel.ConstData(), li2.li_fnLevel.ConstData());
 }
 
 // init list of autoplay demos
@@ -248,7 +248,7 @@ void LoadDemosList(void)
     // create new info for that file
     CLevelInfo *pli = new CLevelInfo;
     pli->li_fnLevel = fnm;
-    CPrintF("  %s\n", (const char *)pli->li_fnLevel);
+    CPrintF("  %s\n", pli->li_fnLevel.ConstData());
     // add it to list
     _lhAutoDemos.AddTail(pli->li_lnNode);
   }
@@ -261,7 +261,7 @@ void LoadDemosList(void)
   if (sam_strIntroLevel!="") {
     CLevelInfo *pli = new CLevelInfo;
     pli->li_fnLevel = sam_strIntroLevel;
-    CPrintF("  %s\n", (const char *)pli->li_fnLevel);
+    CPrintF("  %s\n", pli->li_fnLevel.ConstData());
     _lhAutoDemos.AddHead(pli->li_lnNode);
   }
 }

@@ -141,9 +141,9 @@ BOOL StartGame(CTString &strLevel)
  
 void ExecScript(const CTString &str)
 {
-  CPrintF("Executing: '%s'\n", str);
+  CPrintF("Executing: '%s'\n", str.ConstData());
   CTString strCmd;
-  strCmd.PrintF("include \"%s\"", str);
+  strCmd.PrintF("include \"%s\"", str.ConstData());
   _pShell->Execute(strCmd);
 }
 
@@ -190,7 +190,7 @@ BOOL Init(int argc, char* argv[])
 
     FinishTranslationTable();
   } catch (char *strError) {
-    FatalError("%s %s", CTString(fnmTransTable), strError);
+    FatalError("%s %s", fnmTransTable.ConstData(), strError);
   }
 
   // always disable all warnings when in serious sam
@@ -212,7 +212,7 @@ BOOL Init(int argc, char* argv[])
   _pGame->Initialize("UserData\\Game\\DedicatedServer.gms"); // [Cecil]
 
   LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), _strSamVersion);
-  CPrintF(TRANS("Serious Sam version: %s\n"), _strSamVersion);
+  CPrintF(TRANS("Serious Sam version: %s\n"), _strSamVersion.ConstData());
 
   SetConsoleCtrlHandler(HandlerRoutine, TRUE);
 
@@ -247,8 +247,8 @@ void RoundBegin(void)
 {
   // repeat generate script names
   FOREVER {
-    strBegScript.PrintF("%s%d_begin.ini", ded_strConfig, iRound);
-    strEndScript.PrintF("%s%d_end.ini",   ded_strConfig, iRound);
+    strBegScript.PrintF("%s%d_begin.ini", ded_strConfig.ConstData(), iRound);
+    strEndScript.PrintF("%s%d_end.ini",   ded_strConfig.ConstData(), iRound);
     // if start script exists
     if (FileExists(strBegScript)) {
       // stop searching

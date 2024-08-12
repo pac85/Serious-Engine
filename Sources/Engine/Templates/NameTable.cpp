@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 
 #if NAMETABLE_CASESENSITIVE == 1
-  #define COMPARENAMES(a, b) (strcmp(a, b) == 0)
+  #define COMPARENAMES(a, b) (strcmp((a).ConstData(), (b).ConstData()) == 0)
 
 #elif NAMETABLE_CASESENSITIVE == 0
   #define COMPARENAMES(a, b) (a == b)

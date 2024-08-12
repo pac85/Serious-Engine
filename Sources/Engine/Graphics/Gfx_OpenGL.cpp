@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Graphics/GfxLibrary.h>
 #include <Engine/Base/Translation.h>
@@ -134,12 +134,14 @@ static BOOL CheckGenericError(BOOL bSuccess, const char *strDescription) {
 
 #else
   // [Cecil] SDL: Check error message
-  const char *strError = SDL_GetError();
-  if (strError == NULL) return FALSE;
+  const char *strSDLError = SDL_GetError();
+  if (strSDLError == NULL) return FALSE;
+
+  CTString strError = strSDLError;
 #endif
 
   // Report error
-  WarningMessage("%s: %s", strDescription, strError);
+  WarningMessage("%s: %s", strDescription, strError.ConstData());
   return TRUE;
 };
 
@@ -491,8 +493,8 @@ BOOL CGfxLibrary::SetupPixelFormat_OGL(OS::DvcContext hdc, BOOL bReport/*=FALSE*
                               
   // output pixel format description to console (for debugging purposes)
   CPrintF( TRANS("\nPixel Format Description:\n"));
-  CPrintF( TRANS("  Number:     %d (%s)\n"), iPixelFormat, strPixelType);
-  CPrintF( TRANS("  Flags:      %s\n"), strFlags);
+  CPrintF( TRANS("  Number:     %d (%s)\n"), iPixelFormat, strPixelType.ConstData());
+  CPrintF( TRANS("  Flags:      %s\n"), strFlags.ConstData());
   CPrintF( TRANS("  Color bits: %d (%d:%d:%d:%d)\n"), pfd.cColorBits, 
            pfd.cRedBits, pfd.cGreenBits, pfd.cBlueBits, pfd.cAlphaBits);
   CPrintF( TRANS("  Depth bits: %d (%d for stencil)\n"), pfd.cDepthBits, pfd.cStencilBits);
@@ -655,14 +657,14 @@ void CGfxLibrary::InitContext_OGL(void)
 
   // TEST EXTENSIONS
   CDisplayAdapter &da = gl_gaAPI[GAT_OGL].ga_adaAdapter[gl_iCurrentAdapter];
-  da.da_strVendor   = (const char*)pglGetString(GL_VENDOR);
-  da.da_strRenderer = (const char*)pglGetString(GL_RENDERER);
-  da.da_strVersion  = (const char*)pglGetString(GL_VERSION);
-  go_strExtensions  = (const char*)pglGetString(GL_EXTENSIONS);
+  da.da_strVendor   = (const char *)pglGetString(GL_VENDOR);
+  da.da_strRenderer = (const char *)pglGetString(GL_RENDERER);
+  da.da_strVersion  = (const char *)pglGetString(GL_VERSION);
+  go_strExtensions  = (const char *)pglGetString(GL_EXTENSIONS);
 
   // report
   CPrintF( TRANS("\n* OpenGL context created: *----------------------------------\n"));
-  CPrintF( "  (%s, %s, %s)\n\n", da.da_strVendor, da.da_strRenderer, da.da_strVersion);
+  CPrintF( "  (%s, %s, %s)\n\n", da.da_strVendor.ConstData(), da.da_strRenderer.ConstData(), da.da_strVersion.ConstData());
 
   // test for used extensions
   GLint   gliRet;
@@ -911,7 +913,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
     char strBuffer[MAX_PATH+1];
     char *strDummy;
     int iRes = SearchPathA(NULL, strDriverFileName.ConstData(), NULL, MAX_PATH, strBuffer, &strDummy);
-    if( iRes==0) ThrowF_t(TRANS("OpenGL driver '%s' not present"), strDriverFileName);
+    if( iRes==0) ThrowF_t(TRANS("OpenGL driver '%s' not present"), strDriverFileName.ConstData());
 
     // load opengl library
     gl_hiDriver = OS::LoadLib(strDriverFileName.ConstData());
@@ -925,12 +927,12 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
         FatalError(TRANS( "3Dfx OpenGL driver '%s' is installed, but cannot be loaded!\n"
                           "If you previously had a 3Dfx card and it was removed,\n"
                           "please deinstall the driver and restart windows before\n"
-                          "continuing.\n"), strDriverFileName);
+                          "continuing.\n"), strDriverFileName.ConstData());
       }
     #endif
 
       // fail!
-      ThrowF_t(TRANS("Cannot load OpenGL driver '%s'"), strDriverFileName);
+      ThrowF_t(TRANS("Cannot load OpenGL driver '%s'"), strDriverFileName.ConstData());
     }
     // prepare functions
     OGL_SetFunctionPointers_t(gl_hiDriver);

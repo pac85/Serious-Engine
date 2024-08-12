@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Build.h>
 #include <Engine/Network/Network.h>
@@ -491,13 +491,13 @@ void CSessionState::WaitStream_t(CTMemoryStream &strmMessage, const CTString &st
       ses_strDisconnected = strReason;
       // no more client/server updates in the progres hook
       _bRunNetUpdates = FALSE;
-      ThrowF_t(TRANS("Disconnected: %s\n"), strReason);
+      ThrowF_t(TRANS("Disconnected: %s\n"), strReason.ConstData());
 	  // otherwise
     } else {
       // no more client/server updates in the progres hook
       _bRunNetUpdates = FALSE;
       // it is invalid message
-      ThrowF_t(TRANS("Invalid stream while waiting for %s"), strName);
+      ThrowF_t(TRANS("Invalid stream while waiting for %s"), strName.ConstData());
     }
 
     // if client is disconnected
@@ -516,7 +516,7 @@ void CSessionState::WaitStream_t(CTMemoryStream &strmMessage, const CTString &st
 //	_pNetwork->SendToServerReliable(nmConfirmDisconnect);
 
   
-  ThrowF_t(TRANS("Timeout while waiting for %s"), strName);
+  ThrowF_t(TRANS("Timeout while waiting for %s"), strName.ConstData());
 }
 
 // check if disconnected
@@ -1354,7 +1354,7 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
           FatalError(TRANS("Cannot load Player class:\n%s"), strError);
         }
         if (!_pNetwork->IsPlayerLocal(penNewPlayer)) {
-          CPrintF(TRANS("%s joined\n"), penNewPlayer->GetPlayerName());
+          CPrintF(TRANS("%s joined\n"), penNewPlayer->GetPlayerName().ConstData());
         }
       } else {
         // attach entity to client data
@@ -1363,7 +1363,7 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
         penNewPlayer->CharacterChanged(pcCharacter);
 
         if (!_pNetwork->IsPlayerLocal(penNewPlayer)) {
-          CPrintF(TRANS("%s rejoined\n"), penNewPlayer->GetPlayerName());
+          CPrintF(TRANS("%s rejoined\n"), penNewPlayer->GetPlayerName().ConstData());
         }
       }
 
@@ -1378,7 +1378,7 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
       _pNetwork->ga_World.DeletePredictors();
 
       // inform entity of disconnnection
-      CPrintF(TRANS("%s left\n"), ses_apltPlayers[iPlayer].plt_penPlayerEntity->GetPlayerName());
+      CPrintF(TRANS("%s left\n"), ses_apltPlayers[iPlayer].plt_penPlayerEntity->GetPlayerName().ConstData());
       ses_apltPlayers[iPlayer].plt_penPlayerEntity->Disconnect();
       // deactivate the player
       ses_apltPlayers[iPlayer].Deactivate();
@@ -1454,9 +1454,9 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
       // report who paused
       if (ses_bPause!=bPauseBefore) {
         if (ses_bPause) {
-          CPrintF(TRANS("Paused by '%s'\n"), strPauser);
+          CPrintF(TRANS("Paused by '%s'\n"), strPauser.ConstData());
         } else {
-          CPrintF(TRANS("Unpaused by '%s'\n"), strPauser);
+          CPrintF(TRANS("Unpaused by '%s'\n"), strPauser.ConstData());
         }
       }
     }
@@ -1644,8 +1644,8 @@ void CSessionState::ReadWorldAndState_t(CTStream *pstr)   // throw char *
     ThrowF_t(
       TRANS("Cannot play demo because file '%s'\n"
       "is older than file '%s'!\n"),
-      CTString(pstr->GetDescription()),
-      CTString(_pNetwork->ga_fnmWorld));
+      pstr->GetDescription().ConstData(),
+      _pNetwork->ga_fnmWorld.ConstData());
   }
 
   // prepare the world for loading
@@ -1870,7 +1870,7 @@ void CSessionState::RestoreOldLevel(const CTString &strFileName)
     ReadWorldAndState_t(&prlOld->rl_strmSessionState);
     _pTimer->SetCurrentTick(ses_tmLastProcessedTick);
   } catch (char *strError) {
-    FatalError(TRANS("Cannot restore old level '%s':\n%s"), prlOld->rl_strFileName, strError);
+    FatalError(TRANS("Cannot restore old level '%s':\n%s"), prlOld->rl_strFileName.ConstData(), strError);
   }
   // delete it
   delete prlOld;
@@ -2045,7 +2045,7 @@ void CSessionState::SessionStateLoop(void)
         CTString strReason;
         nmReliable>>strReason;
         ses_strDisconnected = strReason;
-        CPrintF(TRANS("Disconnected: %s\n"), strReason);
+        CPrintF(TRANS("Disconnected: %s\n"), strReason.ConstData());
         // disconnect
         _cmiComm.Client_Close();
       // if this is recon response
@@ -2053,7 +2053,7 @@ void CSessionState::SessionStateLoop(void)
         // just print it
         CTString strResponse;
         nmReliable>>strResponse;
-        CPrintF("%s", "|"+strResponse+"\n");
+        CPutString(("|" + strResponse + "\n").ConstData());
 
       // [Cecil] Dump local synchronization data
       } else if (eType == MSG_DUMPSYNC) {
@@ -2132,7 +2132,7 @@ void CSessionState::SessionStateLoop(void)
         DumpSyncToFile_t(strmFile, ses_iExtensiveSyncCheck);
       }
       // inform user
-      CPrintF("Sync data dumped to '%s'\n", strFileName);
+      CPrintF("Sync data dumped to '%s'\n", strFileName.ConstData());
     }
     catch (char *strError)
     {

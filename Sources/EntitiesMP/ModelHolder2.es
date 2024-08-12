@@ -760,7 +760,7 @@ procedures:
     
     // check your destruction pointer
     if (m_penDestruction!=NULL && !IsOfClass(m_penDestruction, "ModelDestruction")) {
-      WarningMessage("Destruction '%s' is wrong class!", m_penDestruction->GetName());
+      WarningMessage("Destruction '%s' is wrong class!", m_penDestruction->GetName().ConstData());
       m_penDestruction=NULL;
     }
 

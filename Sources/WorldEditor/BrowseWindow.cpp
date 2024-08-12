@@ -497,7 +497,7 @@ HGLOBAL CreateHDrop( const CTFileName &fnToDrag, BOOL bAddAppPath/*=TRUE*/)
   // we want drop point's coordinates in client area
   pDropFiles->fNC = FALSE;
 
-	strcpy(pchDropFileName, (const char *)fnFullToDrag);
+	strcpy(pchDropFileName, fnFullToDrag.ConstData());
 	// final null terminator as per CF_HDROP Format specs.
 	pchDropFileName[strlen(pchDropFileName)+1]=0;
 	GlobalUnlock(hGlobal);
@@ -1476,7 +1476,7 @@ void ExportTexture( CTFileName fnTexture)
       }
       else
       {
-        fnFrame.PrintF("%s%03d.tga", (const char *)fnTexture.NoExt(), iFrame);
+        fnFrame.PrintF("%s%03d.tga", fnTexture.NoExt().ConstData(), iFrame);
       }
       // if file exists, ask for substitution name
       if( FileExists( fnFrame) && iFrame==0 )

@@ -100,7 +100,7 @@ functions:
   virtual CTString GetPlayerKillDescription(const CTString &strPlayerName, const EDeath &eDeath)
   {
     CTString str;
-    str.PrintF(TRANS("A Biomech blew %s away"), strPlayerName);
+    str.PrintF(TRANS("A Biomech blew %s away"), strPlayerName.ConstData());
     return str;
   }
 

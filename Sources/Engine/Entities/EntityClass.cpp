@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Stream.h>
 #include <Engine/Entities/EntityClass.h>
@@ -253,7 +253,7 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
     ASSERT(bSuccess);
     ec_fnmClassDLL.Clear();
     // report error
-    ThrowF_t(TRANS("Class '%s' not found in entity class package file '%s'"), strClassName, fnmDLL);
+    ThrowF_t(TRANS("Class '%s' not found in entity class package file '%s'"), strClassName.ConstData(), fnmDLL.ConstData());
   }
 
   // [Cecil] Get the pointer to the DLL class from the registry

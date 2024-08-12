@@ -83,17 +83,17 @@ int CompareSessions(const void *pv0, const void *pv1)
 
   int iResult = 0;
   switch (_iSort) {
-  case 0: iResult = stricmp(ns0.ns_strSession, ns1.ns_strSession); break;
-  case 1: iResult = stricmp(ns0.ns_strWorld, ns1.ns_strWorld); break;
+  case 0: iResult = stricmp(ns0.ns_strSession.ConstData(), ns1.ns_strSession.ConstData()); break;
+  case 1: iResult = stricmp(ns0.ns_strWorld.ConstData(), ns1.ns_strWorld.ConstData()); break;
   case 2: iResult = Sgn(ns0.ns_tmPing - ns1.ns_tmPing); break;
   case 3: iResult = Sgn(ns0.ns_ctPlayers - ns1.ns_ctPlayers); break;
-  case 4: iResult = stricmp(ns0.ns_strGameType, ns1.ns_strGameType); break;
-  case 5: iResult = stricmp(ns0.ns_strMod, ns1.ns_strMod); break;
-  case 6: iResult = stricmp(ns0.ns_strVer, ns1.ns_strVer); break;
+  case 4: iResult = stricmp(ns0.ns_strGameType.ConstData(), ns1.ns_strGameType.ConstData()); break;
+  case 5: iResult = stricmp(ns0.ns_strMod.ConstData(), ns1.ns_strMod.ConstData()); break;
+  case 6: iResult = stricmp(ns0.ns_strVer.ConstData(), ns1.ns_strVer.ConstData()); break;
   }
 
   if (iResult == 0) { // make sure we always have unique order when resorting
-    return stricmp(ns0.ns_strAddress, ns1.ns_strAddress);;
+    return stricmp(ns0.ns_strAddress.ConstData(), ns1.ns_strAddress.ConstData());
   }
 
   return _bSortDown ? -iResult : iResult;

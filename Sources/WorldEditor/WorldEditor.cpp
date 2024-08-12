@@ -536,7 +536,7 @@ BOOL CWorldEditorApp::SubInitInstance()
     SetRegistryKey( CString("CroTeam\\"+_strModExt));
   }
 
-  CPrintF("%s", cmd_strOutput);
+  CPutString(cmd_strOutput);
 
   // if the registry is not set yet
   CString strDefaultTexture = GetProfileString( L"World editor prefs", L"Default primitive texture", L"");
@@ -2366,7 +2366,7 @@ void CWorldEditorApp::OnConvertWorlds()
   if( bConvertError) {
     fsErrorFile.PutLine_t( "DONE.");
     fsErrorFile.Close();
-    WarningMessage( "There were some errors in conversion. They are listed in file:\n %s", fnErrorFile);
+    WarningMessage( "There were some errors in conversion. They are listed in file:\n %s", fnErrorFile.ConstData());
   }
 }
 
@@ -2526,8 +2526,7 @@ INDEX CWorldEditorApp::Insert3DObjects(CWorldEditorDoc *pDoc)
   if( afnFiles.Count() == 0) return 0;
 
   // get first file (when strings are sorted)
-  CTString strMin="a";
-  ((char *)(const char *) strMin)[0]=char(255);
+  CTString strMin = "\xFF";
   CTFileName *pfn=NULL;
   {FOREACHINDYNAMICARRAY(afnFiles, CTFileName, itfn)
   {
@@ -2809,7 +2808,7 @@ void FindEmptyBrushes( void)
             if( itbm->bm_abscSectors.Count() == 0)
             {
               CPrintF("Found brush named %s, without sectors in mip %d at coordinates: (%g, %g, %g)\n",
-                iten->GetName(), iMip, vPos(1), vPos(2), vPos(3));
+                iten->GetName().ConstData(), iMip, vPos(1), vPos(2), vPos(3));
             }
             iMip++;
           }
@@ -2842,7 +2841,7 @@ void CWorldEditorApp::DisplayHelp(const CTFileName &fnHlk, UINT uCommand, DWORD 
   {
     (void) strError;
     if (fnHlk.FileExt()==".ecl") {
-      WarningMessage("No help available for class: %s", fnHlk.FileName());
+      WarningMessage("No help available for class: %s", fnHlk.FileName().ConstData());
     }
     bHlkFound = FALSE;
   }

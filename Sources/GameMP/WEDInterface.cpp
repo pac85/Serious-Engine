@@ -151,7 +151,7 @@ void CGame::QuickTest(const CTFileName &fnMapName,
             char *pachrMessage=fgets( achrMessage, 1024-1, pfileMessage);
             if( pachrMessage!=NULL)
             {
-              CPrintF("%s",pachrMessage);
+              CPutString(pachrMessage);
             }
           }
         }

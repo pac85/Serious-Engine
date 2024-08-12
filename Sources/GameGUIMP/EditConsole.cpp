@@ -90,7 +90,7 @@ BOOL CEditConsole::PreTranslateMessage(MSG* pMsg)
       // set EOF delimiter
       achrToExecute[ ctLetters] = 0;
       CTString strToExecute = CStringA(achrToExecute);
-      CPrintF( ">%s\n", strToExecute);
+      CPrintF( ">%s\n", strToExecute.ConstData());
       if (strToExecute[strToExecute.Length() - 1] != ';')
       {
         strToExecute += ";";

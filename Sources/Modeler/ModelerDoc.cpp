@@ -238,7 +238,7 @@ BOOL CModelerDoc::OnSaveDocument(LPCTSTR lpszPathName)
       {
         CTString strMessage;
         CTFileName fnDoc = CTString(CStringA(pmdCurrent->GetPathName()));
-        strMessage.PrintF("Do you want to save model \"%s\" before reloading its attachments?", fnDoc.FileName() );
+        strMessage.PrintF("Do you want to save model \"%s\" before reloading its attachments?", fnDoc.FileName().ConstData());
         if( ::MessageBoxA( pMainFrame->m_hWnd, strMessage,
                         "Warning !", MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON1 | 
                         MB_TASKMODAL | MB_TOPMOST) != IDYES)

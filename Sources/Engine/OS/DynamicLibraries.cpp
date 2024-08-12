@@ -56,7 +56,7 @@ HMODULE OS::LoadLib(const char *strLibrary) {
   // Fix path slashes
   fnmPath.ReplaceChar('\\', '/');
 
-  return dlopen(fnmPath.ConstData(), RTLD_LAZY | RTLD_GLOBAL);
+  return (HMODULE)dlopen(fnmPath.ConstData(), RTLD_LAZY | RTLD_GLOBAL);
 };
 
 // Free loaded library
@@ -77,7 +77,7 @@ HMODULE OS::LoadLibOrThrow_t(const char *strLibrary) {
 
   if (hLib == NULL) {
   #if SE1_WIN
-    ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"), strLibrary, GetWindowsError(GetLastError()));
+    ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"), strLibrary, GetWindowsError(GetLastError()).ConstData());
   #else
     ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"), strLibrary, dlerror());
   #endif

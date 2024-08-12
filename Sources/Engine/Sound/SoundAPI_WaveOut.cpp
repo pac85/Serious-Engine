@@ -91,7 +91,7 @@ BOOL CSoundAPI_WaveOut::StartUp(BOOL bReport) {
       default: strError.PrintF("%d", res);
     };
 
-    CPrintF(TRANS("  ! WaveOut error: %s\n"), strError);
+    CPrintF(TRANS("  ! WaveOut error: %s\n"), strError.ConstData());
     return FALSE;
   }
 
@@ -107,7 +107,7 @@ BOOL CSoundAPI_WaveOut::StartUp(BOOL bReport) {
     if (snd_iDevice >= 0) strDevice.PrintF(TRANS("device %d"), snd_iDevice);
 
     CPrintF(TRANS("  opened device: %s\n"), woc.szPname);
-    CPrintF(TRANS("  %dHz, %dbit, %s\n"), wfe.nSamplesPerSec, wfe.wBitsPerSample, strDevice);
+    CPrintF(TRANS("  %dHz, %dbit, %s\n"), wfe.nSamplesPerSec, wfe.wBitsPerSample, strDevice.ConstData());
   }
 
   // Determine whole mixer buffer size

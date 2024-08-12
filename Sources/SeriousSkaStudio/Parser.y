@@ -75,7 +75,7 @@ void SKAyyerror(const char *strFormat, ...)
   CTString strError;
   strError.VPrintF(strFormat, arg);
   // throw the string
-  ThrowF_t("File '%s' (line %d)\n%s", strCurentFileName.ConstData(), _yy_iLine, (const char*)strError);
+  ThrowF_t("File '%s' (line %d)\n%s", strCurentFileName.ConstData(), _yy_iLine, strError.ConstData());
 };
 
 %}

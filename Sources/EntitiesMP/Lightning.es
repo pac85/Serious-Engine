@@ -89,7 +89,7 @@ functions:
     }
     else
     {
-      WarningMessage("Target '%s' is not of light class!", m_penLight->GetName());
+      WarningMessage("Target '%s' is not of light class!", m_penLight->GetName().ConstData());
     }
     return NULL;
   };
@@ -225,7 +225,7 @@ procedures:
     {
       if( m_penTarget != NULL)
       {
-        WarningMessage("Target '%s' is not of Marker class!", m_penTarget->GetName());
+        WarningMessage("Target '%s' is not of Marker class!", m_penTarget->GetName().ConstData());
       }
       // don't do anything
       return;

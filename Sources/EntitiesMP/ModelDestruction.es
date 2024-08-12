@@ -146,7 +146,7 @@ functions:
   void CheckOneModelTarget(CEntityPointer &pen)
   {
     if (pen!=NULL && !IsOfClass(pen, "ModelHolder2")) {
-      WarningMessage("Model '%s' is not ModelHolder2!", pen->GetName());
+      WarningMessage("Model '%s' is not ModelHolder2!", pen->GetName().ConstData());
       pen=NULL;
     }
   }

@@ -36,6 +36,11 @@ ENGINE_API void ReadTranslationTable_t(
 ENGINE_API char *Translate(const char *str, INDEX iOffset = 0);
 ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset = 0);
 
+// [Cecil] CTString alternative
+__forceinline const char *TranslateConst(const CTString &str, INDEX iOffset = 0) {
+  return TranslateConst(str.ConstData(), iOffset);
+};
+
 // macro for inserting a string for translation into executables
 #define TRANS(str) Translate("ETRS" str, 4)
 // macro for translating a variable string (usually can be CTString)

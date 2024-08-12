@@ -478,7 +478,7 @@ procedures:
     }
 
     m_strDescription.PrintF("%s:%g-%g", 
-      strType,  m_rHotSpotRange, m_rFallOffRange);
+      strType.ConstData(), m_rHotSpotRange, m_rFallOffRange);
 
     return;
   };

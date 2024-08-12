@@ -50,9 +50,9 @@ void CDlgEditButtonAction::DoDataExchange(CDataExchange* pDX)
   // if dialog is recieving data
   if( pDX->m_bSaveAndValidate == FALSE)
   {
-    m_strButtonActionName = m_pbaButtonAction->ba_strName;
-    m_strButtonDownCommand = m_pbaButtonAction->ba_strCommandLineWhenPressed;
-    m_strButtonUpCommand = m_pbaButtonAction->ba_strCommandLineWhenReleased;
+    m_strButtonActionName = m_pbaButtonAction->ba_strName.ConstData();
+    m_strButtonDownCommand = m_pbaButtonAction->ba_strCommandLineWhenPressed.ConstData();
+    m_strButtonUpCommand = m_pbaButtonAction->ba_strCommandLineWhenReleased.ConstData();
   }
 
 	//{{AFX_DATA_MAP(CDlgEditButtonAction)

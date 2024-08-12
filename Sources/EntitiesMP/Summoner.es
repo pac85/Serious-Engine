@@ -279,7 +279,7 @@ functions:
   virtual CTString GetPlayerKillDescription(const CTString &strPlayerName, const EDeath &eDeath)
   {
     CTString str;
-    str.PrintF(TRANS("The Summoner unsummoned %s"), strPlayerName);
+    str.PrintF(TRANS("The Summoner unsummoned %s"), strPlayerName.ConstData());
     return str;
   }
   

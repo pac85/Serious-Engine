@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Entities/Entity.h>
 #include <Engine/Entities/EntityClass.h>
@@ -32,7 +32,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/CRC.h>
 #include <Engine/Base/Console.h>
-#include <Engine/Base/Statistics_Internal.h>
+#include <Engine/Base/Statistics_internal.h>
 #include <Engine/Network/Network.h>
 #include <Engine/Network/PlayerTarget.h>
 #include <Engine/Network/SessionState.h>
@@ -888,7 +888,7 @@ void CEntity::Teleport(const CPlacement3D &plNew, BOOL bTelefrag /*=TRUE*/)
         CEntity *ppenObstacleDummy;
         if (pmme->CheckForCollisionNow(pmme->en_iCollisionBox, &ppenObstacleDummy)) {
           CPrintF("Entity '%s' was teleported inside a wall at (%g,%g,%g)!\n", 
-            GetName(), 
+            GetName().ConstData(), 
             en_plPlacement.pl_PositionVector(1),
             en_plPlacement.pl_PositionVector(2),
             en_plPlacement.pl_PositionVector(3));
@@ -3491,7 +3491,7 @@ void CEntity::DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck)  // throw ch
     strm.FPrintF_t("*** DELETED ***\n");
   }
   strm.FPrintF_t("class: '%s'\n", GetClass()->ec_pdecDLLClass->dec_strName);
-  strm.FPrintF_t("name: '%s'\n", GetName());
+  strm.FPrintF_t("name: '%s'\n", GetName().ConstData());
   if (iExtensiveSyncCheck>0) {
     strm.FPrintF_t("en_ulFlags:          0x%08X\n", en_ulFlags&~
       (ENF_SELECTED|ENF_INRENDERING|ENF_VALIDSHADINGINFO|ENF_FOUNDINGRIDSEARCH|ENF_WILLBEPREDICTED|ENF_PREDICTABLE));

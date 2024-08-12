@@ -121,9 +121,9 @@ void CDlgPlayerSettings::InitPlayersAndControlsLists(void)
   for( INDEX iPC=0; iPC<8; iPC++)
   {
     CTString strPlayer = _pGame->gm_apcPlayers[ iPC].pc_strName;
-    m_listAvailablePlayers.AddString( CString(strPlayer));
+    m_listAvailablePlayers.AddString(CString(strPlayer.ConstData()));
     //CTString strControls = _pGame->gm_actrlControls[ iPC].ctrl_strName;
-    m_listAvailableControls.AddString( CString("dummy"));
+    m_listAvailableControls.AddString(CString("dummy"));
   }
   m_listAvailableControls.SetCurSel( 0);
   m_listAvailablePlayers.SetCurSel( 0);
@@ -201,7 +201,7 @@ void CDlgPlayerSettings::OnRenamePlayer()
   ASSERT( iSelectedPlayer != LB_ERR);
 
   CTString strName = _pGame->gm_apcPlayers[ iSelectedPlayer].pc_strName;
-  dlgRename.m_strName = strName;
+  dlgRename.m_strName = strName.ConstData();
   // if new file properly edited and ok pressed
   if( (dlgRename.DoModal() == IDOK) &&
       (dlgRename.m_strName.GetLength() != 0) )

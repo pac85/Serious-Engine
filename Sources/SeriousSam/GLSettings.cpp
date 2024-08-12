@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 // list of settings data
 static CListHead _lhSettings;
@@ -122,7 +122,7 @@ extern void ApplyGLSettings(BOOL bForce)
 {
   CPrintF( TRANS("\nAutomatic 3D-board preferences adjustment...\n"));
   CDisplayAdapter &da = _pGfx->gl_gaAPI[_pGfx->GetCurrentAPI()].ga_adaAdapter[_pGfx->gl_iCurrentAdapter];
-  CPrintF( TRANS("Detected: %s - %s - %s\n"), da.da_strVendor, da.da_strRenderer, da.da_strVersion);
+  CPrintF( TRANS("Detected: %s - %s - %s\n"), da.da_strVendor.ConstData(), da.da_strRenderer.ConstData(), da.da_strVersion.ConstData());
 
   // get new settings
   CSettingsEntry *pse = GetGLSettings( da.da_strRenderer);
@@ -135,7 +135,7 @@ extern void ApplyGLSettings(BOOL bForce)
   }
 
   // report
-  CPrintF(TRANS("Matching: %s (%s)\n"), pse->se_strRenderer, pse->se_strDescription);
+  CPrintF(TRANS("Matching: %s (%s)\n"), pse->se_strRenderer.ConstData(), pse->se_strDescription.ConstData());
   _strPreferencesDescription = pse->se_strDescription;
 
   if (!bForce) {
@@ -157,7 +157,7 @@ extern void ApplyGLSettings(BOOL bForce)
   if (sam_iVideoSetup<3) {
     // execute the script
     CTString strCmd;
-    strCmd.PrintF("include \"Scripts\\GLSettings\\%s\"", CTString(pse->se_fnmScript));
+    strCmd.PrintF("include \"Scripts\\GLSettings\\%s\"", pse->se_fnmScript.ConstData());
     _pShell->Execute(strCmd);
     // refresh textures
     _pShell->Execute("RefreshTextures();");

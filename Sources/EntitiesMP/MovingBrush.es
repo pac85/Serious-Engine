@@ -410,7 +410,7 @@ functions:
     }
 
     if (!IsOfClass(m_penTarget, "Moving Brush Marker")) {
-      WarningMessage("Entity '%s' is not of Moving Brush Marker class!", m_penTarget->GetName());
+      WarningMessage("Entity '%s' is not of Moving Brush Marker class!", m_penTarget->GetName().ConstData());
       return FALSE;
     }
 

@@ -286,7 +286,7 @@ BOOL CDlgPlayerControls::OnInitDialog()
   // for all possible axis mounting controlers
   for( INDEX iAxis=0; iAxis<_pInput->GetAvailableAxisCount(); iAxis++)
   {
-    m_comboControlerAxis.AddString( CString( _pInput->GetAxisName( iAxis)));
+    m_comboControlerAxis.AddString(CString(_pInput->GetAxisName(iAxis).ConstData()));
   }
 
   return TRUE;
@@ -300,10 +300,10 @@ void CDlgPlayerControls::SetFirstAndSecondButtonNames(void)
   {
     // type first currently mounted button's name
     m_editFirstControl.SetWindowText( CString(
-      _pInput->GetButtonName( pbaCurrent->ba_iFirstKey) ));
+      _pInput->GetButtonName(pbaCurrent->ba_iFirstKey).ConstData()));
     // type second currently mounted button's name
     m_editSecondControl.SetWindowText( CString(
-      _pInput->GetButtonName( pbaCurrent->ba_iSecondKey) ));
+      _pInput->GetButtonName(pbaCurrent->ba_iSecondKey).ConstData()));
     // enable edit key and "none" controls
     bEnablePressKeyControls = TRUE;
   }

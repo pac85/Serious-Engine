@@ -7760,7 +7760,7 @@ void CWorldEditorView::OnLastPrimitive()
     {
       // exit cut mode
       theApp.m_bCutModeOn = FALSE;
-      WarningMessage( "%s", strError);
+      WarningMessage("%s", strError.ConstData());
       return;
     }
 
@@ -11313,7 +11313,7 @@ void CWorldEditorView::OnCutMode()
     if( !bCutEnabled)
     {
       // warn user
-      WarningMessage( "%s", strError);
+      WarningMessage("%s", strError.ConstData());
       return;
     }
   }

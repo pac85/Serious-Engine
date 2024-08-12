@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Base/IFeel.h>
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/Stream.h>
@@ -99,7 +99,7 @@ CTString IFeel_GetProjectFileName()
     if(strProduct == strDeviceName) return strProjectFile;
   }
   // device was not found, return default project file
-  CPrintF("No project file specified for device '%s'.\nUsing default project file\n",strProduct);
+  CPrintF("No project file specified for device '%s'.\nUsing default project file\n", strProduct.ConstData());
   return strDefaultProjectFile;
 }
 
@@ -211,12 +211,12 @@ BOOL IFeel_LoadFile(CTFileName fnFile)
     BOOL hr = immLoadFile(fnmExpanded.ConstData());
     if(hr)
     {
-      CPrintF("IFeel project file '%s' loaded\n", fnFile);
+      CPrintF("IFeel project file '%s' loaded\n", fnFile.ConstData());
       return TRUE;
     }
     else
     {
-      CPrintF("Error loading IFeel project file '%s'\n", fnFile);
+      CPrintF("Error loading IFeel project file '%s'\n", fnFile.ConstData());
       return FALSE;
     }
   }

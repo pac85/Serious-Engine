@@ -137,7 +137,7 @@ void SubMain( int argc, char *argv[])
         FindInMapFile(fnSymbols, CTString(strImage), ulSegment, ulOffset, strFunction, slDelta);
         // out put the result
         CTString strResult;
-        strResult.PrintF("%s (%s+0X%X)", strLine, strFunction, slDelta);
+        strResult.PrintF("%s (%s+0X%X)", strLine.ConstData(), strFunction.ConstData(), slDelta);
         strmDst.PutLine_t(strResult.ConstData());
       }
     }

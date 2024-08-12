@@ -48,7 +48,8 @@ BOOL FileSystem::Search::FindFirst(const char *strDir)
   return (hFile != -1);
 
 #else
-  dDir = opendir(strDir);
+  CTString strGetDir = strDir;
+  dDir = opendir(strGetDir.FileDir().ConstData());
 
   if (dDir == NULL) return FALSE;
 

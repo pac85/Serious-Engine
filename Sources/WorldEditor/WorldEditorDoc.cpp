@@ -4441,8 +4441,7 @@ void CWorldEditorDoc::OnCheckEdit(void)
   CTFileName fnmFileName;
   ExpandFilePath(EFP_READ, m_woWorld.wo_fnmFileName, fnmFileName);
 
-  CTString strCommand;
-  strCommand.PrintF("p4 edit %s", fnmFileName);
+  CTString strCommand = "p4 edit " + fnmFileName;
 
   INDEX iResult = system(strCommand);
   if(iResult != 0) {
@@ -4452,8 +4451,7 @@ void CWorldEditorDoc::OnCheckEdit(void)
 
   ReloadWorld();
 
-  CTString strMessage;
-  strMessage.PrintF("Opened for edit: %s", (const char *)m_woWorld.wo_fnmFileName);
+  CTString strMessage = "Opened for edit: " + m_woWorld.wo_fnmFileName;
   AfxMessageBox( CString(strMessage));
 }
 
@@ -4462,8 +4460,7 @@ void CWorldEditorDoc::OnCheckAdd()
   CTFileName fnmFileName;
   ExpandFilePath(EFP_READ, m_woWorld.wo_fnmFileName, fnmFileName);
 
-  CTString strCommand;
-  strCommand.PrintF("p4 add %s", fnmFileName);
+  CTString strCommand = "p4 add " + fnmFileName;
 
   INDEX iResult = system(strCommand);
   if(iResult != 0) {
@@ -4473,8 +4470,7 @@ void CWorldEditorDoc::OnCheckAdd()
 
   ReloadWorld();
 
-  CTString strMessage;
-  strMessage.PrintF( "Marked for add: %s", (const char *)m_woWorld.wo_fnmFileName);
+  CTString strMessage = "Marked for add: " + m_woWorld.wo_fnmFileName;
   AfxMessageBox( CString(strMessage));
 }
 
@@ -4483,8 +4479,7 @@ void CWorldEditorDoc::OnCheckDelete()
   CTFileName fnmFileName;
   ExpandFilePath(EFP_READ, m_woWorld.wo_fnmFileName, fnmFileName);
 
-  CTString strCommand;
-  strCommand.PrintF("p4 delete %s", fnmFileName);
+  CTString strCommand = "p4 delete " + fnmFileName;
 
   INDEX iResult = system(strCommand);
   if(iResult != 0) {
@@ -4494,8 +4489,7 @@ void CWorldEditorDoc::OnCheckDelete()
 
   ReloadWorld();
 
-  CTString strMessage;
-  strMessage.PrintF( "Marked for delete: %s", (const char *)m_woWorld.wo_fnmFileName);
+  CTString strMessage = "Marked for delete: " + m_woWorld.wo_fnmFileName;
   AfxMessageBox( CString(strMessage));
 }
 
@@ -4655,7 +4649,7 @@ void CWorldEditorDoc::OnExportPlacements()
         strName="Dummy name";
       }
       strLine.PrintF("Class: \"%s\", Name: \"%s\", Position: (%f, %f, %f), Rotation: (%f, %f, %f)",
-        pdecDLLClass->dec_strName, strName, vPos(1), vPos(2), vPos(3), vRot(1), vRot(2), vRot(3));
+        pdecDLLClass->dec_strName, strName.ConstData(), vPos(1), vPos(2), vPos(3), vRot(1), vRot(2), vRot(3));
       strmFile.PutLine_t(strLine);
 
       // if this is model holder 3 class, we should also dump model path
@@ -4709,7 +4703,7 @@ void CWorldEditorDoc::OnExportPlacements()
           }
         }
         CTString strLine;
-        strLine.PrintF("Smc: \"%s\" Stretch: (%f, %f, %f)", CTString(fnmFile), vStretch(1), vStretch(2), vStretch(3));
+        strLine.PrintF("Smc: \"%s\" Stretch: (%f, %f, %f)", fnmFile.ConstData(), vStretch(1), vStretch(2), vStretch(3));
         strmFile.PutLine_t(strLine);
       }
     }
@@ -4919,7 +4913,7 @@ BOOL IsPolygonVisible(const CBrushPolygon &bpo)
 
 // Exports one layer of given type
 void ExportLayer_t(CWorldEditorDoc *pDoc, CEntity &en, ExportType etExportType, CBrushMip *pbmMip, CTFileStream &strmAmf,
-                   const CString &strLayerName, INDEX iLayerNo, BOOL bFieldBrush, BOOL bCollisionOnlyBrush)
+                   const CTString &strLayerName, INDEX iLayerNo, BOOL bFieldBrush, BOOL bCollisionOnlyBrush)
 {
   // sort brush polygons for their textures
   CDynamicContainer<CAmfSurface> cbpoSurfaces;
@@ -5009,7 +5003,7 @@ void ExportLayer_t(CWorldEditorDoc *pDoc, CEntity &en, ExportType etExportType, 
     return;
   }
   
-  strmAmf.FPrintF_t("  LAYER_NAME \"%s\"\n", strLayerName);
+  strmAmf.FPrintF_t("  LAYER_NAME \"%s\"\n", strLayerName.ConstData());
   strmAmf.FPrintF_t("  LAYER_INDEX %d\n", iLayerNo);
   strmAmf.PutLine_t("  {");
   INDEX ctVertexMaps = etExportType==ET_RENDERING ? 4 : 1;
@@ -5145,8 +5139,8 @@ void ExportLayer_t(CWorldEditorDoc *pDoc, CEntity &en, ExportType etExportType, 
       }
       strmAmf.PutLine_t("      {");
       // export material info
-      CString strMaterial = pDoc->m_woWorld.wo_astSurfaceTypes[asSurf.sf_ubMaterial].st_strName;
-      strmAmf.FPrintF_t("        Material \"%s\";\n", strMaterial);
+      const CTString &strMaterial = pDoc->m_woWorld.wo_astSurfaceTypes[asSurf.sf_ubMaterial].st_strName;
+      strmAmf.FPrintF_t("        Material \"%s\";\n", strMaterial.ConstData());
       // export first layer data
       CTFileName strPath;
       strPath = bpo.bpo_abptTextures[0].bpt_toTexture.GetName();
@@ -5479,7 +5473,7 @@ void CWorldEditorDoc::OnExportEntities()
       }
       strLine.PrintF("    \"PARENT\" = long(%d);", idParent);
       strmFile.PutLine_t(strLine);
-      strLine.PrintF("    \"NAME\" = string(\"%s\");", strName);
+      strLine.PrintF("    \"NAME\" = string(\"%s\");", strName.ConstData());
       strmFile.PutLine_t(strLine);
       // position
       strLine.PrintF("    \"POS\" = float3(%f, %f, %f);", vPos(1), vPos(2), vPos(3));
@@ -5523,7 +5517,7 @@ void CWorldEditorDoc::OnExportEntities()
           // string
           if( pepProperty->ep_eptType == CEntityProperty::EPT_STRING) {
             CTString strString = FixQuotes(ENTITYPROPERTY( &en, pepProperty->ep_slOffset, CTString));
-            strLine.PrintF("    \"%s\" = string(\"%s\");", pepProperty->ep_strName, strString);
+            strLine.PrintF("    \"%s\" = string(\"%s\");", pepProperty->ep_strName, strString.ConstData());
             strmFile.PutLine_t(strLine);
           }
           // range
@@ -5545,7 +5539,7 @@ void CWorldEditorDoc::OnExportEntities()
               pepProperty->ep_eptType == CEntityProperty::EPT_FILENAMENODEP) {
             CTFileName fnmFile = ENTITYPROPERTY( &en, pepProperty->ep_slOffset, CTFileName);
             fnmFile.ReplaceChar('\\', '/');
-            strLine.PrintF("    \"%s\" = string(\"%s\");", pepProperty->ep_strName, fnmFile);
+            strLine.PrintF("    \"%s\" = string(\"%s\");", pepProperty->ep_strName, fnmFile.ConstData());
             strmFile.PutLine_t(strLine);
           }
           // index value
@@ -5587,7 +5581,7 @@ void CWorldEditorDoc::OnExportEntities()
           // string trans
           if( pepProperty->ep_eptType == CEntityProperty::EPT_STRINGTRANS) {
             CTString strString = FixQuotes(ENTITYPROPERTY( &en, pepProperty->ep_slOffset, CTString));
-            strLine.PrintF("    \"%s\" = string(\"%s\");", pepProperty->ep_strName, strString);
+            strLine.PrintF("    \"%s\" = string(\"%s\");", pepProperty->ep_strName, strString.ConstData());
             strmFile.PutLine_t(strLine);
           }          
           // flags
@@ -5621,7 +5615,7 @@ void CWorldEditorDoc::OnExportEntities()
         CTString strEntityID;
         strEntityID.PrintF("%d", en.en_ulID);
         CTFileName fnAmf;
-        fnAmf.PrintF("%s_%s.amf", fnWorld.FileDir()+fnWorld.FileName(), strEntityID);
+        fnAmf.PrintF("%s_%s.amf", (fnWorld.FileDir() + fnWorld.FileName()).ConstData(), strEntityID.ConstData());
         BOOL bFieldBrush = en.en_RenderType==CEntity::RT_FIELDBRUSH;
         ExportEntityToAMF_t(this, en, fnAmf, bFieldBrush, bInvisibleBrush, bEmptyBrush);
       }

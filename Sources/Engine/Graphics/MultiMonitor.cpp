@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Graphics/MultiMonitor.h>
 #include <Engine/Base/Console.h>
@@ -124,7 +124,7 @@ void Mon_DisableEnable9x_t(BOOL bDisable)
 		if (!(dd.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) && !(dd.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE))
 		{
 			// this is a secondary monitor, change display settings to what's currently stored in the registry
-			ret = _pChangeDisplaySettingsEx((const char*)dd.DeviceName, 0, 0, 0, 0);
+			ret = _pChangeDisplaySettingsEx((const char *)dd.DeviceName, 0, 0, 0, 0);
 			// we get DISP_CHANGE_BADPARAM if we try to set settings for a monitor that doesn't exist
 			if (ret != DISP_CHANGE_SUCCESSFUL && ret != DISP_CHANGE_BADPARAM)
 				failed = TRUE;

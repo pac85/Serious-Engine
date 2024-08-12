@@ -152,5 +152,5 @@ void CSinglePlayerMenu::StartMenu(void)
   CGameMenu::StartMenu();
 
   CPlayerCharacter &pc = _pGame->gm_apcPlayers[_pGame->gm_iSinglePlayer];
-  gm_mgPlayerLabel.mg_strText.PrintF(TRANS("Player: %s\n"), pc.GetNameForPrinting());
+  gm_mgPlayerLabel.mg_strText.PrintF(TRANS("Player: %s\n"), pc.GetNameForPrinting().ConstData());
 }

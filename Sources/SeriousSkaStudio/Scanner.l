@@ -163,12 +163,12 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
 "-"?{EXP_FLT}("f"|"F")?       { SKAyylval.f = (float) atof(yytext); return(c_float); }
 "\""{STRINGCONTENT}*"\""  { 
   CTString &strNew = astrText.Push();
-  char *pstrNew;
+  char *pchNew;
   // remove double-quotes
   yytext[strlen(yytext)-1] = 0;
-  pstrNew = yytext+1;
+  pchNew = yytext+1;
   //SKAyylval.str = strNew.ConstData();
-  strNew = (const char*)pstrNew;
+  strNew = pchNew;
   SKAyylval.str = strNew.ConstData();
   return(c_string); 
 }

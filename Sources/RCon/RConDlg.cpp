@@ -203,7 +203,7 @@ void CRConDlg::OnTimer(UINT_PTR nIDEvent)
       continue;
     }
 
-    m_strLog += (const char*)strLine;
+    m_strLog += strLine;
     m_strLog += "\r\n";
     bChanged = TRUE;
   }

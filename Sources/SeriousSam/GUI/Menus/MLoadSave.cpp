@@ -222,7 +222,7 @@ BOOL CLoadSaveMenu::ParseFile(const CTFileName &fnm, CTString &strName)
       INDEX iCtl = -1;
       strName.ScanF("Controls%d", &iCtl);
       if (iCtl >= 0 && iCtl <= 7) {
-        strName.PrintF(TRANS("From player: %s"), _pGame->gm_apcPlayers[iCtl].GetNameForPrinting());
+        strName.PrintF(TRANS("From player: %s"), _pGame->gm_apcPlayers[iCtl].GetNameForPrinting().ConstData());
       }
     }
   }

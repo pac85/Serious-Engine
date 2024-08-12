@@ -1211,7 +1211,7 @@ functions:
           }
           // keep player name, mana and health for eventual printout or coloring
           m_fEnemyHealth = ((CPlayer*)pen)->GetHealth() / ((CPlayer*)pen)->m_fMaxHealth;
-          m_strLastTarget.PrintF( "%s", ((CPlayer*)pen)->GetPlayerName());
+          m_strLastTarget = ((CPlayer *)pen)->GetPlayerName();
           if( GetSP()->sp_gmGameMode==CSessionProperties::GM_SCOREMATCH) {
             // add mana to player name
             CTString strMana="";
@@ -2994,14 +2994,14 @@ functions:
       // preapare message string and count different types of ammo
       INDEX iAmmoTypes = 0;
       CTString strMessage;
-      if( eapi.iShells != 0)        { strMessage.PrintF("%s %d %s,", strMessage, eapi.iShells, TRANS("Shells")); iAmmoTypes++; }
-      if( eapi.iBullets != 0)       { strMessage.PrintF("%s %d %s,", strMessage, eapi.iBullets, TRANS("Bullets")); iAmmoTypes++; }
-      if( eapi.iRockets != 0)       { strMessage.PrintF("%s %d %s,", strMessage, eapi.iRockets, TRANS("Rockets")); iAmmoTypes++; }
-      if( eapi.iGrenades != 0)      { strMessage.PrintF("%s %d %s,", strMessage, eapi.iGrenades, TRANS("Grenades")); iAmmoTypes++; }
-      if( eapi.iNapalm != 0)        { strMessage.PrintF("%s %d %s,", strMessage, eapi.iNapalm, TRANS("Napalm")); iAmmoTypes++; }
-      if( eapi.iElectricity != 0)   { strMessage.PrintF("%s %d %s,", strMessage, eapi.iElectricity, TRANS("Cells")); iAmmoTypes++; }
-      if( eapi.iIronBalls != 0)     { strMessage.PrintF("%s %d %s,", strMessage, eapi.iIronBalls, TRANS("Cannonballs")); iAmmoTypes++; }
-      if( eapi.iSniperBullets != 0) { strMessage.PrintF("%s %d %s,", strMessage, eapi.iSniperBullets, TRANS("Sniper bullets")); iAmmoTypes++; }
+      if( eapi.iShells != 0)        { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iShells, TRANS("Shells")); iAmmoTypes++; }
+      if( eapi.iBullets != 0)       { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iBullets, TRANS("Bullets")); iAmmoTypes++; }
+      if( eapi.iRockets != 0)       { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iRockets, TRANS("Rockets")); iAmmoTypes++; }
+      if( eapi.iGrenades != 0)      { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iGrenades, TRANS("Grenades")); iAmmoTypes++; }
+      if( eapi.iNapalm != 0)        { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iNapalm, TRANS("Napalm")); iAmmoTypes++; }
+      if( eapi.iElectricity != 0)   { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iElectricity, TRANS("Cells")); iAmmoTypes++; }
+      if( eapi.iIronBalls != 0)     { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iIronBalls, TRANS("Cannonballs")); iAmmoTypes++; }
+      if( eapi.iSniperBullets != 0) { strMessage.PrintF("%s %d %s,", strMessage.ConstData(), eapi.iSniperBullets, TRANS("Sniper bullets")); iAmmoTypes++; }
 
       INDEX iLen = strMessage.Length();
       if( iLen>0 && strMessage[iLen-1]==',')

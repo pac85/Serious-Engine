@@ -164,14 +164,14 @@ static void QuitGame(void)
 
 // check if another app is already running
 static HANDLE _hLock = NULL;
-static CTFileName _fnmLock;
 static void DirectoryLockOn(void)
 {
   // create lock filename
+  static CTFileName _fnmLock;
   _fnmLock = _fnmApplicationPath+"SeriousSam.loc";
   // try to open lock file
   _hLock = CreateFileA(
-    _fnmLock, 
+    _fnmLock.ConstData(), 
     GENERIC_WRITE,
     0/*no sharing*/,
     NULL, // pointer to security attributes
@@ -321,27 +321,6 @@ void StartNextDemo(void)
   }
 }
 
-BOOL _bCDPathFound = FALSE;
-
-BOOL FileExistsOnHD(const CTString &strFile)
-{
-  FILE *f = fopen(_fnmApplicationPath+strFile, "rb");
-  if (f!=NULL) {
-    fclose(f);
-    return TRUE;
-  } else {
-    return FALSE;
-  }
-}
-
-void TrimString(char *str)
-{
-  size_t i = strlen(str);
-  if (str[i-1]=='\n' || str[i-1]=='\r') {
-    str[i-1]=0;
-  }
-}
-
 // run web browser and view an url
 void RunBrowser(const char *strUrl)
 {
@@ -397,7 +376,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 
   SE_LoadDefaultFonts();
   // now print the output of command line parsing
-  CPrintF("%s", cmd_strOutput);
+  CPutString(cmd_strOutput.ConstData());
 
   // lock the directory
   DirectoryLockOn();
@@ -477,9 +456,9 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 
   // execute script given on command line
   if (cmd_strScript!="") {
-    CPrintF("Command line script: '%s'\n", cmd_strScript);
+    CPrintF("Command line script: '%s'\n", cmd_strScript.ConstData());
     CTString strCmd;
-    strCmd.PrintF("include \"%s\"", cmd_strScript);
+    strCmd.PrintF("include \"%s\"", cmd_strScript.ConstData());
     _pShell->Execute(strCmd);
   }
   
@@ -491,8 +470,8 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   // !! NOTE !! Re-enable these to allow mod support.
   LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), sam_strVersion);
   LoadStringVar(CTString("Data\\Var\\ModName.var"), sam_strModName);
-  CPrintF(TRANS("Serious Sam version: %s\n"), sam_strVersion);
-  CPrintF(TRANS("Active mod: %s\n"), sam_strModName);
+  CPrintF(TRANS("Serious Sam version: %s\n"), sam_strVersion.ConstData());
+  CPrintF(TRANS("Active mod: %s\n"), sam_strModName.ConstData());
   InitializeMenus();      
   
   // if there is a mod
@@ -531,7 +510,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
       _pShell->SetINDEX("net_iPort", cmd_iPort);
       strPort.PrintF(":%d", cmd_iPort);
     }
-    CPrintF(TRANS("Command line connection: '%s%s'\n"), cmd_strServer, strPort);
+    CPrintF(TRANS("Command line connection: '%s%s'\n"), cmd_strServer.ConstData(), strPort.ConstData());
     // go to join menu
     _pGame->gam_strJoinAddress = cmd_strServer;
     if (cmd_bQuickJoin) {
@@ -542,7 +521,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
     }
   // if starting world from command line
   } else if (cmd_strWorld!="") {
-    CPrintF(TRANS("Command line world: '%s'\n"), cmd_strWorld);
+    CPrintF(TRANS("Command line world: '%s'\n"), cmd_strWorld.ConstData());
     // try to start the game with that level
     try {
       if (cmd_iGoToMarker>=0) {
@@ -560,7 +539,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
         StartSinglePlayerGame();
       }
     } catch (char *strError) {
-      CPrintF(TRANS("Cannot start '%s': '%s'\n"), cmd_strWorld, strError);
+      CPrintF(TRANS("Cannot start '%s': '%s'\n"), cmd_strWorld.ConstData(), strError);
     }
   // if no relevant starting at command line
   } else {
@@ -615,15 +594,15 @@ void PrintDisplayModeInfo(void)
   // get resolution
   CTString strRes;
   extern CTString _strPreferencesDescription;
-  strRes.PrintF( "%dx%dx%s", slDPWidth, slDPHeight, _pGfx->gl_dmCurrentDisplayMode.DepthString());
+  strRes.PrintF( "%dx%dx%s", slDPWidth, slDPHeight, _pGfx->gl_dmCurrentDisplayMode.DepthString().ConstData());
   if( dm.IsDualHead())   strRes += TRANS(" DualMonitor");
   if( dm.IsWideScreen()) strRes += TRANS(" WideScreen");
 
   // [Cecil] API name
-  strRes += CTString(0, " (%s)", _pGfx->GetApiName(_pGfx->GetCurrentAPI()));
+  strRes += CTString(0, " (%s)", _pGfx->GetApiName(_pGfx->GetCurrentAPI()).ConstData());
 
   CTString strDescr;
-  strDescr.PrintF("\n%s (%s)\n", _strPreferencesDescription, RenderingPreferencesDescription(sam_iVideoSetup));
+  strDescr.PrintF("\n%s (%s)\n", _strPreferencesDescription.ConstData(), RenderingPreferencesDescription(sam_iVideoSetup));
   strRes+=strDescr;
   // tell if application is started for the first time, or failed to set mode
   if( _iDisplayModeChangeFlag==0) {
@@ -1234,7 +1213,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
 void CheckBrowser(void)
 {
   if (_strURLToVisit!="") {
-    RunBrowser(_strURLToVisit);
+    RunBrowser(_strURLToVisit.ConstData());
   }
 }
 
@@ -1263,7 +1242,7 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
 
   // [Cecil] Window mode name
   CTString strWindowMode = _astrWindowModes[eWindowMode];
-  CPrintF(TRANS("  Starting display mode: %dx%dx%s (%s)\n"), pixSizeI, pixSizeJ, dmTmp.DepthString(), strWindowMode);
+  CPrintF(TRANS("  Starting display mode: %dx%dx%s (%s)\n"), pixSizeI, pixSizeJ, dmTmp.DepthString().ConstData(), strWindowMode.ConstData());
 
   // mark to start ignoring window size/position messages until settled down
   _bWindowChanging = TRUE;
