@@ -13,154 +13,163 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/FileName.h>
-
-#include <Engine/Base/ErrorReporting.h>
-#include <Engine/Base/Stream.h>
 #include <Engine/Templates/NameTable_CTFileName.h>
-#include <Engine/Templates/DynamicStackArray.cpp>
-#include <Engine/Templates/StaticStackArray.cpp>
 
-/*
- * Get directory part of a filename.
- */
-CTString CTString::FileDir() const
-{
-  ASSERT(IsValid());
+#include <list>
 
-  // make a temporary copy of string
-  CTString strPath(*this);
-  // find last backlash in it
-  char *pPathBackSlash = strrchr(strPath.Data(), '\\');
-  // if there is no backslash
-  if( pPathBackSlash == NULL) {
-    // return emptystring as directory
+// [Cecil] Check if there's a path separator character at some position
+bool CTString::PathSeparatorAt(size_t i) const {
+  return (*this)[i] == '/' || (*this)[i] == '\\';
+};
+
+// [Cecil] Remove directory from the filename
+CTString CTString::NoDir(void) const {
+  return Substr(FindLastOf("/\\") + 1);
+};
+
+// [Cecil] Remove extension from the filename
+CTString CTString::NoExt(void) const {
+  const size_t iPeriodPos(RFind('.'));
+  const size_t iLastDir(FindLastOf("/\\"));
+
+  // No period found or it's before the last directory
+  if (iPeriodPos == npos || (iLastDir != npos && iPeriodPos < iLastDir)) {
+    return *this;
+  }
+
+  return Substr(0, iPeriodPos);
+};
+
+// [Cecil] Get name of the file
+CTString CTString::FileName(void) const {
+  return NoDir().NoExt();
+};
+
+// [Cecil] Get path to the file
+CTString CTString::FileDir(void) const {
+  const size_t iLastDirectory(FindLastOf("/\\") + 1);
+  return Substr(0, iLastDirectory);
+};
+
+// [Cecil] Get file extension with the period
+CTString CTString::FileExt(void) const {
+  const size_t iPeriodPos(RFind('.'));
+  const size_t iLastDir(FindLastOf("/\\"));
+
+  // No period found or it's before the last directory
+  if (iPeriodPos == npos || (iLastDir != npos && iPeriodPos < iLastDir)) {
     return "";
   }
-  // set end of string after where the backslash was
-  pPathBackSlash[1] = '\0';
-  // return a copy of temporary string
-  return strPath;
-}
 
-/*
- * Get name part of a filename.
- */
-CTString CTString::FileName() const
-{
-  ASSERT(IsValid());
+  return Substr(iPeriodPos);
+};
 
-  // make a temporary copy of string
+// [Cecil] Go up the path until a certain directory
+size_t CTString::GoUpUntilDir(CTString strDirName) const {
+  // Convert every string in the same case
   CTString strPath(*this);
-  // find last dot in it
-  char *pDot = strrchr(strPath.Data(), '.');
-  // if there is a dot
-  if( pDot != NULL) {
-    // set end of string there
-    pDot[0] = '\0';
+  strPath.ToLower();
+  strDirName.ToLower();
+
+  // Make consistent slashes
+  strPath.ReplaceChar('\\', '/');
+
+  // Absolute path, e.g. "abc/strDirName/qwe"
+  size_t iDir(strPath.RFind("/" + strDirName + "/"));
+  if (iDir != npos) return iDir + 1;
+
+  // Relative down to the desired directory, e.g. "abc/qwe/strDirName"
+  iDir = strPath.RFind("/" + strDirName) + 1;
+  if (iDir == strPath.Length() - strDirName.Length()) return iDir;
+
+  // Relative up to the desired directory, e.g. "strDirName/abc/qwe"
+  iDir = strPath.Find(strDirName + "/");
+  if (iDir == 0) return 0;
+
+  // No extra directories up or down the path, must be the same
+  if (strPath == strDirName) {
+    return 0;
   }
 
-  // find last backlash in what's left
-  const char *pBackSlash = strrchr(strPath.ConstData(), '\\');
-  // if there is no backslash
-  if( pBackSlash == NULL) {
-    // return it all as filename
-    return strPath;
-  }
-  // return a copy of temporary string, starting after the backslash
-  return CTString(pBackSlash + 1);
-}
+  return npos;
+};
 
-/*
- * Get extension part of a filename.
- */
-CTString CTString::FileExt() const
-{
-  ASSERT(IsValid());
+// [Cecil] Normalize the path taking "backward" and "current" directories into consideration
+// E.g. "abc/sub1/../sub2/./qwe" -> "abc/sub2/qwe"
+void CTString::SetAbsolutePath(void) {
+  CTString strPath(*this);
+  strPath.ReplaceChar('\\', '/');
 
-  // find last dot in the string
-  const char *pExtension = strrchr(ConstData(), '.');
-  // if there is no dot
-  if( pExtension == NULL) {
-    // return no extension
-    return "";
-  }
-  // return a copy of the extension part, together with the dot
-  return pExtension;
-}
+  // Gather parts of the entire path
+  std::list<CTString> aParts;
+  strPath.CharSplit('/', aParts);
 
-CTString CTString::NoExt() const
-{
-  return FileDir()+FileName();
-}
+  std::list<CTString> aFinalPath;
+  std::list<CTString>::const_iterator it;
 
-static INDEX GetSlashPosition(const char *pszString)
-{
-  for (INDEX iPos = 0; '\0' != *pszString; ++iPos, ++pszString) {
-    if (('\\' == *pszString) || ('/' == *pszString)) {
-      return iPos;
-    }
-  }
-  return -1;
-}
+  // Iterate through the list of directories
+  for (it = aParts.begin(); it != aParts.end(); ++it) {
+    const CTString &strPart = *it;
 
-/*
- * Set path to the absolute path, taking \.. and /.. into account.
- */
-void CTString::SetAbsolutePath(void)
-{
-  // Collect path parts
-  CTString strRemaining(*this);
-  CStaticStackArray<CTString> astrParts;
-  INDEX iSlashPos = GetSlashPosition(strRemaining.ConstData());
-  if (0 > iSlashPos) {
-    return; // Invalid path
-  }
-  for (;;) {
-    CTString &strBeforeSlash = astrParts.Push();
-    CTString strAfterSlash;
-    strRemaining.Split(iSlashPos, strBeforeSlash, strAfterSlash);
-    strAfterSlash.TrimLeft(strAfterSlash.Length() - 1);
-    strRemaining = strAfterSlash;
-    iSlashPos = GetSlashPosition(strRemaining.ConstData());
-    if (0 > iSlashPos) {
-      astrParts.Push() = strRemaining;
-      break;
-    }
-  }
-  // Remove certain path parts
-  INDEX iPart;
-  for (iPart = 0; iPart < astrParts.Count(); ++iPart) {
-    if (CTString("..") != astrParts[iPart]) {
+    // Ignore current directories
+    if (strPart == ".") continue;
+
+    // If encountered a "backward" directory and there are some directories written
+    if (strPart == ".." && aFinalPath.size() != 0) {
+      // Remove the last directory (go up one directory) and go to the next one
+      aFinalPath.pop_back();
       continue;
     }
-    if (0 == iPart) {
-      return; // Invalid path
-    }
-    // Remove ordered
-    CStaticStackArray<CTString> astrShrinked;
-    astrShrinked.Push(astrParts.Count() - 2);
-    astrShrinked.PopAll();
-    for (INDEX iCopiedPart = 0; iCopiedPart < astrParts.Count(); ++iCopiedPart) {
-      if ((iCopiedPart != iPart - 1) && (iCopiedPart != iPart)) {
-        astrShrinked.Push() = astrParts[iCopiedPart];
-      }
-    }
-    astrParts.MoveArray(astrShrinked);
-    iPart -= 2;
+
+    // Add directory to the final path
+    aFinalPath.push_back(strPart);
   }
-  // Set new content
-  strRemaining.Clear();
-  for (iPart = 0; iPart < astrParts.Count(); ++iPart) {
-    strRemaining += astrParts[iPart];
-    if (iPart < astrParts.Count() - 1) {
-      strRemaining += "\\";
-    }
+
+  // Reset current path
+  *this = "";
+
+  // No path to compose
+  if (aFinalPath.size() == 0) return;
+
+  // Compose the final path
+  std::list<CTString>::const_iterator itLast = --aFinalPath.end();
+
+  for (it = aFinalPath.begin(); it != aFinalPath.end(); ++it) {
+    *this += *it;
+
+    // Add separators between the directories
+    if (it != itLast) *this += "\\";
   }
-  (*this) = strRemaining;
-}
+};
+
+// [Cecil] Get length of the root name, if there's any
+size_t CTString::RootNameLength() const {
+  const size_t ctLen = Length();
+
+#if SE1_WIN
+  // Starts with a drive letter and a colon on Windows (e.g. "C:")
+  const char chUpper = ::toupper(static_cast<UBYTE>((*this)[0]));
+
+  if (ctLen >= 2 && chUpper >= 'A' && chUpper <= 'Z' && (*this)[1] == ':') {
+    return 2;
+  }
+#endif
+
+  // Starts with a double separator and has any directory right after (e.g. "//abc")
+  if (ctLen > 2
+   && PathSeparatorAt(0) && PathSeparatorAt(1) && !PathSeparatorAt(2)
+   && ::isprint(static_cast<UBYTE>((*this)[2])))
+  {
+    // Find the next separator, if there's any
+    size_t iNextSep = FindFirstOf("/\\", 3);
+    return (iNextSep == npos ? ctLen : iNextSep);
+  }
+
+  return 0;
+};
 
 /*
  * Remove application path from a file name and returns TRUE if it's a relative path.

@@ -5,7 +5,6 @@
 #endif
 
 #include <Engine/Base/Memory.h>
-#include <Engine/Base/Assert.h>
 
 /*
  * Default constructor.
@@ -65,16 +64,6 @@ ENGINE_API CTString::~CTString()
 ENGINE_API void CTString::Clear(void)
 {
   operator=("");
-}
-
-/*
- * Conversion into character string.
- */
-ENGINE_API CTString::operator const char*() const
-{
-  ASSERT(IsValid());
-
-  return str_String;
 }
 
 /*
