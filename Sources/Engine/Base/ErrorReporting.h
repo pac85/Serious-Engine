@@ -19,6 +19,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
+
 /* Throw an exception of formatted string. */
 ENGINE_API extern void ThrowF_t(const char *strFormat, ...); // throws char *
 /* Report error and terminate program. */
@@ -33,6 +35,19 @@ ENGINE_API extern void WarningMessage(const char *strFormat, ...);
 ENGINE_API extern void InfoMessage(const char *strFormat, ...);
 /* Ask user for yes/no answer(stops program until user responds). */
 ENGINE_API extern BOOL YesNoMessage(const char *strFormat, ...);
+
+#else
+
+// [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
+EXF_VERIFY_VA_FUNC(ThrowF_t);
+EXF_VERIFY_VA_FUNC(FatalError);
+EXF_VERIFY_VA_FUNC(ErrorMessage);
+EXF_VERIFY_VA_FUNC(WarningMessage);
+EXF_VERIFY_VA_FUNC(InfoMessage);
+EXF_VERIFY_VA_FUNC(YesNoMessage);
+
+#endif // SE1_EXF_VERIFY_VA_IN_PRINTF
+
 /* Get the description string for windows error code. */
 ENGINE_API extern const CTString GetWindowsError(DWORD dwWindowsErrorCode);
 

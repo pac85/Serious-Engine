@@ -17,7 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // [Cecil] ASM code translation:
 // https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Core/Base/String.cpp
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/CTString.h>
 #include <Engine/Base/Memory.h>
@@ -497,6 +497,7 @@ void CTString::SaveKeepCRLF_t(const CTString &fnmFile)  // throw char *
   }
 }
 
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
 
 // Print formatted to a string
 INDEX CTString::PrintF(const char *strFormat, ...)
@@ -506,6 +507,7 @@ INDEX CTString::PrintF(const char *strFormat, ...)
   return VPrintF(strFormat, arg);
 }
 
+#endif // SE1_EXF_VERIFY_VA_IN_PRINTF
 
 INDEX CTString::VPrintF(const char *strFormat, va_list arg)
 {

@@ -13,10 +13,10 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Console.h>
-#include <Engine/Base/Console_Internal.h>
+#include <Engine/Base/Console_internal.h>
 
 #include <Engine/Base/Timer.h>
 #include <Engine/Base/ErrorReporting.h>
@@ -259,8 +259,10 @@ void CConsole::CloseLog(void)
   con_fLog = NULL;
 }
 
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
+
 // Print formated text to the main console.
-extern void CPrintF(const char *strFormat, ...)
+void CPrintF(const char *strFormat, ...)
 {
   if (_pConsole==NULL) {
     return;
@@ -274,6 +276,8 @@ extern void CPrintF(const char *strFormat, ...)
   // print it to the main console
   _pConsole->PutString(strBuffer.ConstData());
 }
+
+#endif // SE1_EXF_VERIFY_VA_IN_PRINTF
 
 // Add a string of text to console
 void CPutString(const char *strString)

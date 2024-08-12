@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/ErrorReporting.h>
 #include <Engine/Base/ErrorTable.h>
@@ -32,6 +32,7 @@ INDEX con_bNoWarnings = 0;
 extern OS::Window _hwndCurrent;
 extern BOOL _bFullScreen;
 
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
 
 /*
  * Report error and terminate program.
@@ -208,6 +209,8 @@ void ThrowF_t(const char *strFormat, ...)  // throws char *
   _vsnprintf(strBuffer, slBufferSize, strFormat, arg);
   throw strBuffer;
 }
+
+#endif // SE1_EXF_VERIFY_VA_IN_PRINTF
 
 /*
  * Get the name string for error code.

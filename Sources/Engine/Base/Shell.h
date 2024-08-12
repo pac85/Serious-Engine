@@ -35,8 +35,13 @@ public:
 
   // Get a shell symbol by its name.
   CShellSymbol *GetSymbol(const CTString &strName, BOOL bDeclaredOnly);
+
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
   // Report error in shell script processing.
   void ErrorF(const char *strFormat, ...);
+#else
+  EXF_VERIFY_VA_FUNC(ErrorF); // [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
+#endif
 
 // interface:
 

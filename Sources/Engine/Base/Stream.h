@@ -202,7 +202,13 @@ public:
   /* Put a line of text into stream. */
   virtual void PutLine_t(const char *strBuffer); // throw char *
   virtual void PutString_t(const char *strString); // throw char *
+
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
   virtual void FPrintF_t(const char *strFormat, ...); // throw char *
+#else
+  EXF_VERIFY_VA_FUNC(FPrintF_t); // [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
+#endif
+
   /* Get a line of text from stream. */
   virtual void GetLine_t(char *strBuffer, SLONG slBufferSize, char cDelimiter='\n'); // throw char *
   virtual void GetLine_t(CTString &strLine, char cDelimiter='\n'); // throw char *

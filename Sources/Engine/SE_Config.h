@@ -109,4 +109,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SE1_USE_ASM    (SE1_WIN && SE1_32BIT && SE1_ASMOPT)       // Prioritize inline assembly under a traditional platform?
 #define SE1_USE_MMXINT (!SE1_WIN || (SE1_32BIT && SE1_MMXINTOPT)) // Prioritize MMX intrinsic functions?
 
+// **************************************************************************
+// EXPERIMENTAL FEATURES ----- USE WITH CAUTION SOLELY FOR DEBUGGING PURPOSES
+// **************************************************************************
+
+// For making sure that all printing functions with variadic arguments only take numbers and pointers (e.g. allow 'char *' but not 'CTString')
+#define SE1_EXF_VERIFY_VA_IN_PRINTF 0
+
 #endif // include-once check

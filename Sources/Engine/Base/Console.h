@@ -19,8 +19,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-// Print formated text to the main console.
-ENGINE_API extern void CPrintF(const char *strFormat, ...);
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
+  // Print formated text to the main console.
+  ENGINE_API extern void CPrintF(const char *strFormat, ...);
+#else
+  EXF_VERIFY_VA_FUNC(CPrintF); // [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
+#endif
+
 // Add a string of text to console
 ENGINE_API void CPutString(const char *strString);
 

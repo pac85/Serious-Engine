@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Shell.h>
 #include <Engine/Base/Shell_internal.h>
@@ -798,6 +798,8 @@ void CShell::SetValue(const CTString &strName, const CTString &strValue)
   return;
 }
 
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
+
 /*
  * Report error in shell script processing.
  */
@@ -826,6 +828,8 @@ void CShell::ErrorF(const char *strFormat, ...)
   // go to new line
   CPrintF("\n");
 }
+
+#endif // SE1_EXF_VERIFY_VA_IN_PRINTF
 
 // Save shell commands to restore persistent symbols to a script file
 void CShell::StorePersistentSymbols(const CTFileName &fnScript)

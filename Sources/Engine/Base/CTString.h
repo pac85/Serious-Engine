@@ -23,6 +23,67 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Types.h>
 #include <Engine/Base/Assert.h>
 
+#if SE1_EXF_VERIFY_VA_IN_PRINTF
+
+// [Cecil] Special structure for verifying types of variadic arguments
+struct VATypeVerifier
+{
+  static void Bail(void) {
+    extern void CPutString(const char *);
+    ASSERTALWAYS("Do not compile the engine with SE1_EXF_VERIFY_VA_IN_PRINTF enabled!!!");
+    CPutString  ("Do not compile the engine with SE1_EXF_VERIFY_VA_IN_PRINTF enabled!!!\n");
+    exit(EXIT_FAILURE);
+  };
+
+  #define EXF_VA_TYPEFUNC(_Type) inline VATypeVerifier(_Type) { Bail(); }
+
+  // String printing
+  EXF_VA_TYPEFUNC(const char *);
+  EXF_VA_TYPEFUNC(char *);
+  EXF_VA_TYPEFUNC(const UBYTE *);
+  EXF_VA_TYPEFUNC(UBYTE *);
+  // Number printing
+  EXF_VA_TYPEFUNC(int);
+  EXF_VA_TYPEFUNC(UINT);
+  EXF_VA_TYPEFUNC(FLOAT);
+  EXF_VA_TYPEFUNC(DOUBLE);
+  EXF_VA_TYPEFUNC(UBYTE);
+  EXF_VA_TYPEFUNC(SBYTE);
+  EXF_VA_TYPEFUNC(UWORD);
+  EXF_VA_TYPEFUNC(SWORD);
+  EXF_VA_TYPEFUNC(ULONG);
+  EXF_VA_TYPEFUNC(SLONG);
+  EXF_VA_TYPEFUNC(UQUAD);
+  EXF_VA_TYPEFUNC(SQUAD);
+  // Miscellaneous printing
+  EXF_VA_TYPEFUNC(const class CEntityPointer &);
+  EXF_VA_TYPEFUNC(const CEntity *);
+  EXF_VA_TYPEFUNC(const class CChunkID &);
+
+  VATypeVerifier(const CTString &) = delete;
+  VATypeVerifier(const VATypeVerifier &) = delete;
+};
+
+// Define dummy functions for verifying variadic arguments for printing (without return type)
+#define EXF_VERIFY_VA_FUNC(_FuncName) \
+  inline \
+  void _FuncName(const char *str)                    { VATypeVerifier::Bail(); }; \
+  template<class T> inline \
+  void _FuncName(const char *str, T a)               { VATypeVerifier::Bail(); VATypeVerifier v(a); }; \
+  template<class T, class ...Args> inline \
+  void _FuncName(const char *str, T a, Args... args) { VATypeVerifier::Bail(); VATypeVerifier v(a); _FuncName(str, args...); };
+
+// Define dummy functions for verifying variadic arguments for printing (with return type)
+#define EXF_VERIFY_VA_FUNC_RETURN(_Return, _FuncName) \
+  inline \
+  _Return _FuncName(const char *str)                    { VATypeVerifier::Bail(); return _Return(); }; \
+  template<class T> inline \
+  _Return _FuncName(const char *str, T a)               { VATypeVerifier::Bail(); VATypeVerifier v(a); return _Return(); }; \
+  template<class T, class ...Args> inline \
+  _Return _FuncName(const char *str, T a, Args... args) { VATypeVerifier::Bail(); VATypeVerifier v(a); return _FuncName(str, args...); };
+
+#endif // SE1_EXF_VERIFY_VA_IN_PRINTF
+
 /*
  * Main string class
  */
@@ -127,8 +188,13 @@ public:
   void Save_t(const CTString &fnmFile);  // throw char *
   void SaveKeepCRLF_t(const CTString &fnmFile);  // throw char *
 
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
   // Print formatted to a string
   INDEX PrintF(const char *strFormat, ...);
+#else
+  EXF_VERIFY_VA_FUNC_RETURN(INDEX, PrintF); // [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
+#endif
+
   INDEX VPrintF(const char *strFormat, va_list arg);
   // Scan formatted from a string
   INDEX ScanF(const char *strFormat, ...) const;

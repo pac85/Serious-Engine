@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -452,6 +452,8 @@ void CTStream::PutString_t(const char *strString) // throw char *
   }
 }
 
+#if !SE1_EXF_VERIFY_VA_IN_PRINTF
+
 void CTStream::FPrintF_t(const char *strFormat, ...) // throw char *
 {
   const SLONG slBufferSize = 2048;
@@ -464,6 +466,8 @@ void CTStream::FPrintF_t(const char *strFormat, ...) // throw char *
   // print the buffer
   PutString_t(strBuffer);
 }
+
+#endif // SE1_EXF_VERIFY_VA_IN_PRINTF
 
 /////////////////////////////////////////////////////////////////////////////
 // Chunk reading/writing methods
