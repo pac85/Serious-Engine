@@ -153,7 +153,7 @@ static void LoadExtraPackages(const CTString &fnmDirList, BOOL bGameDir) {
     CTString &fnmDir = afnmDirs[iDir];
     fnmDir.SetFullDirectory();
 
-    if (FileSystem::IsDirectory(fnmDir)) {
+    if (FileSystem::IsDirectory(fnmDir.ConstData())) {
       // Load packages from the directory and add it to the list
       LoadPackages(fnmDir, "*.gro");
 
@@ -1340,14 +1340,7 @@ BOOL FileExistsForWriting(const CTFileName &fnmFile)
   CTFileName fnmFullFileName;
   INDEX iFile = ExpandFilePath(EFP_WRITE, fnmFile, fnmFullFileName);
 
-  // check if it exists
-  FILE *f = fopen(fnmFullFileName.ConstData(), "rb");
-  if (f!=NULL) { 
-    fclose(f);
-    return TRUE;
-  } else {
-    return FALSE;
-  }
+  return FileSystem::Exists(fnmFullFileName.ConstData());
 }
 
 // Get file timestamp
@@ -1423,18 +1416,6 @@ BOOL RemoveFile(const CTFileName &fnmFile)
   }
 }
 
-
-static BOOL IsFileReadable_internal(CTFileName &fnmFullFileName)
-{
-  FILE *pFile = fopen(fnmFullFileName.ConstData(), "rb");
-  if (pFile!=NULL) {
-    fclose(pFile);
-    return TRUE;
-  } else {
-    return FALSE;
-  }
-}
-
 // check for some file extensions that can be substituted
 static BOOL SubstExt_internal(CTFileName &fnmFullFileName)
 {
@@ -1458,7 +1439,7 @@ static inline BOOL CheckFileAt(const CTString &strBaseDir, const CTFileName &fnm
     fnmExpanded = strBaseDir + fnmFile;
   }
 
-  return IsFileReadable_internal(fnmExpanded);
+  return FileSystem::Exists(fnmExpanded.ConstData());
 };
 
 static INDEX ExpandFilePath_read(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExpanded)
