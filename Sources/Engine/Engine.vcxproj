@@ -1033,7 +1033,7 @@
     <ClInclude Include="Base\Shell.h" />
     <ClInclude Include="Base\Shell_internal.h" />
     <ClInclude Include="Base\Statistics.h" />
-    <ClInclude Include="Base\Statistics_Internal.h" />
+    <ClInclude Include="Base\Statistics_internal.h" />
     <ClInclude Include="Base\Stream.h" />
     <ClInclude Include="Base\Synchronization.h" />
     <ClInclude Include="Base\Timer.h" />

@@ -846,7 +846,7 @@
     <ClInclude Include="Base\Statistics.h">
       <Filter>Header Files\Base Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Base\Statistics_Internal.h">
+    <ClInclude Include="Base\Statistics_internal.h">
       <Filter>Header Files\Base Headers</Filter>
     </ClInclude>
     <ClInclude Include="Base\Stream.h">
