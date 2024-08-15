@@ -15,7 +15,56 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+#if SE1_WIN
+
 #include <direct.h>
+
+#else
+
+#include <sys/stat.h>
+
+// [Cecil] Stolen from https://github.com/icculus/Serious-Engine
+// Stolen from SDL2/src/filesystem/unix/SDL_sysfilesystem.c
+static char *readSymLink(const char *path) {
+  char *retval = NULL;
+  ssize_t len = 64;
+  ssize_t rc = -1;
+
+  while (1) {
+    char *ptr = (char *)SDL_realloc(retval, (size_t)len);
+
+    if (ptr == NULL) {
+      SDL_OutOfMemory();
+      break;
+    }
+
+    retval = ptr;
+    rc = readlink(path, retval, len);
+
+    if (rc == -1) {
+      break; // not a symlink, i/o error, etc.
+
+    } else if (rc < len) {
+      retval[rc] = '\0'; // readlink doesn't null-terminate.
+
+      // try to shrink buffer...
+      ptr = (char *)SDL_realloc(retval, strlen(retval) + 1);
+
+      if (ptr != NULL) {
+        retval = ptr; // oh well if it failed.
+      }
+
+      return retval; // we're good to go.
+    }
+
+    len *= 2; // grow buffer, try again.
+  }
+
+  SDL_free(retval);
+  return NULL;
+};
+
+#endif // SE1_WIN
 
 // Global string with an absolute path to the main game directory
 static CTFileName _fnmInternalAppPath;
@@ -32,11 +81,20 @@ void DetermineAppPaths(void) {
   // Get full path to the executable module
   // E.g. "C:\\SeriousSam\\Bin\\x64\\SeriousSam.exe"
   char strPathBuffer[1024];
+
+#if SE1_WIN
   GetModuleFileNameA(NULL, strPathBuffer, sizeof(strPathBuffer));
+#else
+  char *strExePath = readSymLink("/proc/self/exe");
+  strcpy(strPathBuffer, strExePath);
+  SDL_free(strExePath);
+#endif
+
+  CTString strPath(strPathBuffer);
+  strPath.ReplaceChar('/', '\\');
 
   // Cut off module filename to end up with the directory
   // E.g. "C:\\SeriousSam\\Bin\\x64"
-  CTString strPath = strPathBuffer;
   strPath.Erase(strPath.RFind('\\'));
 
   // Check if there's a Bin folder in the middle
@@ -72,7 +130,10 @@ void CreateAllDirectories(CTString strPath) {
     iDir++;
 
     // Create current subdirectory
-    int iDummy = _mkdir((_fnmApplicationPath + strPath.Substr(0, iDir)).ConstData());
+    CTString strDir = _fnmApplicationPath + strPath.Substr(0, iDir);
+    strDir.ReplaceChar('\\', '/'); // [Cecil] NOTE: For _mkdir()
+
+    int iDummy = _mkdir(strDir.ConstData());
     (void)iDummy;
   }
 };
