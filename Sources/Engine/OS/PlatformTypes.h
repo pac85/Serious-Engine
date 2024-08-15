@@ -25,7 +25,7 @@ typedef   signed long int SLONG;
 typedef long int RESULT; // For error codes
 typedef long int INDEX;  // For indexed values and quantities
 
-#elif SE1_UNIX
+#else
 
 // 32-bit types
 typedef unsigned int ULONG;
@@ -53,13 +53,15 @@ typedef void *LPVOID;
 
 typedef UINT_PTR DWORD_PTR;
 
-// [Cecil] TODO: Make sure these are properly used
-typedef void *HWND;
-typedef void *HANDLE;
-typedef void *HINSTANCE;
-typedef void *HMODULE;
-typedef void *HDC;
-typedef void *HGLRC;
+// Win32-esque handler pointers
+#define DECLARE_HANDLE(_Class) struct _Class##__ { int dummy; }; typedef struct _Class##__ *_Class
+
+DECLARE_HANDLE(HWND);
+DECLARE_HANDLE(HANDLE);
+DECLARE_HANDLE(HINSTANCE);
+typedef HINSTANCE HMODULE;
+DECLARE_HANDLE(HDC);
+DECLARE_HANDLE(HGLRC);
 
 typedef struct {
   LONG x;
@@ -86,6 +88,6 @@ typedef struct {
 
 #define WAVE_FORMAT_PCM 0x0001
 
-#endif // SE1_UNIX
+#endif // !SE1_WIN
 
 #endif // include-once check
