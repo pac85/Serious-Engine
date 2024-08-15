@@ -54,7 +54,7 @@ HMODULE OS::LoadLib(const char *strLibrary) {
   }
 
   // Fix path slashes
-  fnmPath.ReplaceChar('\\', '/');
+  fnmPath.ReplaceChar('\\', '/'); // [Cecil] NOTE: For dlopen()
 
   return (HMODULE)dlopen(fnmPath.ConstData(), RTLD_LAZY | RTLD_GLOBAL);
 };

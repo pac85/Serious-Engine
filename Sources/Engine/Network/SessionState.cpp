@@ -1639,7 +1639,7 @@ void CSessionState::ReadWorldAndState_t(CTStream *pstr)   // throw char *
   // read world filename from stream
   pstr->ReadFileName(_pNetwork->ga_fnmWorld);
 
-  if (CTFileName(pstr->GetDescription()).FileExt()==".dem" &&
+  if (pstr->GetDescription().FileExt() == ".dem" &&
     GetFileTimeStamp_t(pstr->GetDescription())<=GetFileTimeStamp_t(_pNetwork->ga_fnmWorld)) {
     ThrowF_t(
       TRANS("Cannot play demo because file '%s'\n"

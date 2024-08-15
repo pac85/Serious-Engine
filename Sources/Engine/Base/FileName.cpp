@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // [Cecil] Check if there's a path separator character at some position
 bool CTString::PathSeparatorAt(size_t i) const {
-  return (*this)[i] == '/' || (*this)[i] == '\\';
+  return str_String[i] == '/' || str_String[i] == '\\';
 };
 
 // [Cecil] Remove directory from the filename
@@ -75,7 +75,7 @@ size_t CTString::GoUpUntilDir(CTString strDirName) const {
   strDirName.ToLower();
 
   // Make consistent slashes
-  strPath.ReplaceChar('\\', '/');
+  strPath.ReplaceChar('\\', '/'); // [Cecil] NOTE: Internally for GoUpUntilDir()
 
   // Absolute path, e.g. "abc/strDirName/qwe"
   size_t iDir(strPath.RFind("/" + strDirName + "/"));
@@ -101,11 +101,11 @@ size_t CTString::GoUpUntilDir(CTString strDirName) const {
 // E.g. "abc/sub1/../sub2/./qwe" -> "abc/sub2/qwe"
 void CTString::SetAbsolutePath(void) {
   CTString strPath(*this);
-  strPath.ReplaceChar('\\', '/');
+  strPath.ReplaceChar('/', '\\');
 
   // Gather parts of the entire path
   std::list<CTString> aParts;
-  strPath.CharSplit('/', aParts);
+  strPath.CharSplit('\\', aParts);
 
   std::list<CTString> aFinalPath;
   std::list<CTString>::const_iterator it;
@@ -192,13 +192,12 @@ void CTString::SetFullDirectory(void) {
   INDEX iLength = str.Length();
 
   // Add missing backslash at the end
-  if (iLength > 0 && str[iLength - 1] != '\\') {
-    str += CTString("\\");
+  if (iLength > 0 && !str.PathSeparatorAt(iLength - 1)) {
+    str += "\\";
   }
 
-  // If shorter than 2 characters or doesn't start with a drive directory
-  if (iLength < 2 || str[1] != ':') {
-    // Convert relative path into absolute path
+  // Convert relative path into absolute path
+  if (IsRelative()) {
     str = _fnmApplicationPath + str;
   }
 

@@ -48,8 +48,10 @@ BOOL FileSystem::Search::FindFirst(const char *strDir)
   return (hFile != -1);
 
 #else
-  CTString strGetDir = strDir;
-  dDir = opendir(strGetDir.FileDir().ConstData());
+  CTString strUnixDir = strDir;
+  strUnixDir.ReplaceChar('\\', '/'); // [Cecil] NOTE: For opendir()
+
+  dDir = opendir(strUnixDir.FileDir().ConstData());
 
   if (dDir == NULL) return FALSE;
 
@@ -106,8 +108,11 @@ BOOL FileSystem::Exists(const char *strFilename)
   return FALSE;
 
 #else
+  CTString strUnixFilename = strFilename;
+  strUnixFilename.ReplaceChar('\\', '/'); // [Cecil] NOTE: For stat()
+
   struct stat s;
-  return (stat(strFilename, &s) != -1);
+  return (stat(strUnixFilename.ConstData(), &s) != -1);
 #endif
 };
 
@@ -119,8 +124,11 @@ BOOL FileSystem::IsDirectory(const char *strFilename)
   return (dwAttrib != -1 && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 
 #else
+  CTString strUnixFilename = strFilename;
+  strUnixFilename.ReplaceChar('\\', '/'); // [Cecil] NOTE: For stat()
+
   struct stat s;
-  if (stat(strFilename, &s) == -1) return FALSE;
+  if (stat(strUnixFilename.ConstData(), &s) == -1) return FALSE;
 
   return (S_ISDIR(s.st_mode) ? TRUE : FALSE);
 #endif

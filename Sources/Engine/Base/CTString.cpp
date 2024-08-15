@@ -692,7 +692,7 @@ BOOL CTString::Matches(const char *strOther) const
       q = 0;
     }
     
-    if ((tolower(*m) != tolower(*n)) && ((*m != '?') || q)) {
+    if ((tolower(static_cast<UBYTE>(*m)) != tolower(static_cast<UBYTE>(*n))) && ((*m != '?') || q)) {
       if (!wild) {
         return FALSE;
       }

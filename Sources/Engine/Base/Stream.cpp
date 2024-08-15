@@ -103,28 +103,29 @@ static BOOL LoadFileList(CDynamicStackArray<CTFileName> &afnm, const CTFileName 
 }
 
 // [Cecil] Makes a string copy of the path to match
-BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, CTString fnm)
-{
+BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, CTString fnm) {
   // [Cecil] Fix slashes for consistency
   fnm.ReplaceChar('/', '\\');
 
-  for(INDEX i=0; i<afnm.Count(); i++) {
-    if (fnm.Matches(afnm[i]) || fnm.HasPrefix(afnm[i])) {
+  for (INDEX i = 0; i < afnm.Count(); i++) {
+    CTString strEntry = afnm[i];
+
+    // [Cecil] Match backward slashes for consistency
+    strEntry.ReplaceChar('/', '\\');
+
+    // Try matching wildcards first and only then check if the path starts with it
+    if (fnm.Matches(strEntry) || fnm.HasPrefix(strEntry)) {
       return TRUE;
     }
   }
+
   return FALSE;
-}
+};
 
 // [Cecil] Load ZIP packages under an absolute directory that match a filename mask
 static void LoadPackages(const CTString &strDirectory, const CTString &strMatchFiles) {
   FileSystem::Search search;
   CTString fnmBasePath = (strDirectory + strMatchFiles);
-
-#if !SE1_WIN
-  // Fix path slashes
-  fnmBasePath.ReplaceChar('\\', '/');
-#endif
 
   // Find first file in the directory
   BOOL bOK = search.FindFirst(fnmBasePath.ConstData());
@@ -1355,6 +1356,7 @@ SLONG GetFileTimeStamp_t(const CTFileName &fnm)
 
   int file_handle;
   // try to open file for reading
+  fnmExpanded.ReplaceChar('\\', '/'); // [Cecil] NOTE: For _open()
   file_handle = _open(fnmExpanded.ConstData(), _O_RDONLY | _O_BINARY);
   if(file_handle==-1) {
     ThrowF_t(TRANS("Cannot open file '%s' for reading"), fnm.ConstData());
@@ -1390,6 +1392,7 @@ BOOL IsFileReadOnly(const CTFileName &fnm)
 
   int file_handle;
   // try to open file for reading
+  fnmExpanded.ReplaceChar('\\', '/'); // [Cecil] NOTE: For _open()
   file_handle = _open(fnmExpanded.ConstData(), _O_RDONLY | _O_BINARY);
   if(file_handle==-1) {
     return FALSE;
@@ -1432,7 +1435,11 @@ static BOOL SubstExt_internal(CTFileName &fnmFullFileName)
 }
 
 // [Cecil] Check if file exists at a specific path (relative or absolute)
-static inline BOOL CheckFileAt(const CTString &strBaseDir, const CTFileName &fnmFile, CTFileName &fnmExpanded) {
+static inline BOOL CheckFileAt(CTString strBaseDir, CTFileName fnmFile, CTFileName &fnmExpanded) {
+  // Match backward slashes for consistency
+  strBaseDir.ReplaceChar('/', '\\');
+  fnmFile.ReplaceChar('/', '\\');
+
   if (fnmFile.HasPrefix(strBaseDir)) {
     fnmExpanded = fnmFile;
   } else {

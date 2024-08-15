@@ -74,6 +74,7 @@ static void UpdatePauseState(void)
 void CGame::QuickTest(const CTFileName &fnMapName, 
   CDrawPort *pdp, CViewPort *pvp)
 {
+#if SE1_WIN
   UINT uiMessengerMsg = RegisterWindowMessageA("Croteam Messenger: Incoming Message");
   EnableLoadingHook(pdp);
 
@@ -246,6 +247,10 @@ void CGame::QuickTest(const CTFileName &fnMapName,
     _pGame->gm_csComputerState = CS_TURNINGOFF;
     cmp_ppenPlayer = NULL;
   }
+
+#else
+  FatalError("No CGame::QuickTest()!!!");
+#endif
 
   _pInput->DisableInput();
   StopGame();

@@ -367,7 +367,7 @@ public:
   // Check if the path starts with a root directory (e.g. "C:/" or "//abc/")
   inline bool HasRootDirectory() const {
     const size_t ctRoot = RootNameLength();
-    return Length() > ctRoot && PathSeparatorAt(ctRoot);
+    return (size_t)Length() > ctRoot && PathSeparatorAt(ctRoot);
   };
 
   // Check if it's a full path

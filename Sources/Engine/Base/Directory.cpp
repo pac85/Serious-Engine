@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/Unzip.h>
@@ -33,11 +33,6 @@ void FillDirList_internal(CTFileName fnmBasePath,
   CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnmDir, CTString strPattern, BOOL bRecursive,
   CDynamicStackArray<CTFileName> *pafnmInclude, CDynamicStackArray<CTFileName> *pafnmExclude)
 {
-#if !SE1_WIN
-  // [Cecil] Fix path slashes
-  fnmBasePath.ReplaceChar('\\', '/');
-#endif
-
   // add the directory to list of directories to search
   CListHead lhDirs;
   new FileSystem::DirToRead(fnmDir, lhDirs);
@@ -46,7 +41,7 @@ void FillDirList_internal(CTFileName fnmBasePath,
   while (!lhDirs.IsEmpty()) {
     // take the first one
     FileSystem::DirToRead *pdr = LIST_HEAD(lhDirs, FileSystem::DirToRead, lnInList);
-    CTString fnmDir = pdr->strDir;
+    CTString fnmDir = pdr->strDirToRead;
     delete pdr;
 
     // if the dir is not allowed

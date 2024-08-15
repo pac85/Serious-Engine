@@ -33,7 +33,7 @@ ENGINE_API CTString::CTString(const char *strCharString, size_t iFrom, size_t ct
   // make string duplicate
   str_String = StringDuplicate(strCharString + iFrom);
 
-  if (ct < Length()) {
+  if (ct < (size_t)Length()) {
     str_String[ct] = '\0';
   }
 }

@@ -30,16 +30,10 @@ class ENGINE_API FileSystem {
     struct ENGINE_API DirToRead
     {
       CListNode lnInList;
-      CTString strDir;
+      CTString strDirToRead;
 
       DirToRead(const CTString &strSetDir, CListHead &lhAddToList) {
-        strDir = strSetDir;
-
-      #if !SE1_WIN
-        // Fix path slashes
-        strDir.ReplaceChar('\\', '/');
-      #endif
-
+        strDirToRead = strSetDir;
         lhAddToList.AddTail(lnInList);
       };
     };
