@@ -17,7 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // [Cecil] ASM code translation:
 // https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Light/LayerMixer.cpp
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Brushes/Brush.h>
 #include <Engine/Brushes/BrushTransformed.h>

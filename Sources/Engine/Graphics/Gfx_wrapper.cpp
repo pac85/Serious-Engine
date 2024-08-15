@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Graphics/GfxLibrary.h>
 #include <Engine/Graphics/ViewPort.h>
@@ -605,5 +605,5 @@ void IGfxInterface::SetTruform(INDEX iLevel, BOOL bLinearNormals)
 #endif
 
 // Define specific API methods
-#include <Engine/Graphics/GFX_wrapper_OpenGL.cpp>
-#include <Engine/Graphics/GFX_wrapper_Direct3D.cpp>
+#include <Engine/Graphics/Gfx_wrapper_OpenGL.cpp>
+#include <Engine/Graphics/Gfx_wrapper_Direct3D.cpp>

@@ -13,13 +13,13 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Terrain/Terrain.h>
 #include <Engine/Terrain/TerrainRender.h>
 #include <Engine/Terrain/TerrainEditing.h>
 #include <Engine/Math/Projection.h>
 #include <Engine/Math/OBBox.h>
-#include <Engine/Graphics/Drawport.h>
+#include <Engine/Graphics/DrawPort.h>
 #include <Engine/Graphics/Fog_internal.h>
 #include <Engine/Rendering/Render.h>
 #include <Engine/Entities/Entity.h>

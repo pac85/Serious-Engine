@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // [Cecil] ASM code translation:
 // https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Graphics/Graphics.cpp
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Statistics_internal.h>
 #include <Engine/Graphics/GfxLibrary.h>

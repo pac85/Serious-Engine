@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // [Cecil] ASM code translation:
 // https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Graphics/Gfx_OpenGL_Textures.cpp
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Graphics/GfxLibrary.h>
 

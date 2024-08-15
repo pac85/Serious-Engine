@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Terrain/Terrain.h>
 #include <Engine/Math/Plane.h>
 #include <Engine/Math/Clipping.inl>
@@ -504,7 +504,7 @@ FLOAT TestRayCastHit(CTerrain *ptrTerrain, const FLOATmatrix3D &mRotation, const
 
 }
 
-#include <Engine/Graphics/Drawport.h>
+#include <Engine/Graphics/DrawPort.h>
 #include <Engine/Graphics/Font.h>
 void ShowRayPath(CDrawPort *pdp)
 {

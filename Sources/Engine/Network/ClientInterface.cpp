@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/CTString.h>
 #include <Engine/Base/Console.h>
@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/ClientInterface.h>
 #include <Engine/Network/CPacket.h>
 
-#include <Engine/Base/Listiterator.inl>
+#include <Engine/Base/ListIterator.inl>
 
 // how many acknowledges can fit into one UDP packet
 #define MAX_ACKS_PER_PACKET (MAX_UDP_BLOCK_SIZE/sizeof(ULONG))

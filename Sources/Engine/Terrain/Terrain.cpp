@@ -13,12 +13,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Math/Projection.h>
 #include <Engine/Math/FixInt.h>
-#include <Engine/Graphics/Drawport.h>
+#include <Engine/Graphics/DrawPort.h>
 #include <Engine/Graphics/ImageInfo.h>
 #include <Engine/Graphics/GfxLibrary.h>
 #include <Engine/Terrain/Terrain.h>

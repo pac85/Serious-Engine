@@ -17,14 +17,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // [Cecil] ASM code translation:
 // https://gitlab.com/TwilightWingsStudio/SSE/SeriousEngineE/-/blob/master/Engine/Sound/SoundMixer.cpp
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Sound/SoundProfile.h>
 #include <Engine/Sound/SoundDecoder.h>
 #include <Engine/Sound/SoundLibrary.h>
 #include <Engine/Sound/SoundData.h>
 #include <Engine/Sound/SoundObject.h>
-#include <Engine/Base/Statistics_Internal.h>
+#include <Engine/Base/Statistics_internal.h>
 #include <Engine/Base/Console.h>
 
 // asm shortcuts
