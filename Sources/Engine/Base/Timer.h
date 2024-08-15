@@ -19,8 +19,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#ifndef _MT
-#error Multithreading support is required!
+// [Cecil] Show error only on Windows
+#if SE1_WIN && !SE1_SINGLE_THREAD && !defined(_MT)
+  #error Multithreading support is required!
 #endif
 
 #include <Engine/Base/Lists.h>
@@ -82,7 +83,12 @@ public:
   FLOAT tm_fLerpFactor;   // factor used for lerping between frames
   FLOAT tm_fLerpFactor2;  // secondary lerp-factor used for unpredicted movement
 
-#if SE1_PREFER_SDL
+// [Cecil] For updating the timers in the same thread
+#if SE1_SINGLE_THREAD
+  CTimerValue tm_tvInitialUpkeep;
+
+// [Cecil] For controlling the timer thread
+#elif SE1_PREFER_SDL
   SDL_TimerID tm_TimerID; // [Cecil] SDL: Timer ID
 #else
   ULONG tm_TimerID;       // windows timer ID

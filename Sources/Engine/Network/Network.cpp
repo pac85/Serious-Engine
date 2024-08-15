@@ -658,11 +658,18 @@ void CNetworkTimerHandler::HandleTimer(void)
   if (this==NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
-  // enable stream handling during timer
+
+  // [Cecil] Enable stream handling during multithreaded timer logic
+#if !SE1_SINGLE_THREAD
   CTSTREAM_BEGIN {
+#endif
+
     // do the timer loop
     _pNetwork->TimerLoop();
+
+#if !SE1_SINGLE_THREAD
   } CTSTREAM_END;
+#endif
 }
 
 /*

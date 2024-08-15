@@ -19,7 +19,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Thread-local variables specifier
 #ifndef SE1_THREADLOCAL
-  #if SE1_WIN
+  #if SE1_SINGLE_THREAD
+    #define SE1_THREADLOCAL
+  #elif SE1_WIN
     #define SE1_THREADLOCAL __declspec(thread)
   #elif __STDC_VERSION__ >= 201112L
     #define SE1_THREADLOCAL _Thread_local

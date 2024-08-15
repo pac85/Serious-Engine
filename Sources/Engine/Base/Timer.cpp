@@ -100,8 +100,25 @@ void CTimer_TimerFunc_internal(void)
 // streams and to group file before enabling that!
 //  CTSTREAM_BEGIN {
 
+  #if SE1_SINGLE_THREAD
+    static CTimerValue tvTickQuantum((double)_pTimer->TickQuantum);
+
+    CTimerValue tvUpkeepDiff = _pTimer->GetHighPrecisionTimer() - _pTimer->tm_tvInitialUpkeep;
+    TIME tmDiff = tvUpkeepDiff.GetSeconds();
+
+    // No need to update timers yet
+    if (tmDiff < _pTimer->TickQuantum) return;
+
+    while (tmDiff >= _pTimer->TickQuantum) {
+      _pTimer->tm_tvInitialUpkeep += tvTickQuantum;
+      _pTimer->tm_RealTimeTimer += _pTimer->TickQuantum;
+      tmDiff -= _pTimer->TickQuantum;
+    }
+
+  #else
     // increment the 'real time' timer
     _pTimer->tm_RealTimeTimer += _pTimer->TickQuantum;
+  #endif // SE1_SINGLE_THREAD
 
     // get the current time for real and in ticks
     CTimerValue tvTimeNow = _pTimer->GetHighPrecisionTimer();
@@ -129,6 +146,7 @@ void CTimer_TimerFunc_internal(void)
 //  } CTSTREAM_END;
 }
 
+#if !SE1_SINGLE_THREAD
 #if SE1_PREFER_SDL
 
 // [Cecil] SDL: Timer tick function
@@ -154,6 +172,7 @@ void __stdcall CTimer_TimerFunc(UINT uID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR
 }
 
 #endif // SE1_PREFER_SDL
+#endif // !SE1_SINGLE_THREAD
 
 #pragma inline_depth()
 
@@ -292,6 +311,10 @@ static SQUAD GetCPUSpeedHz(void)
  */
 CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
 {
+#if SE1_SINGLE_THREAD
+  bInterrupt = FALSE;
+#endif
+
   tm_csHooks.cs_iIndex = 1000;
   // set global pointer
   ASSERT(_pTimer == NULL);
@@ -321,6 +344,10 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   tm_fLerpFactor = 1.0f;
   tm_fLerpFactor2 = 1.0f;
 
+#if SE1_SINGLE_THREAD
+  tm_tvInitialUpkeep = GetHighPrecisionTimer();
+
+#else
   // start interrupt (eventually)
   if( tm_bInterrupt)
   {
@@ -356,6 +383,7 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
     // report fatal
     if( iTry>3) FatalError(TRANS("Problem with initializing multimedia timer - please try again."));
   }
+#endif // SE1_SINGLE_THREAD
 }
 
 /*
@@ -365,6 +393,7 @@ CTimer::~CTimer(void)
 {
   ASSERT(_pTimer == this);
 
+#if !SE1_SINGLE_THREAD
 #if SE1_PREFER_SDL
   // [Cecil] SDL: Remove timer
   SDL_RemoveTimer(tm_TimerID);
@@ -379,6 +408,7 @@ CTimer::~CTimer(void)
   // check that all handlers have been removed
   ASSERT(tm_lhHooks.IsEmpty());
 #endif
+#endif // !SE1_SINGLE_THREAD
 
   // clear global pointer
   _pTimer = NULL;

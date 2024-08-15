@@ -621,6 +621,11 @@ void PrintDisplayModeInfo(void)
 // do the main game loop and render screen
 void DoGame(void)
 {
+#if SE1_SINGLE_THREAD
+  // [Cecil] Run timer logic in the same thread
+  _pTimer->HandleTimerHandlers();
+#endif
+
   // set flag if not in game
   if( !_pGame->gm_bGameOn) _gmRunningGameMode = GM_NONE;
 
@@ -791,6 +796,11 @@ void QuitScreenLoop(void)
       }
     }
     //_pTimer->Suspend(5);
+
+  #if SE1_SINGLE_THREAD
+    // [Cecil] Run timer logic in the same thread
+    _pTimer->HandleTimerHandlers();
+  #endif
   }
 }
 

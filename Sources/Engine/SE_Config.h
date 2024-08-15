@@ -84,6 +84,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE1_MMXINTOPT
 #define SE1_MMXINTOPT     1 // Use MMX intrinsics for light calculations (0 - No; 1 - Yes)
 #endif
+#ifndef SE1_SINGLE_THREAD
+#define SE1_SINGLE_THREAD 0 // Run all timer logic manually in the same thread as the application logic (0 - No; 1 - Yes)
+#endif
 #ifndef SE1_DOUBLE_TIMER
 #define SE1_DOUBLE_TIMER  0 // Use double-precision floating-point type for timer values
 #endif

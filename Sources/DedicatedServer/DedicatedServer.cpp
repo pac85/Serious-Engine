@@ -309,6 +309,11 @@ void RoundEnd(void)
 // do the main game loop and render screen
 void DoGame(void)
 {
+#if SE1_SINGLE_THREAD
+  // [Cecil] Run timer logic in the same thread
+  _pTimer->HandleTimerHandlers();
+#endif
+
   // do the main game loop
   if( _pGame->gm_bGameOn) {
     _pGame->GameMainLoop();
