@@ -85,8 +85,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 inline void _strupr(char *str) {
   if (str == NULL) return;
 
-  for (char *ptr = str; *ptr; ptr++) {
-    *ptr = (char)toupper(*ptr);
+  while (*str != '\0') {
+    *str = static_cast<char>(toupper(static_cast<UBYTE>(*str)));
+    ++str;
   }
 };
 
