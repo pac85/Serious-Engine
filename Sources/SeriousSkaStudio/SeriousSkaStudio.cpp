@@ -375,14 +375,13 @@ CSeriousSkaStudioDoc *CSeriousSkaStudioApp::GetDocument()
 // start pasring fnParseFile file (may include mesh,skeleton,animset,...)
 BOOL StartParser(CTString fnParseFile)
 {
-  CTFileName fnFull;
-  fnFull = _fnmApplicationPath + fnParseFile;
+  CTString fnFull = _fnmApplicationPath + fnParseFile;
 
   yyin = NULL;
   astrText.PopAll();
   astrText.Clear();
   // initialize pre-parsing variables
-  yyin = fopen(fnFull, "r");
+  yyin = FileSystem::Open(fnFull, "r");
   // reset include depth ptr
   include_stack_ptr = 0;
   strCurentFileName = fnFull;

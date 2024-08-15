@@ -192,13 +192,13 @@ static CStaticStackArray<CTFileName> _afnmArchives;
 void ReadZIPDirectory_t(CTFileName *pfnmZip)
 {
   const char *strZip = pfnmZip->ConstData();
-  FILE *f = fopen(strZip, "rb");
+  FILE *f = FileSystem::Open(strZip, "rb");
   if (f==NULL) {
     ThrowF_t(TRANS("%s: Cannot open file (%s)"), strZip, strerror(errno));
   }
   // start at the end of file, minus expected minimum overhead
   fseek(f, 0, SEEK_END);
-  int iPos = ftell(f)-sizeof(long)-sizeof(EndOfDir)+2;
+  int iPos = ftell(f) - sizeof(int) - sizeof(EndOfDir) + 2;
   // do not search more than 128k (should be around 65k at most)
   int iMinPos = iPos-128*1024;
   if (iMinPos<0) {
@@ -562,7 +562,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   zh.zh_zeEntry = *pze;
 
   // open zip archive for reading
-  zh.zh_fFile = fopen(pze->ze_pfnmArchive->ConstData(), "rb");
+  zh.zh_fFile = FileSystem::Open(*pze->ze_pfnmArchive, "rb");
   // if failed to open it
   if (zh.zh_fFile==NULL) {
     // clear the handle

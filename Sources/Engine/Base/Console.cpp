@@ -86,14 +86,14 @@ void CConsole::Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX 
   con_strCurrent = con_strLastLine;
 
   // open console file
-  con_fLog = fopen(fnmLog.ConstData(), "wt");
+  con_fLog = FileSystem::Open(fnmLog, "wt");
 
   if (con_fLog==NULL) {
     FatalError("Cannot open log file '%s' for writing:\n%s", fnmLog.ConstData(), strerror(errno));
   }
 
   // print one dummy line on start
-  CPrintF("\n");
+  CPutString("\n");
 }
 
 // Get current console buffer.

@@ -111,7 +111,7 @@ EXP_FLT (({DIGIT}+("."({DIGIT}*)?)?)("E"|"e")("+"|"-")?{DIGIT}+)
     include_fnStack[include_stack_ptr] = strCurentFileName;
     include_lineStack[include_stack_ptr] = _yy_iLine;
     include_FileStack[include_stack_ptr] = yyin;
-    yyin = fopen( strFileName, "r" );
+    yyin = FileSystem::Open(strFileName, "r");
     
     if(yyin == NULL) 
       ThrowF_t("File '%s'\n Could not open '%s' (line %d)", strCurentFileName.ConstData(), strFileName, _yy_iLine);

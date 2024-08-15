@@ -144,7 +144,7 @@ void CGame::QuickTest(const CTFileName &fnMapName,
         char *pachrTemp=getenv("TEMP");
         if( pachrTemp!=NULL)
         {
-          FILE *pfileMessage = fopen((CTString(pachrTemp) + "Messenger.msg").ConstData(), "r");
+          FILE *pfileMessage = FileSystem::Open(CTString(pachrTemp) + "Messenger.msg", "r"); // [Cecil] FIXME: Never closes the file???
           if( pfileMessage!=NULL)
           {
             char achrMessage[1024];

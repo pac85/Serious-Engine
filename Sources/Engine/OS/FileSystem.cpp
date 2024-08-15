@@ -96,7 +96,7 @@ const char *FileSystem::Search::GetName(void) const
 BOOL FileSystem::Exists(const char *strFilename)
 {
 #if SE1_WIN
-  FILE *f = fopen(strFilename, "rb");
+  FILE *f = FileSystem::Open(strFilename, "rb");
 
   if (f != NULL) { 
     fclose(f);
@@ -133,4 +133,13 @@ BOOL FileSystem::PathMatches(CTString strPath, CTString strMatch) {
   while (strMatch.ReplaceSubstr("/", "\\\\")); // Replaces all
 
   return strPath.Matches(strMatch);
+};
+
+// Universal method for opening files via fopen()
+FILE *FileSystem::Open(CTString strFilename, const char *strMode) {
+#if !SE1_WIN
+  strFilename.ReplaceChar('\\', '/'); // [Cecil] NOTE: For fopen()
+#endif
+
+  return fopen(strFilename.ConstData(), strMode);
 };

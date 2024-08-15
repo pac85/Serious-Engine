@@ -909,14 +909,14 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
     // if it is a physical file
     } else if (iFile==EFP_FILE) {
       // open file in read only mode
-      fstrm_pFile = fopen(fnmFullFileName.ConstData(), "rb");
+      fstrm_pFile = FileSystem::Open(fnmFullFileName, "rb");
     }
     fstrm_bReadOnly = TRUE;
   
   // if write mode requested
   } else if( om == OM_WRITE) {
     // open file for reading and writing
-    fstrm_pFile = fopen(fnmFullFileName.ConstData(), "rb+");
+    fstrm_pFile = FileSystem::Open(fnmFullFileName, "rb+");
     fstrm_bReadOnly = FALSE;
   // if unknown mode
   } else {
@@ -964,7 +964,7 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   ASSERT(fstrm_pFile == NULL);
 
   // open file stream for writing (destroy file context if file existed before)
-  fstrm_pFile = fopen(fnmFullFileName.ConstData(), "wb+");
+  fstrm_pFile = FileSystem::Open(fnmFullFileName, "wb+");
   // if not successfull
   if(fstrm_pFile == NULL)
   {

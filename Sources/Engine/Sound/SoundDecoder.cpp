@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Sound/SoundDecoder.h>
 #include <Engine/Base/Stream.h>
@@ -292,7 +292,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
           ThrowF_t(TRANS("encoded audio in archives must not be compressed!\n"));
         }
         // open ogg file
-        sdc_pogg->ogg_fFile = fopen(fnmZip.ConstData(), "rb");
+        sdc_pogg->ogg_fFile = FileSystem::Open(fnmZip, "rb");
         // if error
         if (sdc_pogg->ogg_fFile==0) {
           ThrowF_t(TRANS("cannot open archive '%s'"), fnmZip.ConstData());
@@ -305,7 +305,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       // if not in zip
       } else if (iFileType==EFP_FILE) {
         // open ogg file
-        sdc_pogg->ogg_fFile = fopen(fnmExpanded.ConstData(), "rb");
+        sdc_pogg->ogg_fFile = FileSystem::Open(fnmExpanded, "rb");
         // if error
         if (sdc_pogg->ogg_fFile==0) {
           ThrowF_t(TRANS("cannot open encoded audio file"));

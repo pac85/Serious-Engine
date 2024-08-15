@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Sound/SoundLibrary.h>
 #include <Engine/Base/Translation.h>
@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Base/Console.h>
 #include <Engine/Base/Console_internal.h>
-#include <Engine/Base/Statistics_Internal.h>
+#include <Engine/Base/Statistics_internal.h>
 #include <Engine/Base/IFeel.h>
 
 #include <Engine/Sound/SoundProfile.h>
@@ -602,7 +602,7 @@ void CSoundLibrary::MixSounds(void)
   static FILE *_filMixerBuffer;
   static BOOL _bOpened = FALSE;
 
-  if (!_bOpened) _filMixerBuffer = fopen("d:\\MixerBufferDump.raw", "wb");
+  if (!_bOpened) _filMixerBuffer = FileSystem::Open("d:\\MixerBufferDump.raw", "wb");
   fwrite((void *)sl_pInterface->sl_pslMixerBuffer, 1, slDataToMix, _filMixerBuffer);
   _bOpened = TRUE;
   */

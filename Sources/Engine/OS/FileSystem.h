@@ -81,6 +81,9 @@ class ENGINE_API FileSystem {
 
     // Check if some path matches a wildcard (should be prioritized over simple CTString::Matches() method)
     static BOOL PathMatches(CTString strPath, CTString strMatch);
+
+    // Universal method for opening files via fopen()
+    static FILE *Open(CTString strFilename, const char *strMode);
 };
 
 #endif // include-once check
