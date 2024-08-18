@@ -17,19 +17,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <GameMP/Game.h>
 
 // application state variables
-extern BOOL _bRunning = TRUE;
+BOOL _bRunning = TRUE;
 static BOOL _bForceRestart = FALSE;
 static BOOL _bForceNextMap = FALSE;
 
-extern CTString _strSamVersion = "no version information";
-extern INDEX ded_iMaxFPS = 100;
-extern CTString ded_strConfig = "";
-extern CTString ded_strLevel = "";
-extern INDEX ded_bRestartWhenEmpty = TRUE;
-extern FLOAT ded_tmTimeout = -1;
-extern CTString sam_strFirstLevel = "Levels\\KarnakDemo.wld";
-extern CTString sam_strIntroLevel = "Levels\\Intro.wld";
-extern CTString sam_strGameName = "serioussam";
+CTString _strSamVersion = "no version information";
+INDEX ded_iMaxFPS = 100;
+CTString ded_strConfig = "";
+CTString ded_strLevel = "";
+INDEX ded_bRestartWhenEmpty = TRUE;
+FLOAT ded_tmTimeout = -1;
+CTString sam_strFirstLevel = "Levels\\KarnakDemo.wld";
+CTString sam_strIntroLevel = "Levels\\Intro.wld";
+CTString sam_strGameName = "serioussam";
 
 CTimerValue _tvLastLevelEnd = SQUAD(-1);
 

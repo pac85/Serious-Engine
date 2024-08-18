@@ -38,38 +38,38 @@ extern INDEX gap_iDithering;
                 
             
 // cached states
-extern BOOL GFX_bDepthTest  = FALSE;
-extern BOOL GFX_bDepthWrite = FALSE;
-extern BOOL GFX_bAlphaTest  = FALSE;
-extern BOOL GFX_bDithering  = TRUE;
-extern BOOL GFX_bBlending   = TRUE;
-extern BOOL GFX_bClipping   = TRUE;
-extern BOOL GFX_bClipPlane  = FALSE;
-extern BOOL GFX_bColorArray = FALSE;
-extern BOOL GFX_bTruform    = FALSE;
-extern BOOL GFX_bFrontFace  = TRUE;
-extern BOOL GFX_bViewMatrix = TRUE;
-extern INDEX GFX_iActiveTexUnit = 0;
-extern FLOAT GFX_fMinDepthRange = 0.0f;
-extern FLOAT GFX_fMaxDepthRange = 0.0f;
+BOOL GFX_bDepthTest  = FALSE;
+BOOL GFX_bDepthWrite = FALSE;
+BOOL GFX_bAlphaTest  = FALSE;
+BOOL GFX_bDithering  = TRUE;
+BOOL GFX_bBlending   = TRUE;
+BOOL GFX_bClipping   = TRUE;
+BOOL GFX_bClipPlane  = FALSE;
+BOOL GFX_bColorArray = FALSE;
+BOOL GFX_bTruform    = FALSE;
+BOOL GFX_bFrontFace  = TRUE;
+BOOL GFX_bViewMatrix = TRUE;
+INDEX GFX_iActiveTexUnit = 0;
+FLOAT GFX_fMinDepthRange = 0.0f;
+FLOAT GFX_fMaxDepthRange = 0.0f;
 
-extern GfxBlend GFX_eBlendSrc  = GFX_ONE;
-extern GfxBlend GFX_eBlendDst  = GFX_ZERO;
-extern GfxComp  GFX_eDepthFunc = GFX_LESS_EQUAL;
-extern GfxFace  GFX_eCullFace  = GFX_NONE;
-extern BOOL       GFX_abTexture[GFX_MAXTEXUNITS] = { FALSE, FALSE, FALSE, FALSE };
-extern INDEX GFX_iTexModulation[GFX_MAXTEXUNITS] = { 0, 0, 0, 0 };
+GfxBlend GFX_eBlendSrc  = GFX_ONE;
+GfxBlend GFX_eBlendDst  = GFX_ZERO;
+GfxComp  GFX_eDepthFunc = GFX_LESS_EQUAL;
+GfxFace  GFX_eCullFace  = GFX_NONE;
+BOOL       GFX_abTexture[GFX_MAXTEXUNITS] = { FALSE, FALSE, FALSE, FALSE };
+INDEX GFX_iTexModulation[GFX_MAXTEXUNITS] = { 0, 0, 0, 0 };
 
 // last ortho/frustum values (frustum has negative sign, because of orgho-frustum switching!)
-extern FLOAT GFX_fLastL = 0;
-extern FLOAT GFX_fLastR = 0;
-extern FLOAT GFX_fLastT = 0;
-extern FLOAT GFX_fLastB = 0;
-extern FLOAT GFX_fLastN = 0;
-extern FLOAT GFX_fLastF = 0;
+FLOAT GFX_fLastL = 0;
+FLOAT GFX_fLastR = 0;
+FLOAT GFX_fLastT = 0;
+FLOAT GFX_fLastB = 0;
+FLOAT GFX_fLastN = 0;
+FLOAT GFX_fLastF = 0;
 
 // number of vertices currently in buffer
-extern INDEX GFX_ctVertices = 0;
+INDEX GFX_ctVertices = 0;
 
 // for D3D: mark need for clipping (when wants to be disable but cannot be because of user clip plane)
 static BOOL _bWantsClipping = TRUE;
@@ -77,13 +77,13 @@ static BOOL _bWantsClipping = TRUE;
 static BOOL _bCVAReallyLocked = FALSE;
 
 // clip plane and last view matrix for D3D
-extern FLOAT D3D_afClipPlane[4]    = {0,0,0,0};
-extern FLOAT D3D_afViewMatrix[16]  = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
+FLOAT D3D_afClipPlane[4]    = {0,0,0,0};
+FLOAT D3D_afViewMatrix[16]  = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 static FLOAT _afActiveClipPlane[4] = {0,0,0,0};
 
 // Truform/N-Patches
-extern INDEX truform_iLevel  = -1;
-extern BOOL  truform_bLinear = FALSE;
+INDEX truform_iLevel  = -1;
+BOOL  truform_bLinear = FALSE;
 
 // error checkers (this is for debug version only)
 
@@ -128,7 +128,7 @@ extern void  UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulText
 #endif // SE1_DIRECT3D
 
 // update texture LOD bias
-extern FLOAT _fCurrentLODBias = 0;  // LOD bias adjuster
+FLOAT _fCurrentLODBias = 0;  // LOD bias adjuster
 extern void UpdateLODBias( const FLOAT fLODBias)
 { 
   // check API
@@ -446,8 +446,8 @@ INDEX IGfxInterface::GetFormatPixRatio( ULONG ulTextureFormat)
 // PATTERN TEXTURE FOR LINES
 
 CTexParams _tpPattern;
-extern ULONG _ulPatternTexture = NONE;
-extern ULONG _ulLastUploadedPattern = 0;
+ULONG _ulPatternTexture = NONE;
+ULONG _ulLastUploadedPattern = 0;
 
 // upload pattern to accelerator memory
 extern void gfxSetPattern( ULONG ulPattern)

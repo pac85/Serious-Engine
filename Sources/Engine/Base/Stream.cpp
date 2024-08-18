@@ -46,7 +46,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // maximum lenght of file that can be saved (default: 128Mb)
 ULONG _ulMaxLenghtOfSavingFile = (1UL<<20)*128;
-extern INDEX fil_bPreferZips = FALSE;
+INDEX fil_bPreferZips = FALSE;
 
 // set if current thread has currently enabled stream handling
 static SE1_THREADLOCAL BOOL _bThreadCanHandleStreams = FALSE;

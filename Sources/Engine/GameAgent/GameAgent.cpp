@@ -126,13 +126,10 @@ static TIME _tmLastHeartbeat = 0;
 
 static CDynamicStackArray<CServerRequest> ga_asrRequests;
 
-//extern CTString ga_strServer = "master1.croteam.org";
-extern CTString ga_strServer = "master1.42amsterdam.net";
-//extern CTString ga_strMSLegacy = "master1.croteam.org";
-extern CTString ga_strMSLegacy = "42amsterdam.net";
-
-extern BOOL ga_bMSLegacy = TRUE;
-//BOOL ga_bMSLegacy = FALSE;
+// [Cecil] Original (obsolete) master server: "master1.croteam.org"
+CTString ga_strServer = "master.333networks.com";
+CTString ga_strMSLegacy = "master.333networks.com";
+BOOL ga_bMSLegacy = TRUE;
 
 void _uninitWinsock();
 void _initializeWinsock(void)

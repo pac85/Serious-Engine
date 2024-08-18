@@ -1011,7 +1011,7 @@ void CEntity::FallDownToFloor( void)
 
 
 extern CEntity *_penLightUpdating;
-extern BOOL _bDontDiscardLinks = FALSE;
+BOOL _bDontDiscardLinks = FALSE;
 
 // internal repositioning function
 void CEntity::SetPlacement_internal(const CPlacement3D &plNew, const FLOATmatrix3D &mRotation,

@@ -56,8 +56,8 @@ EEngineAppType _eEngineAppType = E_SEAPP_OTHER;
 ENGINE_API CTString _strLogFile = "";
 
 // global handle for application window
-extern OS::Window _hwndCurrent = NULL;
-extern BOOL _bFullScreen = FALSE;
+OS::Window _hwndCurrent = NULL;
+BOOL _bFullScreen = FALSE;
 
 // critical section for access to zlib functions
 CTCriticalSection zip_csLock; 
@@ -100,7 +100,7 @@ static CTString sys_strModName = "";
 static CTString sys_strModExt  = "";
 
 // enables paranoia checks for allocation array
-extern BOOL _bAllocationArrayParanoiaCheck = FALSE;
+BOOL _bAllocationArrayParanoiaCheck = FALSE;
 
 static void DetectCPU(void)
 {
@@ -560,7 +560,7 @@ ENGINE_API void SE_UpdateWindowHandle(OS::Window hwndMain)
 // [Cecil] Don't care about pretouching
 #if !SE1_OLD_COMPILER
 
-extern BOOL _bNeedPretouch = FALSE;
+BOOL _bNeedPretouch = FALSE;
 
 ENGINE_API extern void SE_PretouchIfNeeded(void)
 {
@@ -605,7 +605,7 @@ touchLoop:
 
 
 // pretouch all memory commited by process
-extern BOOL _bNeedPretouch = FALSE;
+BOOL _bNeedPretouch = FALSE;
 ENGINE_API extern void SE_PretouchIfNeeded(void)
 {
   // only if pretouching is needed?

@@ -33,7 +33,7 @@ static void FailFunction_t(const char *strName) {
 // ------------------------------------ AMP11
 
 // amp11lib vars
-extern BOOL _bAMP11Enabled = FALSE;
+BOOL _bAMP11Enabled = FALSE;
 static HINSTANCE _hAmp11lib = NULL;
 
 // amp11lib types
@@ -88,7 +88,7 @@ public:
 #include <vorbis/vorbisfile.h>  // we define needed stuff ourselves, and ignore the rest
 
 // vorbis vars
-extern BOOL _bOVEnabled = FALSE;
+BOOL _bOVEnabled = FALSE;
 static HINSTANCE _hOV = NULL;
 
 class CDecodeData_OGG {

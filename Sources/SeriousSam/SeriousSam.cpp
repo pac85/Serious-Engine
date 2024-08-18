@@ -32,10 +32,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "ScreenResolutions.h"
 
 // application state variables
-extern BOOL _bRunning = TRUE;
-extern BOOL _bQuitScreen = TRUE;
-extern BOOL bMenuActive = FALSE;
-extern BOOL bMenuRendering = FALSE;
+BOOL _bRunning = TRUE;
+BOOL _bQuitScreen = TRUE;
+BOOL bMenuActive = FALSE;
+BOOL bMenuRendering = FALSE;
 
 extern BOOL _bDefiningKey;
 static BOOL _bReconsiderInput = FALSE;
@@ -46,25 +46,25 @@ PIX2D _vpixScreenRes = PIX2D(0, 0);
 static INDEX sam_iMaxFPSActive   = 500;
 static INDEX sam_iMaxFPSInactive = 10;
 static INDEX sam_bPauseOnMinimize = TRUE; // auto-pause when window has been minimized
-extern INDEX sam_bWideScreen = FALSE;
-extern FLOAT sam_fPlayerOffset = 0.0f;
+INDEX sam_bWideScreen = FALSE;
+FLOAT sam_fPlayerOffset = 0.0f;
 
 // display mode settings
-extern INDEX sam_iWindowMode = 0; // [Cecil] Different window modes
-extern INDEX sam_iScreenSizeI = 1024;  // current size of the window
-extern INDEX sam_iScreenSizeJ = 768;  // current size of the window
-extern INDEX sam_iDisplayDepth  = 0;  // 0==default, 1==16bit, 2==32bit
-extern INDEX sam_iDisplayAdapter = 0; 
-extern INDEX sam_iGfxAPI = 0;         // 0==OpenGL
-extern INDEX sam_bFirstStarted = FALSE;
-extern FLOAT sam_tmDisplayModeReport = 5.0f;
-extern INDEX sam_bShowAllLevels = FALSE;
-extern INDEX sam_bMentalActivated = FALSE;
+INDEX sam_iWindowMode = 0; // [Cecil] Different window modes
+INDEX sam_iScreenSizeI = 1024;  // current size of the window
+INDEX sam_iScreenSizeJ = 768;  // current size of the window
+INDEX sam_iDisplayDepth  = 0;  // 0==default, 1==16bit, 2==32bit
+INDEX sam_iDisplayAdapter = 0; 
+INDEX sam_iGfxAPI = 0;         // 0==OpenGL
+INDEX sam_bFirstStarted = FALSE;
+FLOAT sam_tmDisplayModeReport = 5.0f;
+INDEX sam_bShowAllLevels = FALSE;
+INDEX sam_bMentalActivated = FALSE;
 
 // network settings
-extern CTString sam_strNetworkSettings = "";
+CTString sam_strNetworkSettings = "";
 // command line
-extern CTString sam_strCommandLine = "";
+CTString sam_strCommandLine = "";
 
 // 0...app started for the first time
 // 1...all ok
@@ -73,51 +73,51 @@ static INDEX _iDisplayModeChangeFlag = 0;
 static TIME _tmDisplayModeChanged = 100.0f; // when display mode was last changed
 
 // rendering preferences for automatic settings
-extern INDEX sam_iVideoSetup = 1;  // 0==speed, 1==normal, 2==quality, 3==custom
+INDEX sam_iVideoSetup = 1;  // 0==speed, 1==normal, 2==quality, 3==custom
 // automatic adjustment of audio quality
-extern BOOL sam_bAutoAdjustAudio = TRUE;
+BOOL sam_bAutoAdjustAudio = TRUE;
 
-extern INDEX sam_bAutoPlayDemos = TRUE;
+INDEX sam_bAutoPlayDemos = TRUE;
 static INDEX _bInAutoPlayLoop = TRUE;
 
 // menu calling
-extern INDEX sam_bMenuSave     = FALSE;
-extern INDEX sam_bMenuLoad     = FALSE;
-extern INDEX sam_bMenuControls = FALSE;
-extern INDEX sam_bMenuHiScore  = FALSE;
-extern INDEX sam_bToggleConsole = FALSE;
-extern INDEX sam_iStartCredits = FALSE;
+INDEX sam_bMenuSave     = FALSE;
+INDEX sam_bMenuLoad     = FALSE;
+INDEX sam_bMenuControls = FALSE;
+INDEX sam_bMenuHiScore  = FALSE;
+INDEX sam_bToggleConsole = FALSE;
+INDEX sam_iStartCredits = FALSE;
 
 // for mod re-loading
-extern CTFileName _fnmModToLoad = CTString("");
-extern CTString _strModServerJoin = CTString("");
-extern CTString _strURLToVisit = CTString("");
+CTFileName _fnmModToLoad = CTString("");
+CTString _strModServerJoin = CTString("");
+CTString _strURLToVisit = CTString("");
 
 
 // state variables fo addon execution
 // 0 - nothing
 // 1 - start (invoke console)
 // 2 - console invoked, waiting for one redraw
-extern INDEX _iAddonExecState = 0;
-extern CTFileName _fnmAddonToExec = CTString("");
+INDEX _iAddonExecState = 0;
+CTFileName _fnmAddonToExec = CTString("");
 
 // logo textures
 static CTextureObject  _toLogoCT;
 static CTextureObject  _toLogoODI;
 static CTextureObject  _toLogoEAX;
-extern CTextureObject *_ptoLogoCT  = NULL;
-extern CTextureObject *_ptoLogoODI = NULL;
-extern CTextureObject *_ptoLogoEAX = NULL;
+CTextureObject *_ptoLogoCT  = NULL;
+CTextureObject *_ptoLogoODI = NULL;
+CTextureObject *_ptoLogoEAX = NULL;
 
-extern CTString sam_strVersion = "1.10";
-extern CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
+CTString sam_strVersion = "1.10";
+CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
 
-extern CTString sam_strFirstLevel = "Levels\\LevelsMP\\1_0_InTheLastEpisode.wld";
-extern CTString sam_strIntroLevel = "Levels\\LevelsMP\\Intro.wld";
-extern CTString sam_strGameName = "serioussamse";
+CTString sam_strFirstLevel = "Levels\\LevelsMP\\1_0_InTheLastEpisode.wld";
+CTString sam_strIntroLevel = "Levels\\LevelsMP\\Intro.wld";
+CTString sam_strGameName = "serioussamse";
 
-extern CTString sam_strTechTestLevel = "Levels\\LevelsMP\\TechTest.wld";
-extern CTString sam_strTrainingLevel = "Levels\\KarnakDemo.wld";
+CTString sam_strTechTestLevel = "Levels\\LevelsMP\\TechTest.wld";
+CTString sam_strTrainingLevel = "Levels\\KarnakDemo.wld";
 
 ENGINE_API extern INDEX snd_iFormat;
 

@@ -54,7 +54,7 @@ extern CDynamicStackArray<CTFileName> _afnmNoCRC;
 static CDynamicStackArray<CCRCEntry> _aceEntries;
 static CNameTable_CCRCEntry _ntEntries;
 
-extern BOOL CRCT_bGatherCRCs = FALSE;  // set while gathering CRCs of all loaded files
+BOOL CRCT_bGatherCRCs = FALSE;  // set while gathering CRCs of all loaded files
 
 // init CRC table
 void CRCT_Init(void)

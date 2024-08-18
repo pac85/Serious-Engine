@@ -30,8 +30,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.cpp>
 #include <Engine/Templates/StaticArray.cpp>
 
-extern BOOL _bPortalSectorLinksPreLoaded = FALSE;
-extern BOOL _bEntitySectorLinksPreLoaded = FALSE;
+BOOL _bPortalSectorLinksPreLoaded = FALSE;
+BOOL _bEntitySectorLinksPreLoaded = FALSE;
 
 /*
  * Calculate bounding boxes in all brushes.

@@ -41,7 +41,7 @@ CStaticStackArray<GFXColor>   _aiExtColors;
 CStaticStackArray<INDEX>      _aiHitTiles;
 
 static ULONG *_pulSharedTopMap = NULL; // Shared memory used for topmap regeneration
-extern SLONG  _slSharedTopMapSize = 0; // Size of shared memory allocated for topmap regeneration
+SLONG _slSharedTopMapSize = 0; // Size of shared memory allocated for topmap regeneration
 extern INDEX  _ctShadowMapUpdates;
 #pragma message(">> Create class with destructor to clear shared topmap memory")
 

@@ -17,8 +17,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "MainWindow.h"
 #include "resource.h"
 
-extern BOOL _bWindowChanging = FALSE;    // ignores window messages while this is set
-extern OS::Window _hwndMain = NULL;
+BOOL _bWindowChanging = FALSE;    // ignores window messages while this is set
+OS::Window _hwndMain = NULL;
 char _achWindowTitle[256]; // current window title
 
 #if !SE1_PREFER_SDL
