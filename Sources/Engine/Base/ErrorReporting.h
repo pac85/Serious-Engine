@@ -22,19 +22,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #if !SE1_EXF_VERIFY_VA_IN_PRINTF
 
 /* Throw an exception of formatted string. */
-ENGINE_API extern void ThrowF_t(const char *strFormat, ...); // throws char *
+ENGINE_API extern void ThrowF_t(const char *strFormat, ...) SE1_FORMAT_FUNC(1, 2); // throws char *
 /* Report error and terminate program. */
-ENGINE_API extern void FatalError(const char *strFormat, ...);
+ENGINE_API extern void FatalError(const char *strFormat, ...) SE1_FORMAT_FUNC(1, 2);
 
 // [Cecil] Report error without terminating the program
-ENGINE_API extern void ErrorMessage(const char *strFormat, ...);
+ENGINE_API extern void ErrorMessage(const char *strFormat, ...) SE1_FORMAT_FUNC(1, 2);
 
 /* Report warning without terminating program (stops program until user responds). */
-ENGINE_API extern void WarningMessage(const char *strFormat, ...);
+ENGINE_API extern void WarningMessage(const char *strFormat, ...) SE1_FORMAT_FUNC(1, 2);
 /* Report information message to user (stops program until user responds). */
-ENGINE_API extern void InfoMessage(const char *strFormat, ...);
+ENGINE_API extern void InfoMessage(const char *strFormat, ...) SE1_FORMAT_FUNC(1, 2);
 /* Ask user for yes/no answer(stops program until user responds). */
-ENGINE_API extern BOOL YesNoMessage(const char *strFormat, ...);
+ENGINE_API extern BOOL YesNoMessage(const char *strFormat, ...) SE1_FORMAT_FUNC(1, 2);
 
 #else
 

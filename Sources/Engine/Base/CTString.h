@@ -190,7 +190,7 @@ public:
 
 #if !SE1_EXF_VERIFY_VA_IN_PRINTF
   // Print formatted to a string
-  INDEX PrintF(const char *strFormat, ...);
+  INDEX PrintF(const char *strFormat, ...) SE1_FORMAT_FUNC(2, 3);
 #else
   EXF_VERIFY_VA_FUNC_RETURN(INDEX, PrintF); // [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
 #endif

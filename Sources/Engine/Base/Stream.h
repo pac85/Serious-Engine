@@ -204,7 +204,7 @@ public:
   virtual void PutString_t(const char *strString); // throw char *
 
 #if !SE1_EXF_VERIFY_VA_IN_PRINTF
-  virtual void FPrintF_t(const char *strFormat, ...); // throw char *
+  virtual void FPrintF_t(const char *strFormat, ...) SE1_FORMAT_FUNC(2, 3); // throw char *
 #else
   EXF_VERIFY_VA_FUNC(FPrintF_t); // [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
 #endif

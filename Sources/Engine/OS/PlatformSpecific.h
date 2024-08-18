@@ -37,6 +37,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define SE1_NOEXCEPT noexcept
 #endif
 
+// Formatting function attribute (NOTE: add 1 to argument numbers if using this on class methods to skip 'this' argument)
+#define SE1_FORMAT_FUNC(_FormatArg, _VariadicArgs) __attribute__((format(printf, _FormatArg, _VariadicArgs)))
+
+// Windows-specific
+#if SE1_WIN
+
+// Ignore GCC attributes
+#define __attribute__(x)
+
+#endif // SE1_WIN
+
 // Unix-specific
 #if SE1_UNIX
 

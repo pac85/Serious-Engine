@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #if !SE1_EXF_VERIFY_VA_IN_PRINTF
   // Print formated text to the main console.
-  ENGINE_API extern void CPrintF(const char *strFormat, ...);
+  ENGINE_API extern void CPrintF(const char *strFormat, ...) SE1_FORMAT_FUNC(1, 2);
 #else
   EXF_VERIFY_VA_FUNC(CPrintF); // [Cecil] See 'SE1_EXF_VERIFY_VA_IN_PRINTF' definition
 #endif
