@@ -1,5 +1,10 @@
 %option prefix="syy"
 %{
+#include <Engine/SE_Config.h>
+#if !SE1_WIN
+  #include "StdH.h"
+#endif
+
 #include "ParsingSmbs.h"
 #include "smcPars.h"
 
@@ -9,6 +14,11 @@
 #include <Engine/Base/ErrorReporting.h>
 
 #include <Engine/Templates/DynamicStackArray.cpp>
+
+// [Cecil] NOTE: For some reason GCC requires this
+#ifdef __cplusplus
+  extern "C" { int syywrap(void); }
+#endif
 
 int syywrap(void)
 {

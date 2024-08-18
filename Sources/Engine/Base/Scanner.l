@@ -1,6 +1,11 @@
 %{
+#include <Engine/SE_Config.h>
+#if !SE1_WIN
+  #include "StdH.h"
+#endif
+
 #include "ParsingSymbols.h"
-#include "Parser.h"
+#include "parser.h"
 
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/CTString.h>
@@ -12,6 +17,11 @@
 
 #define YY_DECL int yylex (YYSTYPE *lvalp)
 #define yylval (*lvalp)
+
+// [Cecil] NOTE: For some reason GCC requires this
+#ifdef __cplusplus
+  extern "C" { int yywrap(void); }
+#endif
 
 int yywrap(void)
 {

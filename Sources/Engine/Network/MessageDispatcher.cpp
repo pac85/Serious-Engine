@@ -432,7 +432,7 @@ void CMessageDispatcher::SendBroadcast(const CNetworkMessage &nmMessage, ULONG u
   CAddress adrDestination;
   adrDestination.adr_ulAddress = ulAddr;
   adrDestination.adr_uwPort = uwPort;
-  adrDestination.adr_uwID = '//';
+  adrDestination.adr_uwID = NET_BROADCASTHOST;
   // send the message
   _cmiComm.Broadcast_Send((void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize,adrDestination);
 

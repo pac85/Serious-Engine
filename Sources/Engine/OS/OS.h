@@ -43,7 +43,7 @@ class ENGINE_API OS {
     struct ENGINE_API Window {
       WndHandle pWindow;
 
-      Window(int i = NULL) : pWindow((WndHandle)(size_t)i) {};
+      Window(int i = 0) : pWindow((WndHandle)(size_t)i) {};
       Window(size_t i) : pWindow((WndHandle)i) {};
     #if !SE1_WIN
       Window(long int i) : pWindow((WndHandle)i) {};

@@ -315,7 +315,7 @@ void CSessionState::Start_AtClient_t(INDEX ctLocalPlayers)     // throw char *
 
   // send registration request
   CNetworkMessage nmRegisterSessionState(MSG_REQ_CONNECTREMOTESESSIONSTATE);
-  nmRegisterSessionState<<INDEX('VTAG')<<INDEX(_SE_BUILD_MAJOR)<<INDEX(_SE_BUILD_MINOR);
+  nmRegisterSessionState << INDEX(NET_VTAG_LITERAL) << INDEX(_SE_BUILD_MAJOR) << INDEX(_SE_BUILD_MINOR);
   nmRegisterSessionState<<_strModName;
   extern CTString net_strConnectPassword;
   extern CTString net_strVIPPassword;
@@ -1934,7 +1934,7 @@ void CSessionState::DumpSyncToFile_t(CTStream &strm, INDEX iExtensiveSyncCheck) 
   CRC_Start(ulLocalCRC);
   ChecksumForSync(ulLocalCRC, iExtensiveSyncCheck);
   CRC_Finish(ulLocalCRC);
-  strm.FPrintF_t("__________________________________________________________________________________\n", ulLocalCRC);
+  strm.FPrintF_t("__________________________________________________________________________________\n");
   strm.FPrintF_t("CRC: 0x%08X\n", ulLocalCRC);
   DumpSync_t(strm, iExtensiveSyncCheck);
 }

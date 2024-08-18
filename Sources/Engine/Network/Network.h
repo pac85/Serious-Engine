@@ -34,6 +34,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define NET_MAXSESSIONPROPERTIES 2048   // size of buffer for custom use by CGame and entities
 
+// [Cecil] Multi-char literals turned into integers
+#define NET_BROADCASTHOST (INDEX('/') << 8 | INDEX('/'))
+#define NET_VTAG_LITERAL (INDEX('V') << 24 | INDEX('T') << 16 | INDEX('A') << 8 | INDEX('G') << 0)
 
 /*
  * Timer handler for network timer loop.

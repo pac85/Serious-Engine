@@ -536,9 +536,7 @@ void CCommunicationInterface::Broadcast_Update_t() {
 	BOOL bIsAlready;
 	BOOL bFoundEmpty;
 	ULONG iClient;
-	UBYTE ubDummy=65;
 
-	
 	// while there is a connection request packet in the input buffer
 	while ((ppaConnectionRequest = cm_ciBroadcast.ci_pbReliableInputBuffer.GetConnectRequestPacket()) != NULL) {
 		// see if there is a client already connected at that address and port
@@ -562,12 +560,12 @@ void CCommunicationInterface::Broadcast_Update_t() {
 					cm_aciClients[iClient].ci_adrAddress.adr_uwPort = ppaConnectionRequest->pa_adrAddress.adr_uwPort;
 					// generate the ID
 					UWORD uwID = _pTimer->GetHighPrecisionTimer().tv_llValue&0x0FFF;
-					if (uwID==0 || uwID=='//') {
+					if (uwID == 0 || uwID == NET_BROADCASTHOST) {
 						uwID+=1;
 					}										
 					cm_aciClients[iClient].ci_adrAddress.adr_uwID = (uwID<<4)+iClient;
 					// form the connection response packet
-					ppaConnectionRequest->pa_adrAddress.adr_uwID = '//';
+					ppaConnectionRequest->pa_adrAddress.adr_uwID = NET_BROADCASTHOST;
 					ppaConnectionRequest->pa_ubReliable = UDP_PACKET_RELIABLE | UDP_PACKET_RELIABLE_HEAD | UDP_PACKET_RELIABLE_TAIL | UDP_PACKET_CONNECT_RESPONSE;
 					// return it to the client
 					ppaConnectionRequest->WriteToPacket(&(cm_aciClients[iClient].ci_adrAddress.adr_uwID),sizeof(cm_aciClients[iClient].ci_adrAddress.adr_uwID),ppaConnectionRequest->pa_ubReliable,cm_ciBroadcast.ci_ulSequence++,ppaConnectionRequest->pa_adrAddress.adr_uwID,sizeof(cm_aciClients[iClient].ci_adrAddress.adr_uwID));
@@ -801,7 +799,7 @@ BOOL CCommunicationInterface::Server_Update()
 			BOOL bClientFound;
 			ppaPacket = cci_pbMasterInput.GetFirstPacket();
 			bClientFound = FALSE;
-			if (ppaPacket->pa_adrAddress.adr_uwID=='//' || ppaPacket->pa_adrAddress.adr_uwID==0) {
+			if (ppaPacket->pa_adrAddress.adr_uwID == NET_BROADCASTHOST || ppaPacket->pa_adrAddress.adr_uwID == 0) {
 				cm_ciBroadcast.ci_pbInputBuffer.AppendPacket(*ppaPacket,FALSE);
 				bClientFound = TRUE;
 			} else {
@@ -970,7 +968,7 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
 	ppaInfoPacket->pa_adrAddress.adr_ulAddress = ulServerAddress;
 	ppaInfoPacket->pa_adrAddress.adr_uwPort = net_iPort;
 	ppaInfoPacket->pa_ubRetryNumber = 0;
-	ppaInfoPacket->WriteToPacket(&ubDummy,1,ubReliable,cm_ciLocalClient.ci_ulSequence++,'//',1);
+	ppaInfoPacket->WriteToPacket(&ubDummy, 1, ubReliable, cm_ciLocalClient.ci_ulSequence++, NET_BROADCASTHOST, 1);
 
 	cm_ciLocalClient.ci_pbOutputBuffer.AppendPacket(*ppaInfoPacket,TRUE);
 
@@ -989,7 +987,7 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
 		if (cm_ciLocalClient.ci_pbReliableInputBuffer.pb_ulNumOfPackets > 0) {
 			ppaReadPacket = cm_ciLocalClient.ci_pbReliableInputBuffer.GetFirstPacket();
 			// and it is a connection confirmation
-			if (ppaReadPacket->pa_ubReliable &&  UDP_PACKET_CONNECT_RESPONSE) {
+			if (ppaReadPacket->pa_ubReliable & UDP_PACKET_CONNECT_RESPONSE) {
 				// the client has succedeed to connect, so read the uwID from the packet
 				cm_ciLocalClient.ci_adrAddress.adr_ulAddress = ulServerAddress;
 				cm_ciLocalClient.ci_adrAddress.adr_uwPort = net_iPort;
@@ -1140,13 +1138,13 @@ BOOL CCommunicationInterface::Client_Update(void)
 			bClientFound = FALSE;
 
       // if the packet address is broadcast and it's an unreliable transfer, put it in the broadcast buffer
-      if ((ppaPacket->pa_adrAddress.adr_uwID=='//' || ppaPacket->pa_adrAddress.adr_uwID==0) && 
+      if ((ppaPacket->pa_adrAddress.adr_uwID == NET_BROADCASTHOST || ppaPacket->pa_adrAddress.adr_uwID == 0) && 
            ppaPacket->pa_ubReliable == UDP_PACKET_UNRELIABLE) {
         cm_ciBroadcast.ci_pbInputBuffer.AppendPacket(*ppaPacket,FALSE);
 				bClientFound = TRUE;
       // if the packet is for this client, accept it
       } else if ((ppaPacket->pa_adrAddress.adr_uwID == cm_ciLocalClient.ci_adrAddress.adr_uwID) || 
-				          ppaPacket->pa_adrAddress.adr_uwID=='//' || ppaPacket->pa_adrAddress.adr_uwID==0) { 
+				          ppaPacket->pa_adrAddress.adr_uwID == NET_BROADCASTHOST || ppaPacket->pa_adrAddress.adr_uwID == 0) { 
 				cm_ciLocalClient.ci_pbInputBuffer.AppendPacket(*ppaPacket,FALSE);
 				bClientFound = TRUE;
 			}
@@ -1229,7 +1227,7 @@ void CCommunicationInterface::UpdateMasterBuffers()
 					ppaNewPacket->pa_adrAddress.adr_uwPort = adrIncomingAddress.adr_uwPort;						
 
 					if (net_bReportPackets == TRUE) {
-						CPrintF("%lu: Received sequence: %d from ID: %d, reliable flag: %d\n", (ULONG)tvNow.GetMilliseconds(),
+						CPrintF("%u: Received sequence: %u from ID: %d, reliable flag: %d\n", (ULONG)tvNow.GetMilliseconds(),
 						  ppaNewPacket->pa_ulSequence, ppaNewPacket->pa_adrAddress.adr_uwID, ppaNewPacket->pa_ubReliable);
 					}
 
@@ -1271,7 +1269,8 @@ void CCommunicationInterface::UpdateMasterBuffers()
     } else {
 			
 			if (net_bReportPackets == TRUE)	{
-				CPrintF("%lu: Sent sequence: %d to ID: %d, reliable flag: %d\n",(ULONG)tvNow.GetMilliseconds(),ppaNewPacket->pa_ulSequence,ppaNewPacket->pa_adrAddress.adr_uwID,ppaNewPacket->pa_ubReliable);
+				CPrintF("%u: Sent sequence: %u to ID: %d, reliable flag: %d\n", (ULONG)tvNow.GetMilliseconds(),
+          ppaNewPacket->pa_ulSequence, ppaNewPacket->pa_adrAddress.adr_uwID, ppaNewPacket->pa_ubReliable);
 			}
 
 			cci_pbMasterOutput.RemoveFirstPacket(TRUE);

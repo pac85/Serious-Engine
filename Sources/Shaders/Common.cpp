@@ -21,7 +21,7 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
   GFXVertex4 *paVertices = shaGetVertexArray();
   GFXNormal *paNormals = shaGetNormalArray();
   INDEX ctVertices = shaGetVertexCount();
-  FLOAT3D &vLightDir = -shaGetLightDirection().Normalize();
+  FLOAT3D vLightDir = -shaGetLightDirection().Normalize();
   COLOR colLight = ByteSwap32(shaGetLightColor());
   COLOR colAmbient = ByteSwap32(shaGetAmbientColor());
   GFXTexCoord *ptcUVMap = shaGetNewTexCoordArray();

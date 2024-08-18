@@ -13,13 +13,18 @@ BOOL bOffsetAllreadySet = FALSE;
 %}
 
 %{
+// [Cecil] Ignore GCC attributes on Unix
+#if SE1_UNIX
+  #define __attribute__(x)
+#endif
+
 #define YYERROR_VERBOSE 0
 // if error occurs in parsing
-void syyerror(char *str)
+void syyerror(const char *str)
 {
-  // just report the string
-  _pShell->ErrorF("%s", str);
-};
+  // [Cecil] More informative error message
+  _pShell->ErrorF("File '%s'\n %s (line %d)", SMCGetBufferName(), str, SMCGetBufferLineNumber());
+}
 %}
 
 /* BISON Declarations */

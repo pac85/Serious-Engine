@@ -369,7 +369,7 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   #endif
 
     // check that interrupt was properly started
-    if( tm_TimerID==NULL) FatalError(TRANS("Cannot initialize multimedia timer!"));
+    if (tm_TimerID == 0) FatalError(TRANS("Cannot initialize multimedia timer!"));
 
     // make sure that timer interrupt is ticking
     INDEX iTry=1;

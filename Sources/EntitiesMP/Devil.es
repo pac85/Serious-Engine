@@ -858,13 +858,13 @@ functions:
 
       CPrintF( "m_ttTarget (type): %d\n", INDEX(m_ttTarget));
 
-      CPrintF( "m_penWatcher %x\n", m_penWatcher);
+      CPrintF( "m_penWatcher 0x%p\n", m_penWatcher.ep_pen);
       CTString strEnemyName = "Null ptr, no name";
       if( m_penEnemy != NULL) 
       {
         strEnemyName = m_penEnemy->GetName();
       }
-      CPrintF( "m_penEnemy %x, enemy name: %s\n", m_penEnemy, strEnemyName.ConstData());
+      CPrintF( "m_penEnemy 0x%p, enemy name: %s\n", m_penEnemy.ep_pen, strEnemyName.ConstData());
 
       CPrintF( "m_vStartPosition (%g, %g, %g)\n", m_vStartPosition(1), m_vStartPosition(2), m_vStartPosition(3));
       CPrintF( "m_vStartDirection (%g, %g, %g)\n", m_vStartDirection(1), m_vStartDirection(2), m_vStartDirection(3));
@@ -893,7 +893,7 @@ functions:
   
       CTString strDestinationType = DestinationType_enum.NameForValue(INDEX(m_dtDestination));
       CPrintF( "m_dtDestination: %s\n", strDestinationType.ConstData());
-      CPrintF( "m_penPathMarker %x\n", m_penPathMarker);
+      CPrintF( "m_penPathMarker 0x%p\n", m_penPathMarker.ep_pen);
 
       CPrintF( "m_vPlayerSpotted (%g, %g, %g)\n", m_vPlayerSpotted(1), m_vPlayerSpotted(2), m_vPlayerSpotted(3));
       CPrintF( "m_fMoveFrequency = %g\n", m_fMoveFrequency);
@@ -911,16 +911,16 @@ functions:
       {
         strMarkerName = m_penMarker->GetName();
       }
-      CPrintF( "m_penMarker %x, marker name: %s\n", m_penMarker, strMarkerName.ConstData());
+      CPrintF( "m_penMarker 0x%p, marker name: %s\n", m_penMarker.ep_pen, strMarkerName.ConstData());
 
       CTString strMainMusicHolderName = "Null ptr, no name";
       if( m_penMainMusicHolder != NULL) 
       {
         strMainMusicHolderName = m_penMainMusicHolder->GetName();
       }
-      CPrintF( "m_penMainMusicHolder %x, MainMusicHolder name: %s\n", m_penMainMusicHolder, strMainMusicHolderName.ConstData());
+      CPrintF( "m_penMainMusicHolder 0x%p, MainMusicHolder name: %s\n", m_penMainMusicHolder.ep_pen, strMainMusicHolderName.ConstData());
       CPrintF( "m_tmLastFussTime = %g\n", m_tmLastFussTime);
-      CPrintF( "m_iScore = %d\n", m_iScore);
+      CPrintF( "m_iScore = %d\n", (INDEX)m_iScore);
       CPrintF( "m_fMaxHealth = %g\n", m_fMaxHealth);
       CPrintF( "m_bBoss = %d\n", m_bBoss);
       CPrintF( "m_fSpiritStartTime = %g\n", m_fSpiritStartTime);

@@ -11,6 +11,11 @@
 %}
 
 %{
+// [Cecil] Ignore GCC attributes on Unix
+#if SE1_UNIX
+  #define __attribute__(x)
+#endif
+
 #define YYERROR_VERBOSE 1
 // if error occurs in parsing
 void yyerror(char *str)
@@ -855,7 +860,7 @@ expression
 
   $$.sttType = $1.sttType;
   if ($1.sttType == STT_FLOAT) {
-    _pShell->ErrorF("'%' is illegal for FLOAT values");
+    _pShell->ErrorF("'%%' is illegal for FLOAT values");
   } else if ($1.sttType == STT_INDEX) {
     $$.iIndex = $1.iIndex%$3.iIndex;
   } else {

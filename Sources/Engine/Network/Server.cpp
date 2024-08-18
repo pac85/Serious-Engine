@@ -864,7 +864,7 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm)
   // read version info
   INDEX iTag, iMajor, iMinor;
   nm>>iTag;
-  if (iTag=='VTAG') {
+  if (iTag == NET_VTAG_LITERAL) {
     nm>>iMajor>>iMinor;
   } else {
     iMajor = 109;

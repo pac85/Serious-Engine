@@ -90,7 +90,7 @@ void MakeInfos(CStaticStackArray<EntityBlockInfo> &aebi,
   UBYTE *pub = pubFirst;
   while (pub<pubBlock+slSize) {
     // if no more entities
-    if (*(ULONG*)pub != '4TNE') {
+    if (memcmp(pub, "ENT4", 4) != 0) {
       pubEnd = pub;
       // stop
       return;
@@ -118,14 +118,14 @@ UBYTE *FindFirstEntity(UBYTE *pubBlock, SLONG slSize)
 {
   UBYTE *pub = pubBlock;
   while (pub<pubBlock+slSize) {
-    if (*(ULONG*)pub == '4TNE') {
+    if (memcmp(pub, "ENT4", 4) == 0) {
       UBYTE *pubTmp = pub;
       pubTmp+=sizeof(ULONG);
       ULONG ulID = *(ULONG*)pubTmp;
       pubTmp+=sizeof(ULONG);
       SLONG slSizeChunk = *(SLONG*)pubTmp;
       pubTmp+=sizeof(ULONG);
-      if (*(ULONG*)(pubTmp+slSizeChunk) == '4TNE') {
+      if (memcmp(pubTmp + slSizeChunk, "ENT4", 4) == 0) {
         return pub;
       }
     }
@@ -220,7 +220,7 @@ void UnDiff_t(void)
   SLONG slSizeOldStream = 0;
   SLONG slSizeOutStream = 0;
   // get header with size of files
-  if (*(SLONG*)pubNew!='FFID') {
+  if (memcmp(pubNew, "DIFF", 4) != 0) {
     ThrowF_t(TRANS("Not a DIFF stream!"));
   }
   pubNew+=sizeof(SLONG);

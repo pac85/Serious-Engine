@@ -257,7 +257,7 @@ SLONG CPacket::GetTransferSize()
 
 BOOL CPacket::IsBroadcast() 
 {
-  if (pa_adrAddress.adr_uwID == '//' || pa_adrAddress.adr_uwID == 0) {
+  if (pa_adrAddress.adr_uwID == NET_BROADCASTHOST || pa_adrAddress.adr_uwID == 0) {
     return TRUE;
   }
 

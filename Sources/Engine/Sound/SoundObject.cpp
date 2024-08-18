@@ -64,7 +64,7 @@ static CTString GetPred(CEntity*pen)
     str1 = "???";
   }
   CTString str;
-  str.PrintF("%08x-%s", pen, str1.ConstData());
+  str.PrintF("0x%p-%s", pen, str1.ConstData());
   return str;
 }
 /* ====================================================

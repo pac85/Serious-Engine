@@ -422,7 +422,7 @@ BOOL CClientInterface::UpdateInputBuffers(void)
 					// report the packet info to the console
 					if (net_bReportPackets == TRUE) {
 						tvNow = _pTimer->GetHighPrecisionTimer();
-						CPrintF("%lu: Received acknowledge for packet sequence %d\n",(ULONG) tvNow.GetMilliseconds(),ulSequence);
+						CPrintF("%u: Received acknowledge for packet sequence %u\n", (ULONG)tvNow.GetMilliseconds(), ulSequence);
 					}
 					
 					// remove the matching packet from the wait acknowledge buffer
@@ -443,11 +443,11 @@ BOOL CClientInterface::UpdateInputBuffers(void)
 				
 				// generate packet acknowledge
 				// if the packet is from the broadcast address, send the acknowledge for that packet only
-				if (ppaPacket->pa_adrAddress.adr_uwID == '//' || ppaPacket->pa_adrAddress.adr_uwID == 0) {
+				if (ppaPacket->pa_adrAddress.adr_uwID == NET_BROADCASTHOST || ppaPacket->pa_adrAddress.adr_uwID == 0) {
 					CPacket *ppaAckPacket = new CPacket;
 					ppaAckPacket->pa_adrAddress.adr_ulAddress = ppaPacket->pa_adrAddress.adr_ulAddress;
 					ppaAckPacket->pa_adrAddress.adr_uwPort = ppaPacket->pa_adrAddress.adr_uwPort;
-					ppaAckPacket->WriteToPacket(&(ppaPacket->pa_ulSequence),sizeof(ULONG),UDP_PACKET_ACKNOWLEDGE,++ci_ulSequence,'//',sizeof(ULONG));
+					ppaAckPacket->WriteToPacket(&(ppaPacket->pa_ulSequence), sizeof(ULONG), UDP_PACKET_ACKNOWLEDGE, ++ci_ulSequence, NET_BROADCASTHOST, sizeof(ULONG));
 					ci_pbOutputBuffer.AppendPacket(*ppaAckPacket,TRUE);
 					if (net_bReportPackets == TRUE) {
 						CPrintF("Acknowledging broadcast packet sequence %d\n",ppaPacket->pa_ulSequence);
@@ -470,7 +470,7 @@ BOOL CClientInterface::UpdateInputBuffers(void)
 					// report the packet info to the console
 					if (net_bReportPackets == TRUE) {
 						tvNow = _pTimer->GetHighPrecisionTimer();
-						CPrintF("%lu: Acknowledging packet sequence %d\n",(ULONG) tvNow.GetMilliseconds(),ppaPacket->pa_ulSequence);
+						CPrintF("%u: Acknowledging packet sequence %u\n", (ULONG)tvNow.GetMilliseconds(), ppaPacket->pa_ulSequence);
 					}
 
 					ulAckCount++;
@@ -484,7 +484,7 @@ BOOL CClientInterface::UpdateInputBuffers(void)
         }
 				// a packet can be accepted from the broadcast ID only if it is an acknowledge packet or 
 				// if it is a connection confirmation response packet and the client isn't already connected
-				if (ppaPacket->pa_adrAddress.adr_uwID == '//' || ppaPacket->pa_adrAddress.adr_uwID == 0) {
+				if (ppaPacket->pa_adrAddress.adr_uwID == NET_BROADCASTHOST || ppaPacket->pa_adrAddress.adr_uwID == 0) {
 					if  (((!ci_bUsed) && (ppaPacket->pa_ubReliable & UDP_PACKET_CONNECT_RESPONSE)) ||
 						 (ppaPacket->pa_ubReliable & UDP_PACKET_ACKNOWLEDGE) || ci_bClientLocal) {
 
@@ -572,7 +572,7 @@ BOOL CClientInterface::UpdateInputBuffersBroadcast(void)
 					// report the packet info to the console
 					if (net_bReportPackets == TRUE) {
 						tvNow = _pTimer->GetHighPrecisionTimer();
-						CPrintF("%lu: Received acknowledge for broadcast packet sequence %d\n",(ULONG) tvNow.GetMilliseconds(),ulSequence);
+						CPrintF("%u: Received acknowledge for broadcast packet sequence %u\n", (ULONG)tvNow.GetMilliseconds(), ulSequence);
 					}
 
 					// remove the matching packet from the wait acknowledge buffer
@@ -600,7 +600,7 @@ BOOL CClientInterface::UpdateInputBuffersBroadcast(void)
 				// report the packet info to the console
 				if (net_bReportPackets == TRUE) {
 					tvNow = _pTimer->GetHighPrecisionTimer();
-					CPrintF("%lu: Acknowledging broadcast packet sequence %d\n",(ULONG) tvNow.GetMilliseconds(),ppaPacket->pa_ulSequence);
+					CPrintF("%u: Acknowledging broadcast packet sequence %u\n", (ULONG)tvNow.GetMilliseconds(), ppaPacket->pa_ulSequence);
 				}
 
 				ci_pbInputBuffer.RemovePacket(ppaPacket->pa_ulSequence,FALSE);

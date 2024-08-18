@@ -88,7 +88,7 @@ procedures:
     }
 
     if( m_penTarget!=NULL && !IsOfClass( m_penTarget, "Gravity Marker")) {
-      WarningMessage( "Entity '%s' is not of Gravity Marker class!", m_penTarget);
+      WarningMessage("Entity '%s' is not of Gravity Marker class!", m_penTarget->GetName().ConstData());
       m_penTarget = NULL;
     }
 

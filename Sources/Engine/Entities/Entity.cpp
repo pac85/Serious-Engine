@@ -3493,8 +3493,8 @@ void CEntity::DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck)  // throw ch
   strm.FPrintF_t("class: '%s'\n", GetClass()->ec_pdecDLLClass->dec_strName);
   strm.FPrintF_t("name: '%s'\n", GetName().ConstData());
   if (iExtensiveSyncCheck>0) {
-    strm.FPrintF_t("en_ulFlags:          0x%08X\n", en_ulFlags&~
-      (ENF_SELECTED|ENF_INRENDERING|ENF_VALIDSHADINGINFO|ENF_FOUNDINGRIDSEARCH|ENF_WILLBEPREDICTED|ENF_PREDICTABLE));
+    strm.FPrintF_t("en_ulFlags:          0x%08X\n", en_ulFlags &
+      ~ULONG(ENF_SELECTED|ENF_INRENDERING|ENF_VALIDSHADINGINFO|ENF_FOUNDINGRIDSEARCH|ENF_WILLBEPREDICTED|ENF_PREDICTABLE));
     strm.FPrintF_t("en_ulPhysicsFlags:   0x%08X\n", en_ulPhysicsFlags);
     strm.FPrintF_t("en_ulCollisionFlags: 0x%08X\n", en_ulCollisionFlags);
     strm.FPrintF_t("en_ctReferences: %d\n", en_ctReferences);
