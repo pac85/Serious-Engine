@@ -5,7 +5,7 @@
 #endif
 
 #include "ParsingSymbols.h"
-#include "parser.h"
+#include "Parser.h"
 
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/CTString.h>
