@@ -62,14 +62,10 @@ CEntityClass::~CEntityClass(void)
 /////////////////////////////////////////////////////////////////////
 // Reference counting functions
 void CEntityClass::AddReference(void) {
-  if (this!=NULL) {
-    MarkUsed();
-  }
+  MarkUsed();
 };
 void CEntityClass::RemReference(void) {
-  if (this!=NULL) {
-    _pEntityClassStock->Release(this);
-  }
+  _pEntityClassStock->Release(this);
 };
 
 /*

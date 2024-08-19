@@ -408,9 +408,9 @@ void CSoundLibrary::Mute(void)
   IFeel_StopEffect(NULL);
 
   // [Cecil] Ignore sounds on a dedicated server or when there's no sound interface
-  if (_eEngineAppType == E_SEAPP_SERVER || this == NULL || sl_pInterface == NULL) return;
+  if (_eEngineAppType == E_SEAPP_SERVER || _pSound == NULL || _pSound->sl_pInterface == NULL) return;
 
-  sl_pInterface->Mute(_bMutedForMixing);
+  _pSound->sl_pInterface->Mute(_bMutedForMixing);
 };
 
 /*
@@ -463,18 +463,18 @@ CSoundLibrary::SoundFormat CSoundLibrary::SetFormat( CSoundLibrary::SoundFormat 
 void CSoundLibrary::UpdateSounds(void)
 {
   // [Cecil] Ignore sounds on a dedicated server or when there's no sound interface
-  if (_eEngineAppType == E_SEAPP_SERVER || this == NULL || sl_pInterface == NULL) return;
+  if (_eEngineAppType == E_SEAPP_SERVER || _pSound == NULL || _pSound->sl_pInterface == NULL) return;
 
 #if SE1_WIN
   // see if we have valid handle for direct sound and eventually reinit sound
-  if (sl_pInterface->GetType() == CAbstractSoundAPI::E_SND_DSOUND) {
+  if (_pSound->sl_pInterface->GetType() == CAbstractSoundAPI::E_SND_DSOUND) {
     // [Cecil] FIXME: Don't like including the interface just for accessing one of its fields
-    CSoundAPI_DSound &apiDSound = (CSoundAPI_DSound &)*sl_pInterface;
+    CSoundAPI_DSound &apiDSound = (CSoundAPI_DSound &)*_pSound->sl_pInterface;
     extern OS::Window _hwndCurrent;
 
     if (apiDSound.m_wndCurrent != _hwndCurrent) {
       apiDSound.m_wndCurrent = _hwndCurrent;
-      SetFormat(sl_EsfFormat);
+      _pSound->SetFormat(_pSound->sl_EsfFormat);
     }
   }
 #endif
@@ -484,12 +484,12 @@ void CSoundLibrary::UpdateSounds(void)
   _pfSoundProfile.StartTimer(CSoundProfile::PTI_UPDATESOUNDS);
 
   // synchronize access to sounds
-  CTSingleLock slSounds( &sl_csSound, TRUE);
+  CTSingleLock slSounds( &_pSound->sl_csSound, TRUE);
 
-  sl_pInterface->UpdateEAX();
+  _pSound->sl_pInterface->UpdateEAX();
 
   // for each sound
-  {FOREACHINLIST( CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {
+  {FOREACHINLIST( CSoundData, sd_Node, _pSound->sl_ClhAwareList, itCsdSoundData) {
     FORDELETELIST( CSoundObject, so_Node, itCsdSoundData->sd_ClhLinkList, itCsoSoundObject) {
       _sfStats.IncrementCounter(CStatForm::SCI_SOUNDSACTIVE);
       itCsoSoundObject->Update3DEffects();
@@ -497,7 +497,7 @@ void CSoundLibrary::UpdateSounds(void)
   }}
 
   // for each sound
-  {FOREACHINLIST( CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {
+  {FOREACHINLIST( CSoundData, sd_Node, _pSound->sl_ClhAwareList, itCsdSoundData) {
     FORDELETELIST( CSoundObject, so_Node, itCsdSoundData->sd_ClhLinkList, itCsoSoundObject) {
       CSoundObject &so = *itCsoSoundObject;
       // if sound is playing
@@ -518,7 +518,7 @@ void CSoundLibrary::UpdateSounds(void)
   }}
 
   // remove all listeners
-  {FORDELETELIST( CSoundListener, sli_lnInActiveListeners, sl_lhActiveListeners, itsli) {
+  {FORDELETELIST( CSoundListener, sli_lnInActiveListeners, _pSound->sl_lhActiveListeners, itsli) {
     itsli->sli_lnInActiveListeners.Remove();
   }}
 
@@ -545,20 +545,20 @@ void CSoundTimerHandler::HandleTimer(void)
 void CSoundLibrary::MixSounds(void)
 {
   // [Cecil] Ignore sounds on a dedicated server or when there's no sound interface
-  if (_eEngineAppType == E_SEAPP_SERVER || this == NULL || sl_pInterface == NULL) return;
+  if (_eEngineAppType == E_SEAPP_SERVER || _pSound == NULL || _pSound->sl_pInterface == NULL) return;
 
   // synchronize access to sounds
-  CTSingleLock slSounds( &sl_csSound, TRUE);
+  CTSingleLock slSounds( &_pSound->sl_csSound, TRUE);
 
   // do nothing if no sound
-  if (sl_EsfFormat==SF_NONE || _bMutedForMixing) return;
+  if (_pSound->sl_EsfFormat == SF_NONE || _bMutedForMixing) return;
 
   _sfStats.StartTimer(CStatForm::STI_SOUNDMIXING);
   _pfSoundProfile.IncrementAveragingCounter();
   _pfSoundProfile.StartTimer(CSoundProfile::PTI_MIXSOUNDS);
 
   // seek available buffer(s) for next crop of samples
-  SLONG slDataToMix = sl_pInterface->PrepareSoundBuffer();
+  SLONG slDataToMix = _pSound->sl_pInterface->PrepareSoundBuffer();
 
   // skip mixing if all sound buffers are still busy playing
   ASSERT( slDataToMix>=0);
@@ -570,12 +570,12 @@ void CSoundLibrary::MixSounds(void)
 
   // prepare mixer buffer
   _pfSoundProfile.IncrementCounter(CSoundProfile::PCI_MIXINGS, 1);
-  ResetMixer(sl_pInterface->m_pslMixerBuffer, slDataToMix);
+  ResetMixer(_pSound->sl_pInterface->m_pslMixerBuffer, slDataToMix);
 
   BOOL bGamePaused = _pNetwork->IsPaused() || (_pNetwork->IsServer() && _pNetwork->GetLocalPause());
 
   // for each sound
-  FOREACHINLIST( CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {
+  FOREACHINLIST( CSoundData, sd_Node, _pSound->sl_ClhAwareList, itCsdSoundData) {
     FORDELETELIST( CSoundObject, so_Node, itCsdSoundData->sd_ClhLinkList, itCsoSoundObject) {
       CSoundObject &so = *itCsoSoundObject;
       // if the sound is in-game sound, and the game paused
@@ -608,7 +608,7 @@ void CSoundLibrary::MixSounds(void)
   */
 
   // copy mixer buffer to buffers buffer(s)
-  sl_pInterface->CopyMixerBuffer(slDataToMix);
+  _pSound->sl_pInterface->CopyMixerBuffer(slDataToMix);
 
   // all done
   _pfSoundProfile.StopTimer(CSoundProfile::PTI_MIXSOUNDS);

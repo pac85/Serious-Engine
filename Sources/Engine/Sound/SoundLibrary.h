@@ -110,11 +110,11 @@ public:
   inline SoundFormat GetFormat(void) { return sl_EsfFormat; };
 
   /* Update all 3d effects and copy internal data. */
-  void UpdateSounds(void);
+  static void UpdateSounds(void);
   /* Update Mixer */
-  void MixSounds(void);
+  static void MixSounds(void);
   /* Mute output until next UpdateSounds() */
-  void Mute(void);
+  static void Mute(void);
 
   /* Add sound in sound aware list */
   void AddSoundAware( CSoundData &CsdAdd);

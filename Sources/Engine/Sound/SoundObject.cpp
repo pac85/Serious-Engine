@@ -238,9 +238,9 @@ void CSoundObject::Play_internal( CSoundData *pCsdLink, SLONG slFlags)
   Stop_internal();
 
   // mark new data as referenced once more
-  pCsdLink->AddReference();
+  if (pCsdLink != NULL) pCsdLink->AddReference();
   // mark old data as referenced once less
-  so_pCsdLink->RemReference();
+  if (so_pCsdLink != NULL) so_pCsdLink->RemReference();
 
   // store init SoundData
   so_pCsdLink = pCsdLink;
@@ -372,9 +372,14 @@ void CSoundObject::Stop_internal(void)
   // if added in link list, remove it from list
   if( IsHooked()) {
     ASSERT(so_pCsdLink != NULL);
-    so_pCsdLink->RemoveObjectLink(*this);
-    // remove reference from SoundData
-    so_pCsdLink->RemReference();
+
+    if (so_pCsdLink != NULL) {
+      so_pCsdLink->RemoveObjectLink(*this);
+
+      // remove reference from SoundData
+      so_pCsdLink->RemReference();
+    }
+
     // clear SoundData link
     so_pCsdLink = NULL;
   }

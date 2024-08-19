@@ -699,20 +699,24 @@ __forceinline BOOL IsDerivedFromClass(CEntity *pen, const CTString &strClassName
 
 // all standard smart pointer functions are here as inlines
 inline CEntityPointer::CEntityPointer(void) : ep_pen(NULL) {};
-inline CEntityPointer::~CEntityPointer(void) { ep_pen->RemReference(); };
+inline CEntityPointer::~CEntityPointer(void) {
+  if (ep_pen != NULL) ep_pen->RemReference();
+};
 inline CEntityPointer::CEntityPointer(const CEntityPointer &penOther) : ep_pen(penOther.ep_pen) {
-  ep_pen->AddReference(); };
+  if (ep_pen != NULL) ep_pen->AddReference();
+};
 inline CEntityPointer::CEntityPointer(CEntity *pen) : ep_pen(pen) {
-  ep_pen->AddReference(); };
+  if (ep_pen != NULL) ep_pen->AddReference();
+};
 inline const CEntityPointer &CEntityPointer::operator=(CEntity *pen) {
-  pen->AddReference();    // must first add, then remove!
-  ep_pen->RemReference();
+  if (pen != NULL) pen->AddReference();    // must first add, then remove!
+  if (ep_pen != NULL) ep_pen->RemReference();
   ep_pen = pen;
   return *this;
 }
 inline const CEntityPointer &CEntityPointer::operator=(const CEntityPointer &penOther) {
-  penOther.ep_pen->AddReference();    // must first add, then remove!
-  ep_pen->RemReference();
+  if (penOther.ep_pen != NULL) penOther.ep_pen->AddReference();    // must first add, then remove!
+  if (ep_pen != NULL) ep_pen->RemReference();
   ep_pen = penOther.ep_pen;
   return *this;
 }
@@ -723,18 +727,14 @@ inline CEntity& CEntityPointer::operator*(void) const { return *ep_pen; }
 /////////////////////////////////////////////////////////////////////
 // Reference counting functions
 inline void CEntity::AddReference(void) { 
-  if (this!=NULL) {
-    ASSERT(en_ctReferences>=0);
-    en_ctReferences++; 
-  }
+  ASSERT(en_ctReferences >= 0);
+  en_ctReferences++;
 };
 inline void CEntity::RemReference(void) { 
-  if (this!=NULL) {
-    ASSERT(en_ctReferences>0);
-    en_ctReferences--;
-    if(en_ctReferences==0) {
-      delete this;
-    }
+  ASSERT(en_ctReferences > 0);
+  en_ctReferences--;
+  if (en_ctReferences == 0) {
+    delete this;
   }
 };
 
