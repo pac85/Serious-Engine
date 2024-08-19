@@ -303,88 +303,26 @@ static INDEX sys_bHasCVAs = 0;
 static INDEX sys_bUsingOpenGL = 0;
 static INDEX sys_bUsingDirect3D = 0;
 
-/*
- * Low level hook flags
- */
-#define WH_KEYBOARD_LL 13
+#if SE1_WIN
 
-#pragma message(">> doublecheck me!!!")
-// these are commented because they are already defined in winuser.h
-//#define LLKHF_EXTENDED 0x00000001
-//#define LLKHF_INJECTED 0x00000010
-//#define LLKHF_ALTDOWN  0x00000020
-//#define LLKHF_UP       0x00000080
+// [Cecil] NOTE: Removed unused and unnecessary code from here for disabling some Windows actions
 
-//#define LLMHF_INJECTED 0x00000001
-
-/*
- * Structure used by WH_KEYBOARD_LL
- */
-// this is commented because there's a variant for this struct in winuser.h
-/*typedef struct tagKBDLLHOOKSTRUCT {
-    DWORD   vkCode;
-    DWORD   scanCode;
-    DWORD   flags;
-    DWORD   time;
-    DWORD   dwExtraInfo;
-} KBDLLHOOKSTRUCT, FAR *LPKBDLLHOOKSTRUCT, *PKBDLLHOOKSTRUCT;*/
-
-static HHOOK _hLLKeyHook = NULL;
-
-LRESULT CALLBACK LowLevelKeyboardProc (INT nCode, WPARAM wParam, LPARAM lParam)
-{
-// [Cecil] NOTE: Is this code even needed?
-#if !SE1_OLD_COMPILER
-  // By returning a non-zero value from the hook procedure, the
-  // message does not get passed to the target window
-  KBDLLHOOKSTRUCT *pkbhs = (KBDLLHOOKSTRUCT *) lParam;
-  BOOL bControlKeyDown = 0;
-
-  switch (nCode)
-  {
-      case HC_ACTION:
-      {
-          // Check to see if the CTRL key is pressed
-          bControlKeyDown = OS::GetAsyncKeyState(VK_CONTROL) >> ((sizeof(SHORT) * 8) - 1);
-          
-          // Disable CTRL+ESC
-          if (pkbhs->vkCode == VK_ESCAPE && bControlKeyDown)
-              return 1;
-
-          // Disable ALT+TAB
-          if (pkbhs->vkCode == VK_TAB && pkbhs->flags & LLKHF_ALTDOWN)
-              return 1;
-
-          // Disable ALT+ESC
-          if (pkbhs->vkCode == VK_ESCAPE && pkbhs->flags & LLKHF_ALTDOWN)
-              return 1;
-
-          break;
-      }
-
-      default:
-          break;
-  }
-#endif // !SE1_OLD_COMPILER
-
-  return CallNextHookEx (_hLLKeyHook, nCode, wParam, lParam);
-} 
-
-void DisableWindowsKeys(void)
-{
-  //if( _hLLKeyHook!=NULL) UnhookWindowsHookEx(_hLLKeyHook);
-  //_hLLKeyHook = SetWindowsHookEx(WH_KEYBOARD_LL, &LowLevelKeyboardProc, NULL, GetCurrentThreadId());
-
+void DisableWindowsKeys(void) {
   INDEX iDummy;
   SystemParametersInfo(SPI_SETSCREENSAVERRUNNING, TRUE, &iDummy, 0);
-}
+};
 
-void EnableWindowsKeys(void)
-{
+void EnableWindowsKeys(void) {
   INDEX iDummy;
   SystemParametersInfo(SPI_SETSCREENSAVERRUNNING, FALSE, &iDummy, 0);
-  // if( _hLLKeyHook!=NULL) UnhookWindowsHookEx(_hLLKeyHook);
-}
+};
+
+#else
+
+static void DisableWindowsKeys(void) {};
+static void EnableWindowsKeys(void) {};
+
+#endif // SE1_WIN
 
 // texture size reporting
 
@@ -1108,7 +1046,6 @@ CGfxLibrary::CGfxLibrary(void)
  */
 CGfxLibrary::~CGfxLibrary()
 {
-  extern void EnableWindowsKeys(void);
   EnableWindowsKeys();
   // free common arrays
   _avtxCommon.Clear();
