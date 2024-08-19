@@ -598,7 +598,6 @@
     <ClCompile Include="Base\Translation.cpp" />
     <ClCompile Include="Base\Unzip.cpp" />
     <ClCompile Include="Base\Updateable.cpp" />
-    <ClCompile Include="GameAgent\GameAgent.cpp" />
     <ClCompile Include="Math\Float.cpp" />
     <ClCompile Include="Math\Functions.cpp" />
     <ClCompile Include="Math\Geometry.cpp" />
@@ -667,6 +666,14 @@
     <ClCompile Include="OS\DynamicLibraries.cpp" />
     <ClCompile Include="OS\FileSystem.cpp" />
     <ClCompile Include="OS\WindowsAPI.cpp" />
+    <ClCompile Include="Query\DarkPlacesQuery.cpp" />
+    <ClCompile Include="Query\GameAgentQuery.cpp" />
+    <ClCompile Include="Query\LegacyClientQuery.cpp" />
+    <ClCompile Include="Query\LegacyFunctions.cpp" />
+    <ClCompile Include="Query\LegacyServerQuery.cpp" />
+    <ClCompile Include="Query\MasterServer.cpp" />
+    <ClCompile Include="Query\QueryManager.cpp" />
+    <ClCompile Include="Query\ServerRequest.cpp" />
     <ClCompile Include="Sound\SoundAPI.cpp" />
     <ClCompile Include="Sound\SoundAPI_DSound.cpp" />
     <ClCompile Include="Sound\SoundAPI_SDL.cpp" />
@@ -959,7 +966,7 @@
     <ClCompile Include="Classes\MovableModelEntity.cpp" />
     <ClCompile Include="Base\Parser.cpp" />
     <ClCompile Include="Classes\PlayerEntity.cpp" />
-    <ClCompile Include="Base\SCANNER.CPP" />
+    <ClCompile Include="Base\Scanner.cpp" />
     <ClCompile Include="Ska\smcPars.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dynamic-Debug|Win32'">
       </PrecompiledHeader>
@@ -1043,8 +1050,6 @@
     <ClInclude Include="Base\Unzip.h" />
     <ClInclude Include="Base\Updateable.h" />
     <ClInclude Include="Base\UpdateableRT.h" />
-    <ClInclude Include="GameAgent\GameAgent.h" />
-    <ClInclude Include="GameAgent\MSLegacy.h" />
     <ClInclude Include="Graphics\GfxInterface.h" />
     <ClInclude Include="Graphics\Gfx_wrapper_Direct3D.h" />
     <ClInclude Include="Graphics\Gfx_wrapper_Null.h" />
@@ -1093,6 +1098,9 @@
     <ClInclude Include="OS\OS.h" />
     <ClInclude Include="OS\PlatformSpecific.h" />
     <ClInclude Include="OS\PlatformTypes.h" />
+    <ClInclude Include="Query\MasterServer.h" />
+    <ClInclude Include="Query\QueryManager.h" />
+    <ClInclude Include="Query\ServerRequest.h" />
     <ClInclude Include="SE_Config.h" />
     <ClInclude Include="Sound\al_functions.h" />
     <ClInclude Include="Sound\DSound.h" />
@@ -1232,7 +1240,7 @@
     <CustomBuild Include="Math\Geometry.inl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="Base\FLEX.SKL">
+    <CustomBuild Include="Base\FLEX.skl">
       <FileType>Document</FileType>
     </CustomBuild>
     <CustomBuild Include="Base\Parser.y">

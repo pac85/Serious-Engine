@@ -71,8 +71,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Stock_CShader.h>
 #include <Engine/Templates/Stock_CSkeleton.h>
 
-#include <Engine/GameAgent/GameAgent.h>
-
+#include <Engine/Query/MasterServer.h> // [Cecil]
 
 // pointer to global instance of the only game object in the application
 CNetworkLibrary *_pNetwork= NULL;
@@ -900,9 +899,9 @@ void CNetworkLibrary::Init(void)
   _pShell->DeclareSymbol("persistent user INDEX inp_bForceJoystickPolling;", &inp_bForceJoystickPolling);
   _pShell->DeclareSymbol("persistent user INDEX inp_bAutoDisableJoysticks;", &inp_bAutoDisableJoysticks);
 
-  _pShell->DeclareSymbol("persistent user CTString ga_strServer;", &ga_strServer);
-  _pShell->DeclareSymbol("persistent user CTString ga_strMSLegacy;", &ga_strMSLegacy);
-  _pShell->DeclareSymbol("persistent user INDEX ga_bMSLegacy;", &ga_bMSLegacy);
+  // [Cecil] Initialize query manager
+  extern void InitQuery(void);
+  InitQuery();
 }
 
 /*
@@ -1232,8 +1231,8 @@ void CNetworkLibrary::EnumSessions(BOOL bInternet)
     _cmiComm.PrepareForUse(/*network*/TRUE, /*client*/FALSE); // have to enumerate as server
   }
 
-  // request enumeration
-  GameAgent_EnumTrigger(bInternet);
+  // [Cecil] Request master server enumeration
+  IMasterServer::EnumTrigger(bInternet);
 }
 
 /*
@@ -1958,7 +1957,7 @@ void CNetworkLibrary::MainLoop(void)
   if (_cmiComm.IsNetworkEnabled()) {
     // [Cecil] Update master server if needed
     if (ser_bEnumeration) {
-      GameAgent_ServerUpdate();
+      IMasterServer::OnServerUpdate();
     }
 
 //    _cmiComm.Broadcast_Update();
@@ -2428,7 +2427,8 @@ extern void NET_MakeDefaultState_t(
 // handle broadcast messages (server enumeration)
 void CNetworkLibrary::GameInactive(void)
 {
-  GameAgent_EnumUpdate();
+  // [Cecil] Update master server enumeration
+  IMasterServer::EnumUpdate();
 
   // if no network
   if (!_cmiComm.IsNetworkEnabled()) {

@@ -73,11 +73,8 @@ LICENSE
 
     http://www.gnu.org/licenses/gpl.txt
 */
-#ifndef SE_INCL_MSLEGACY_H
-#define SE_INCL_MSLEGACY_H
-#ifdef PRAGMA_ONCE
-  #pragma once
-#endif
+
+#include "StdH.h"
 
 /* function gsvalfunc */
 unsigned char gsvalfunc(u_char reg) {
@@ -183,4 +180,3 @@ u_int resolv(char *host) {
 
 /* end functions  */
 
-#endif // include once check

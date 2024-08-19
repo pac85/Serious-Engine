@@ -107,12 +107,6 @@
       <UniqueIdentifier>{a16b8831-a69d-41ad-83ab-393fe06504f5}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="Source Files\GameAgent">
-      <UniqueIdentifier>{3de7b00a-0b6d-478e-a6b7-e12806e1f7f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GameAgent Headers">
-      <UniqueIdentifier>{213d6870-6a86-43c8-b4be-01096c1ccddf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\OS">
       <UniqueIdentifier>{53a459dc-b9ce-4496-a09a-b25ce3ad9eba}</UniqueIdentifier>
     </Filter>
@@ -124,6 +118,12 @@
     </Filter>
     <Filter Include="Source Files\API">
       <UniqueIdentifier>{413259e9-0c35-4e91-86c1-fdca3069b8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Query">
+      <UniqueIdentifier>{3de7b00a-0b6d-478e-a6b7-e12806e1f7f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Query Headers">
+      <UniqueIdentifier>{213d6870-6a86-43c8-b4be-01096c1ccddf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -709,7 +709,7 @@
     <ClCompile Include="Classes\PlayerEntity.cpp">
       <Filter>Generated Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Base\SCANNER.CPP">
+    <ClCompile Include="Base\Scanner.cpp">
       <Filter>Generated Sources</Filter>
     </ClCompile>
     <ClCompile Include="Ska\smcPars.cpp">
@@ -717,9 +717,6 @@
     </ClCompile>
     <ClCompile Include="Ska\Smcscan.cpp">
       <Filter>Generated Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="GameAgent\GameAgent.cpp">
-      <Filter>Source Files\GameAgent</Filter>
     </ClCompile>
     <ClCompile Include="OS\DynamicLibraries.cpp">
       <Filter>Source Files\OS</Filter>
@@ -750,6 +747,30 @@
     </ClCompile>
     <ClCompile Include="Base\GameDir.cpp">
       <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\LegacyClientQuery.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\LegacyFunctions.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\LegacyServerQuery.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\MasterServer.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\QueryManager.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\ServerRequest.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\DarkPlacesQuery.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="Query\GameAgentQuery.cpp">
+      <Filter>Source Files\Query</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1323,12 +1344,6 @@
     <ClInclude Include="StdH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameAgent\GameAgent.h">
-      <Filter>Header Files\GameAgent Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="GameAgent\MSLegacy.h">
-      <Filter>Header Files\GameAgent Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Sound\ov_functions.h">
       <Filter>Header Files\Sound Headers</Filter>
     </ClInclude>
@@ -1386,6 +1401,15 @@
     <ClInclude Include="Sound\eax_envtypes.h">
       <Filter>Header Files\Sound Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Query\MasterServer.h">
+      <Filter>Header Files\Query Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Query\QueryManager.h">
+      <Filter>Header Files\Query Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Query\ServerRequest.h">
+      <Filter>Header Files\Query Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Base\CTString.inl">
@@ -1409,7 +1433,7 @@
     <CustomBuild Include="Math\Geometry.inl">
       <Filter>Header Files\Math Headers</Filter>
     </CustomBuild>
-    <CustomBuild Include="Base\FLEX.SKL">
+    <CustomBuild Include="Base\FLEX.skl">
       <Filter>Grammar Files</Filter>
     </CustomBuild>
     <CustomBuild Include="Base\Parser.y">

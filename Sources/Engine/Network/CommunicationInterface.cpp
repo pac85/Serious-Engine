@@ -29,8 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/Network.h>
 #include <Engine/Network/Server.h>
 
-#include <Engine/GameAgent/GameAgent.h>
-
+#include <Engine/Query/MasterServer.h> // [Cecil]
 
 #pragma comment(lib, "wsock32.lib")
 
@@ -267,8 +266,10 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
     Unprepare();
   }
 
+  // [Cecil] Stop master server enumeration
+  IMasterServer::EnumCancel();
+
   // make sure winsock is off (could be on if enumeration was triggered)
-  GameAgent_EnumCancel();
   EndWinsock();
 
   if (bUseNetwork) {

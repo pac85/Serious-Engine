@@ -35,7 +35,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Entities/InternalClasses.h>
 #include <Engine/Base/CRC.h>
 #include <Engine/Base/ErrorTable.h>
-#include <Engine/GameAgent/GameAgent.h>
+#include <Engine/Query/MasterServer.h> // [Cecil]
 
 #include <Engine/Templates/StaticArray.cpp>
 
@@ -209,7 +209,7 @@ void CServer::Stop(void)
 {
   // [Cecil] Stop master server if needed
   if (ser_bEnumeration) {
-    GameAgent_ServerEnd();
+    IMasterServer::OnServerEnd();
   }
 
   // tell all clients to disconnect
@@ -282,7 +282,7 @@ void CServer::Start_t(void)
 
   // [Cecil] Start master server if needed
   if (_cmiComm.IsNetworkEnabled() && ser_bEnumeration) {
-    GameAgent_ServerInit();
+    IMasterServer::OnServerStart();
   }
 }
 
@@ -1313,7 +1313,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
 
       // [Cecil] Notify master server if needed
       if (ser_bEnumeration) {
-        GameAgent_ServerStateChanged();
+        IMasterServer::OnServerStateChanged();
       }
 
     // if refused
