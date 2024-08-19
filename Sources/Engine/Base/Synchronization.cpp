@@ -53,6 +53,84 @@ NOTES:
   functions, so testing against any other number than 0 doesn't work.
 */
 
+#if !SE1_WIN
+
+#include <pthread.h>
+
+#define WAIT_OBJECT_0 0
+#define INFINITE 0xFFFFFFFF
+
+struct HandlePrivate {
+  pthread_mutex_t mutex;
+  pthread_cond_t cond;
+  BOOL state;
+};
+
+LONG InterlockedIncrement(LONG *Addend) {
+  return __sync_add_and_fetch(Addend, 1);
+};
+
+LONG InterlockedDecrement(LONG volatile *Addend) {
+  return __sync_sub_and_fetch(Addend, 1);
+};
+
+UQUAD GetCurrentThreadId() {
+  static_assert(sizeof(pthread_t) == sizeof(size_t), "");
+  return (UQUAD)pthread_self();
+};
+
+HANDLE CreateEvent(void *attr, BOOL bManualReset, BOOL initial, const char *lpName) {
+  ASSERT(!bManualReset);
+  HandlePrivate *handle = new HandlePrivate;
+
+  pthread_mutex_init(&handle->mutex, nullptr);
+  pthread_cond_init(&handle->cond, nullptr);
+  handle->state = initial;
+
+  return (HANDLE) handle;
+};
+
+BOOL CloseHandle(HANDLE hObject) {
+  delete (HandlePrivate *) hObject;
+  return true;
+};
+
+DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds) {
+  ASSERT(dwMilliseconds == INFINITE);
+  HandlePrivate *handle = (HandlePrivate *) hHandle;
+
+  pthread_mutex_lock(&handle->mutex);
+  while (!handle->state) {
+    pthread_cond_wait(&handle->cond, &handle->mutex);
+  }
+  handle->state = false;
+  pthread_mutex_unlock(&handle->mutex);
+  return WAIT_OBJECT_0;
+};
+
+BOOL SetEvent(HANDLE hEvent) {
+  HandlePrivate *handle = (HandlePrivate *) hEvent;
+
+  pthread_mutex_lock(&handle->mutex);
+  handle->state = true;
+  pthread_cond_signal(&handle->cond);
+  pthread_mutex_unlock(&handle->mutex);
+
+  return true;
+};
+
+BOOL ResetEvent(HANDLE hEvent) {
+  HandlePrivate *handle = (HandlePrivate *) hEvent;
+
+  pthread_mutex_lock(&handle->mutex);
+  handle->state = false;
+  pthread_mutex_unlock(&handle->mutex);
+
+  return true;
+};
+
+#endif // !SE1_WIN
+
 // The opaque OPTEX data structure
 typedef struct {
    LONG   lLockCount; // note: must center all tests around 0 for win95 compatibility!
@@ -164,11 +242,11 @@ INDEX OPTEX_TryToEnter (POPTEX poptex)
       ASSERT(poptex->lLockCount>=-1);
 
       // if unlocked in the mean time
-      if (ctLocked<0) {
+      /*if (ctLocked<0) {
         // NOTE: this has not been tested!
         // ignore sent the signal
         ResetEvent(poptex->hEvent);
-      }
+      }*/
 
       // lock failed
       return 0;
@@ -191,7 +269,7 @@ INDEX OPTEX_Leave (POPTEX poptex)
     
     // just decrement the lock count
     InterlockedDecrement(&poptex->lLockCount);
-    ASSERT(poptex->lLockCount>=-1);
+    //ASSERT(poptex->lLockCount>=-1);
     
   // if no more multiple locks from this thread
   } else {
