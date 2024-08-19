@@ -163,19 +163,6 @@ inline SLONG FloatToInt( FLOAT f)
 
   return slRet;
 
-#elif SE1_UNIX
-  SLONG slRet;
-
-  __asm__ __volatile__ (
-    "flds     (%%ebx)   \n\t"
-    "fistpl   (%%esi)   \n\t"
-        :
-        : "b" (&f), "S" (&slRet)
-        : "memory"
-  );
-
-  return slRet;
-
 #else
   // Round to the nearest by adding/subtracting 0.5
   FLOAT addToRound = (f < 0.0f ? -0.5f : 0.5f);
@@ -237,19 +224,6 @@ inline SLONG FastMaxLog2( SLONG x)
   }
   return slRet;
 
-#elif SE1_UNIX
-  SLONG slRet;
-  __asm__ __volatile__ (
-    "bsrl  (%%ebx), %%eax     \n\t"
-    "bsfl  (%%ebx), %%edx     \n\t"
-    "cmpl  %%eax, %%edx       \n\t"
-    "adcl  $0, %%eax          \n\t"
-    "movl  %%eax, (%%esi)     \n\t"
-        :
-        : "b" (&x), "S" (&slRet)
-        : "memory"
-  );
-  return(slRet);
 #else
   #error Fill this in for your platform.
 #endif
