@@ -207,8 +207,10 @@ CServer::~CServer()
  */
 void CServer::Stop(void)
 {
-  // stop gameagent
-  GameAgent_ServerEnd();
+  // [Cecil] Stop master server if needed
+  if (ser_bEnumeration) {
+    GameAgent_ServerEnd();
+  }
 
   // tell all clients to disconnect
   INDEX ctClients = srv_assoSessions.sa_Count;
@@ -278,8 +280,8 @@ void CServer::Start_t(void)
   // init network driver server
   _cmiComm.Server_Init_t();
 
-  // init gameagent
-  if (_cmiComm.IsNetworkEnabled()) {
+  // [Cecil] Start master server if needed
+  if (_cmiComm.IsNetworkEnabled() && ser_bEnumeration) {
     GameAgent_ServerInit();
   }
 }
@@ -1309,8 +1311,11 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
       nmPlayerRegistered<<iNewPlayer;   // player index
       _pNetwork->SendToClientReliable(iClient, nmPlayerRegistered);
 
-      // notify gameagent
-      GameAgent_ServerStateChanged();
+      // [Cecil] Notify master server if needed
+      if (ser_bEnumeration) {
+        GameAgent_ServerStateChanged();
+      }
+
     // if refused
     } else {
       // send him refusal message

@@ -107,7 +107,6 @@ INDEX ser_bClientsMayPause = TRUE;
 FLOAT ser_tmSyncCheckFrequency = 1.0f;
 INDEX ser_iSyncCheckBuffer = 60;
 INDEX ser_bEnumeration  = TRUE;
-INDEX ser_bPingGameAgent = TRUE;
 FLOAT ser_tmKeepAlive = 0.1f;
 FLOAT ser_tmPingUpdate = 3.0f;
 INDEX ser_bWaitFirstPlayer = 0;
@@ -722,6 +721,17 @@ CNetworkLibrary::~CNetworkLibrary(void)
   delete &ga_srvServer;
 }
 
+// [Cecil] Allow changing value of a symbol unless currently running a server
+static BOOL UpdateServerSymbolValue(void *pSymbol) {
+  // Cannot change the value while running the game as a server
+  if (_pNetwork->IsServer()) {
+    CPutString(TRANS("Cannot change the value of this shell symbol while the server is running!\n"));
+    return FALSE;
+  }
+
+  // Safe to change
+  return TRUE;
+};
 
 /*
  * Initialize game management.
@@ -731,6 +741,9 @@ void CNetworkLibrary::Init(void)
   // add shell symbols
   _pShell->DeclareSymbol("user INDEX dbg_bBreak;", &dbg_bBreak);
   _pShell->DeclareSymbol("persistent user INDEX gam_bPretouch;", &gam_bPretouch);
+
+  // [Cecil] Check if some symbol can be changed during the game
+  _pShell->DeclareSymbol("INDEX UpdateServerSymbolValue(INDEX);", &UpdateServerSymbolValue);
 
   _pShell->DeclareSymbol("user INDEX dem_iRecordedNumber;",     &dem_iRecordedNumber);
   _pShell->DeclareSymbol("user void StartDemoRecording(void);", &StartDemoRecording);
@@ -812,8 +825,7 @@ void CNetworkLibrary::Init(void)
   _pShell->DeclareSymbol("persistent user INDEX net_bReportMiscErrors;", &net_bReportMiscErrors);
   _pShell->DeclareSymbol("persistent user INDEX net_bLerping;",       &net_bLerping);
   _pShell->DeclareSymbol("persistent user INDEX ser_bClientsMayPause;", &ser_bClientsMayPause);
-  _pShell->DeclareSymbol("persistent user INDEX ser_bEnumeration;",      &ser_bEnumeration);
-  _pShell->DeclareSymbol("persistent user INDEX ser_bPingGameAgent;", &ser_bPingGameAgent);
+  _pShell->DeclareSymbol("persistent user INDEX ser_bEnumeration pre:UpdateServerSymbolValue;", &ser_bEnumeration);
   _pShell->DeclareSymbol("persistent user FLOAT ser_tmKeepAlive;", &ser_tmKeepAlive);
   _pShell->DeclareSymbol("persistent user FLOAT ser_tmPingUpdate;", &ser_tmPingUpdate);
   _pShell->DeclareSymbol("persistent user INDEX ser_bWaitFirstPlayer;", &ser_bWaitFirstPlayer);
@@ -1944,9 +1956,10 @@ void CNetworkLibrary::MainLoop(void)
 
   // if network
   if (_cmiComm.IsNetworkEnabled()) {
-
-    // do services for gameagent querying
-    GameAgent_ServerUpdate();
+    // [Cecil] Update master server if needed
+    if (ser_bEnumeration) {
+      GameAgent_ServerUpdate();
+    }
 
 //    _cmiComm.Broadcast_Update();
 

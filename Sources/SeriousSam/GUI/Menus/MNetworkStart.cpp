@@ -127,7 +127,7 @@ void CNetworkStartMenu::StartMenu(void)
   gm_mgWaitAllPlayers.mg_iSelected = Clamp(_pShell->GetINDEX("gam_bWaitAllPlayers"), 0L, 1L);
   gm_mgWaitAllPlayers.ApplyCurrentSelection();
 
-  gm_mgVisible.mg_iSelected = _pShell->GetINDEX("ser_bEnumeration");
+  gm_mgVisible.mg_iSelected = ser_bEnumeration;
   gm_mgVisible.ApplyCurrentSelection();
 
   UpdateNetworkLevel(0);
@@ -141,7 +141,7 @@ void CNetworkStartMenu::EndMenu(void)
   _pShell->SetINDEX("gam_iStartMode", gm_mgGameType.mg_iSelected);
   _pShell->SetINDEX("gam_bWaitAllPlayers", gm_mgWaitAllPlayers.mg_iSelected);
   _pShell->SetINDEX("gam_ctMaxPlayers", gm_mgMaxPlayers.mg_iSelected + 2);
-  _pShell->SetINDEX("ser_bEnumeration", gm_mgVisible.mg_iSelected);
+  ser_bEnumeration = gm_mgVisible.mg_iSelected;
 
   CGameMenu::EndMenu();
 }
