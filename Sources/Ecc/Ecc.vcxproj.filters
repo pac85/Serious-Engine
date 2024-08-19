@@ -42,7 +42,7 @@
     <ClInclude Include="StdH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="unistd.h">
+    <ClInclude Include="Win32\unistd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

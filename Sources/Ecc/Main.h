@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 extern int yylex(void);
-extern void yyerror(char *s);
+extern void yyerror(const char *s);
 extern int yyparse(void);
 
 extern FILE *_fInput;
@@ -60,7 +60,7 @@ struct SType {
     iLine = other.iLine;
     return *this;
   };
-  const SType &operator=(char *str) {
+  const SType &operator=(const char *str) {
     strString = strdup(str);
     bCrossesStates = 0;
     iLine = -1;
