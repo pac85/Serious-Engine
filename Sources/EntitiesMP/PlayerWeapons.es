@@ -49,7 +49,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "ModelsMP/Weapons/Flamer/FuelReservoir.h"
 #include "ModelsMP/Weapons/Flamer/Flame.h"  
 #include "ModelsMP/Weapons/Chainsaw/Chainsaw.h"
-#include "ModelsMP/Weapons/Chainsaw/ChainSawForPlayer.h"
+#include "ModelsMP/Weapons/Chainsaw/ChainsawForPlayer.h"
 #include "ModelsMP/Weapons/Chainsaw/Body.h"
 #include "ModelsMP/Weapons/Chainsaw/Blade.h"
 #include "ModelsMP/Weapons/Chainsaw/Teeth.h"

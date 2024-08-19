@@ -23,8 +23,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "Models/Weapons/RocketLauncher/Projectile/Rocket.h"
 #include "Models/Items/Ammo/Grenades/Grenades.h"
 #include "Models/Items/Ammo/Electricity/Electricity.h"
-#include "Models/Items/Ammo/Cannonball/Cannonball.h"
-#include "Models/Items/Ammo/Cannonball/CannonballQuad.h"
+#include "Models/Items/Ammo/Cannonball/CannonBall.h"
+#include "Models/Items/Ammo/Cannonball/CannonBallQuad.h"
 #include "ModelsMP/Items/Ammo/SniperBullets/SniperBullets.h"
 %}
 
