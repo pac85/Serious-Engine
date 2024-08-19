@@ -202,11 +202,19 @@ BOOL YesNoMessage(const char *strFormat, ...)
 void ThrowF_t(const char *strFormat, ...)  // throws char *
 {
   const SLONG slBufferSize = 256;
-  char strBuffer[slBufferSize+1];
+
+  // [Cecil] Need to keep the message in memory (on Linux) or else
+  // it will cause undefined behavior on subsequent "throw;" statements
+  static char *strBuffer = NULL;
+
+  if (strBuffer != NULL) delete[] strBuffer;
+  strBuffer = new char[slBufferSize + 1];
+
   // format the message in buffer
   va_list arg;
   va_start(arg, strFormat); // variable arguments start after this argument
   _vsnprintf(strBuffer, slBufferSize, strFormat, arg);
+  va_end(arg);
   throw strBuffer;
 }
 

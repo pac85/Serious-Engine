@@ -334,7 +334,8 @@ void CRenderer::AddActiveSector(CBrushSector &bscSector)
   // add it to active sectors list
   re_lhActiveSectors.AddTail(bscSector.bsc_lnInActiveSectors);
 
-  ASSERT((_controlfp(0, 0)&_MCW_RC)==_RC_NEAR);
+  // [Cecil] NOTE: Cannot be compiled with GCC, don't know what the alternative would be
+  //ASSERT((_controlfp(0, 0)&_MCW_RC)==_RC_NEAR);
 
   CBrush3D &br = *bscSector.bsc_pbmBrushMip->bm_pbrBrush;
   // if should render field brush sector

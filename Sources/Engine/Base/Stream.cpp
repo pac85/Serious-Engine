@@ -199,8 +199,14 @@ void InitStreams(void)
   }
   // find eventual extension for the mod's dlls
   _strModExt = "";
-  LoadStringVar(CTString("ModExt.txt"), _strModExt);
 
+  // [Cecil] TODO: Get rid of binary suffixes (a.k.a. mod extensions) and stop using this file
+  CTString strFullPathTemp;
+  if (ExpandFilePath(EFP_READ, CTString("ModEXT.txt"), strFullPathTemp) != EFP_NONE) {
+    LoadStringVar(CTString("ModEXT.txt"), _strModExt);
+  } else {
+    LoadStringVar(CTString("ModExt.txt"), _strModExt);
+  }
 
   CPrintF(TRANS("Loading group files...\n"));
 
@@ -315,7 +321,14 @@ void CTStream::Throw_t(char *strFormat, ...)  // throws char *
 {
   const SLONG slBufferSize = 256;
   char strFormatBuffer[slBufferSize];
-  char strBuffer[slBufferSize];
+
+  // [Cecil] Need to keep the message in memory (on Linux) or else
+  // it will cause undefined behavior on subsequent "throw;" statements
+  static char *strBuffer = NULL;
+
+  if (strBuffer != NULL) delete[] strBuffer;
+  strBuffer = new char[slBufferSize + 1];
+
   // add the stream description to the format string
   _snprintf(strFormatBuffer, slBufferSize, "%s (%s)", strFormat, strm_strStreamDescription.ConstData());
   // format the message in buffer

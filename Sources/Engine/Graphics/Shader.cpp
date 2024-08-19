@@ -824,12 +824,20 @@ void CShader::Read_t(CTStream *istrFile)
 
   CTFileName fnmExpanded;
   ExpandFilePath(EFP_READ | EFP_NOZIPS,fnmDLL,fnmExpanded);
+
+#if SE1_WIN
   // set new error mode
-  UINT iOldErrorMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
+  const UINT iOldErrorMode = SetErrorMode(SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS);
+#endif
+
   // load dll
   mdLibrary.Load(fnmExpanded.ConstData());
+
+#if SE1_WIN
   // return last error mode
   SetErrorMode(iOldErrorMode);
+#endif
+
   // check if library has loaded
   if (!mdLibrary.IsLoaded())
   {

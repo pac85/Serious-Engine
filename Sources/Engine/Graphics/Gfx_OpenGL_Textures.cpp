@@ -136,7 +136,8 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
   while( pixSizeU>0 && pixSizeV>0)
   { 
     // check that memory is readable
-    ASSERT( pulTexture[pixOffset +pixSizeU*pixSizeV -1] != 0xDEADBEEF);
+    //ASSERT( pulTexture[pixOffset +pixSizeU*pixSizeV -1] != 0xDEADBEEF);
+
     // upload mipmap as fast as possible
     if( bUseSubImage) {
       pglTexSubImage2D( GL_TEXTURE_2D, iMip, 0, 0, pixSizeU, pixSizeV,

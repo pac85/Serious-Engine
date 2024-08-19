@@ -56,7 +56,6 @@ extern INDEX shd_iDithering;
 extern const UBYTE *pubClipByte;
 extern UBYTE aubSqrt[  SQRTTABLESIZE];
 extern UWORD auw1oSqrt[SQRTTABLESIZE];
-extern UWORD auw1oSqrt[SQRTTABLESIZE];
 // static FLOAT3D _v00;
 
 // internal class for layer mixing
@@ -135,16 +134,8 @@ public:
 // increment a byte without overflowing it
 static inline void IncrementByteWithClip( UBYTE &ub, SLONG slAdd)
 {
-  ub = pubClipByte[(SLONG)ub+slAdd];
-}
-
-// increment a color without overflowing it
-static inline void IncrementColorWithClip( UBYTE &ubR, UBYTE &ubG, UBYTE &ubB,
-                                           SLONG  slR, SLONG  slG, SLONG  slB)
-{
-  IncrementByteWithClip( ubR, slR);
-  IncrementByteWithClip( ubG, slG);
-  IncrementByteWithClip( ubB, slB);
+  SLONG t = (SLONG)ub + slAdd;
+  ub = (t < 0) ? 0 : pubClipByte[t];
 }
 
 // add the intensity to the pixel
@@ -277,9 +268,9 @@ static __forceinline void PrepareColorMMX(__m64 &mm7, const ULONG ulLightRGB) {
   #if SE1_USE_MMXINT
     __m64 tmp_mm0;
 
-    mm7.m64_u64 = 0;
-    mm7.m64_i64 = ulLightRGB;
-    tmp_mm0.m64_u64 = 0;
+    memset(&mm7, 0, sizeof(mm7));           //mm7.m64_u64 = 0;
+    memcpy(&mm7, &ulLightRGB, sizeof(mm7)); //mm7.m64_i64 = ulLightRGB;
+    memset(&tmp_mm0, 0, sizeof(tmp_mm0));   //tmp_mm0.m64_u64 = 0;
     mm7 = _m_punpcklbw(mm7, tmp_mm0); // punpcklbw
     mm7 = _m_psllwi(mm7, 1);          // psllw
     _mm_empty(); // emms
@@ -304,7 +295,7 @@ static __forceinline void MixPixelMMX(ULONG &ulPixel, const SLONG slIntensity, c
   __m64 tmp_mm6;
 
   #if SE1_USE_MMXINT
-    tmp_mm6.m64_u64 = 0;
+    memset(&tmp_mm6, 0, sizeof(tmp_mm6)); //tmp_mm6.m64_u64 = 0;
     tmp_mm6 = _mm_cvtsi32_si64(slIntensity);
     tmp_mm6 = _mm_unpacklo_pi16(tmp_mm6, tmp_mm6); // punpcklwd
     tmp_mm6 = _mm_unpacklo_pi32(tmp_mm6, tmp_mm6); // punpckldq
@@ -1562,7 +1553,6 @@ void CLayerMixer::AddOneLayerDirectional( CBrushShadowLayer *pbsl, UBYTE *pubMas
 
   // get the light source of the layer
   lm_plsLight = pbsl->bsl_plsLightSource;
-  const FLOAT3D &vLight = lm_plsLight->ls_penEntity->GetPlacement().pl_PositionVector;
   AnglesToDirectionVector( lm_plsLight->ls_penEntity->GetPlacement().pl_OrientationAngle,
                            lm_vLightDirection);
   // calculate intensity
@@ -1621,8 +1611,12 @@ void CLayerMixer::MixOneMipmap(CBrushShadowMap *pbsm, INDEX iMipmap)
     if( lm_pbpoPolygon->bpo_ulFlags&BPOF_HASDIRECTIONALAMBIENT) {
       {FOREACHINLIST( CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers, itbsl) {
         CBrushShadowLayer &bsl = *itbsl;
+
+        // [Cecil] Safety check before dereferencing
+        ASSERT(bsl.bsl_plsLightSource != NULL);
+        if (bsl.bsl_plsLightSource == NULL) continue;
+
         CLightSource &ls = *bsl.bsl_plsLightSource;
-        ASSERT( &ls!=NULL); if( &ls==NULL) continue; // safety check
         if( !(ls.ls_ulFlags&LSF_DIRECTIONAL)) continue;  // skip non-directional layers
         COLOR col = AdjustColor( ls.GetLightAmbient(), _slShdHueShift, _slShdSaturation);
         colAmbient = AddColors( colAmbient, col);
@@ -1670,11 +1664,15 @@ void CLayerMixer::MixOneMipmap(CBrushShadowMap *pbsm, INDEX iMipmap)
   {FORDELETELIST( CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers, itbsl)
   {
     CBrushShadowLayer &bsl = *itbsl;
+
+    // [Cecil] Safety check before dereferencing
+    ASSERT(bsl.bsl_plsLightSource != NULL);
+    if (bsl.bsl_plsLightSource == NULL) continue;
+
     CLightSource &ls = *bsl.bsl_plsLightSource;
-    ASSERT( &ls!=NULL); if( &ls==NULL) continue; // safety check
 
     // skip if should not be applied
-    if( (bDynamicOnly && !(ls.ls_ulFlags&LSF_NONPERSISTENT)) || ls.ls_ulFlags&LSF_DYNAMIC) continue;
+    if ((bDynamicOnly && !(ls.ls_ulFlags&LSF_NONPERSISTENT)) || (ls.ls_ulFlags & LSF_DYNAMIC)) continue;
 
     // set corresponding shadowmap flag if this is an animating light
     if( ls.ls_paoLightAnimation!=NULL) lm_pbsmShadowMap->sm_ulFlags |= SMF_ANIMATINGLIGHTS;
