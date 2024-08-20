@@ -33,7 +33,7 @@ static void FailFunction_t(const char *strName) {
 // ------------------------------------ AMP11
 
 // amp11lib vars
-BOOL _bAMP11Enabled = FALSE;
+static BOOL _bAMP11Enabled = FALSE;
 static HINSTANCE _hAmp11lib = NULL;
 
 // amp11lib types
@@ -87,9 +87,16 @@ public:
 // ------------------------------------ Ogg Vorbis
 #include <vorbis/vorbisfile.h>  // we define needed stuff ourselves, and ignore the rest
 
-// vorbis vars
-BOOL _bOVEnabled = FALSE;
-static HINSTANCE _hOV = NULL;
+#if !defined(SE1_STATIC_BUILD)
+  // vorbis vars
+  static BOOL _bOVEnabled = FALSE;
+  static HINSTANCE _hOV = NULL;
+
+#elif SE1_WIN
+  #pragma comment(lib, "libogg.lib")
+  #pragma comment(lib, "libvorbis.lib")
+  #pragma comment(lib, "libvorbisfile.lib")
+#endif
 
 class CDecodeData_OGG {
 public:
@@ -108,11 +115,20 @@ public:
 
 static void OV_SetFunctionPointers_t(void) {
   const char *strName;
+
   // get vo function pointers
+#if !defined(SE1_STATIC_BUILD)
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name ;  \
     p##name = (output (__cdecl *)inputs)OS::GetLibSymbol(_hOV, strName); \
     if(p##name == NULL) FailFunction_t(strName);
+#else
+  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
+    strName = #name ;  \
+    p##name = &name; \
+    if(p##name == NULL) FailFunction_t(strName);
+#endif
+
   #include "ov_functions.h"
   #undef DLLFUNCTION
 }
@@ -191,6 +207,7 @@ static ov_callbacks ovcCallbacks = {
 void CSoundDecoder::InitPlugins(void)
 {
   try {
+  #if !defined(SE1_STATIC_BUILD)
     // load vorbis
     if (_hOV==NULL) {
       _hOV = OS::LoadLib("libvorbisfile.dll");
@@ -198,11 +215,16 @@ void CSoundDecoder::InitPlugins(void)
     if( _hOV == NULL) {
       ThrowF_t(TRANS("Cannot load libvorbisfile.dll."));
     }
+  #endif
+
     // prepare function pointers
     OV_SetFunctionPointers_t();
 
+  #if !defined(SE1_STATIC_BUILD)
     // if all successful, enable mpx playing
     _bOVEnabled = TRUE;
+  #endif
+
     CPrintF(TRANS("  libvorbisfile.dll loaded, ogg playing enabled\n"));
 
   } catch (char *strError) {
@@ -244,12 +266,17 @@ void CSoundDecoder::EndPlugins(void)
   }
 
   // cleanup vorbis when not needed anymore
+#if !defined(SE1_STATIC_BUILD)
   if (_bOVEnabled) {
     OV_ClearFunctionPointers();
     OS::FreeLib(_hOV);
     _hOV = NULL;
     _bOVEnabled = FALSE;
   }
+
+#else
+  OV_ClearFunctionPointers();
+#endif
 }
 
 // decoder that streams from file
@@ -263,9 +290,9 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
 
   // if ogg
   if (fnmExpanded.FileExt()==".ogg") {
-    if (!_bOVEnabled) {
-      return;
-    }
+  #if !defined(SE1_STATIC_BUILD)
+    if (!_bOVEnabled) return;
+  #endif
 
     sdc_pogg = new CDecodeData_OGG;
     sdc_pogg->ogg_fFile = NULL;
