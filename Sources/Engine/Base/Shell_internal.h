@@ -61,6 +61,7 @@ public:
 // implementation:
   INDEX ss_istType;   // type of the symbol
   CTString ss_strName;    // symbol name
+  ULONG ss_ulHash; // [Cecil] Name hash
   void *ss_pvValue;       // symbol value
   BOOL (*ss_pPreFunc)(void *);
   void (*ss_pPostFunc)(void *);

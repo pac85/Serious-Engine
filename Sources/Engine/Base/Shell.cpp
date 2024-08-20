@@ -119,6 +119,7 @@ void CShellSymbol::Clear(void)
 {
   ss_istType = -1;
   ss_strName.Clear();
+  ss_ulHash = 0; // [Cecil]
   ss_ulFlags = 0;
 };
 BOOL CShellSymbol::IsDeclared(void)
@@ -327,7 +328,7 @@ extern void PrintShellSymbolHelp(const CTString &strSymbol)
   }
 }
 
-extern void ListSymbolsByPattern(CTString strPattern)
+static void ListSymbolsByPattern(const CTString &strPattern)
 {
   // synchronize access to global shell
   CTSingleLock slShell(&_pShell->sh_csShell, TRUE);
@@ -618,10 +619,13 @@ CShellSymbol *CShell::GetSymbol(const CTString &strName, BOOL bDeclaredOnly)
   // synchronize access to shell
   CTSingleLock slShell(&sh_csShell, TRUE);
 
+  // [Cecil] Hash comparison is much faster
+  const ULONG ulHash = strName.GetHash();
+
   // for each of symbols in the shell
   FOREACHINDYNAMICARRAY(sh_assSymbols, CShellSymbol, itss) {
-    // if it is the right one
-    if (itss->ss_strName==strName) {
+    // [Cecil] If the name hash matches
+    if (itss->ss_ulHash == ulHash) {
       // return it
       return itss;
     }
@@ -638,6 +642,7 @@ CShellSymbol *CShell::GetSymbol(const CTString &strName, BOOL bDeclaredOnly)
     // create a new one with that name and undefined type
     CShellSymbol &ssNew = *sh_assSymbols.New(1);
     ssNew.ss_strName = strName;
+    ssNew.ss_ulHash = ulHash; // [Cecil]
     ssNew.ss_istType = _shell_istUndeclared;
     ssNew.ss_pvValue = NULL;
     ssNew.ss_ulFlags = 0;
