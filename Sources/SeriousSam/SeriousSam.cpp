@@ -14,10 +14,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "StdH.h"
-#include <io.h>
+
+#if SE1_WIN
+  #include <process.h>
+#endif
+
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <process.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/Game.h>
 #include "resource.h"
@@ -162,6 +165,8 @@ static void QuitGame(void)
   _bQuitScreen = FALSE;
 }
 
+#if SE1_WIN
+
 // check if another app is already running
 static HANDLE _hLock = NULL;
 static void DirectoryLockOn(void)
@@ -192,6 +197,13 @@ static void DirectoryLockOff(void)
     CloseHandle(_hLock);
   }
 }
+
+#else
+
+static void DirectoryLockOn(void) {};
+static void DirectoryLockOff(void) {};
+
+#endif // SE1_WIN
 
 void End(void);
 
@@ -809,6 +821,7 @@ static BOOL _bDPIAware = FALSE;
 
 // [Cecil] Make game application be aware of the DPI scaling on Windows Vista and later
 static void SetDPIAwareness(void) {
+#if SE1_WIN
   // Load the library
   HMODULE hUser = LoadLibraryA("User32.dll");
 
@@ -822,16 +835,17 @@ static void SetDPIAwareness(void) {
 
   // Mark game application as DPI-aware
   _bDPIAware = pFunc();
+#endif // SE1_WIN
 };
 
-int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCmdLine, int nCmdShow)
 {
   (void)hPrevInstance;
 
   // [Cecil] Set DPI awareness
   SetDPIAwareness();
 
-  if( !Init( hInstance, nCmdShow, lpCmdLine )) return FALSE;
+  if (!Init(hInstance, nCmdShow, strCmdLine)) return FALSE;
 
   // initialy, application is running and active, console and menu are off
   _bRunning    = TRUE;
@@ -1191,7 +1205,8 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
 
   _pInput->DisableInput();
   _pGame->StopGame();
-  
+
+#if SE1_WIN
   if (_fnmModToLoad != "") {
     STARTUPINFOA cif;
     ZeroMemory(&cif, sizeof(STARTUPINFOA));
@@ -1212,6 +1227,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
       ErrorMessage(TRANS("Cannot start '%s' mod:\n%s"), strMod.ConstData(), GetWindowsError(GetLastError()).ConstData());
     }
   }
+#endif
 
   // invoke quit screen if needed
   if( _bQuitScreen && _fnmModToLoad=="") QuitScreenLoop();
@@ -1227,21 +1243,42 @@ void CheckBrowser(void)
   }
 }
 
-
-
-int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
-      LPSTR lpCmdLine, int nCmdShow)
+// [Cecil] Used to be WinMain()
+int GameEntryPoint(HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCmdLine, int nCmdShow)
 {
-  int iResult;
+  int iResult = 1;
   CTSTREAM_BEGIN {
-    iResult = SubMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    iResult = SubMain(hInstance, hPrevInstance, strCmdLine, nCmdShow);
   } CTSTREAM_END;
 
   CheckBrowser();
 
   return iResult;
-}
+};
 
+#if SE1_WIN
+
+// Entry point
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+  return GameEntryPoint(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+};
+
+#else
+
+// Entry point
+int main(int argc, char **argv) {
+  CTString cmdLine;
+
+  for (int i = 1; i < argc; i++) {
+    cmdLine += " \"";
+    cmdLine += argv[i];
+    cmdLine += "\"";
+  }
+
+  return GameEntryPoint(NULL, NULL, cmdLine, 0);
+};
+
+#endif // SE1_WIN
 
 // try to start a new display mode
 BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
