@@ -31,7 +31,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Query/MasterServer.h> // [Cecil]
 
-#pragma comment(lib, "wsock32.lib")
+#if SE1_WIN
+  #pragma comment(lib, "wsock32.lib")
+  typedef int socklen_t;
+#endif
 
 #define SERVER_LOCAL_CLIENT     0
 extern INDEX net_iPort;
@@ -43,6 +46,7 @@ extern FLOAT net_tmConnectionTimeout;
 extern INDEX net_bReportPackets;
 
 static struct ErrorCode ErrorCodes[] = {
+#if SE1_WIN
   ERRORCODE(WSAEINTR          , "WSAEINTR"),
   ERRORCODE(WSAEBADF          , "WSAEBADF"),
   ERRORCODE(WSAEACCES         , "WSAEACCES"),
@@ -88,9 +92,55 @@ static struct ErrorCode ErrorCodes[] = {
   ERRORCODE(WSATRY_AGAIN      , "WSATRY_AGAIN"),
   ERRORCODE(WSANO_RECOVERY    , "WSANO_RECOVERY"),
   ERRORCODE(WSANO_DATA        , "WSANO_DATA"),
-};
-static struct ErrorTable SocketErrors = ERRORTABLE(ErrorCodes);
 
+#else
+  ERRORCODE(EINTR             , "EINTR"),
+  ERRORCODE(EAGAIN            , "EAGAIN"),
+  ERRORCODE(EIO               , "EIO"),
+  ERRORCODE(EISDIR            , "EISDIR"),
+  ERRORCODE(EBADF             , "EBADF"),
+  ERRORCODE(EINVAL            , "EINVAL"),
+  ERRORCODE(EFAULT            , "EFAULT"),
+  ERRORCODE(EPROTONOSUPPORT   , "EPROTONOSUPPORT"),
+  ERRORCODE(ENFILE            , "ENFILE"),
+  ERRORCODE(EACCES            , "EACCES"),
+  ERRORCODE(ENOBUFS           , "ENOBUFS"),
+  ERRORCODE(ENOMEM            , "ENOMEM"),
+  ERRORCODE(ENOTSOCK          , "ENOTSOCK"),
+  ERRORCODE(EOPNOTSUPP        , "EOPNOTSUPP"),
+  ERRORCODE(EPERM             , "EPERM"),
+  ERRORCODE(ECONNABORTED      , "ECONNABORTED"),
+  ERRORCODE(ECONNREFUSED      , "ECONNREFUSED"),
+  ERRORCODE(ENETUNREACH       , "ENETUNREACH"),
+  ERRORCODE(EADDRINUSE        , "EADDRINUSE"),
+  ERRORCODE(EINPROGRESS       , "EINPROGRESS"),
+  ERRORCODE(EALREADY          , "EALREADY"),
+  ERRORCODE(EAGAIN            , "EAGAIN"),
+  ERRORCODE(EAFNOSUPPORT      , "EAFNOSUPPORT"),
+  ERRORCODE(EADDRNOTAVAIL     , "EADDRNOTAVAIL"),
+  ERRORCODE(ETIMEDOUT         , "ETIMEDOUT"),
+  ERRORCODE(ESOCKTNOSUPPORT   , "ESOCKTNOSUPPORT"),
+  ERRORCODE(ENAMETOOLONG      , "ENAMETOOLONG"),
+  ERRORCODE(ENOTDIR           , "ENOTDIR"),
+  ERRORCODE(ELOOP             , "ELOOP"),
+  ERRORCODE(EROFS             , "EROFS"),
+  ERRORCODE(EISCONN           , "EISCONN"),
+  ERRORCODE(EMSGSIZE          , "EMSGSIZE"),
+  ERRORCODE(ENODEV            , "ENODEV"),
+  ERRORCODE(ECONNRESET        , "ECONNRESET"),
+  ERRORCODE(ENOTCONN          , "ENOTCONN"),
+
+#ifdef ENOSR
+  ERRORCODE(ENOSR             , "ENOSR"),
+#endif
+#ifdef ENOPKG
+  ERRORCODE(ENOPKG            , "ENOPKG"),
+#endif
+
+#endif // SE1_WIN
+};
+
+static struct ErrorTable SocketErrors = ERRORTABLE(ErrorCodes);
 
 //structures used to emulate bandwidth and latency parameters - shared by all client interfaces
 CPacketBufferStats _pbsSend;
@@ -224,6 +274,7 @@ void CCommunicationInterface::Close(void)
 
 void CCommunicationInterface::InitWinsock(void)
 {
+#if SE1_WIN
   if (cci_bWinSockOpen) {
     return;
   }
@@ -239,6 +290,10 @@ void CCommunicationInterface::InitWinsock(void)
     cci_bWinSockOpen = TRUE;
     CPrintF(TRANS("  winsock opened ok\n"));
   }
+
+#else
+  cci_bWinSockOpen = TRUE;
+#endif
 };
 
 void CCommunicationInterface::EndWinsock(void)
@@ -247,8 +302,11 @@ void CCommunicationInterface::EndWinsock(void)
     return;
   }
 
+#if SE1_WIN
   int iResult = WSACleanup();
   ASSERT(iResult==0);
+#endif
+
   cci_bWinSockOpen = FALSE;
 };
 
@@ -429,11 +487,27 @@ void CCommunicationInterface::SetNonBlocking_t(void)
     return;
   }
 
+#if SE1_WIN
   ULONG ulArgNonBlocking = 1;
   if (ioctlsocket(cci_hSocket, FIONBIO, &ulArgNonBlocking) == SOCKET_ERROR) {
     ThrowF_t(TRANS("Cannot set socket to non-blocking mode. %s"), 
       GetSocketError(WSAGetLastError()).ConstData());
   }
+
+#else
+  int iFlags = fcntl(cci_hSocket, F_GETFL);
+  int iFailed = iFlags;
+
+  if (iFailed != -1) {
+    iFlags |= O_NONBLOCK;
+    iFailed = fcntl(cci_hSocket, F_SETFL, iFlags);
+  }
+
+  if (iFailed == -1) {
+    ThrowF_t(TRANS("Cannot set socket to non-blocking mode. %s"), GetSocketError(WSAGetLastError()).ConstData());
+  }
+#endif
+
 };
 
 
@@ -477,12 +551,18 @@ void CCommunicationInterface::GetLocalAddress_t(ULONG &ulHost, ULONG &ulPort)
 
   // get socket local port and address
   sockaddr_in sin;
-  int iSize = sizeof(sin);
+  socklen_t iSize = sizeof(sin);
   if (getsockname(cci_hSocket, (sockaddr*)&sin, &iSize) == SOCKET_ERROR) {
     ThrowF_t(TRANS("Cannot get local address on socket. %s"), 
       GetSocketError(WSAGetLastError()).ConstData());
   }
+
+#if SE1_WIN
   ulHost = ntohl(sin.sin_addr.S_un.S_addr);
+#else
+  ulHost = ntohl(sin.sin_addr.s_addr);
+#endif
+
   ulPort = ntohs(sin.sin_port);
 }
 
@@ -498,12 +578,18 @@ void CCommunicationInterface::GetRemoteAddress_t(ULONG &ulHost, ULONG &ulPort)
 
   // get socket local port
   sockaddr_in sin;
-  int iSize = sizeof(sin);
+  socklen_t iSize = sizeof(sin);
   if (getpeername(cci_hSocket, (sockaddr*)&sin, &iSize) == SOCKET_ERROR) {
     ThrowF_t(TRANS("Cannot get remote address on socket. %s"), 
       GetSocketError(WSAGetLastError()).ConstData());
   }
+
+#if SE1_WIN
   ulHost = ntohl(sin.sin_addr.S_un.S_addr);
+#else
+  ulHost = ntohl(sin.sin_addr.s_addr);
+#endif
+
   ulPort = ntohs(sin.sin_port);
 }
 
@@ -1167,7 +1253,12 @@ BOOL CCommunicationInterface::Client_Update(void)
 	return TRUE;
 };
 
-
+#if SE1_WIN
+  #define WouldBlockError(_Error) (_Error == WSAEWOULDBLOCK)
+#else
+  #define WouldBlockError(_Error) ((_Error == EAGAIN) || (_Error == EWOULDBLOCK))
+  #define WSAECONNRESET ECONNRESET
+#endif
 
 // update master UDP socket and route its messages
 void CCommunicationInterface::UpdateMasterBuffers() 
@@ -1176,7 +1267,7 @@ void CCommunicationInterface::UpdateMasterBuffers()
 	UBYTE aub[MAX_PACKET_SIZE];
 	CAddress adrIncomingAddress;
 	SOCKADDR_IN sa;
-	int size = sizeof(sa);
+	socklen_t size = sizeof(sa);
 	SLONG slSizeReceived;
 	SLONG slSizeSent;
 	BOOL bSomethingDone;
@@ -1198,7 +1289,7 @@ void CCommunicationInterface::UpdateMasterBuffers()
 			//On error, report it to the console (if error is not a no data to read message)
 			if (slSizeReceived == SOCKET_ERROR) {
 				int iResult = WSAGetLastError();
-				if (iResult!=WSAEWOULDBLOCK) {
+				if (!WouldBlockError(iResult)) {
 					// report it
 					if (iResult!=WSAECONNRESET || net_bReportICMPErrors) {
 						CPrintF(TRANS("Socket error during UDP receive. %s\n"), 
@@ -1258,7 +1349,7 @@ void CCommunicationInterface::UpdateMasterBuffers()
     if (slSizeSent == SOCKET_ERROR) {
       int iResult = WSAGetLastError();
 			// if output UDP buffer full, stop sending
-			if (iResult == WSAEWOULDBLOCK) {
+			if (WouldBlockError(iResult)) {
 				return;
 			// report it
 			} else if (iResult!=WSAECONNRESET || net_bReportICMPErrors) {
@@ -1266,6 +1357,11 @@ void CCommunicationInterface::UpdateMasterBuffers()
           GetSocketError(iResult).ConstData());
       }
 			return;    
+
+    // [Cecil] Copied from the Linux port, no idea if it's needed
+    } else if (slSizeSent < ppaNewPacket->pa_slSize) {
+      ASSERTALWAYS("Lost outgoing packet data");
+
     // if all sent ok
     } else {
 			
