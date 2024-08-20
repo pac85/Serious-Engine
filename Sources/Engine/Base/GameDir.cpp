@@ -117,7 +117,7 @@ void DetermineAppPaths(void) {
   const size_t iBinDir = strPath.Length() + 1;
 
   // Copy absolute path to the game directory and relative path to the executable
-  CTString(strPathBuffer).Split(iBinDir, _fnmInternalAppPath, _fnmInternalAppExe);
+  CTString(strPathBuffer).Split((INDEX)iBinDir, _fnmInternalAppPath, _fnmInternalAppExe);
 };
 
 // Create a series of directories within the game folder

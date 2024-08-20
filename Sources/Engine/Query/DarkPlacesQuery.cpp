@@ -170,7 +170,7 @@ static void ClientParsePacket(INDEX iLength) {
         default: {
           // Extract substring until a separator or the end
           CTString strKeyValue = strData;
-          ULONG ulSep = strKeyValue.Find('\\');
+          size_t ulSep = strKeyValue.Find('\\');
           CTString strExtracted = strKeyValue.Substr(0, ulSep);
 
           // Set new key or value
@@ -213,7 +213,7 @@ static void ClientParsePacket(INDEX iLength) {
     ns.ns_strVer = strGameVer;
 
     // If there's any gamemode, find a separator
-    ULONG ulSep = strMode.Find(':');
+    size_t ulSep = strMode.Find(':');
 
     // Extract game type before the separator
     if (ulSep != -1) {

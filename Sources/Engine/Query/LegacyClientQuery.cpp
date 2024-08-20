@@ -549,7 +549,7 @@ static void ParseStatusResponse(sockaddr_in &sinClient, BOOL bIgnorePing) {
       default: {
         // Extract substring until a separator or the end
         CTString strKeyValue = strData;
-        ULONG ulSep = strKeyValue.Find('\\');
+        size_t ulSep = strKeyValue.Find('\\');
         CTString strExtracted = strKeyValue.Substr(0, ulSep);
 
         // Set new key or value

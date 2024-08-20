@@ -105,7 +105,7 @@ static void ClientParsePacket(INDEX iLength) {
 
           // Extract substring until a separator or the end
           CTString strKeyValue = strData;
-          ULONG ulSep = strKeyValue.Find(';');
+          size_t ulSep = strKeyValue.Find(';');
           CTString strExtracted = strKeyValue.Substr(0, ulSep);
 
           // Set new key or value

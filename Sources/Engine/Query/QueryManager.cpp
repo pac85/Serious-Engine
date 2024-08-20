@@ -106,7 +106,7 @@ void Address::AddServerRequest(const char **ppBuffer, INDEX &iLength, const UWOR
     SServerRequest::AddRequest(sinServer);
 
     // Send packet to the server
-    SendPacketTo(&sinServer, strPacket, strlen(strPacket), iSocketUDP);
+    SendPacketTo(&sinServer, strPacket, (int)strlen(strPacket), iSocketUDP);
   }
 
   // Get next address
@@ -247,7 +247,7 @@ void SendPacket(const char *pBuffer, int iLength) {
 
   // Calculate buffer length
   if (iLength == -1) {
-    iLength = strlen(pBuffer);
+    iLength = (int)strlen(pBuffer);
   }
 
   SendPacketTo(_sin, pBuffer, iLength);
