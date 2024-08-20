@@ -381,11 +381,14 @@ SLONG CLZCompressor::NeededDestinationSize(SLONG slSourceSize)
 BOOL CLZCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
   // this is just wrapper for original function by Ross Williams
-  SLONG slDestinationSizeResult = slDstSize;
+  ULONG ulDestinationSizeResult = static_cast<ULONG>(slDstSize);
+
+  // [Cecil] FIXME: Sometimes this compression causes a crash due to a null-pointer from who knows where
   lzrw1_compress(
     (const UBYTE *)pvSrc, (ULONG)slSrcSize,
-    (UBYTE *)pvDst, (ULONG *)&slDestinationSizeResult);
-  slDstSize = slDestinationSizeResult;
+    (UBYTE *)pvDst, &ulDestinationSizeResult);
+
+  slDstSize = static_cast<SLONG>(ulDestinationSizeResult);
   return TRUE;
 }
 
@@ -395,11 +398,13 @@ BOOL CLZCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG 
 BOOL CLZCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
   // this is just wrapper for original function by Ross Williams
-  SLONG slDestinationSizeResult = slDstSize;
+  ULONG ulDestinationSizeResult = static_cast<ULONG>(slDstSize);
+
   lzrw1_decompress(
     (const UBYTE *)pvSrc, (ULONG)slSrcSize,
-    (UBYTE *)pvDst, (ULONG *)&slDestinationSizeResult);
-  slDstSize = slDestinationSizeResult;
+    (UBYTE *)pvDst, &ulDestinationSizeResult);
+
+  slDstSize = static_cast<SLONG>(ulDestinationSizeResult);
   return TRUE;
 }
 
@@ -426,14 +431,14 @@ int ZEXPORT compress (dest, destLen, source, sourceLen)
     */
 
   CTSingleLock slZip(&zip_csLock, TRUE);
+  uLongf ulDstSize = static_cast<uLongf>(slDstSize);
+
   int iResult = compress(
-    (Bytef *)pvDst, (uLongf *)&slDstSize,
+    (Bytef *)pvDst, &ulDstSize,
     (const Bytef *)pvSrc, (uLong)slSrcSize);
-  if (iResult==Z_OK) {
-    return TRUE;
-  } else {
-    return FALSE;
-  }
+
+  slDstSize = static_cast<SLONG>(ulDstSize);
+  return (iResult == Z_OK);
 }
 
 // on entry, slDstSize holds maximum size of output buffer,
@@ -450,13 +455,12 @@ int ZEXPORT uncompress (dest, destLen, source, sourceLen)
     */
 
   CTSingleLock slZip(&zip_csLock, TRUE);
+  uLongf ulDstSize = static_cast<uLongf>(slDstSize);
+
   int iResult = uncompress(
-    (Bytef *)pvDst, (uLongf *)&slDstSize,
+    (Bytef *)pvDst, &ulDstSize,
     (const Bytef *)pvSrc, (uLong)slSrcSize);
 
-  if (iResult==Z_OK) {
-    return TRUE;
-  } else {
-    return FALSE;
-  }
+  slDstSize = static_cast<SLONG>(ulDstSize);
+  return (iResult == Z_OK);
 }
