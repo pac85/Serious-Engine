@@ -308,6 +308,9 @@ public:
   #endif
   };
 
+  // [Cecil] Get primary monitor resolution
+  PIX2D GetMonitorResolution(void);
+
   // canvas functions
   void CreateWindowCanvas(OS::Window hWnd, CViewPort **ppvpNew, CDrawPort **ppdpNew);   // Create a new window canvas
   void DestroyWindowCanvas( CViewPort *pvpOld);                                     // Destroy a window canvas

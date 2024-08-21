@@ -249,6 +249,10 @@ INDEX gfx_bClearScreen = FALSE;
 FLOAT gfx_tmProbeDecay = 30.0f;   // seconds
 INDEX gfx_iProbeSize   = 256;     // in KBs
 
+// [Cecil] Primary monitor resolution
+INDEX gfx_iMonitorW = 0;
+INDEX gfx_iMonitorH = 0;
+
 INDEX gfx_ctMonitors = 0;
 INDEX gfx_bMultiMonDisabled = FALSE;
 INDEX gfx_bDisableMultiMonSupport = TRUE;
@@ -1062,41 +1066,56 @@ CGfxLibrary::~CGfxLibrary()
   _ptdFlat = NULL;
 }
 
-
-
-#define SM_CXVIRTUALSCREEN  78 
-#define SM_CYVIRTUALSCREEN  79 
-#define SM_CMONITORS        80 
-
-
-
 /* Initialize library for application main window. */
 void CGfxLibrary::Init(void)
 {
   ASSERT( this!=NULL);
 
   // report desktop settings
-  CPrintF(TRANS("Desktop settings...\n"));
+  CPutString(TRANS("Desktop settings...\n"));
 
-  HDC hdc = GetDC(NULL); 
-  SLONG slBPP = GetDeviceCaps(hdc, PLANES) * GetDeviceCaps(hdc, BITSPIXEL); 
-  ReleaseDC(NULL, hdc);  
+  // [Cecil] Get bits per pixel and screen resolution with SDL
+  SDL_DisplayMode mode;
 
-  gfx_ctMonitors = GetSystemMetrics(SM_CMONITORS);
+  if (SDL_GetDesktopDisplayMode(0, &mode) == 0) {
+    SLONG slBPP = SDL_BITSPERPIXEL(mode.format);
+    CPrintF(TRANS("  Color Depth: %dbit\n"), slBPP);
+    CPrintF(TRANS("  Screen: %dx%d\n"), mode.w, mode.h);
 
-  CPrintF(TRANS("  Color Depth: %dbit\n"), slBPP);
-  CPrintF(TRANS("  Screen: %dx%d\n"), GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
-  CPrintF(TRANS("  Virtual screen: %dx%d\n"), GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
-  CPrintF(TRANS("  Monitors directly reported: %d\n"), gfx_ctMonitors);
+    // Remember monitor resolution
+    gfx_iMonitorW = mode.w;
+    gfx_iMonitorH = mode.h;
 
-  CPrintF("\n");
+  } else {
+    CPrintF(TRANS("Couldn't get desktop display mode: %s\n"), SDL_GetError());
+  }
+
+  // [Cecil] Couldn't find an SDL alternative to this, it doesn't matter much anyway
+  #if SE1_WIN
+    CPrintF(TRANS("  Virtual screen: %dx%d\n"), GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
+  #endif
+
+  // [Cecil] Get amount of displays with SDL and report any errors
+  gfx_ctMonitors = SDL_GetNumVideoDisplays();
+
+  if (gfx_ctMonitors > 0) {
+    CPrintF(TRANS("  Monitors directly reported: %d\n"), gfx_ctMonitors);
+  } else {
+    CPrintF(TRANS("Couldn't determine the number of video displays: %s\n"), SDL_GetError());
+  }
+
+  CPutString("\n");
 
   gfx_bMultiMonDisabled = FALSE;
  
   _pfGfxProfile.Reset();
 
   // we will never allow glide splash screen
-  putenv( "FX_GLIDE_NO_SPLASH=1");
+  #if SE1_WIN
+    putenv("FX_GLIDE_NO_SPLASH=1");
+  #else
+    setenv("FX_GLIDE_NO_SPLASH", "1", 1);
+  #endif
 
   // declare some console vars
   _pShell->DeclareSymbol("user void MonitorsOn(void);",  &MonitorsOn);
@@ -1190,6 +1209,10 @@ void CGfxLibrary::Init(void)
   _pShell->DeclareSymbol("persistent user INDEX gfx_bDecoratedText;",    &gfx_bDecoratedText);
   _pShell->DeclareSymbol("     const user INDEX gfx_ctMonitors;",        &gfx_ctMonitors);
   _pShell->DeclareSymbol("     const user INDEX gfx_bMultiMonDisabled;", &gfx_bMultiMonDisabled);
+
+  // [Cecil] Primary monitor resolution
+  _pShell->DeclareSymbol("const user INDEX gfx_iMonitorW;", &gfx_iMonitorW);
+  _pShell->DeclareSymbol("const user INDEX gfx_iMonitorH;", &gfx_iMonitorH);
 
   _pShell->DeclareSymbol("persistent user INDEX tex_iNormalQuality;",    &tex_iNormalQuality);
   _pShell->DeclareSymbol("persistent user INDEX tex_iAnimationQuality;", &tex_iAnimationQuality);
@@ -1315,6 +1338,11 @@ void CGfxLibrary::SetInterface(GfxAPIType eAPI)
 
     default: gl_pInterface = new IGfxNull; break;
   }
+};
+
+// [Cecil] Get primary monitor resolution
+PIX2D CGfxLibrary::GetMonitorResolution(void) {
+  return PIX2D(gfx_iMonitorW, gfx_iMonitorH);
 };
 
 // set new display mode

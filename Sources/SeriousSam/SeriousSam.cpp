@@ -382,9 +382,7 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
   SE_InitEngine(E_SEAPP_GAME);
 
   // [Cecil] Get screen resolution
-  SDL_DisplayMode mode;
-  SDL_GetDesktopDisplayMode(0, &mode);
-  _vpixScreenRes = PIX2D(mode.w, mode.h);
+  _vpixScreenRes = _pGfx->GetMonitorResolution();
 
   SE_LoadDefaultFonts();
   // now print the output of command line parsing

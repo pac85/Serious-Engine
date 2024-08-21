@@ -690,7 +690,9 @@ void CGfxLibrary::InitContext_OGL(void)
   pglClientActiveTextureARB = NULL;
   if (HasExtension(go_strExtensions.ConstData(), "GL_ARB_multitexture")) {
     pglGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, (GLint *)&gl_ctRealTextureUnits); // get number of texture units
-    if (gl_ctRealTextureUnits > 1 && HasExtension(go_strExtensions.ConstData(), "GL_EXT_texture_env_combine")) {
+    if ((gl_ctRealTextureUnits > 1 && HasExtension(go_strExtensions.ConstData(), "GL_EXT_texture_env_combine"))
+     || HasExtension(go_strExtensions.ConstData(), "GL_ARB_texture_env_combine"))
+    {
       AddExtension_OGL( NONE, "GL_ARB_multitexture");
       AddExtension_OGL( NONE, "GL_EXT_texture_env_combine");
       pglActiveTextureARB       = (void (__stdcall*)(GLenum))OGL_GetProcAddress( "glActiveTextureARB");
@@ -1106,9 +1108,9 @@ extern void SetTBufferEffect( BOOL bEnable)
     if( ogl_iTBufferEffect==0 || _pGfx->go_ctSampleBuffers<2 || !bEnable) pglDisable( GL_MULTISAMPLE_3DFX);
     else {
       pglEnable( GL_MULTISAMPLE_3DFX);
-      UINT uiMask = 0xFFFFFFFF;
+      //UINT uiMask = 0xFFFFFFFF;
       // set one buffer in case of motion-blur
-      if( ogl_iTBufferEffect==2) uiMask = (1UL) << _pGfx->go_iCurrentWriteBuffer;
+      //if( ogl_iTBufferEffect==2) uiMask = (1UL) << _pGfx->go_iCurrentWriteBuffer;
       //pglTBufferMask3DFX(uiMask);
     }
   }
