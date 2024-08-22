@@ -299,6 +299,24 @@ public:
   virtual void QuickTest(const CTFileName &fnMapName, 
     CDrawPort *pdpDrawport, CViewPort *pvpViewport);
 
+  // [Cecil] Pass key presses to console and computer
+  void HandleConsoleAndComputer(const MSG &msg);
+
+  // [Cecil] Manually toggle in-game pause
+  void HandlePause(const MSG &msg);
+
+  // [Cecil] Should the application stop running or not
+  BOOL ShouldStopRunning(const MSG &msg, BOOL bOnDeactivation);
+
+  // [Cecil] Check if pressed the key to go back
+  BOOL IsEscapeKeyPressed(const MSG &msg);
+
+  // [Cecil] Check if pressed any of the console opening keys
+  BOOL IsConsoleKeyPressed(const MSG &msg);
+
+  // [Cecil] Toggle console state and return TRUE if console is being opened
+  BOOL ToggleConsole(void);
+
   // interface rendering functions
   virtual void LCDInit(void);
   virtual void LCDEnd(void);

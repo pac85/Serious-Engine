@@ -639,8 +639,8 @@ void DoGame(void)
   // set flag if not in game
   if( !_pGame->gm_bGameOn) _gmRunningGameMode = GM_NONE;
 
-  if( _gmRunningGameMode==GM_DEMO  && _pNetwork->IsDemoPlayFinished()
-    ||_gmRunningGameMode==GM_INTRO && _pNetwork->IsGameFinished()) {
+  if ((_gmRunningGameMode == GM_DEMO  && _pNetwork->IsDemoPlayFinished())
+   || (_gmRunningGameMode == GM_INTRO && _pNetwork->IsGameFinished())) {
     _pGame->StopGame();
     _gmRunningGameMode = GM_NONE;
 
@@ -857,306 +857,261 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
   {
     // while there are any messages in the message queue
     MSG msg;
-    while (OS::Message::Peek(&msg, NULL, 0, 0, PM_REMOVE)) {
-      // if it is not a mouse message
-      if( !(msg.message>=WM_MOUSEFIRST && msg.message<=WM_MOUSELAST) ) {
-        // if not system key messages
-        if( !(msg.message==WM_KEYDOWN && msg.wParam==VK_F10
-            ||msg.message==WM_SYSKEYDOWN)) {
-          // dispatch it
+    while (OS::Message::Peek(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+      // If it's not a mouse message
+      if (msg.message < WM_MOUSEFIRST || msg.message > WM_MOUSELAST) {
+        // And not system key messages
+        if (!((msg.message == WM_KEYDOWN && msg.wParam == VK_F10) || msg.message == WM_SYSKEYDOWN)) {
+          // Dispatch it
           OS::Message::Translate(&msg);
           OS::Message::Dispatch(&msg);
         }
       }
 
-      // [Cecil] SDL: Window commands are handled automatically
+      // Stop running the game
+      if (_pGame->ShouldStopRunning(msg, FALSE)) {
+        _bRunning = FALSE;
+        _bQuitScreen = FALSE;
+        break;
+      }
+
     #if !SE1_PREFER_SDL
-      // system commands (also send by the application itself)
-      if( msg.message==WM_SYSCOMMAND)
-      {
-        switch( msg.wParam & ~0x0F) {
-        // if should minimize
-        case SC_MINIMIZE:
-          if( _bWindowChanging) break;
-          _bWindowChanging  = TRUE;
-          _bReconsiderInput = TRUE;
-          // if allowed, not already paused and only in single player game mode
-          if( sam_bPauseOnMinimize && !_pNetwork->IsPaused() && _gmRunningGameMode==GM_SINGLE_PLAYER) {
-            // pause game
-            _pNetwork->TogglePause();
-          }
+      // Game window commands (also sent by the application itself)
+      if (msg.message == WM_SYSCOMMAND) {
+        switch (msg.wParam & ~0x0F) {
+          // Minimize the window
+          case SC_MINIMIZE: {
+            if (_bWindowChanging) break;
+            _bWindowChanging  = TRUE;
+            _bReconsiderInput = TRUE;
 
-          // [Cecil] If fullscreen
-          if (sam_iWindowMode == E_WM_FULLSCREEN) {
-            // reset display mode and minimize window
-            _pGfx->ResetDisplayMode();
-            ShowWindow(_hwndMain, SW_MINIMIZE);
-          // if not in full screen
-          } else {
-            // just minimize the window
-            ShowWindow(_hwndMain, SW_MINIMIZE);
-          }
-          break;
-        // if should restore
-        case SC_RESTORE:
-          if( _bWindowChanging) break;
-          _bWindowChanging  = TRUE;
-          _bReconsiderInput = TRUE;
+            // Pause game in single player
+            if (sam_bPauseOnMinimize && !_pNetwork->IsPaused() && _gmRunningGameMode == GM_SINGLE_PLAYER) {
+              _pNetwork->TogglePause();
+            }
 
-          // [Cecil] If fullscreen
-          if (sam_iWindowMode == E_WM_FULLSCREEN) {
+            // [Cecil] Reset display mode, if in fullscreen
+            if (sam_iWindowMode == E_WM_FULLSCREEN) {
+              _pGfx->ResetDisplayMode();
+            }
+
+            ShowWindow(_hwndMain, SW_MINIMIZE);
+          } break;
+
+          // Restore the window
+          case SC_RESTORE: {
+            if (_bWindowChanging) break;
+            _bWindowChanging  = TRUE;
+            _bReconsiderInput = TRUE;
+
             ShowWindow(_hwndMain, SW_SHOWNORMAL);
-            // set the display mode once again
-            StartNewMode( (GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
-                          (enum DisplayDepth)sam_iDisplayDepth, sam_iWindowMode);
-          // if not in full screen
-          } else {
-            // restore window
+
+            // [Cecil] Set display mode again, if in fullscreen
+            if (sam_iWindowMode == E_WM_FULLSCREEN) {
+              StartNewMode((GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
+                (DisplayDepth)sam_iDisplayDepth, sam_iWindowMode);
+            }
+          } break;
+
+          // Maximize the window
+          case SC_MAXIMIZE: {
+            if (_bWindowChanging) break;
+            _bWindowChanging  = TRUE;
+            _bReconsiderInput = TRUE;
+
+            // Open in fullscreen
+            StartNewMode((GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
+              (DisplayDepth)sam_iDisplayDepth, TRUE);
+
             ShowWindow(_hwndMain, SW_SHOWNORMAL);
-          }
-          break;
-        // if should maximize
-        case SC_MAXIMIZE:
-          if( _bWindowChanging) break;
-          _bWindowChanging  = TRUE;
-          _bReconsiderInput = TRUE;
-          // go to full screen
-          StartNewMode( (GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
-                        (enum DisplayDepth)sam_iDisplayDepth, TRUE);
-          ShowWindow( _hwndMain, SW_SHOWNORMAL);
-          break;
+          } break;
         }
       }
     #endif // !SE1_PREFER_SDL
 
-      // toggle full-screen on alt-enter
+      // Toggle fullscreen on Alt+Enter
       if (msg.message == WM_SYSKEYDOWN && msg.wParam == VK_RETURN && !OS::IsIconic(_hwndMain)) {
         // [Cecil] Switch between windowed and fullscreen
         StartNewMode((GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
           (DisplayDepth)sam_iDisplayDepth, (sam_iWindowMode != E_WM_FULLSCREEN ? E_WM_FULLSCREEN : E_WM_WINDOWED));
       }
 
-      // if application should stop
-      if( msg.message==WM_QUIT || msg.message==WM_CLOSE) {
-        // stop running
-        _bRunning = FALSE;
-        _bQuitScreen = FALSE;
-      }
-
-      // if application is deactivated or minimized
-      if( (msg.message==WM_ACTIVATE && (LOWORD(msg.wParam)==WA_INACTIVE || HIWORD(msg.wParam)))
-       ||  msg.message==WM_CANCELMODE
-       ||  msg.message==WM_KILLFOCUS
-       || (msg.message==WM_ACTIVATEAPP && !msg.wParam)) {
-        // if application is running and in full screen mode
+    #if SE1_WIN
+      // If application is deactivated or minimized
+      if ((msg.message == WM_ACTIVATE && (LOWORD(msg.wParam) == WA_INACTIVE || HIWORD(msg.wParam)))
+       ||  msg.message == WM_CANCELMODE || msg.message == WM_KILLFOCUS
+       || (msg.message == WM_ACTIVATEAPP && !msg.wParam)) {
+        // If application is running and in full screen mode
         if( !_bWindowChanging && _bRunning) {
           // [Cecil] Minimize if in fullscreen
           if (sam_iWindowMode == E_WM_FULLSCREEN) {
             PostMessage(NULL, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
-          // just disable input if not in full screen 
+          // Just disable input if not in fullscreen 
           } else {
             _pInput->DisableInput();
           }
         }
-      }
-      // if application is activated or minimized
-      else if( (msg.message==WM_ACTIVATE && (LOWORD(msg.wParam)==WA_ACTIVE || LOWORD(msg.wParam)==WA_CLICKACTIVE))
-            ||  msg.message==WM_SETFOCUS
-            || (msg.message==WM_ACTIVATEAPP && msg.wParam)) {
-        // enable input back again if needed
+
+      // If application is activated or maximized
+      } else if ((msg.message == WM_ACTIVATE && (LOWORD(msg.wParam) == WA_ACTIVE || LOWORD(msg.wParam) == WA_CLICKACTIVE))
+              ||  msg.message == WM_SETFOCUS
+              || (msg.message == WM_ACTIVATEAPP && msg.wParam)) {
+        // Enable input back again if needed
         _bReconsiderInput = TRUE;
       }
 
-      if (msg.message==WM_KEYDOWN && msg.wParam==VK_ESCAPE && 
-        (_gmRunningGameMode==GM_DEMO || _gmRunningGameMode==GM_INTRO)) {
-        _pGame->StopGame();
-        _gmRunningGameMode=GM_NONE;
-      }
+      // Teleport player around the level from an external application (for TechTest from Help)
+      if (msg.message == WM_COMMAND && msg.wParam == 1001) {
+        TeleportPlayer(msg.lParam);
 
-      if (_pGame->gm_csConsoleState==CS_TALK && msg.message==WM_KEYDOWN && msg.wParam==VK_ESCAPE) {
+        // Restore the game window
+        PostMessage(NULL, WM_SYSCOMMAND, SC_RESTORE, 0);
+        continue;
+      }
+    #endif
+
+      // Close chat on Escape before anything else
+      if (_pGame->gm_csConsoleState == CS_TALK && _pGame->IsEscapeKeyPressed(msg)) {
         _pGame->gm_csConsoleState = CS_OFF;
-        msg.message=WM_NULL;
+        continue;
       }
 
-      BOOL bMenuForced = (_gmRunningGameMode==GM_NONE && 
-        (_pGame->gm_csConsoleState==CS_OFF || _pGame->gm_csConsoleState==CS_TURNINGOFF));
-      BOOL bMenuToggle = (msg.message==WM_KEYDOWN && msg.wParam==VK_ESCAPE 
-        && (_pGame->gm_csComputerState==CS_OFF || _pGame->gm_csComputerState==CS_ONINBACKGROUND));
-      if( !bMenuActive) {
-        if( bMenuForced || bMenuToggle) {
-          // if console is active
-          if( _pGame->gm_csConsoleState==CS_ON || _pGame->gm_csConsoleState==CS_TURNINGON) {
-            // deactivate it
+      // No game is running and the console is closed/closing
+      const BOOL bMenuForced = (_gmRunningGameMode == GM_NONE && (_pGame->gm_csConsoleState == CS_OFF || _pGame->gm_csConsoleState == CS_TURNINGOFF));
+
+      // Want to open the menu and the computer isn't in the way
+      const BOOL bMenuToggle = (_pGame->IsEscapeKeyPressed(msg) && (_pGame->gm_csComputerState == CS_OFF || _pGame->gm_csComputerState == CS_ONINBACKGROUND));
+
+      // If currently in game
+      if (!bMenuActive) {
+        // And want to be in the menu
+        if (bMenuForced || bMenuToggle) {
+          // Deactivate the console
+          if (_pGame->gm_csConsoleState == CS_ON || _pGame->gm_csConsoleState == CS_TURNINGON) {
             _pGame->gm_csConsoleState = CS_TURNINGOFF;
             _iAddonExecState = 0;
           }
-          // delete key down message so menu would not exit because of it
-          msg.message=WM_NULL;
-          // start menu
+
+          // Clear key down message and start the menu
+          msg.message = WM_NULL;
           StartMenus();
         }
-      } else {
-        if (bMenuForced && bMenuToggle && pgmCurrentMenu->gm_pgmParentMenu == NULL) {
-          // delete key down message so menu would not exit because of it
-          msg.message=WM_NULL;
+
+        // And if the console isn't active (or has been deactivated just now)
+        if (_pGame->gm_csConsoleState == CS_OFF || _pGame->gm_csConsoleState == CS_TURNINGOFF) {
+          // Start the current menu if it's not the root one
+          if (!IsMenusInRoot()) StartMenus();
+        }
+
+      // If currently in the menu and wanting to return to the previous menu
+      } else if (bMenuForced && bMenuToggle && pgmCurrentMenu->gm_pgmParentMenu == NULL) {
+        // Delete key down message because there's no previous menu
+        msg.message = WM_NULL;
+      }
+
+      // Quick-open specific menus
+      {
+        if (sam_bMenuSave) {
+          sam_bMenuSave = FALSE;
+          StartMenus("save");
+        }
+
+        if (sam_bMenuLoad) {
+          sam_bMenuLoad = FALSE;
+          StartMenus("load");
+        }
+
+        if (sam_bMenuControls) {
+          sam_bMenuControls = FALSE;
+          StartMenus("controls");
+        }
+
+        if (sam_bMenuHiScore) {
+          sam_bMenuHiScore = FALSE;
+          StartMenus("hiscore");
         }
       }
 
-      // if neither menu nor console is running
-      if (!bMenuActive && (_pGame->gm_csConsoleState==CS_OFF || _pGame->gm_csConsoleState==CS_TURNINGOFF)) {
-        // if current menu is not root
-        if (!IsMenusInRoot()) {
-          // start current menu
-          StartMenus();
-        }
-      }
+      // Pass key and mouse messages to the menu if it's active with no input on
+      if (bMenuActive && !_pInput->IsInputEnabled()) {
+        if (msg.message == WM_KEYDOWN) {
+          MenuOnKeyDown(msg.wParam);
 
-      if (sam_bMenuSave) {
-        sam_bMenuSave = FALSE;
-        StartMenus("save");
-      }
-      if (sam_bMenuLoad) {
-        sam_bMenuLoad = FALSE;
-        StartMenus("load");
-      }
-      if (sam_bMenuControls) {
-        sam_bMenuControls = FALSE;
-        StartMenus("controls");
-      }
-      if (sam_bMenuHiScore) {
-        sam_bMenuHiScore = FALSE;
-        StartMenus("hiscore");
-      }
-
-      // interpret console key presses
-      if (_iAddonExecState==0) {
-        if (msg.message==WM_KEYDOWN) {
-          _pGame->ConsoleKeyDown(msg);
-          if (_pGame->gm_csConsoleState!=CS_ON) {
-            _pGame->ComputerKeyDown(msg);
-          }
-        } else if (msg.message==WM_KEYUP) {
-          // special handler for talk (not to invoke return key bind)
-          if( msg.wParam==VK_RETURN && _pGame->gm_csConsoleState==CS_TALK) _pGame->gm_csConsoleState = CS_OFF;
-        } else if (msg.message==WM_CHAR) {
-          _pGame->ConsoleChar(msg);
-        }
-        if (msg.message==WM_LBUTTONDOWN
-          ||msg.message==WM_RBUTTONDOWN
-          ||msg.message==WM_LBUTTONDBLCLK
-          ||msg.message==WM_RBUTTONDBLCLK
-          ||msg.message==WM_LBUTTONUP
-          ||msg.message==WM_RBUTTONUP) {
-          if (_pGame->gm_csConsoleState!=CS_ON) {
-            _pGame->ComputerKeyDown(msg);
-          }
-        }
-      }
-      // if menu is active and no input on
-      if( bMenuActive && !_pInput->IsInputEnabled()) {
-        // pass keyboard/mouse messages to menu
-        if(msg.message==WM_KEYDOWN) {
-          MenuOnKeyDown( msg.wParam);
-        } else if (msg.message==WM_LBUTTONDOWN || msg.message==WM_LBUTTONDBLCLK) {
+        } else if (msg.message == WM_LBUTTONDOWN || msg.message == WM_LBUTTONDBLCLK) {
           MenuOnKeyDown(VK_LBUTTON);
-        } else if (msg.message==WM_RBUTTONDOWN || msg.message==WM_RBUTTONDBLCLK) {
+
+        } else if (msg.message == WM_RBUTTONDOWN || msg.message == WM_RBUTTONDBLCLK) {
           MenuOnKeyDown(VK_RBUTTON);
-        } else if (msg.message==WM_MOUSEMOVE) {
-          MenuOnMouseMove(LOWORD(msg.lParam), HIWORD(msg.lParam));
-#ifndef WM_MOUSEWHEEL
- #define WM_MOUSEWHEEL 0x020A
-#endif
-        } else if (msg.message==WM_MOUSEWHEEL) {
-          SWORD swDir = SWORD(UWORD(HIWORD(msg.wParam)));
-          if (swDir>0) {
+
+        } else if (msg.message == WM_MOUSEMOVE) {
+          SLONG iX = (SLONG)LOWORD(msg.lParam);
+          SLONG iY = (SLONG)HIWORD(msg.lParam);
+          MenuOnMouseMove(iX, iY);
+
+        } else if (msg.message == WM_MOUSEWHEEL) {
+          SWORD iDir = (SWORD)(UWORD)HIWORD(msg.wParam);
+
+          if (iDir > 0) {
             MenuOnKeyDown(11);
-          } else if (swDir<0) {
+          } else if (iDir < 0) {
             MenuOnKeyDown(10);
           }
-        } else if (msg.message==WM_CHAR) {
+
+        } else if (msg.message == WM_CHAR) {
           MenuOnChar(msg);
         }
       }
 
-      // if toggling console
-      BOOL bConsoleKey = sam_bToggleConsole || msg.message==WM_KEYDOWN && 
-        (MapVirtualKey(msg.wParam, 0)==41 // scan code for '~'
-        || msg.wParam==VK_F1 || (msg.wParam==VK_ESCAPE && _iAddonExecState==3));
-      if(bConsoleKey && !_bDefiningKey)
-      {
+      // Toggle console forcefully or on console key (or on Escape when done running addon scripts)
+      const BOOL bToggleConsole = (sam_bToggleConsole || _pGame->IsConsoleKeyPressed(msg)
+        || (_pGame->IsEscapeKeyPressed(msg) && _iAddonExecState == 3));
+
+      // Wanting to toggle console on key when not defining keys for controls
+      if (bToggleConsole && !_bDefiningKey) {
+        // Reset different states
         sam_bToggleConsole = FALSE;
-        if( _iAddonExecState==3) _iAddonExecState = 0;
-        // if it is up, or pulling up
-        if( _pGame->gm_csConsoleState==CS_OFF || _pGame->gm_csConsoleState==CS_TURNINGOFF) {
-          // start it moving down and disable menu
-          _pGame->gm_csConsoleState = CS_TURNINGON;
-          // stop all IFeel effects
+        if (_iAddonExecState == 3) _iAddonExecState = 0;
+
+        // [Cecil] If console is opened
+        if (_pGame->ToggleConsole()) {
+          // Stop all IFeel effects and close the menu
           IFeel_StopEffect(NULL);
-          if( bMenuActive) {
-            StopMenus(FALSE);
-          }
-        // if it is down, or dropping down
-        } else if( _pGame->gm_csConsoleState==CS_ON || _pGame->gm_csConsoleState==CS_TURNINGON) {
-          // start it moving up
-          _pGame->gm_csConsoleState = CS_TURNINGOFF;
+          if (bMenuActive) StopMenus(FALSE);
         }
       }
 
-      if (_pShell->GetINDEX("con_bTalk") && _pGame->gm_csConsoleState==CS_OFF) {
-        _pShell->SetINDEX("con_bTalk", FALSE);
-        _pGame->gm_csConsoleState = CS_TALK;
+      // If not running any addon script
+      if (_iAddonExecState == 0) {
+        _pGame->HandleConsoleAndComputer(msg); // [Cecil]
       }
 
-      // if pause pressed
-      if (msg.message==WM_KEYDOWN && msg.wParam==VK_PAUSE) {
-        // toggle pause
-        _pNetwork->TogglePause();
-      }
+      _pGame->HandlePause(msg); // [Cecil]
 
-      // if command sent from external application
-      if (msg.message==WM_COMMAND) {
-        // if teleport player
-        if (msg.wParam==1001) {
-          // teleport player
-          TeleportPlayer(msg.lParam);
-          // restore
-          PostMessage(NULL, WM_SYSCOMMAND, SC_RESTORE, 0);
-        }
-      }
+      // If any demo is playing
+      if (_gmRunningGameMode == GM_DEMO || _gmRunningGameMode == GM_INTRO)
+      {
+        // Space, Enter, Left Click, Right Click
+        const BOOL bAnyKey = ((msg.message == WM_KEYDOWN && (msg.wParam == VK_SPACE || msg.wParam == VK_RETURN))
+         || msg.message == WM_LBUTTONDOWN || msg.message == WM_RBUTTONDOWN);
 
-      // if demo is playing
-      if (_gmRunningGameMode==GM_DEMO ||
-          _gmRunningGameMode==GM_INTRO ) {
-        // check if escape is pressed
-        BOOL bEscape = (msg.message==WM_KEYDOWN && msg.wParam==VK_ESCAPE);
-        // check if console-invoke key is pressed
-        BOOL bTilde = (msg.message==WM_KEYDOWN && 
-          (msg.wParam==VK_F1 || MapVirtualKey(msg.wParam, 0)==41));// scan code for '~'
-
-        // check if any key is pressed
-        BOOL bAnyKey = (
-          (msg.message==WM_KEYDOWN && (msg.wParam==VK_SPACE || msg.wParam==VK_RETURN))|| 
-          msg.message==WM_LBUTTONDOWN||msg.message==WM_RBUTTONDOWN);
-
-        // if escape is pressed
-        if (bEscape) {
-          // stop demo
+        // Stop demo on escape
+        if (_pGame->IsEscapeKeyPressed(msg)) {
           _pGame->StopGame();
           _bInAutoPlayLoop = FALSE;
           _gmRunningGameMode = GM_NONE;
-        // if any other key is pressed except console invoking
-        } else if (bAnyKey && !bTilde) {
-          // if not in menu or in console
-          if (!bMenuActive && !bMenuRendering && _pGame->gm_csConsoleState==CS_OFF) {
-            // skip to next demo
+
+        // Skip to the next demo on any key (other than console)
+        } else if (bAnyKey && !_pGame->IsConsoleKeyPressed(msg)) {
+          // Only if there's no menu or console in the way
+          if (!bMenuActive && !bMenuRendering && _pGame->gm_csConsoleState == CS_OFF) {
             _pGame->StopGame();
             _gmRunningGameMode = GM_NONE;
             StartNextDemo();        
           }
         }
       }
-
     } // loop while there are messages
 
     // when all messages are removed, window has surely changed
