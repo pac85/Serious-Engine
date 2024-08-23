@@ -37,15 +37,6 @@ extern FLOAT inp_bInvertMouse;
 extern INDEX inp_bFilterMouse;
 extern INDEX inp_bAllowPrescan;
 
-extern INDEX inp_i2ndMousePort;
-extern FLOAT inp_f2ndMouseSensitivity;
-extern INDEX inp_b2ndMousePrecision;
-extern FLOAT inp_f2ndMousePrecisionThreshold;
-extern FLOAT inp_f2ndMousePrecisionTimeout;
-extern FLOAT inp_f2ndMousePrecisionFactor;
-extern INDEX inp_bFilter2ndMouse;
-extern INDEX inp_bInvert2ndMouse;
-
 INDEX inp_iMButton4Dn = 0x20040;
 INDEX inp_iMButton4Up = 0x20000;
 INDEX inp_iMButton5Dn = 0x10020;
@@ -376,151 +367,6 @@ LRESULT CALLBACK SendMsgProc(
   return retValue;
 }
 
-
-
-// --------- 2ND MOUSE HANDLING
-
-#define MOUSECOMBUFFERSIZE 256L
-static HANDLE _h2ndMouse = NONE;
-static BOOL  _bIgnoreMouse2 = TRUE;
-static INDEX _i2ndMouseX, _i2ndMouseY, _i2ndMouseButtons;
-static INDEX _iByteNum = 0;
-static UBYTE _aubComBytes[4] = {0,0,0,0};
-static INDEX _iLastPort = -1;
-
-
-
-static void Poll2ndMouse(void)
-{
-  // reset (mouse reading is relative)
-  _i2ndMouseX = 0;
-  _i2ndMouseY = 0;
-  if( _h2ndMouse==NONE) return;
-
-  // check
-  COMSTAT csComStat;
-  DWORD dwErrorFlags;
-  ClearCommError( _h2ndMouse, &dwErrorFlags, &csComStat);
-  DWORD dwLength = Min( MOUSECOMBUFFERSIZE, (INDEX)csComStat.cbInQue);
-  if( dwLength<=0) return;
-
-  // readout
-  UBYTE aubMouseBuffer[MOUSECOMBUFFERSIZE];
-  INDEX iRetries = 999;
-  while( iRetries>0 && !ReadFile( _h2ndMouse, aubMouseBuffer, dwLength, &dwLength, NULL)) iRetries--;
-  if( iRetries<=0) return; // what, didn't make it?
-
-  // parse the mouse packets
-  for( INDEX i=0; i<dwLength; i++)
-  {
-    // prepare    
-    if( aubMouseBuffer[i] & 64) _iByteNum  = 0;
-    if( _iByteNum<4) _aubComBytes[_iByteNum] = aubMouseBuffer[i];
-    _iByteNum++;
-
-    // buttons ?
-    if( _iByteNum==1) {
-      _i2ndMouseButtons &= ~3;
-      _i2ndMouseButtons |= (_aubComBytes[0] & (32+16)) >>4;
-    }
-    // axes ?
-    else if( _iByteNum==3) {
-      char iDX = ((_aubComBytes[0] &  3) <<6) + _aubComBytes[1];
-      char iDY = ((_aubComBytes[0] & 12) <<4) + _aubComBytes[2];
-      _i2ndMouseX += iDX;
-      _i2ndMouseY += iDY;
-    }
-    // 3rd button?
-    else if( _iByteNum==4) {
-      _i2ndMouseButtons &= ~4;
-      if( aubMouseBuffer[i]&32) _i2ndMouseButtons |= 4;
-    }
-  }
-
-  // ignore pooling?
-  if( _bIgnoreMouse2) {
-    if( _i2ndMouseX!=0 || _i2ndMouseY!=0) _bIgnoreMouse2 = FALSE;
-    _i2ndMouseX = 0;
-    _i2ndMouseY = 0;
-    _i2ndMouseButtons = 0;
-    return;
-  }
-}
-
-
-static void Startup2ndMouse(INDEX iPort)
-{
-  // skip if disabled
-  ASSERT( iPort>=0 && iPort<=4);
-  if( iPort==0) return; 
-  // determine port string
-  CTString str2ndMousePort( 0, "COM%d", iPort);
-    
-  // create COM handle if needed
-  if( _h2ndMouse==NONE) {
-    _h2ndMouse = CreateFileA(str2ndMousePort.ConstData(), GENERIC_READ|GENERIC_WRITE, 0, NULL,           
-                             OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if( _h2ndMouse==INVALID_HANDLE_VALUE) {
-      // failed! :(
-      INDEX iError = GetLastError();
-/*
-      if( iError==5) CPrintF( "Cannot open %s (access denied).\n"
-                              "The port is probably already used by another device (mouse, modem...)\n",
-                              str2ndMousePort);
-      else CPrintF( "Cannot open %s (error %d).\n", str2ndMousePort, iError);
-      */
-      _h2ndMouse = NONE;
-      return;
-    }
-  }
-  // setup and purge buffers
-  SetupComm( _h2ndMouse, MOUSECOMBUFFERSIZE, MOUSECOMBUFFERSIZE);
-  PurgeComm( _h2ndMouse, PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR);
-
-  // setup port to 1200 7N1
-  DCB dcb;
-  dcb.DCBlength = sizeof(DCB);
-  GetCommState( _h2ndMouse, &dcb);
-  dcb.BaudRate = CBR_1200;
-  dcb.ByteSize = 7;
-  dcb.Parity   = NOPARITY;
-  dcb.StopBits = ONESTOPBIT;
-  dcb.fDtrControl = DTR_CONTROL_ENABLE;
-  dcb.fRtsControl = RTS_CONTROL_ENABLE;
-  dcb.fBinary = TRUE;
-  dcb.fParity = TRUE;
-  SetCommState( _h2ndMouse, &dcb);
-
-  // reset
-  _iByteNum = 0;
-  _aubComBytes[0] = _aubComBytes[1] = _aubComBytes[2] = _aubComBytes[3] = 0;
-  _bIgnoreMouse2 = TRUE; // ignore mouse polling until 1 after non-0 readout 
-  _iLastPort = iPort;
-  //CPrintF( "STARTUP M2!\n");
-}
-
-
-static void Shutdown2ndMouse(void)
-{
-  // skip if already disabled
-  if( _h2ndMouse==NONE) return;
-
-  // disable!
-  SetCommMask( _h2ndMouse, 0);
-  EscapeCommFunction( _h2ndMouse, CLRDTR);
-  EscapeCommFunction( _h2ndMouse, CLRRTS);
-  PurgeComm( _h2ndMouse, PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR);
-  // close port if changed
-  if( _iLastPort != inp_i2ndMousePort) {
-    CloseHandle( _h2ndMouse);
-    _h2ndMouse = NONE;
-  } // over and out
-  _bIgnoreMouse2 = TRUE;
-}
-
- 
-
-
 // pointer to global input object
 CInput *_pInput = NULL;
 
@@ -546,14 +392,10 @@ CInput::CInput(void)
   MakeConversionTables();
 }
 
-
-// destructor
-CInput::~CInput()
-{
-  if( _h2ndMouse!=NONE) CloseHandle( _h2ndMouse);
-  _h2ndMouse = NONE;
-}
-
+// Destructor
+CInput::~CInput() {
+  Mouse2_Clear(); // [Cecil]
+};
 
 void CInput::SetJoyPolling(BOOL bPoll)
 {
@@ -752,10 +594,12 @@ void CInput::AddJoystickAbbilities(INDEX iJoy)
  */
 void CInput::Initialize( void )
 {
-  CPrintF(TRANS("Detecting input devices...\n"));
+  CPutString(TRANS("Detecting input devices...\n"));
+
   SetKeyNames();
-  _h2ndMouse = NONE;
-  CPrintF("\n");
+  Mouse2_Clear(); // [Cecil]
+
+  CPutString("\n");
 }
 
 
@@ -815,9 +659,7 @@ void CInput::EnableInput(OS::Window hwnd)
   _hSendMsgHook = SetWindowsHookEx(WH_CALLWNDPROC, &SendMsgProc, NULL, GetCurrentThreadId());
 
   // if required, try to enable 2nd mouse
-  Shutdown2ndMouse();
-  inp_i2ndMousePort = Clamp( inp_i2ndMousePort, 0L, 4L);
-  Startup2ndMouse(inp_i2ndMousePort);
+  Mouse2_Startup(); // [Cecil]
 
   // clear button's buffer
   memset( _abKeysPressed, 0, sizeof( _abKeysPressed));
@@ -885,7 +727,7 @@ void CInput::DisableInput( void)
   SystemParametersInfo(SPI_SETMOUSE, 0, &inp_mscMouseSettings, 0);
 
   // eventually disable 2nd mouse
-  Shutdown2ndMouse();
+  Mouse2_Shutdown(); // [Cecil]
 
   // remember current status
   inp_bInputEnabled = FALSE;
@@ -1037,58 +879,7 @@ void CInput::GetInput(BOOL bPreScan)
   }
 
   // readout 2nd mouse if enabled
-  if( _h2ndMouse!=NONE)
-  {
-    Poll2ndMouse();
-    //CPrintF( "m2X: %4d, m2Y: %4d, m2B: 0x%02X\n", _i2ndMouseX, _i2ndMouseY, _i2ndMouseButtons);
-
-    // handle 2nd mouse buttons
-    if( _i2ndMouseButtons & 2) inp_ubButtonsBuffer[KID_2MOUSE1] = 0xFF;
-    if( _i2ndMouseButtons & 1) inp_ubButtonsBuffer[KID_2MOUSE2] = 0xFF;
-    if( _i2ndMouseButtons & 4) inp_ubButtonsBuffer[KID_2MOUSE3] = 0xFF;
-
-    // handle 2nd mouse movement
-    FLOAT fDX = _i2ndMouseX;
-    FLOAT fDY = _i2ndMouseY;
-    FLOAT fSensitivity = inp_f2ndMouseSensitivity;
-
-    FLOAT fD = Sqrt(fDX*fDX+fDY*fDY);
-    if( inp_b2ndMousePrecision) {
-      static FLOAT _tm2Time = 0.0f;
-      if( fD<inp_f2ndMousePrecisionThreshold) _tm2Time += 0.05f;
-      else _tm2Time = 0.0f;
-      if( _tm2Time>inp_f2ndMousePrecisionTimeout) fSensitivity /= inp_f2ndMousePrecisionFactor;
-    }
-
-    static FLOAT f2DXOld;
-    static FLOAT f2DYOld;
-    static TIME tm2OldDelta;
-    static CTimerValue tv2Before;
-    CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
-    TIME tmNowDelta = (tvNow-tv2Before).GetSeconds();
-    if( tmNowDelta<0.001f) tmNowDelta = 0.001f;
-    tv2Before = tvNow;
-
-    FLOAT fDXSmooth = (f2DXOld*tm2OldDelta+fDX*tmNowDelta) / (tm2OldDelta+tmNowDelta);
-    FLOAT fDYSmooth = (f2DYOld*tm2OldDelta+fDY*tmNowDelta) / (tm2OldDelta+tmNowDelta);
-    f2DXOld = fDX;
-    f2DYOld = fDY;
-    tm2OldDelta = tmNowDelta;
-    if( inp_bFilter2ndMouse) {
-      fDX = fDXSmooth;
-      fDY = fDYSmooth;
-    }
-
-    // get final mouse values
-    FLOAT fMouseRelX = +fDX*fSensitivity;
-    FLOAT fMouseRelY = -fDY*fSensitivity;
-    if( inp_bInvert2ndMouse) fMouseRelY = -fMouseRelY;
-
-    // just interpret values as normal
-    inp_caiAllAxisInfo[4].cai_fReading = fMouseRelX;
-    inp_caiAllAxisInfo[5].cai_fReading = fMouseRelY;
-  }
-
+  Mouse2_Update(); // [Cecil]
 
   // if joystick polling is enabled
   if (inp_bPollJoysticks || inp_bForceJoystickPolling) {

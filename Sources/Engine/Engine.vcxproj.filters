@@ -772,6 +772,9 @@
     <ClCompile Include="Query\GameAgentQuery.cpp">
       <Filter>Source Files\Query</Filter>
     </ClCompile>
+    <ClCompile Include="Base\Input2ndMouse.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\Anim.h">

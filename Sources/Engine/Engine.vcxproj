@@ -613,6 +613,7 @@ del "$(ProjectDir)Ska\smcScan.cpp" /q</Command>
     <ClCompile Include="Base\GameDir.cpp" />
     <ClCompile Include="Base\IFeel.cpp" />
     <ClCompile Include="Base\Input.cpp" />
+    <ClCompile Include="Base\Input2ndMouse.cpp" />
     <ClCompile Include="Base\Lists.cpp" />
     <ClCompile Include="Base\Memory.cpp" />
     <ClCompile Include="Base\Profiling.cpp" />

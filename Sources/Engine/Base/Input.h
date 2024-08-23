@@ -108,6 +108,13 @@ public:
   void GetInput(BOOL bPreScan);
   // Clear all input states (keys become not pressed, axes are reset to zero)
   void ClearInput( void);
+
+  // [Cecil] Second mouse interface
+  void Mouse2_Clear(void);
+  void Mouse2_Startup(void);
+  void Mouse2_Shutdown(void);
+  void Mouse2_Update(void);
+
   // Get count of available axis
   inline const INDEX GetAvailableAxisCount( void) const {
     return MAX_OVERALL_AXES;};
