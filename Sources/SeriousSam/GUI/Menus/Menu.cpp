@@ -532,19 +532,18 @@ void MenuOnMouseMove(PIX pixI, PIX pixJ)
 void MenuUpdateMouseFocus(void)
 {
   // get real cursor position
-  POINT pt;
-  OS::GetCursorPos(&pt);
-  OS::ScreenToClient(_hwndMain, &pt);
+  int iMouseX, iMouseY;
+  OS::GetCursorPos(&iMouseX, &iMouseY);
   extern INDEX sam_bWideScreen;
   extern CDrawPort *pdp;
   if( sam_bWideScreen) {
     const PIX pixHeight = pdp->GetHeight();
-    pt.y -= (pixHeight/0.75f-pixHeight)/2;
+    iMouseY -= (pixHeight / 0.75f - pixHeight) / 2;
   }
-  _pixCursorPosI += pt.x-_pixCursorExternPosI;
+  _pixCursorPosI += iMouseX-_pixCursorExternPosI;
   _pixCursorPosJ  = _pixCursorExternPosJ;
-  _pixCursorExternPosI = pt.x;
-  _pixCursorExternPosJ = pt.y;
+  _pixCursorExternPosI = iMouseX;
+  _pixCursorExternPosJ = iMouseY;
 
   // if mouse not used last
   if (!_bMouseUsedLast||_bDefiningKey||_bEditingString) {

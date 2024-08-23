@@ -1119,10 +1119,9 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
 
     // get real cursor position
     if( _pGame->gm_csComputerState!=CS_OFF && _pGame->gm_csComputerState!=CS_ONINBACKGROUND) {
-      POINT pt;
-      OS::GetCursorPos(&pt);
-      OS::ScreenToClient(_hwndMain, &pt);
-      _pGame->ComputerMouseMove(pt.x, pt.y);
+      int iMouseX, iMouseY;
+      OS::GetCursorPos(&iMouseX, &iMouseY);
+      _pGame->ComputerMouseMove(iMouseX, iMouseY);
     }
 
     // if addon is to be executed

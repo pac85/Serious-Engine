@@ -129,8 +129,7 @@ class ENGINE_API OS {
     static BOOL IsIconic(Window hWnd);
     static UWORD GetKeyState(int vKey);
     static UWORD GetAsyncKeyState(int vKey);
-    static BOOL GetCursorPos(LPPOINT lpPoint);
-    static BOOL ScreenToClient(Window hWnd, LPPOINT lpPoint);
+    static BOOL GetCursorPos(int *piX, int *piY, BOOL bRelativeToWindow = TRUE);
     static int ShowCursor(BOOL bShow);
 };
 

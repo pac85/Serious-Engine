@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Translation.h>
 #include <Engine/Base/KeyNames.h>
 #include <Engine/Math/Functions.h>
-#include <Engine/Graphics/Viewport.h>
+#include <Engine/Graphics/ViewPort.h>
 #include <Engine/Base/Console.h>
 #include <Engine/Base/Synchronization.h>
 
@@ -630,13 +630,12 @@ void CInput::EnableInput(OS::Window hwnd)
   RECT rectClient;
   GetClientRect(hwndCurrent, &rectClient);
   POINT pt;
-  pt.x=0;
-  pt.y=0;
+  pt.x = pt.y = 0;
   ClientToScreen(hwndCurrent, &pt);
   OffsetRect(&rectClient, pt.x, pt.y);
 
   // remember mouse pos
-  OS::GetCursorPos(&inp_ptOldMousePos);
+  OS::GetCursorPos(&inp_aOldMousePos[0], &inp_aOldMousePos[1], FALSE);
   // set mouse clip region
   ClipCursor(&rectClient);
   // determine screen center position
@@ -719,7 +718,7 @@ void CInput::DisableInput( void)
   // set mouse clip region to entire screen
   ClipCursor(NULL);
   // restore mouse pos
-  SetCursorPos( inp_ptOldMousePos.x, inp_ptOldMousePos.y);
+  SetCursorPos(inp_aOldMousePos[0], inp_aOldMousePos[1]);
 
   // show mouse on screen
   while (OS::ShowCursor(TRUE) < 0);
@@ -796,11 +795,11 @@ void CInput::GetInput(BOOL bPreScan)
   }
 
   // read mouse position
-  POINT pntMouse;
-  if (OS::GetCursorPos(&pntMouse))
+  int iMouseX, iMouseY;
+  if (OS::GetCursorPos(&iMouseX, &iMouseY, FALSE))
   {
-    FLOAT fDX = FLOAT( SLONG(pntMouse.x) - inp_slScreenCenterX);
-    FLOAT fDY = FLOAT( SLONG(pntMouse.y) - inp_slScreenCenterY);
+    FLOAT fDX = FLOAT(iMouseX - inp_slScreenCenterX);
+    FLOAT fDY = FLOAT(iMouseY - inp_slScreenCenterY);
 
     FLOAT fSensitivity = inp_fMouseSensitivity;
     if( inp_bAllowMouseAcceleration) fSensitivity *= 0.25f;
@@ -874,7 +873,7 @@ void CInput::GetInput(BOOL bPreScan)
   inp_bLastPrescan = bPreScan;
 
   // set cursor position to screen center
-  if (pntMouse.x!=inp_slScreenCenterX || pntMouse.y!=inp_slScreenCenterY) {
+  if (iMouseX != inp_slScreenCenterX || iMouseY != inp_slScreenCenterY) {
     SetCursorPos(inp_slScreenCenterX, inp_slScreenCenterY);
   }
 

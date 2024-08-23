@@ -79,8 +79,7 @@ public:
 
   SLONG inp_slScreenCenterX;                        // screen center X in pixels
   SLONG inp_slScreenCenterY;                        // screen center Y in pixels
-  RECT inp_rectOldClip;                             // old cursor clip rectangle in pixels
-  POINT inp_ptOldMousePos;                          // old mouse position
+  int inp_aOldMousePos[2];                          // old mouse position
   struct MouseSpeedControl inp_mscMouseSettings;    // system mouse settings
 
   void SetKeyNames( void);                          // sets name for every key

@@ -70,19 +70,28 @@ UWORD OS::GetAsyncKeyState(int vKey)
   return ::GetAsyncKeyState(vKey);
 };
 
-BOOL OS::GetCursorPos(LPPOINT lpPoint)
-{
-  return ::GetCursorPos(lpPoint);
-};
-
-BOOL OS::ScreenToClient(OS::Window hWnd, LPPOINT lpPoint)
+BOOL OS::GetCursorPos(int *piX, int *piY, BOOL bRelativeToWindow)
 {
 #if SE1_PREFER_SDL
-  // [Cecil] FIXME: Get HWND from SDL_Window or...
-  // [Cecil] TODO: Rewrite using SDL
-  return ::ScreenToClient(GetActiveWindow(), lpPoint);
+  if (bRelativeToWindow) {
+    SDL_GetMouseState(piX, piY);
+  } else {
+    SDL_GetGlobalMouseState(piX, piY);
+  }
+  return TRUE;
+
 #else
-  return ::ScreenToClient(hWnd, lpPoint);
+  POINT pt;
+  BOOL bResult = ::GetCursorPos(&pt);
+
+  if (bResult && bRelativeToWindow) {
+    bResult = ::ScreenToClient(GetActiveWindow(), &pt);
+  }
+
+  if (piX != NULL) *piX = pt.x;
+  if (piY != NULL) *piY = pt.y;
+
+  return bResult;
 #endif
 };
 

@@ -257,11 +257,11 @@ void CGame::QuickTest(const CTFileName &fnMapName,
 
     // get real cursor position
     if (gm_csComputerState != CS_OFF) {
-      POINT pt;
-      OS::GetCursorPos(&pt);
-      OS::ScreenToClient(pvp->vp_hWnd, &pt);
-      ComputerMouseMove(pt.x, pt.y);
+      int iMouseX, iMouseY;
+      OS::GetCursorPos(&iMouseX, &iMouseY);
+      ComputerMouseMove(iMouseX, iMouseY);
     }
+
     UpdatePauseState();
     UpdateInputEnabledState(pvp);
       
