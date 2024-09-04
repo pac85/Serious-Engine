@@ -31,9 +31,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define MAX_JOYSTICKS 8
 #define MAX_AXES_PER_JOYSTICK 6 // (XYZRUV)
-#define FIRST_JOYAXIS (1+3+2)   // one dummy, 3 axis for windows mouse (3rd is scroller), 2 axis for serial mouse
-#define MAX_OVERALL_AXES (FIRST_JOYAXIS+MAX_JOYSTICKS*MAX_AXES_PER_JOYSTICK)
-#define MAX_BUTTONS_PER_JOYSTICK (32+4) // 32 buttons and 4 POV directions
+#define FIRST_JOYAXIS (1 + 3 + 2) // one dummy, 3 axis for windows mouse (3rd is scroller), 2 axis for serial mouse
+#define MAX_OVERALL_AXES (FIRST_JOYAXIS + MAX_JOYSTICKS * MAX_AXES_PER_JOYSTICK)
+#define MAX_BUTTONS_PER_JOYSTICK_NOPOV 32 // [Cecil] For convenience
+#define MAX_BUTTONS_PER_JOYSTICK (MAX_BUTTONS_PER_JOYSTICK_NOPOV + 4) // 32 buttons and 4 POV directions
 #define FIRST_JOYBUTTON (KID_TOTALCOUNT)
 #define MAX_OVERALL_BUTTONS (KID_TOTALCOUNT+MAX_JOYSTICKS*MAX_BUTTONS_PER_JOYSTICK)
 
@@ -82,16 +83,13 @@ public:
   int inp_aOldMousePos[2];                          // old mouse position
   struct MouseSpeedControl inp_mscMouseSettings;    // system mouse settings
 
-  void SetKeyNames( void);                          // sets name for every key
-  // check if a joystick exists
-  BOOL CheckJoystick(INDEX iJoy);
-  // adds axis and buttons for given joystick
-  void AddJoystickAbbilities(INDEX iJoy);
-  BOOL ScanJoystick(INDEX iJoyNo, BOOL bPreScan);// scans axis and buttons for given joystick
 public:
 // Operations
   CInput();
   ~CInput();
+
+  // Sets name for every key
+  void SetKeyNames(void);
   // Initializes all available devices and enumerates available controls
   void Initialize(void);
   // Enable input inside one viewport, or window
@@ -99,8 +97,6 @@ public:
   void EnableInput(OS::Window hWnd);
   // Disable input
   void DisableInput(void);
-  // enable/disable joystick polling (it can be slow to poll if user doesn't realy use the joystick)
-  void SetJoyPolling(BOOL bPoll);
   // Test input activity
   BOOL IsInputEnabled( void) const { return inp_bInputEnabled; };
   // Scan states of all available input sources
@@ -108,34 +104,70 @@ public:
   // Clear all input states (keys become not pressed, axes are reset to zero)
   void ClearInput( void);
 
-  // [Cecil] Second mouse interface
+// [Cecil] Second mouse interface
+public:
+
   void Mouse2_Clear(void);
   void Mouse2_Startup(void);
   void Mouse2_Shutdown(void);
   void Mouse2_Update(void);
 
+// [Cecil] Joystick interface
+public:
+
+  // [Cecil] Set names for joystick axes and buttons in a separate method
+  void SetJoystickNames(void);
+
+  // Enable/disable joystick polling (it can be slow to poll if user doesn't really use the joystick)
+  void SetJoyPolling(BOOL bPoll);
+
+  // Check if a joystick exists
+  BOOL CheckJoystick(INDEX iJoy);
+
+  // Adds axis and buttons for given joystick
+  void AddJoystickAbbilities(INDEX iJoy);
+
+  // Scans axis and buttons for given joystick
+  BOOL ScanJoystick(INDEX iJoyNo, BOOL bPreScan);
+
+public:
+
   // Get count of available axis
-  inline const INDEX GetAvailableAxisCount( void) const {
-    return MAX_OVERALL_AXES;};
+  inline const INDEX GetAvailableAxisCount(void) const {
+    return MAX_OVERALL_AXES;
+  };
+
   // Get count of available buttons
-  inline const INDEX GetAvailableButtonsCount( void) const {
-    return MAX_OVERALL_BUTTONS;};
+  inline const INDEX GetAvailableButtonsCount(void) const {
+    return MAX_OVERALL_BUTTONS;
+  };
+
   // Get name of given axis
-  inline const CTString &GetAxisName( INDEX iAxisNo) const {
-    return inp_caiAllAxisInfo[ iAxisNo].cai_strAxisName;};
-  const CTString &GetAxisTransName( INDEX iAxisNo) const;
+  inline const CTString &GetAxisName(INDEX iAxisNo) const {
+    return inp_caiAllAxisInfo[ iAxisNo].cai_strAxisName;
+  };
+
+  const CTString &GetAxisTransName(INDEX iAxisNo) const;
+
   // Get current position of given axis
-  inline float GetAxisValue( INDEX iAxisNo) const {
-    return inp_caiAllAxisInfo[ iAxisNo].cai_fReading;};
+  inline float GetAxisValue(INDEX iAxisNo) const {
+    return inp_caiAllAxisInfo[iAxisNo].cai_fReading;
+  };
+
   // Get given button's name
-  inline const CTString &GetButtonName( INDEX iButtonNo) const {
-    return inp_strButtonNames[ iButtonNo];};
+  inline const CTString &GetButtonName(INDEX iButtonNo) const {
+    return inp_strButtonNames[iButtonNo];
+  };
+
   // Get given button's name translated
-  inline const CTString &GetButtonTransName( INDEX iButtonNo) const {
-    return inp_strButtonNamesTra[ iButtonNo];};
+  inline const CTString &GetButtonTransName(INDEX iButtonNo) const {
+    return inp_strButtonNamesTra[iButtonNo];
+  };
+
   // Get given button's current state
-  inline BOOL GetButtonState( INDEX iButtonNo) const {
-    return (inp_ubButtonsBuffer[ iButtonNo] & 128) != 0;};
+  inline BOOL GetButtonState(INDEX iButtonNo) const {
+    return (inp_ubButtonsBuffer[iButtonNo] & 128) != 0;
+  };
 };
 
 // pointer to global input object

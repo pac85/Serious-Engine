@@ -46,7 +46,7 @@ INDEX inp_bForceJoystickPolling = 0;
 INDEX inp_ctJoysticksAllowed = 8;
 INDEX inp_bAutoDisableJoysticks = 0;
 
-static CTString inp_astrAxisTran[MAX_OVERALL_AXES];// translated names for axis
+CTString inp_astrAxisTran[MAX_OVERALL_AXES]; // translated names for axis
 
 /*
 
@@ -397,11 +397,6 @@ CInput::~CInput() {
   Mouse2_Clear(); // [Cecil]
 };
 
-void CInput::SetJoyPolling(BOOL bPoll)
-{
-  inp_bPollJoysticks = bPoll;
-}
-
 /*
  * Sets names of keys on keyboard
  */
@@ -443,150 +438,8 @@ void CInput::SetKeyNames( void)
   inp_caiAllAxisInfo[5].cai_strAxisName = "2nd mouse Y";
   inp_astrAxisTran[  5] = TRANS("2nd mouse Y");
 
-  // -------- Get number of joysticks ----------
-  // get number of joystics
-  INDEX ctJoysticksPresent = joyGetNumDevs();
-  CPrintF(TRANS("  joysticks found: %d\n"), ctJoysticksPresent);
-  ctJoysticksPresent = Min(ctJoysticksPresent, inp_ctJoysticksAllowed);
-  CPrintF(TRANS("  joysticks allowed: %d\n"), ctJoysticksPresent);
-
-  // -------- Enumerate axis and buttons for joysticks ----------
-  for (INDEX iJoy=0; iJoy<MAX_JOYSTICKS; iJoy++) {
-    inp_abJoystickOn[iJoy] = FALSE;
-    if (iJoy<ctJoysticksPresent && CheckJoystick(iJoy)) {
-      inp_abJoystickOn[iJoy] = TRUE;
-    }
-    AddJoystickAbbilities(iJoy);
-  }
-
-}
-
-// check if a joystick exists
-BOOL CInput::CheckJoystick(INDEX iJoy)
-{
-  CPrintF(TRANS("  joy %d:"), iJoy+1);
-
-  JOYCAPS jc;
-  // seek for capabilities of requested joystick
-  MMRESULT mmResult = joyGetDevCaps( JOYSTICKID1+iJoy,	&jc, sizeof(JOYCAPS));
-  // report possible errors
-  if( mmResult == MMSYSERR_NODRIVER) {
-    CPrintF(TRANS(" joystick driver is not present\n"));
-    return FALSE;
-  } else if( mmResult == MMSYSERR_INVALPARAM) {
-    CPrintF(TRANS(" invalid parameter\n"));
-    return FALSE;
-  } else if( mmResult != JOYERR_NOERROR) {
-    CPrintF(TRANS("  error 0x%08x\n"), mmResult);
-    return FALSE;
-  }
-  CPrintF(" '%s'\n", jc.szPname);
-
-  CPrintF(TRANS("    %d axes\n"), jc.wNumAxes);
-  CPrintF(TRANS("    %d buttons\n"), jc.wNumButtons);
-  if (jc.wCaps&JOYCAPS_HASPOV) {
-    CPrintF(TRANS("    POV hat present\n"));
-    inp_abJoystickHasPOV[iJoy] = TRUE;
-  } else {
-    inp_abJoystickHasPOV[iJoy] = FALSE;
-  }
-
-  // read joystick state
-  JOYINFOEX ji;
-  ji.dwFlags = JOY_RETURNBUTTONS|JOY_RETURNCENTERED|JOY_RETURNPOV|JOY_RETURNR|
-    JOY_RETURNX|JOY_RETURNY|JOY_RETURNZ|JOY_RETURNU|JOY_RETURNV;
-  ji.dwSize = sizeof( JOYINFOEX);
-  mmResult = joyGetPosEx( JOYSTICKID1+iJoy, &ji);
-
-  // if some error
-  if( mmResult != JOYERR_NOERROR) {
-    // fail
-    CPrintF(TRANS("    Cannot read the joystick!\n"));
-    return FALSE;
-  }
-
-  // for each axis
-  for(INDEX iAxis=0; iAxis<MAX_AXES_PER_JOYSTICK; iAxis++) {
-    ControlAxisInfo &cai= inp_caiAllAxisInfo[ FIRST_JOYAXIS+iJoy*MAX_AXES_PER_JOYSTICK+iAxis];
-    // remember min/max info
-    switch( iAxis) {
-    case 0: 
-      cai.cai_slMin = jc.wXmin; cai.cai_slMax = jc.wXmax; 
-      cai.cai_bExisting = TRUE;
-      break;
-    case 1: 
-      cai.cai_slMin = jc.wYmin; cai.cai_slMax = jc.wYmax; 
-      cai.cai_bExisting = TRUE;
-      break;
-    case 2: 
-      cai.cai_slMin = jc.wZmin; cai.cai_slMax = jc.wZmax; 
-      cai.cai_bExisting = jc.wCaps&JOYCAPS_HASZ;
-      break;
-    case 3: 
-      cai.cai_slMin = jc.wRmin; cai.cai_slMax = jc.wRmax; 
-      cai.cai_bExisting = jc.wCaps&JOYCAPS_HASR;
-      break;
-    case 4: 
-      cai.cai_slMin = jc.wUmin; cai.cai_slMax = jc.wUmax; 
-      cai.cai_bExisting = jc.wCaps&JOYCAPS_HASU;
-      break;
-    case 5: 
-      cai.cai_slMin = jc.wVmin; cai.cai_slMax = jc.wVmax; 
-      cai.cai_bExisting = jc.wCaps&JOYCAPS_HASV;
-      break;
-    }
-  }
-
-  return TRUE;
-}
-
-// adds axis and buttons for given joystick
-void CInput::AddJoystickAbbilities(INDEX iJoy)
-{
-  CTString strJoystickName;
-  strJoystickName.PrintF("Joy %d", iJoy+1);
-  CTString strJoystickNameTra;
-  strJoystickNameTra.PrintF(TRANS("Joy %d"), iJoy+1);
-
-  // for each axis
-  for( UINT iAxis=0; iAxis<6; iAxis++) {
-    INDEX iAxisTotal = FIRST_JOYAXIS+iJoy*MAX_AXES_PER_JOYSTICK+iAxis;
-    ControlAxisInfo &cai= inp_caiAllAxisInfo[iAxisTotal];
-    CTString &strTran = inp_astrAxisTran[iAxisTotal];
-    // set axis name
-    switch( iAxis) {
-    case 0: cai.cai_strAxisName = strJoystickName + " Axis X"; strTran = strJoystickNameTra + TRANS(" Axis X"); break;
-    case 1: cai.cai_strAxisName = strJoystickName + " Axis Y"; strTran = strJoystickNameTra + TRANS(" Axis Y"); break;
-    case 2: cai.cai_strAxisName = strJoystickName + " Axis Z"; strTran = strJoystickNameTra + TRANS(" Axis Z"); break;
-    case 3: cai.cai_strAxisName = strJoystickName + " Axis R"; strTran = strJoystickNameTra + TRANS(" Axis R"); break;
-    case 4: cai.cai_strAxisName = strJoystickName + " Axis U"; strTran = strJoystickNameTra + TRANS(" Axis U"); break;
-    case 5: cai.cai_strAxisName = strJoystickName + " Axis V"; strTran = strJoystickNameTra + TRANS(" Axis V"); break;
-    }
-  }
-
-  INDEX iButtonTotal = FIRST_JOYBUTTON+iJoy*MAX_BUTTONS_PER_JOYSTICK;
-  // add buttons that the joystick supports
-  for( UINT iButton=0; iButton<32; iButton++) {
-    CTString strButtonName;
-    CTString strButtonNameTra;
-    // create name for n-th button
-    strButtonName.PrintF( " Button %d", iButton);
-    strButtonNameTra.PrintF( TRANS(" Button %d"), iButton);
-    // set n-th button name
-    inp_strButtonNames[iButtonTotal]    = strJoystickName + strButtonName;
-    inp_strButtonNamesTra[iButtonTotal] = strJoystickNameTra + strButtonNameTra;
-    iButtonTotal++;
-  }
-
-  // add the four POV buttons
-  inp_strButtonNames   [ iButtonTotal  ] = strJoystickName    +      (" POV N");
-  inp_strButtonNamesTra[ iButtonTotal++] = strJoystickNameTra + TRANS(" POV N");
-  inp_strButtonNames   [ iButtonTotal  ] = strJoystickName    +      (" POV E");
-  inp_strButtonNamesTra[ iButtonTotal++] = strJoystickNameTra + TRANS(" POV E");
-  inp_strButtonNames   [ iButtonTotal  ] = strJoystickName    +      (" POV S");
-  inp_strButtonNamesTra[ iButtonTotal++] = strJoystickNameTra + TRANS(" POV S");
-  inp_strButtonNames   [ iButtonTotal  ] = strJoystickName    +      (" POV W");
-  inp_strButtonNamesTra[ iButtonTotal++] = strJoystickNameTra + TRANS(" POV W");
+  // [Cecil] Set joystick names separately
+  SetJoystickNames();
 }
 
 /*
@@ -912,102 +765,4 @@ void CInput::ClearInput( void)
 const CTString &CInput::GetAxisTransName( INDEX iAxisNo) const
 {
   return inp_astrAxisTran[iAxisNo];
-}
-
-
-/*
- * Scans axis and buttons for given joystick
- */
-BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
-{
-  // read joystick state
-  JOYINFOEX ji;
-  ji.dwFlags = JOY_RETURNBUTTONS|JOY_RETURNCENTERED|JOY_RETURNPOV|JOY_RETURNR|
-    JOY_RETURNX|JOY_RETURNY|JOY_RETURNZ|JOY_RETURNU|JOY_RETURNV;
-  ji.dwSize = sizeof( JOYINFOEX);
-  MMRESULT mmResult = joyGetPosEx( JOYSTICKID1+iJoy, &ji);
-
-  // if some error
-  if( mmResult != JOYERR_NOERROR) {
-    // fail
-    return FALSE;
-  }
-
-  // for each available axis
-  for( INDEX iAxis=0; iAxis<MAX_AXES_PER_JOYSTICK; iAxis++) {
-    ControlAxisInfo &cai = inp_caiAllAxisInfo[ FIRST_JOYAXIS+iJoy*MAX_AXES_PER_JOYSTICK+iAxis];
-    // if the axis is not present
-    if (!cai.cai_bExisting) {
-      // read as zero
-      cai.cai_fReading = 0.0f;
-      // skip to next axis
-      continue;
-    }
-    // read its state
-    SLONG slAxisReading;
-    switch( iAxis) {
-    case 0: slAxisReading = ji.dwXpos; break;
-    case 1: slAxisReading = ji.dwYpos; break;
-    case 2: slAxisReading = ji.dwZpos; break;
-    case 3: slAxisReading = ji.dwRpos; break;
-    case 4: slAxisReading = ji.dwUpos; break;
-    case 5: slAxisReading = ji.dwVpos; break;
-    }
-    // convert from min..max to -1..+1
-    FLOAT fAxisReading = FLOAT(slAxisReading-cai.cai_slMin)/(cai.cai_slMax-cai.cai_slMin)*2.0f-1.0f;
-
-    // set current axis value
-    cai.cai_fReading = fAxisReading;
-  }
-
-  // if not pre-scanning
-  if (!bPreScan) {
-    INDEX iButtonTotal = FIRST_JOYBUTTON+iJoy*MAX_BUTTONS_PER_JOYSTICK;
-    // for each available button
-    for( INDEX iButton=0; iButton<32; iButton++) {
-      // test if the button is pressed
-      if(ji.dwButtons & (1L<<iButton)) {
-        inp_ubButtonsBuffer[ iButtonTotal++] = 128;
-      } else {
-        inp_ubButtonsBuffer[ iButtonTotal++] = 0;
-      }
-    }
-
-    // POV hat initially not pressed
-  //  CPrintF("%d\n", ji.dwPOV);
-    INDEX iStartPOV = iButtonTotal;
-    inp_ubButtonsBuffer[ iStartPOV+0] = 0;
-    inp_ubButtonsBuffer[ iStartPOV+1] = 0;
-    inp_ubButtonsBuffer[ iStartPOV+2] = 0;
-    inp_ubButtonsBuffer[ iStartPOV+3] = 0;
-
-    // if we have POV
-    if (inp_abJoystickHasPOV[iJoy]) {
-      // check the four pov directions
-      if (ji.dwPOV==JOY_POVFORWARD) {
-        inp_ubButtonsBuffer[ iStartPOV+0] = 128;
-      } else if (ji.dwPOV==JOY_POVRIGHT) {
-        inp_ubButtonsBuffer[ iStartPOV+1] = 128;
-      } else if (ji.dwPOV==JOY_POVBACKWARD) {
-        inp_ubButtonsBuffer[ iStartPOV+2] = 128;
-      } else if (ji.dwPOV==JOY_POVLEFT) {
-        inp_ubButtonsBuffer[ iStartPOV+3] = 128;
-      // and four mid-positions
-      } else if (ji.dwPOV==JOY_POVFORWARD+4500) {
-        inp_ubButtonsBuffer[ iStartPOV+0] = 128;
-        inp_ubButtonsBuffer[ iStartPOV+1] = 128;
-      } else if (ji.dwPOV==JOY_POVRIGHT+4500) {
-        inp_ubButtonsBuffer[ iStartPOV+1] = 128;
-        inp_ubButtonsBuffer[ iStartPOV+2] = 128;
-      } else if (ji.dwPOV==JOY_POVBACKWARD+4500) {
-        inp_ubButtonsBuffer[ iStartPOV+2] = 128;
-        inp_ubButtonsBuffer[ iStartPOV+3] = 128;
-      } else if (ji.dwPOV==JOY_POVLEFT+4500) {
-        inp_ubButtonsBuffer[ iStartPOV+3] = 128;
-        inp_ubButtonsBuffer[ iStartPOV+0] = 128;
-      }
-    }
-  }
-  // successful
-  return TRUE;
 }
