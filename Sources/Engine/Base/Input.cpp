@@ -42,9 +42,6 @@ INDEX inp_iMButton4Up = 0x20000;
 INDEX inp_iMButton5Dn = 0x10020;
 INDEX inp_iMButton5Up = 0x10000;
 INDEX inp_bMsgDebugger = FALSE;
-INDEX inp_bForceJoystickPolling = 0;
-INDEX inp_ctJoysticksAllowed = 8;
-INDEX inp_bAutoDisableJoysticks = 0;
 
 CTString inp_astrAxisTran[MAX_OVERALL_AXES]; // translated names for axis
 
@@ -375,7 +372,9 @@ CInput::CInput(void)
 
 // Destructor
 CInput::~CInput() {
-  Mouse2_Clear(); // [Cecil]
+  // [Cecil] Various cleanups
+  ShutdownJoysticks();
+  Mouse2_Clear();
 };
 
 /*
@@ -431,9 +430,11 @@ void CInput::Initialize( void )
 {
   CPutString(TRANS("Detecting input devices...\n"));
 
-  SetKeyNames();
-  Mouse2_Clear(); // [Cecil]
+  // [Cecil] Various initializations
+  StartupJoysticks();
+  Mouse2_Clear();
 
+  SetKeyNames();
   CPutString("\n");
 }
 
@@ -721,22 +722,7 @@ void CInput::GetInput(BOOL bPreScan)
   // readout 2nd mouse if enabled
   Mouse2_Update(); // [Cecil]
 
-  // if joystick polling is enabled
-  if (inp_bPollJoysticks || inp_bForceJoystickPolling) {
-    // scan all available joysticks
-    for( INDEX iJoy=0; iJoy<MAX_JOYSTICKS; iJoy++) {
-      if (inp_abJoystickOn[iJoy] && iJoy<inp_ctJoysticksAllowed) {
-        // scan joy state
-        BOOL bSucceeded = ScanJoystick(iJoy, bPreScan);
-        // if joystick reading failed
-        if (!bSucceeded && inp_bAutoDisableJoysticks) {
-          // kill it, so it doesn't slow down CPU
-          CPrintF(TRANS("Joystick %d failed, disabling it!\n"), iJoy+1);
-          inp_abJoystickOn[iJoy] = FALSE;
-        }
-      }
-    }
-  }
+  PollJoysticks(bPreScan); // [Cecil]
 }
 
 // Clear all input states (keys become not pressed, axes are reset to zero)

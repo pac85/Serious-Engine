@@ -238,7 +238,6 @@ extern INDEX inp_iMButton5Dn;
 extern INDEX inp_bMsgDebugger;
 extern INDEX inp_ctJoysticksAllowed;
 extern INDEX inp_bForceJoystickPolling;
-extern INDEX inp_bAutoDisableJoysticks;
 
 extern void RendererInfo(void);
 extern void ClearRenderer(void);
@@ -896,7 +895,9 @@ void CNetworkLibrary::Init(void)
   _pShell->DeclareSymbol("persistent user INDEX inp_iMButton5Dn;", &inp_iMButton5Dn);
   _pShell->DeclareSymbol("persistent user INDEX inp_ctJoysticksAllowed;",    &inp_ctJoysticksAllowed);
   _pShell->DeclareSymbol("persistent user INDEX inp_bForceJoystickPolling;", &inp_bForceJoystickPolling);
-  _pShell->DeclareSymbol("persistent user INDEX inp_bAutoDisableJoysticks;", &inp_bAutoDisableJoysticks);
+
+  // [Cecil] Display info about current joysticks
+  _pShell->DeclareSymbol("user void inp_JoysticksInfo(void);", &CInput::PrintJoysticksInfo);
 
   // [Cecil] Initialize query manager
   extern void InitQuery(void);

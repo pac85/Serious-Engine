@@ -225,7 +225,7 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
 {
   // [Cecil] SDL: Initialize for gameplay or for basic stuff
   const BOOL bGameApp = (eType == E_SEAPP_GAME || eType == E_SEAPP_EDITOR);
-  const ULONG ulGameplay = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK;
+  const ULONG ulGameplay = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER;
 
   SE_InitSDL(bGameApp ? ulGameplay : 0);
 

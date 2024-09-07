@@ -846,6 +846,11 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
 
   if (!Init(hInstance, nCmdShow, strCmdLine)) return FALSE;
 
+  // [Cecil] Disable SDL joystick events to handle them manually alongside Windows API
+  #if !SE1_PREFER_SDL
+    SDL_JoystickEventState(SDL_IGNORE);
+  #endif
+
   // initialy, application is running and active, console and menu are off
   _bRunning    = TRUE;
   _bQuitScreen = TRUE;

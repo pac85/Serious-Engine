@@ -58,6 +58,9 @@ HWND OS::Window::GetNativeHandle(void) {
 #endif
 
 BOOL OS::PollEvent(OS::SE1Event &event) {
+  // Manual joystick update
+  _pInput->UpdateJoysticks();
+
   // Go in the loop until it finds an event it can process and return TRUE on it
   // Otherwise break from switch-case and try checking the next event
   // If none found, exits the loop and returns FALSE because there are no more events

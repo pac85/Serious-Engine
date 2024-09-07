@@ -20,6 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #include <Engine/Base/CTString.h>
+#include <Engine/Templates/StaticArray.h>
 
 // number of key ids reserved (in KeyNames.h)
 #define KID_TOTALCOUNT 256
@@ -30,13 +31,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define MOUSE_Y_AXIS 2
 
 #define MAX_JOYSTICKS 8
-#define MAX_AXES_PER_JOYSTICK 6 // (XYZRUV)
 #define FIRST_JOYAXIS (1 + 3 + 2) // one dummy, 3 axis for windows mouse (3rd is scroller), 2 axis for serial mouse
-#define MAX_OVERALL_AXES (FIRST_JOYAXIS + MAX_JOYSTICKS * MAX_AXES_PER_JOYSTICK)
-#define MAX_BUTTONS_PER_JOYSTICK_NOPOV 32 // [Cecil] For convenience
-#define MAX_BUTTONS_PER_JOYSTICK (MAX_BUTTONS_PER_JOYSTICK_NOPOV + 4) // 32 buttons and 4 POV directions
+#define MAX_OVERALL_AXES (FIRST_JOYAXIS + MAX_JOYSTICKS * SDL_CONTROLLER_AXIS_MAX)
 #define FIRST_JOYBUTTON (KID_TOTALCOUNT)
-#define MAX_OVERALL_BUTTONS (KID_TOTALCOUNT+MAX_JOYSTICKS*MAX_BUTTONS_PER_JOYSTICK)
+#define MAX_OVERALL_BUTTONS (KID_TOTALCOUNT + MAX_JOYSTICKS * SDL_CONTROLLER_BUTTON_MAX)
 
 
 /*
@@ -52,13 +50,24 @@ struct MouseSpeedControl
 /*
  * One axis descriptive information
  */
-struct ENGINE_API ControlAxisInfo
+struct ControlAxisInfo
 {
-  CTString cai_strAxisName;           // name of this axis
-  FLOAT cai_fReading;                 // current reading of this axis
-  BOOL  cai_bExisting; // set if the axis exists (for joystick axes)
-  SLONG cai_slMax;    // max/min info for joysticks
-  SLONG cai_slMin;
+  CTString cai_strAxisName; // name of this axis
+  FLOAT cai_fReading; // current reading of this axis
+  BOOL cai_bExisting; // set if the axis exists (for joystick axes)
+};
+
+// [Cecil] Individual game controller
+struct GameController_t {
+  SDL_GameController *handle; // Opened controller
+  INDEX iInfoSlot; // Used controller slot for info output
+
+  GameController_t();
+  ~GameController_t();
+
+  void Connect(INDEX iSetSlot);
+  void Disconnect(void);
+  BOOL IsConnected(void);
 };
 
 /*
@@ -75,8 +84,9 @@ public:
   CTString inp_strButtonNames[ MAX_OVERALL_BUTTONS];// individual button names
   CTString inp_strButtonNamesTra[ MAX_OVERALL_BUTTONS];// individual button names (translated)
   UBYTE inp_ubButtonsBuffer[ MAX_OVERALL_BUTTONS];  // statuses for all buttons (KEY & 128 !=0)
-  BOOL inp_abJoystickOn[MAX_JOYSTICKS];  // set if a joystick is valid for reading
-  BOOL inp_abJoystickHasPOV[MAX_JOYSTICKS];  // set if a joystick has a POV hat
+
+  // [Cecil] Game controllers
+  CStaticArray<GameController_t> inp_aControllers;
 
   SLONG inp_slScreenCenterX;                        // screen center X in pixels
   SLONG inp_slScreenCenterY;                        // screen center Y in pixels
@@ -115,20 +125,46 @@ public:
 // [Cecil] Joystick interface
 public:
 
+  // [Cecil] Display info about current joysticks
+  static void PrintJoysticksInfo(void);
+
+  // [Cecil] Open a game controller under some slot
+  // Slot index always ranges from 0 to SDL_NumJoysticks()-1
+  void OpenGameController(INDEX iSlot);
+
+  // [Cecil] Close a game controller under some device index
+  // This device index is NOT the same as a slot and it's always unique for each added controller
+  // Use GetControllerSlotForDevice() to retrieve a slot from a device index, if there's any
+  void CloseGameController(SDL_JoystickID iDevice);
+
+  // [Cecil] Find controller slot from its device index
+  INDEX GetControllerSlotForDevice(SDL_JoystickID iDevice);
+
+  // Toggle controller polling
+  void SetJoyPolling(BOOL bPoll);
+
+  // [Cecil] Update SDL joysticks manually (if SDL_PollEvent() isn't being used)
+  void UpdateJoysticks(void);
+
+private:
+
   // [Cecil] Set names for joystick axes and buttons in a separate method
   void SetJoystickNames(void);
 
-  // Enable/disable joystick polling (it can be slow to poll if user doesn't really use the joystick)
-  void SetJoyPolling(BOOL bPoll);
+  // [Cecil] Joystick setup on initialization
+  void StartupJoysticks(void);
 
-  // Check if a joystick exists
-  BOOL CheckJoystick(INDEX iJoy);
+  // [Cecil] Joystick cleanup on destruction
+  void ShutdownJoysticks(void);
 
   // Adds axis and buttons for given joystick
-  void AddJoystickAbbilities(INDEX iJoy);
+  void AddJoystickAbbilities(INDEX iSlot);
 
   // Scans axis and buttons for given joystick
-  BOOL ScanJoystick(INDEX iJoyNo, BOOL bPreScan);
+  void ScanJoystick(INDEX iSlot, BOOL bPreScan);
+
+  // [Cecil] Get input from joysticks
+  void PollJoysticks(BOOL bPreScan);
 
 public:
 
