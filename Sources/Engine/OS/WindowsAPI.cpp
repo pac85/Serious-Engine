@@ -17,6 +17,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "OS.h"
 
+#if SE1_WIN
+  #include <SDL2/include/SDL_syswm.h>
+#endif
+
 // Destroy current window
 void OS::Window::Destroy(void) {
   if (pWindow == NULL) return;
@@ -30,16 +34,28 @@ void OS::Window::Destroy(void) {
   pWindow = NULL;
 };
 
-BOOL OS::Message::Peek(MSG *lpMsg, OS::Window hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
-{
+#if SE1_WIN
+
+// Retrieve native window handle
+HWND OS::Window::GetNativeHandle(void) {
+  if (pWindow == NULL) return NULL;
+
 #if SE1_PREFER_SDL
-  // [Cecil] FIXME: Get HWND from SDL_Window or...
-  // [Cecil] TODO: Rewrite using SDL
-  return ::PeekMessage(lpMsg, NULL, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+  SDL_SysWMinfo info;
+
+  if (!SDL_GetWindowWMInfo(pWindow, &info)) {
+    FatalError(TRANS("Couldn't retrieve driver-specific information about an SDL window:\n%s"), SDL_GetError());
+  }
+
+  return info.info.win.window;
+
 #else
-  return ::PeekMessage(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+  // Already native
+  return pWindow;
 #endif
 };
+
+#endif
 
 void OS::Message::Translate(const MSG *lpMsg)
 {

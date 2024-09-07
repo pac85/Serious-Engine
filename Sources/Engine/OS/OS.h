@@ -62,6 +62,11 @@ class ENGINE_API OS {
 
       // Destroy current window
       void Destroy(void);
+
+    #if SE1_WIN
+      // Retrieve native window handle
+      HWND GetNativeHandle(void);
+    #endif
     };
 
     // Depending on build configuration this structure can either be:
