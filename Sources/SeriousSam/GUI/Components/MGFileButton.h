@@ -43,7 +43,7 @@ public:
   void StartEdit(void);
 
   // return TRUE if handled
-  BOOL OnKeyDown(int iVKey);
+  BOOL OnKeyDown(int iVKey, int iMouseButton);
   void OnActivate(void);
   void OnSetFocus(void);
   void OnKillFocus(void);

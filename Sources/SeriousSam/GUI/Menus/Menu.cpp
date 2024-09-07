@@ -473,12 +473,11 @@ void MenuGoToParent(void)
   }
 }
 
-void MenuOnKeyDown( int iVKey)
+void MenuOnKeyDown(int iVKey, int iMouseButton)
 {
-
-  // check if mouse buttons used
-  _bMouseUsedLast = (iVKey==VK_LBUTTON || iVKey==VK_RBUTTON || iVKey==VK_MBUTTON 
-    || iVKey==10 || iVKey==11);
+  // [Cecil] Check if mouse buttons are used separately
+  _bMouseUsedLast = (iMouseButton == SDL_BUTTON_LEFT || iMouseButton == SDL_BUTTON_RIGHT || iMouseButton == SDL_BUTTON_MIDDLE
+    || iMouseButton == MOUSEWHEEL_DN || iMouseButton == MOUSEWHEEL_UP);
 
   // ignore mouse when editing
   if (_bEditingString && _bMouseUsedLast) {
@@ -492,13 +491,13 @@ void MenuOnKeyDown( int iVKey)
   // if not a mouse button, or mouse is over some gadget
   if (!_bMouseUsedLast || _pmgUnderCursor!=NULL) {
     // ask current menu to handle the key
-    bHandled = pgmCurrentMenu->OnKeyDown( iVKey);
+    bHandled = pgmCurrentMenu->OnKeyDown(iVKey, iMouseButton);
   }
 
   // if not handled
   if(!bHandled) {
     // if escape or right mouse pressed
-    if(iVKey==VK_ESCAPE || iVKey==VK_RBUTTON) {
+    if (iVKey == SE1K_ESCAPE || iMouseButton == SDL_BUTTON_RIGHT) {
       if (pgmCurrentMenu==&_pGUIM->gmLoadSaveMenu && _pGUIM->gmLoadSaveMenu.gm_bNoEscape) {
         return;
       }
@@ -508,13 +507,13 @@ void MenuOnKeyDown( int iVKey)
   }
 }
 
-void MenuOnChar(MSG msg)
+void MenuOnChar(const OS::SE1Event &event)
 {
   // check if mouse buttons used
   _bMouseUsedLast = FALSE;
 
   // ask current menu to handle the key
-  pgmCurrentMenu->OnChar(msg);
+  pgmCurrentMenu->OnChar(event);
 }
 
 void MenuOnMouseMove(PIX pixI, PIX pixJ)
@@ -533,7 +532,7 @@ void MenuUpdateMouseFocus(void)
 {
   // get real cursor position
   int iMouseX, iMouseY;
-  OS::GetCursorPos(&iMouseX, &iMouseY);
+  OS::GetMouseState(&iMouseX, &iMouseY);
   extern INDEX sam_bWideScreen;
   extern CDrawPort *pdp;
   if( sam_bWideScreen) {

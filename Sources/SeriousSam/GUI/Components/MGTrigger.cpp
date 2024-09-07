@@ -25,11 +25,11 @@ INDEX GetNewLoopValue(int iVKey, INDEX iCurrent, INDEX ctMembers)
   INDEX iPrev = (iCurrent + ctMembers - 1) % ctMembers;
   INDEX iNext = (iCurrent + 1) % ctMembers;
   // return and right arrow set new text
-  if (iVKey == VK_RETURN || iVKey == VK_LBUTTON || iVKey == VK_RIGHT)
+  if (iVKey == SE1K_RETURN || iVKey == SE1K_RIGHT)
   {
     return iNext;
   // left arrow and backspace sets prev text
-  } else if ((iVKey == VK_BACK || iVKey == VK_RBUTTON) || (iVKey == VK_LEFT)) {
+  } else if (iVKey == SE1K_BACKSPACE || iVKey == SE1K_LEFT) {
     return iPrev;
   }
   return iCurrent;
@@ -63,12 +63,14 @@ void CMGTrigger::OnSetNextInList(int iVKey)
   }
 }
 
-BOOL CMGTrigger::OnKeyDown(int iVKey)
+BOOL CMGTrigger::OnKeyDown(int iVKey, int iMouseButton)
 {
-  if ((iVKey == VK_RETURN || iVKey == VK_LBUTTON) ||
-    (iVKey == VK_LEFT) ||
-    (iVKey == VK_BACK || iVKey == VK_RBUTTON) ||
-    (iVKey == VK_RIGHT))
+  // [Cecil] Mimic keys with mouse buttons
+  if (iMouseButton == SDL_BUTTON_LEFT) iVKey = SE1K_RIGHT;
+  else
+  if (iMouseButton == SDL_BUTTON_RIGHT) iVKey = SE1K_LEFT;
+
+  if (iVKey == SE1K_RETURN || iVKey == SE1K_LEFT || iVKey == SE1K_BACKSPACE || iVKey == SE1K_RIGHT)
   {
     // key is handled
     if (mg_bEnabled) OnSetNextInList(iVKey);

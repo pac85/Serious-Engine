@@ -44,8 +44,8 @@ public:
   virtual void FillListItems(void);
   virtual void EndMenu(void);
   // return TRUE if handled
-  virtual BOOL OnKeyDown(int iVKey);
-  virtual BOOL OnChar(MSG msg);
+  virtual BOOL OnKeyDown(int iVKey, int iMouseButton);
+  virtual BOOL OnChar(const OS::SE1Event &event);
   virtual void Think(void);
 };
 

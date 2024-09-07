@@ -50,18 +50,18 @@ PIXaabbox2D CMGVarButton::GetSliderBox(void)
 }
 
 extern BOOL _bVarChanged;
-BOOL CMGVarButton::OnKeyDown(int iVKey)
+BOOL CMGVarButton::OnKeyDown(int iVKey, int iMouseButton)
 {
   if (mg_pvsVar == NULL || mg_pvsVar->vs_bSeparator || !mg_pvsVar->Validate() || !mg_bEnabled) {
-    return CMenuGadget::OnKeyDown(iVKey);
+    return CMenuGadget::OnKeyDown(iVKey, iMouseButton);
   }
 
   // handle slider
   if (mg_pvsVar->vs_iSlider && !mg_pvsVar->vs_bCustom) {
     // ignore RMB
-    if (iVKey == VK_RBUTTON) return TRUE;
+    if (iMouseButton == SDL_BUTTON_RIGHT) return TRUE;
     // handle LMB
-    if (iVKey == VK_LBUTTON) {
+    if (iMouseButton == SDL_BUTTON_LEFT) {
       // get position of slider box on screen
       PIXaabbox2D boxSlider = GetSliderBox();
       // if mouse is within
@@ -75,14 +75,14 @@ BOOL CMGVarButton::OnKeyDown(int iVKey)
     }
   }
 
-  if (iVKey == VK_RETURN) {
+  if (iVKey == SE1K_RETURN) {
     FlushVarSettings(TRUE);
     void MenuGoToParent(void);
     MenuGoToParent();
     return TRUE;
   }
 
-  if (iVKey == VK_LBUTTON || iVKey == VK_RIGHT) {
+  if (iMouseButton == SDL_BUTTON_LEFT || iVKey == SE1K_RIGHT) {
     if (mg_pvsVar != NULL) {
       INDEX iOldValue = mg_pvsVar->vs_iValue;
       mg_pvsVar->vs_iValue++;
@@ -100,7 +100,7 @@ BOOL CMGVarButton::OnKeyDown(int iVKey)
     return TRUE;
   }
 
-  if (iVKey == VK_LEFT || iVKey == VK_RBUTTON) {
+  if (iMouseButton == SDL_BUTTON_RIGHT || iVKey == SE1K_LEFT) {
     if (mg_pvsVar != NULL) {
       INDEX iOldValue = mg_pvsVar->vs_iValue;
       mg_pvsVar->vs_iValue--;
@@ -119,7 +119,7 @@ BOOL CMGVarButton::OnKeyDown(int iVKey)
   }
 
   // not handled
-  return CMenuGadget::OnKeyDown(iVKey);
+  return CMenuGadget::OnKeyDown(iVKey, iMouseButton);
 }
 
 void CMGVarButton::Render(CDrawPort *pdp)

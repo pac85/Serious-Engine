@@ -48,10 +48,10 @@ void CMenuGadget::OnActivate(void)
 }
 
 // return TRUE if handled
-BOOL CMenuGadget::OnKeyDown(int iVKey)
+BOOL CMenuGadget::OnKeyDown(int iVKey, int iMouseButton)
 {
   // if return pressed
-  if (iVKey == VK_RETURN || iVKey == VK_LBUTTON) {
+  if (iVKey == SE1K_RETURN || iMouseButton == SDL_BUTTON_LEFT) {
     // activate
     OnActivate();
     // key is handled
@@ -62,7 +62,7 @@ BOOL CMenuGadget::OnKeyDown(int iVKey)
 }
 
 
-BOOL CMenuGadget::OnChar(MSG msg)
+BOOL CMenuGadget::OnChar(const OS::SE1Event &event)
 {
   // key is not handled
   return FALSE;

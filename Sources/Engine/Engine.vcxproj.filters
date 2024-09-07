@@ -1416,6 +1416,9 @@
     <ClInclude Include="Query\ServerRequest.h">
       <Filter>Header Files\Query Headers</Filter>
     </ClInclude>
+    <ClInclude Include="OS\Keycodes.h">
+      <Filter>Header Files\OS Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Base\CTString.inl">

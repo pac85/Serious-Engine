@@ -71,34 +71,34 @@ static void UpdatePauseState(void)
 }
 
 // [Cecil] Pass key presses to console and computer
-void CGame::HandleConsoleAndComputer(const MSG &msg) {
+void CGame::HandleConsoleAndComputer(const OS::SE1Event &event) {
   extern INDEX con_bTalk;
 
   // Pass key presses to console and computer
-  if (msg.message == WM_KEYDOWN) {
-    ConsoleKeyDown(msg);
+  if (event.type == WM_KEYDOWN) {
+    ConsoleKeyDown(event);
 
     // Only if console isn't in the way
-    if (gm_csConsoleState != CS_ON) ComputerKeyDown(msg);
+    if (gm_csConsoleState != CS_ON) ComputerKeyDown(event);
 
   // Close chat after pressing Enter
-  } else if (msg.message == WM_KEYUP) {
-    if (msg.wParam == VK_RETURN && gm_csConsoleState == CS_TALK) {
+  } else if (event.type == WM_KEYUP) {
+    if (event.key.code == SE1K_RETURN && gm_csConsoleState == CS_TALK) {
       con_bTalk = FALSE;
       gm_csConsoleState = CS_OFF;
     }
 
   // Type characters in console
-  } else if (msg.message == WM_CHAR) {
-    ConsoleChar(msg);
+  } else if (event.type == WM_CHAR) {
+    ConsoleChar(event);
   }
 
   // Pass mouse buttons to computer
-  if (msg.message == WM_LBUTTONDOWN   || msg.message == WM_RBUTTONDOWN
-   || msg.message == WM_LBUTTONDBLCLK || msg.message == WM_RBUTTONDBLCLK
-   || msg.message == WM_LBUTTONUP     || msg.message == WM_RBUTTONUP) {
+  if (event.type == WM_LBUTTONDOWN || event.type == WM_LBUTTONUP
+   || event.type == WM_RBUTTONDOWN || event.type == WM_RBUTTONUP
+   || event.type == WM_MBUTTONDOWN || event.type == WM_MBUTTONUP) {
     // Only if console isn't in the way
-    if (gm_csConsoleState != CS_ON) ComputerKeyDown(msg);
+    if (gm_csConsoleState != CS_ON) ComputerKeyDown(event);
   }
 
   // Open chat on command
@@ -109,9 +109,9 @@ void CGame::HandleConsoleAndComputer(const MSG &msg) {
 };
 
 // [Cecil] Manually toggle in-game pause
-void CGame::HandlePause(const MSG &msg) {
+void CGame::HandlePause(const OS::SE1Event &event) {
   // Pressed Pause button with console and computer closed
-  if (msg.message == WM_KEYDOWN && msg.wParam == VK_PAUSE
+  if (event.type == WM_KEYDOWN && event.key.code == SE1K_PAUSE
    && gm_csConsoleState == CS_OFF && gm_csComputerState == CS_OFF)
   {
     _pNetwork->TogglePause();
@@ -119,14 +119,14 @@ void CGame::HandlePause(const MSG &msg) {
 };
 
 // [Cecil] Should the application stop running or not
-BOOL CGame::ShouldStopRunning(const MSG &msg, BOOL bOnDeactivation) {
-  BOOL bStop = (msg.message == WM_QUIT || msg.message == WM_CLOSE);
+BOOL CGame::ShouldStopRunning(const OS::SE1Event &event, BOOL bOnDeactivation) {
+  BOOL bStop = (event.type == WM_QUIT || event.type == WM_CLOSE);
 
 #if SE1_WIN
   // Check for deactivations and lost focus too
   if (bOnDeactivation) {
-    bStop |= (msg.message == WM_ACTIVATE || msg.message == WM_ACTIVATEAPP
-           || msg.message == WM_KILLFOCUS || msg.message == WM_CANCELMODE);
+    bStop |= (event.type == WM_ACTIVATE || event.type == WM_ACTIVATEAPP
+           || event.type == WM_KILLFOCUS || event.type == WM_CANCELMODE);
   }
 #endif
 
@@ -134,19 +134,13 @@ BOOL CGame::ShouldStopRunning(const MSG &msg, BOOL bOnDeactivation) {
 };
 
 // [Cecil] Check if pressed the key to go back
-BOOL CGame::IsEscapeKeyPressed(const MSG &msg) {
-  return (msg.message == WM_KEYDOWN && msg.wParam == VK_ESCAPE);
+BOOL CGame::IsEscapeKeyPressed(const OS::SE1Event &event) {
+  return (event.type == WM_KEYDOWN && event.key.code == SE1K_ESCAPE);
 };
 
 // [Cecil] Check if pressed any of the console opening keys
-BOOL CGame::IsConsoleKeyPressed(const MSG &msg) {
-  #if SE1_PREFER_SDL
-    #define TILDE_KEY SDLK_BACKQUOTE
-  #else
-    #define TILDE_KEY VK_OEM_3
-  #endif
-
-  return (msg.message == WM_KEYDOWN && (msg.wParam == VK_F1 || msg.wParam == TILDE_KEY));
+BOOL CGame::IsConsoleKeyPressed(const OS::SE1Event &event) {
+  return (event.type == WM_KEYDOWN && (event.key.code == SE1K_F1 || event.key.code == SE1K_BACKQUOTE));
 };
 
 // [Cecil] Toggle console state and return TRUE if console is being opened
@@ -201,33 +195,21 @@ void CGame::QuickTest(const CTFileName &fnMapName,
   // while it is still running
   while( bRunning)
   {
-    // while there are any messages in the message queue
-    MSG msg;
-    while (OS::Message::Peek(&msg, NULL, 0, 0, PM_REMOVE))
+    // [Cecil] Cross-platform events
+    OS::SE1Event event;
+
+    // While there are any messages in the message queue
+    while (OS::PollEvent(event))
     {
-      // If it's not a mouse message
-      if (msg.message < WM_MOUSEFIRST || msg.message > WM_MOUSELAST) {
-        // And not system key messages
-        if (!((msg.message == WM_KEYDOWN && msg.wParam == VK_F10) || msg.message == WM_SYSKEYDOWN)) {
-          // Dispatch it
-          OS::Message::Translate(&msg);
-        }
-
-        // Dispatch paint message
-        if (msg.message == WM_PAINT) {
-          OS::Message::Dispatch(&msg);
-        }
-      }
-
       // Stop running the simulation
-      if (IsEscapeKeyPressed(msg) || ShouldStopRunning(msg, TRUE)) {
+      if (IsEscapeKeyPressed(event) || ShouldStopRunning(event, TRUE)) {
         bRunning = FALSE;
         break;
       }
 
     #if SE1_WIN
       // If received a custom message
-      if (msg.message == uiMessengerMsg) {
+      if (event.type == uiMessengerMsg) {
         // Pause the game
         if (!_pNetwork->IsPaused()) _pNetwork->TogglePause();
 
@@ -250,15 +232,15 @@ void CGame::QuickTest(const CTFileName &fnMapName,
     #endif
 
       // [Cecil] Abstracted
-      if (IsConsoleKeyPressed(msg)) ToggleConsole();
-      HandleConsoleAndComputer(msg);
-      HandlePause(msg);
+      if (IsConsoleKeyPressed(event)) ToggleConsole();
+      HandleConsoleAndComputer(event);
+      HandlePause(event);
     }
 
     // get real cursor position
     if (gm_csComputerState != CS_OFF) {
       int iMouseX, iMouseY;
-      OS::GetCursorPos(&iMouseX, &iMouseY);
+      OS::GetMouseState(&iMouseX, &iMouseY);
       ComputerMouseMove(iMouseX, iMouseY);
     }
 

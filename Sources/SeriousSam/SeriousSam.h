@@ -30,6 +30,10 @@ extern BOOL  sam_bAutoAdjustAudio;
 // [Cecil] Computer screen resolution
 extern PIX2D _vpixScreenRes;
 
+// [Cecil] Mouse wheel directions as buttons
+#define MOUSEWHEEL_DN 10
+#define MOUSEWHEEL_UP 11
+
 extern void StartNewMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
                           enum DisplayDepth eColorDepth, INDEX iWindowMode);
 struct KeyData {

@@ -57,58 +57,204 @@ HWND OS::Window::GetNativeHandle(void) {
 
 #endif
 
-void OS::Message::Translate(const MSG *lpMsg)
-{
-  TranslateMessage(lpMsg);
-};
+BOOL OS::PollEvent(OS::SE1Event &event) {
+  // Go in the loop until it finds an event it can process and return TRUE on it
+  // Otherwise break from switch-case and try checking the next event
+  // If none found, exits the loop and returns FALSE because there are no more events
+  MSG msg;
 
-void OS::Message::Dispatch(const MSG *lpMsg)
-{
-  DispatchMessage(lpMsg);
+  while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+  {
+    // If it's not a mouse message
+    if (msg.message < WM_MOUSEFIRST || msg.message > WM_MOUSELAST) {
+      // And not system key messages
+      if (!((msg.message == WM_KEYDOWN && msg.wParam == VK_F10) || msg.message == WM_SYSKEYDOWN)) {
+        // Dispatch it
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
+      }
+    }
+
+    // Reset the event
+    SDL_zero(event);
+    event.type = msg.message;
+
+    switch (msg.message) {
+      // Key events
+      case WM_CHAR:
+      case WM_SYSKEYDOWN: case WM_SYSKEYUP:
+      case WM_KEYDOWN: case WM_KEYUP: {
+        event.key.code = msg.wParam;
+      } return TRUE;
+
+      // Mouse events
+      case WM_MOUSEMOVE: {
+        event.mouse.y = HIWORD(msg.lParam);
+        event.mouse.x = LOWORD(msg.lParam);
+      } return TRUE;
+
+      case WM_MOUSEWHEEL: {
+        event.mouse.y = (SWORD)(UWORD)HIWORD(msg.wParam);
+      } return TRUE;
+
+      case WM_LBUTTONDOWN: case WM_LBUTTONDBLCLK: {
+        event.type = WM_LBUTTONDOWN;
+        event.mouse.button = SDL_BUTTON_LEFT;
+        event.mouse.pressed = TRUE;
+      } return TRUE;
+
+      case WM_LBUTTONUP: {
+        event.mouse.button = SDL_BUTTON_LEFT;
+        event.mouse.pressed = FALSE;
+      } return TRUE;
+
+      case WM_RBUTTONDOWN: case WM_RBUTTONDBLCLK: {
+        event.type = WM_RBUTTONDOWN;
+        event.mouse.button = SDL_BUTTON_RIGHT;
+        event.mouse.pressed = TRUE;
+      } return TRUE;
+
+      case WM_RBUTTONUP: {
+        event.mouse.button = SDL_BUTTON_RIGHT;
+        event.mouse.pressed = FALSE;
+      } return TRUE;
+
+      case WM_MBUTTONDOWN: case WM_MBUTTONDBLCLK: {
+        event.type = WM_MBUTTONDOWN;
+        event.mouse.button = SDL_BUTTON_MIDDLE;
+        event.mouse.pressed = TRUE;
+      } return TRUE;
+
+      case WM_MBUTTONUP: {
+        event.mouse.button = SDL_BUTTON_MIDDLE;
+        event.mouse.pressed = FALSE;
+      } return TRUE;
+
+      // Window events
+      case WM_QUIT: case WM_CLOSE:
+        return TRUE;
+
+      case WM_COMMAND: {
+        event.window.event = msg.wParam;
+        event.window.data = msg.lParam;
+      } return TRUE;
+
+      case WM_SYSCOMMAND: {
+        switch (msg.wParam & ~0x0F) {
+          case SC_MINIMIZE: event.window.event = SDL_WINDOWEVENT_MINIMIZED; break;
+          case SC_MAXIMIZE: event.window.event = SDL_WINDOWEVENT_MAXIMIZED; break;
+          case SC_RESTORE:  event.window.event = SDL_WINDOWEVENT_RESTORED; break;
+          default: event.window.event = SDL_WINDOWEVENT_NONE; // Unknown
+        }
+      } return TRUE;
+
+      case WM_PAINT: {
+        event.type = WM_SYSCOMMAND;
+        event.window.event = SDL_WINDOWEVENT_EXPOSED;
+      } return TRUE;
+
+      case WM_CANCELMODE: {
+        event.type = WM_SYSCOMMAND;
+        event.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+      } return TRUE;
+
+      case WM_KILLFOCUS: {
+        event.type = WM_SYSCOMMAND;
+        event.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+      } return TRUE;
+
+      case WM_SETFOCUS: {
+        event.type = WM_SYSCOMMAND;
+        event.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+      } return TRUE;
+
+      case WM_ACTIVATE: {
+        switch (LOWORD(msg.wParam))
+        {
+          case WA_ACTIVE: case WA_CLICKACTIVE: {
+            event.type = WM_SYSCOMMAND;
+            event.window.event = SDL_WINDOWEVENT_ENTER;
+          } return TRUE;
+
+          case WA_INACTIVE: {
+            event.type = WM_SYSCOMMAND;
+            event.window.event = SDL_WINDOWEVENT_LEAVE;
+          } return TRUE;
+
+          default:
+            // Minimized
+            if (HIWORD(msg.wParam)) {
+              // Deactivated
+              event.type = WM_SYSCOMMAND;
+              event.window.event = SDL_WINDOWEVENT_LEAVE;
+              return TRUE;
+            }
+        }
+      } break;
+
+      case WM_ACTIVATEAPP: {
+        if (msg.wParam) {
+          event.type = WM_SYSCOMMAND;
+          event.window.event = SDL_WINDOWEVENT_ENTER;
+        } else {
+          event.type = WM_SYSCOMMAND;
+          event.window.event = SDL_WINDOWEVENT_LEAVE;
+        }
+      } return TRUE;
+
+      default: break;
+    }
+  }
+
+  return FALSE;
 };
 
 BOOL OS::IsIconic(OS::Window hWnd)
 {
 #if SE1_PREFER_SDL
-  return (hWnd != NULL && (SDL_GetWindowFlags(hWnd) & SDL_WINDOW_MINIMIZED) == SDL_WINDOW_MINIMIZED);
+  return (hWnd != NULL && !!(SDL_GetWindowFlags(hWnd) & SDL_WINDOW_MINIMIZED));
 #else
   return ::IsIconic(hWnd);
 #endif
 };
 
-UWORD OS::GetKeyState(int vKey)
+UWORD OS::GetKeyState(ULONG iKey)
 {
-  return ::GetKeyState(vKey);
+  return ::GetAsyncKeyState(iKey);
 };
 
-UWORD OS::GetAsyncKeyState(int vKey)
-{
-  return ::GetAsyncKeyState(vKey);
-};
+ULONG OS::GetMouseState(int *piX, int *piY, BOOL bRelativeToWindow) {
+  ULONG ulMouse = 0;
 
-BOOL OS::GetCursorPos(int *piX, int *piY, BOOL bRelativeToWindow)
-{
 #if SE1_PREFER_SDL
   if (bRelativeToWindow) {
-    SDL_GetMouseState(piX, piY);
+    ulMouse = SDL_GetMouseState(piX, piY);
   } else {
-    SDL_GetGlobalMouseState(piX, piY);
+    ulMouse = SDL_GetGlobalMouseState(piX, piY);
   }
-  return TRUE;
 
 #else
   POINT pt;
   BOOL bResult = ::GetCursorPos(&pt);
 
-  if (bResult && bRelativeToWindow) {
+  // Can't afford to handle errors
+  if (!bResult) {
+    pt.x = pt.y = 0;
+
+  } else if (bRelativeToWindow) {
     bResult = ::ScreenToClient(GetActiveWindow(), &pt);
   }
 
   if (piX != NULL) *piX = pt.x;
   if (piY != NULL) *piY = pt.y;
 
-  return bResult;
+  // Gather mouse states
+  if (::GetKeyState(VK_LBUTTON) & 0x8000) ulMouse |= SDL_BUTTON_LMASK;
+  if (::GetKeyState(VK_RBUTTON) & 0x8000) ulMouse |= SDL_BUTTON_RMASK;
+  if (::GetKeyState(VK_MBUTTON) & 0x8000) ulMouse |= SDL_BUTTON_MMASK;
 #endif
+
+  return ulMouse;
 };
 
 int OS::ShowCursor(BOOL bShow)

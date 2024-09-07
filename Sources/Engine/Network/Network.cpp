@@ -210,9 +210,8 @@ FLOAT cli_fPredictionFilter = 0.5f;
 
 extern INDEX shd_bCacheAll;
 
-
-// input
-INDEX inp_iKeyboardReadingMethod = 2;  // 0=getasynckey, 1=virtkeytrap, 2=scancodetrap
+// [Cecil] Now if 0, gets key state in GetInput(), otherwise directly reacts to key events (only scancodes, no virtual keycodes)
+INDEX inp_iKeyboardReadingMethod = 1;
 INDEX inp_bAllowMouseAcceleration = TRUE;
 FLOAT inp_fMouseSensitivity = 1.0f;
 INDEX inp_bMousePrecision = FALSE;

@@ -58,7 +58,7 @@ void CMGEdit::OnKillFocus(void)
 {
   // go out of editing mode
   if (mg_bEditing) {
-    OnKeyDown(VK_RETURN);
+    OnKeyDown(SE1K_RETURN, -1);
     Clear();
   }
   // proceed
@@ -94,26 +94,32 @@ static void Key_BackDel(CTString &str, INDEX &iPos, BOOL bShift, BOOL bRight)
 }
 
 // key/mouse button pressed
-BOOL CMGEdit::OnKeyDown(int iVKey)
+BOOL CMGEdit::OnKeyDown(int iVKey, int iMouseButton)
 {
   // if not in edit mode
   if (!mg_bEditing) {
     // behave like normal gadget
-    return CMenuGadget::OnKeyDown(iVKey);
+    return CMenuGadget::OnKeyDown(iVKey, iMouseButton);
   }
 
   // finish editing?
-  const BOOL bShift = OS::GetKeyState(VK_SHIFT) & 0x8000;
+  const BOOL bShift = !!(OS::GetKeyState(SE1K_LSHIFT) & 0x8000) || !!(OS::GetKeyState(SE1K_RSHIFT) & 0x8000);
+
+  // [Cecil] Mimic keys with mouse buttons
+  if (iMouseButton == SDL_BUTTON_LEFT) iVKey = SE1K_RETURN;
+  else
+  if (iMouseButton == SDL_BUTTON_RIGHT) iVKey = SE1K_ESCAPE;
+
   switch (iVKey) {
-  case VK_UP: case VK_DOWN:
-  case VK_RETURN:  case VK_LBUTTON: *mg_pstrToChange = mg_strText;  Clear(); OnStringChanged();  break;
-  case VK_ESCAPE:  case VK_RBUTTON:  mg_strText = *mg_pstrToChange; Clear(); OnStringCanceled(); break;
-  case VK_LEFT:    if (mg_iCursorPos > 0)                   mg_iCursorPos--; break;
-  case VK_RIGHT:   if (mg_iCursorPos < mg_strText.Length()) mg_iCursorPos++; break;
-  case VK_HOME:    mg_iCursorPos = 0;                   break;
-  case VK_END:     mg_iCursorPos = mg_strText.Length(); break;
-  case VK_BACK:    Key_BackDel(mg_strText, mg_iCursorPos, bShift, FALSE);  break;
-  case VK_DELETE:  Key_BackDel(mg_strText, mg_iCursorPos, bShift, TRUE);   break;
+  case SE1K_UP: case SE1K_DOWN:
+  case SE1K_RETURN: *mg_pstrToChange = mg_strText;  Clear(); OnStringChanged();  break;
+  case SE1K_ESCAPE:  mg_strText = *mg_pstrToChange; Clear(); OnStringCanceled(); break;
+  case SE1K_LEFT:    if (mg_iCursorPos > 0)                   mg_iCursorPos--; break;
+  case SE1K_RIGHT:   if (mg_iCursorPos < mg_strText.Length()) mg_iCursorPos++; break;
+  case SE1K_HOME:    mg_iCursorPos = 0;                   break;
+  case SE1K_END:     mg_iCursorPos = mg_strText.Length(); break;
+  case SE1K_BACKSPACE: Key_BackDel(mg_strText, mg_iCursorPos, bShift, FALSE);  break;
+  case SE1K_DELETE:    Key_BackDel(mg_strText, mg_iCursorPos, bShift, TRUE);   break;
   default:  break; // ignore all other special keys
   }
 
@@ -122,18 +128,18 @@ BOOL CMGEdit::OnKeyDown(int iVKey)
 }
 
 // char typed
-BOOL CMGEdit::OnChar(MSG msg)
+BOOL CMGEdit::OnChar(const OS::SE1Event &event)
 {
   // if not in edit mode
   if (!mg_bEditing) {
     // behave like normal gadget
-    return CMenuGadget::OnChar(msg);
+    return CMenuGadget::OnChar(event);
   }
   // only chars are allowed
   const INDEX ctFullLen = mg_strText.Length();
   const INDEX ctNakedLen = mg_strText.LengthNaked();
   mg_iCursorPos = Clamp(mg_iCursorPos, 0L, ctFullLen);
-  int iVKey = msg.wParam;
+  int iVKey = event.key.code;
   if (isprint(iVKey) && ctNakedLen <= mg_ctMaxStringLen) {
     mg_strText.InsertChar(mg_iCursorPos, (char)iVKey);
     mg_iCursorPos++;

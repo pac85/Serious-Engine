@@ -40,7 +40,7 @@ public:
   void(*mg_pOnTriggerChange)(INDEX iCurrentlySelected);
 
   // return TRUE if handled
-  BOOL OnKeyDown(int iVKey);
+  BOOL OnKeyDown(int iVKey, int iMouseButton);
   void Render(CDrawPort *pdp);
 };
 

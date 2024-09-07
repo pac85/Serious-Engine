@@ -1145,6 +1145,7 @@ del "$(ProjectDir)Ska\smcScan.cpp" /q</Command>
     <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Graphics\ViewPort.h" />
     <ClInclude Include="OS\FileSystem.h" />
+    <ClInclude Include="OS\Keycodes.h" />
     <ClInclude Include="OS\OS.h" />
     <ClInclude Include="OS\PlatformSpecific.h" />
     <ClInclude Include="OS\PlatformTypes.h" />

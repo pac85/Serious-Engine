@@ -18,6 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SE_INCL_OS_H
 
 // Compatibility with multiple platforms
+#include <Engine/OS/Keycodes.h>
 #include <Engine/OS/PlatformSpecific.h>
 
 // Non-Windows OS
@@ -27,6 +28,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define HIWORD(x) ((x >> 16) & 0xFFFF)
 
 #endif // !SE1_WIN
+
+// For mimicking Win32 wheel scrolling
+#define MOUSEWHEEL_SCROLL_INTERVAL 120
 
 class ENGINE_API OS {
   public:
@@ -117,24 +121,58 @@ class ENGINE_API OS {
     // Hook library symbol
     static void *GetLibSymbol(HMODULE hLib, const char *strSymbol);
 
-  // Cross-platform reimplementations of methods from Windows API
+  // Cross-platform handling of input and window events akin to SDL_Event
   public:
 
-    struct ENGINE_API Message {
-      // PeekMessage()
-      static BOOL Peek(MSG *lpMsg, Window hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
-
-      // TranslateMessage()
-      static void Translate(const MSG *lpMsg);
-
-      // DispatchMessage()
-      static void Dispatch(const MSG *lpMsg);
+    struct KeyEvent {
+      ULONG type;
+      BOOL pressed;
+      ULONG code;
     };
 
+    struct MouseEvent {
+      ULONG type;
+      BOOL pressed;
+      ULONG button;
+      SLONG x;
+      SLONG y;
+    };
+
+    struct WindowEvent {
+      ULONG type;
+      ULONG event;
+      SLONG data;
+    };
+
+    typedef union {
+      // [Cecil] NOTE: Types always use Win32 message types (WM_*) that are redefined for non-Windows OS
+      ULONG type;
+
+      KeyEvent key;
+      MouseEvent mouse;
+      WindowEvent window;
+    } SE1Event;
+
+    // [SE1_PREFER_SDL = 0]
+    // Uses Win32's PeekMessage() method and translates MSG events to SE1Event
+    static BOOL PollEvent(SE1Event &event);
+
+    // Check if the game window isn't minimized
     static BOOL IsIconic(Window hWnd);
-    static UWORD GetKeyState(int vKey);
-    static UWORD GetAsyncKeyState(int vKey);
-    static BOOL GetCursorPos(int *piX, int *piY, BOOL bRelativeToWindow = TRUE);
+
+    // [SE1_PREFER_SDL = 0]
+    // Works just like Win32's GetAsyncKeyState() method
+    static UWORD GetKeyState(ULONG iKey);
+
+    // [SE1_PREFER_SDL = 1]
+    // Works just like SDL_GetMouseState() or SDL_GetGlobalMouseState() method depending on bRelativeToWindow state
+    // [SE1_PREFER_SDL = 0]
+    // Uses GetCursorPos() and ScreenToClient() for the cursor position and GetKeyState() with mouse buttons for
+    // returning SDL masks with pressed mouse buttons (SDL_BUTTON)
+    static ULONG GetMouseState(int *piX, int *piY, BOOL bRelativeToWindow = TRUE);
+
+    // [SE1_PREFER_SDL = 0]
+    // Works just like Win32's ShowCursor() method
     static int ShowCursor(BOOL bShow);
 };
 

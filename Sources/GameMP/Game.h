@@ -258,14 +258,14 @@ public:
   virtual void GameMainLoop(void);
 
   // console functions
-  virtual void ConsoleKeyDown(MSG msg);
-  virtual void ConsoleChar(MSG msg);
+  virtual void ConsoleKeyDown(const OS::SE1Event &event);
+  virtual void ConsoleChar(const OS::SE1Event &event);
   virtual void ConsoleRender(CDrawPort *pdpDrawport);
   virtual void ConsolePrintLastLines(CDrawPort *pdpDrawport);
 
   // computer functions
   virtual void ComputerMouseMove(PIX pixX, PIX pixY);
-  virtual void ComputerKeyDown(MSG msg);
+  virtual void ComputerKeyDown(const OS::SE1Event &event);
   virtual void ComputerRender(CDrawPort *pdpDrawport);
   virtual void ComputerForceOff();
 
@@ -300,22 +300,22 @@ public:
     CDrawPort *pdpDrawport, CViewPort *pvpViewport);
 
   // [Cecil] Pass key presses to console and computer
-  void HandleConsoleAndComputer(const MSG &msg);
+  virtual void HandleConsoleAndComputer(const OS::SE1Event &event);
 
   // [Cecil] Manually toggle in-game pause
-  void HandlePause(const MSG &msg);
+  virtual void HandlePause(const OS::SE1Event &event);
 
   // [Cecil] Should the application stop running or not
-  BOOL ShouldStopRunning(const MSG &msg, BOOL bOnDeactivation);
+  virtual BOOL ShouldStopRunning(const OS::SE1Event &event, BOOL bOnDeactivation);
 
   // [Cecil] Check if pressed the key to go back
-  BOOL IsEscapeKeyPressed(const MSG &msg);
+  virtual BOOL IsEscapeKeyPressed(const OS::SE1Event &event);
 
   // [Cecil] Check if pressed any of the console opening keys
-  BOOL IsConsoleKeyPressed(const MSG &msg);
+  virtual BOOL IsConsoleKeyPressed(const OS::SE1Event &event);
 
   // [Cecil] Toggle console state and return TRUE if console is being opened
-  BOOL ToggleConsole(void);
+  virtual BOOL ToggleConsole(void);
 
   // interface rendering functions
   virtual void LCDInit(void);

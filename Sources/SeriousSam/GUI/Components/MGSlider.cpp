@@ -53,20 +53,20 @@ void CMGSlider::ApplyGivenPosition(INDEX iMin, INDEX iMax, INDEX iCur)
 }
 
 
-BOOL CMGSlider::OnKeyDown(int iVKey)
+BOOL CMGSlider::OnKeyDown(int iVKey, int iMouseButton)
 {
   // if scrolling left
-  if ((iVKey == VK_BACK || iVKey == VK_LEFT) && mg_iCurPos>mg_iMinPos) {
+  if ((iVKey == SE1K_BACKSPACE || iVKey == SE1K_LEFT) && mg_iCurPos>mg_iMinPos) {
     mg_iCurPos--;
     ApplyCurrentPosition();
     return TRUE;
     // if scrolling right
-  } else if ((iVKey == VK_RETURN || iVKey == VK_RIGHT) && mg_iCurPos<mg_iMaxPos) {
+  } else if ((iVKey == SE1K_RETURN || iVKey == SE1K_RIGHT) && mg_iCurPos<mg_iMaxPos) {
     mg_iCurPos++;
     ApplyCurrentPosition();
     return TRUE;
     // if lmb pressed
-  } else if (iVKey == VK_LBUTTON) {
+  } else if (iMouseButton == SDL_BUTTON_LEFT) {
     // get position of slider box on screen
     PIXaabbox2D boxSlider = GetSliderBox();
     // if mouse is within
@@ -80,7 +80,7 @@ BOOL CMGSlider::OnKeyDown(int iVKey)
       return TRUE;
     }
   }
-  return CMenuGadget::OnKeyDown(iVKey);
+  return CMenuGadget::OnKeyDown(iVKey, iMouseButton);
 }
 
 PIXaabbox2D CMGSlider::GetSliderBox(void)

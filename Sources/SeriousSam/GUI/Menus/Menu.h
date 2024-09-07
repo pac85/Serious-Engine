@@ -26,10 +26,9 @@ void ClearThumbnail(void);
 
 void InitializeMenus( void);
 void DestroyMenus( void);
-void MenuOnKeyDown( int iVKey);
-void MenuOnChar(MSG msg);
+void MenuOnKeyDown(int iVKey, int iMouseButton); // [Cecil] Handle mouse buttons separately from keys
+void MenuOnChar(const OS::SE1Event &event);
 void MenuOnMouseMove(PIX pixI, PIX pixJ);
-void MenuOnLMBDown(void);
 BOOL DoMenu( CDrawPort *pdp); // returns TRUE if still active, FALSE if should quit
 void StartMenus( char *str="");
 void StopMenus(BOOL bGoToRoot =TRUE);

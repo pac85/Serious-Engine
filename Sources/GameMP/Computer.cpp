@@ -930,7 +930,7 @@ void CGame::ComputerMouseMove(PIX pixX, PIX pixY)
 }
 
 
-void CGame::ComputerKeyDown(MSG msg)
+void CGame::ComputerKeyDown(const OS::SE1Event &event)
 {
   static BOOL bRDown = FALSE;
   // if computer is not active
@@ -940,16 +940,17 @@ void CGame::ComputerKeyDown(MSG msg)
   }
 
   // if escape pressed
-  if (msg.message==WM_KEYDOWN && msg.wParam==VK_ESCAPE) {
+  if (event.type == WM_KEYDOWN && event.key.code == SE1K_ESCAPE) {
     ExitRequested();
+    return;
   }
 
   // if right mouse pressed
-  if (msg.message==WM_RBUTTONDOWN || msg.message==WM_RBUTTONDBLCLK) {
+  if (event.type == WM_RBUTTONDOWN) {
     bRDown = TRUE;
   }
   // if right mouse released
-  if (bRDown && msg.message==WM_RBUTTONUP) {
+  if (bRDown && event.type == WM_RBUTTONUP) {
     bRDown = FALSE;
     // mark current message as read
     MarkCurrentRead();
@@ -964,33 +965,33 @@ void CGame::ComputerKeyDown(MSG msg)
     }
   }
   
-  if (msg.message==WM_KEYDOWN) {
-    switch (msg.wParam) {
-    // change message types on number keys
-    case '1': _cmtWantedType = CMT_INFORMATION ; return;
-    case '2': _cmtWantedType = CMT_WEAPONS     ; return;
-    case '3': _cmtWantedType = CMT_ENEMIES     ; return;
-    case '4': _cmtWantedType = CMT_BACKGROUND  ; return;
-    case '5': _cmtWantedType = CMT_STATISTICS  ; return;
-    // go to next unread
-    case 'U':
-    case VK_SPACE:
-      NextUnreadMessage(); return;
-    // scroll message list
-    case 219: PrevMessage(); return;
-    case 221: NextMessage(); return;
-    // mark current message as read and go to next
-    case VK_RETURN: MarkCurrentRead(); NextUnreadMessage(); return;
-    // scroll message text
-    case VK_UP:   MessageTextUp(1); return;
-    case VK_DOWN: MessageTextDn(1); return;
-    case VK_PRIOR:MessageTextUp(_ctTextLinesOnScreen-1); return;
-    case VK_NEXT: MessageTextDn(_ctTextLinesOnScreen-1); return;
+  if (event.type == WM_KEYDOWN) {
+    switch (event.key.code) {
+      // change message types on number keys
+      case '1': _cmtWantedType = CMT_INFORMATION ; return;
+      case '2': _cmtWantedType = CMT_WEAPONS     ; return;
+      case '3': _cmtWantedType = CMT_ENEMIES     ; return;
+      case '4': _cmtWantedType = CMT_BACKGROUND  ; return;
+      case '5': _cmtWantedType = CMT_STATISTICS  ; return;
+      // go to next unread
+      case 'U':
+      case SE1K_SPACE:
+        NextUnreadMessage(); return;
+      // scroll message list
+      case SE1K_LEFTBRACKET:  PrevMessage(); return;
+      case SE1K_RIGHTBRACKET: NextMessage(); return;
+      // mark current message as read and go to next
+      case SE1K_RETURN: MarkCurrentRead(); NextUnreadMessage(); return;
+      // scroll message text
+      case SE1K_UP:       MessageTextUp(1); return;
+      case SE1K_DOWN:     MessageTextDn(1); return;
+      case SE1K_PAGEUP:   MessageTextUp(_ctTextLinesOnScreen-1); return;
+      case SE1K_PAGEDOWN: MessageTextDn(_ctTextLinesOnScreen-1); return;
     };
   }
 
   // if left mouse pressed
-  if (msg.message==WM_LBUTTONDOWN || msg.message==WM_LBUTTONDBLCLK) {
+  if (event.type == WM_LBUTTONDOWN) {
     BOOL bOverMsgSlider = FALSE;
     // if over slider
     {PIXaabbox2D boxSlider = GetTextSliderBox();
@@ -1031,7 +1032,7 @@ void CGame::ComputerKeyDown(MSG msg)
   }
 
   // if left mouse released
-  if (msg.message==WM_LBUTTONUP) {
+  if (event.type == WM_LBUTTONUP) {
     // stop dragging
     _pixSliderDragJ=-1;
     // if over exit

@@ -58,7 +58,7 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   if (pphi->phi_fCompleted>0) {
     ulCheckFlags |= 0x0001;
   }
-  if (_bUserBreakEnabled && (OS::GetAsyncKeyState(VK_ESCAPE) & ulCheckFlags)) {
+  if (_bUserBreakEnabled && (OS::GetKeyState(SE1K_ESCAPE) & ulCheckFlags)) {
     // break loading
     throw TRANS("User break!");
   }

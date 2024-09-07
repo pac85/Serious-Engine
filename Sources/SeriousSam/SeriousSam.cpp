@@ -795,16 +795,17 @@ void QuitScreenLoop(void)
     // assure we can listen to non-3d sounds
     soMusic.SetVolume(fVolume, fVolume);
     _pSound->UpdateSounds();
-    // while there are any messages in the message queue
-    MSG msg;
-    while (OS::Message::Peek(&msg, NULL, 0, 0, PM_REMOVE)) {
-      // if it is not a keyboard or mouse message
-      if(msg.message==WM_LBUTTONDOWN||
-         msg.message==WM_RBUTTONDOWN||
-         msg.message==WM_KEYDOWN) {
+
+    // [Cecil] Cross-platform events
+    OS::SE1Event event;
+
+    // Quit the quit screen on any button/key press
+    while (OS::PollEvent(event)) {
+      if (event.type == WM_LBUTTONDOWN || event.type == WM_RBUTTONDOWN || event.type == WM_KEYDOWN) {
         return;
       }
     }
+
     //_pTimer->Suspend(5);
 
   #if SE1_SINGLE_THREAD
@@ -855,33 +856,24 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
   // while it is still running
   while( _bRunning && _fnmModToLoad=="")
   {
-    // while there are any messages in the message queue
-    MSG msg;
-    while (OS::Message::Peek(&msg, NULL, 0, 0, PM_REMOVE))
-    {
-      // If it's not a mouse message
-      if (msg.message < WM_MOUSEFIRST || msg.message > WM_MOUSELAST) {
-        // And not system key messages
-        if (!((msg.message == WM_KEYDOWN && msg.wParam == VK_F10) || msg.message == WM_SYSKEYDOWN)) {
-          // Dispatch it
-          OS::Message::Translate(&msg);
-          OS::Message::Dispatch(&msg);
-        }
-      }
+    // [Cecil] Cross-platform events
+    OS::SE1Event event;
 
+    // While there are any messages in the message queue
+    while (OS::PollEvent(event))
+    {
       // Stop running the game
-      if (_pGame->ShouldStopRunning(msg, FALSE)) {
+      if (_pGame->ShouldStopRunning(event, FALSE)) {
         _bRunning = FALSE;
         _bQuitScreen = FALSE;
         break;
       }
 
-    #if !SE1_PREFER_SDL
       // Game window commands (also sent by the application itself)
-      if (msg.message == WM_SYSCOMMAND) {
-        switch (msg.wParam & ~0x0F) {
+      if (event.type == WM_SYSCOMMAND) {
+        switch (event.window.event) {
           // Minimize the window
-          case SC_MINIMIZE: {
+          case SDL_WINDOWEVENT_MINIMIZED: {
             if (_bWindowChanging) break;
             _bWindowChanging  = TRUE;
             _bReconsiderInput = TRUE;
@@ -891,16 +883,48 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
               _pNetwork->TogglePause();
             }
 
+          #if !SE1_PREFER_SDL
             // [Cecil] Reset display mode, if in fullscreen
             if (sam_iWindowMode == E_WM_FULLSCREEN) {
               _pGfx->ResetDisplayMode();
             }
 
             ShowWindow(_hwndMain, SW_MINIMIZE);
+          #endif
           } break;
 
+        #if SE1_PREFER_SDL
+          // If application is deactivated or minimized
+          case SDL_WINDOWEVENT_LEAVE:
+          case SDL_WINDOWEVENT_FOCUS_LOST: {
+            // If application is running and in full screen mode
+            if (!_bWindowChanging && _bRunning) {
+            #if !SE1_PREFER_SDL
+              // [Cecil] Minimize if in fullscreen
+              if (sam_iWindowMode == E_WM_FULLSCREEN) {
+                PostMessage(NULL, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+
+              // Just disable input if not in fullscreen 
+              } else
+            #endif
+              {
+                _pInput->DisableInput();
+              }
+            }
+          } break;
+
+          // If application is activated or maximized
+          case SDL_WINDOWEVENT_ENTER:
+          case SDL_WINDOWEVENT_FOCUS_GAINED: {
+            // Enable input back again if needed
+            _bReconsiderInput = TRUE;
+          } break;
+
+          case SDL_WINDOWEVENT_CLOSE: break;
+
+        #else
           // Restore the window
-          case SC_RESTORE: {
+          case SDL_WINDOWEVENT_RESTORED: {
             if (_bWindowChanging) break;
             _bWindowChanging  = TRUE;
             _bReconsiderInput = TRUE;
@@ -915,7 +939,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
           } break;
 
           // Maximize the window
-          case SC_MAXIMIZE: {
+          case SDL_WINDOWEVENT_MAXIMIZED: {
             if (_bWindowChanging) break;
             _bWindowChanging  = TRUE;
             _bReconsiderInput = TRUE;
@@ -926,45 +950,21 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
 
             ShowWindow(_hwndMain, SW_SHOWNORMAL);
           } break;
+        #endif // !SE1_PREFER_SDL
         }
       }
-    #endif // !SE1_PREFER_SDL
 
       // Toggle fullscreen on Alt+Enter
-      if (msg.message == WM_SYSKEYDOWN && msg.wParam == VK_RETURN && !OS::IsIconic(_hwndMain)) {
+      if (event.type == WM_SYSKEYDOWN && event.key.code == SE1K_RETURN && !OS::IsIconic(_hwndMain)) {
         // [Cecil] Switch between windowed and fullscreen
         StartNewMode((GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
           (DisplayDepth)sam_iDisplayDepth, (sam_iWindowMode != E_WM_FULLSCREEN ? E_WM_FULLSCREEN : E_WM_WINDOWED));
       }
 
-    #if SE1_WIN
-      // If application is deactivated or minimized
-      if ((msg.message == WM_ACTIVATE && (LOWORD(msg.wParam) == WA_INACTIVE || HIWORD(msg.wParam)))
-       ||  msg.message == WM_CANCELMODE || msg.message == WM_KILLFOCUS
-       || (msg.message == WM_ACTIVATEAPP && !msg.wParam)) {
-        // If application is running and in full screen mode
-        if( !_bWindowChanging && _bRunning) {
-          // [Cecil] Minimize if in fullscreen
-          if (sam_iWindowMode == E_WM_FULLSCREEN) {
-            PostMessage(NULL, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-
-          // Just disable input if not in fullscreen 
-          } else {
-            _pInput->DisableInput();
-          }
-        }
-
-      // If application is activated or maximized
-      } else if ((msg.message == WM_ACTIVATE && (LOWORD(msg.wParam) == WA_ACTIVE || LOWORD(msg.wParam) == WA_CLICKACTIVE))
-              ||  msg.message == WM_SETFOCUS
-              || (msg.message == WM_ACTIVATEAPP && msg.wParam)) {
-        // Enable input back again if needed
-        _bReconsiderInput = TRUE;
-      }
-
+    #if SE1_WIN && !SE1_PREFER_SDL
       // Teleport player around the level from an external application (for TechTest from Help)
-      if (msg.message == WM_COMMAND && msg.wParam == 1001) {
-        TeleportPlayer(msg.lParam);
+      if (event.type == WM_COMMAND && event.window.event == 1001) {
+        TeleportPlayer(event.window.data);
 
         // Restore the game window
         PostMessage(NULL, WM_SYSCOMMAND, SC_RESTORE, 0);
@@ -973,7 +973,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
     #endif
 
       // Close chat on Escape before anything else
-      if (_pGame->gm_csConsoleState == CS_TALK && _pGame->IsEscapeKeyPressed(msg)) {
+      if (_pGame->gm_csConsoleState == CS_TALK && _pGame->IsEscapeKeyPressed(event)) {
         _pGame->gm_csConsoleState = CS_OFF;
         continue;
       }
@@ -982,7 +982,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
       const BOOL bMenuForced = (_gmRunningGameMode == GM_NONE && (_pGame->gm_csConsoleState == CS_OFF || _pGame->gm_csConsoleState == CS_TURNINGOFF));
 
       // Want to open the menu and the computer isn't in the way
-      const BOOL bMenuToggle = (_pGame->IsEscapeKeyPressed(msg) && (_pGame->gm_csComputerState == CS_OFF || _pGame->gm_csComputerState == CS_ONINBACKGROUND));
+      const BOOL bMenuToggle = (_pGame->IsEscapeKeyPressed(event) && (_pGame->gm_csComputerState == CS_OFF || _pGame->gm_csComputerState == CS_ONINBACKGROUND));
 
       // If currently in game
       if (!bMenuActive) {
@@ -995,7 +995,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
           }
 
           // Clear key down message and start the menu
-          msg.message = WM_NULL;
+          event.type = WM_NULL;
           StartMenus();
         }
 
@@ -1008,7 +1008,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
       // If currently in the menu and wanting to return to the previous menu
       } else if (bMenuForced && bMenuToggle && pgmCurrentMenu->gm_pgmParentMenu == NULL) {
         // Delete key down message because there's no previous menu
-        msg.message = WM_NULL;
+        event.type = WM_NULL;
       }
 
       // Quick-open specific menus
@@ -1036,37 +1036,33 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
 
       // Pass key and mouse messages to the menu if it's active with no input on
       if (bMenuActive && !_pInput->IsInputEnabled()) {
-        if (msg.message == WM_KEYDOWN) {
-          MenuOnKeyDown(msg.wParam);
+        if (event.type == WM_KEYDOWN) {
+          MenuOnKeyDown(event.key.code, -1);
 
-        } else if (msg.message == WM_LBUTTONDOWN || msg.message == WM_LBUTTONDBLCLK) {
-          MenuOnKeyDown(VK_LBUTTON);
+        } else if (event.type == WM_LBUTTONDOWN) {
+          MenuOnKeyDown(-1, event.mouse.button);
 
-        } else if (msg.message == WM_RBUTTONDOWN || msg.message == WM_RBUTTONDBLCLK) {
-          MenuOnKeyDown(VK_RBUTTON);
+        } else if (event.type == WM_RBUTTONDOWN) {
+          MenuOnKeyDown(-1, event.mouse.button);
 
-        } else if (msg.message == WM_MOUSEMOVE) {
-          SLONG iX = (SLONG)LOWORD(msg.lParam);
-          SLONG iY = (SLONG)HIWORD(msg.lParam);
-          MenuOnMouseMove(iX, iY);
+        } else if (event.type == WM_MOUSEMOVE) {
+          MenuOnMouseMove(event.mouse.x, event.mouse.y);
 
-        } else if (msg.message == WM_MOUSEWHEEL) {
-          SWORD iDir = (SWORD)(UWORD)HIWORD(msg.wParam);
-
-          if (iDir > 0) {
-            MenuOnKeyDown(11);
-          } else if (iDir < 0) {
-            MenuOnKeyDown(10);
+        } else if (event.type == WM_MOUSEWHEEL) {
+          if (event.mouse.y > 0) {
+            MenuOnKeyDown(-1, MOUSEWHEEL_UP);
+          } else if (event.mouse.y < 0) {
+            MenuOnKeyDown(-1, MOUSEWHEEL_DN);
           }
 
-        } else if (msg.message == WM_CHAR) {
-          MenuOnChar(msg);
+        } else if (event.type == WM_CHAR) {
+          MenuOnChar(event);
         }
       }
 
       // Toggle console forcefully or on console key (or on Escape when done running addon scripts)
-      const BOOL bToggleConsole = (sam_bToggleConsole || _pGame->IsConsoleKeyPressed(msg)
-        || (_pGame->IsEscapeKeyPressed(msg) && _iAddonExecState == 3));
+      const BOOL bToggleConsole = (sam_bToggleConsole || _pGame->IsConsoleKeyPressed(event)
+        || (_pGame->IsEscapeKeyPressed(event) && _iAddonExecState == 3));
 
       // Wanting to toggle console on key when not defining keys for controls
       if (bToggleConsole && !_bDefiningKey) {
@@ -1084,26 +1080,26 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
 
       // If not running any addon script
       if (_iAddonExecState == 0) {
-        _pGame->HandleConsoleAndComputer(msg); // [Cecil]
+        _pGame->HandleConsoleAndComputer(event); // [Cecil]
       }
 
-      _pGame->HandlePause(msg); // [Cecil]
+      _pGame->HandlePause(event); // [Cecil]
 
       // If any demo is playing
       if (_gmRunningGameMode == GM_DEMO || _gmRunningGameMode == GM_INTRO)
       {
         // Space, Enter, Left Click, Right Click
-        const BOOL bAnyKey = ((msg.message == WM_KEYDOWN && (msg.wParam == VK_SPACE || msg.wParam == VK_RETURN))
-         || msg.message == WM_LBUTTONDOWN || msg.message == WM_RBUTTONDOWN);
+        const BOOL bAnyKey = ((event.type == WM_KEYDOWN && (event.key.code == SE1K_SPACE || event.key.code == SE1K_RETURN))
+          || event.type == WM_LBUTTONDOWN || event.type == WM_RBUTTONDOWN);
 
         // Stop demo on escape
-        if (_pGame->IsEscapeKeyPressed(msg)) {
+        if (_pGame->IsEscapeKeyPressed(event)) {
           _pGame->StopGame();
           _bInAutoPlayLoop = FALSE;
           _gmRunningGameMode = GM_NONE;
 
         // Skip to the next demo on any key (other than console)
-        } else if (bAnyKey && !_pGame->IsConsoleKeyPressed(msg)) {
+        } else if (bAnyKey && !_pGame->IsConsoleKeyPressed(event)) {
           // Only if there's no menu or console in the way
           if (!bMenuActive && !bMenuRendering && _pGame->gm_csConsoleState == CS_OFF) {
             _pGame->StopGame();
@@ -1120,7 +1116,7 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
     // get real cursor position
     if( _pGame->gm_csComputerState!=CS_OFF && _pGame->gm_csComputerState!=CS_ONINBACKGROUND) {
       int iMouseX, iMouseY;
-      OS::GetCursorPos(&iMouseX, &iMouseY);
+      OS::GetMouseState(&iMouseX, &iMouseY);
       _pGame->ComputerMouseMove(iMouseX, iMouseY);
     }
 

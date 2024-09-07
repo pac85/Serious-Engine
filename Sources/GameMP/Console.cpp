@@ -517,39 +517,39 @@ static void Key_PgDn( BOOL bShift)
 }
 
 
-void CGame::ConsoleKeyDown( MSG msg)
+void CGame::ConsoleKeyDown(const OS::SE1Event &event)
 {
   // if console is off
   if (_pGame->gm_csConsoleState==CS_OFF || _pGame->gm_csConsoleState==CS_TURNINGOFF) {
     // do nothing
     return;
   }
-  const BOOL bShift = OS::GetKeyState(VK_SHIFT) & 0x8000;
-  switch( msg.wParam) {
-  case VK_RETURN:  Key_Return();      break;
-  case VK_UP:      Key_ArrowUp();     break;
-  case VK_DOWN:    Key_ArrowDown();   break;
-  case VK_TAB:     Key_Tab(bShift);   break;
-  case VK_PRIOR:   Key_PgUp(bShift);  break;
-  case VK_NEXT:    Key_PgDn(bShift);  break;
-  case VK_BACK:    Key_Backspace(bShift, FALSE);  break;
-  case VK_DELETE:  Key_Backspace(bShift, TRUE);   break;
-  case VK_LEFT:    if (iCursorPos > 0)                       iCursorPos--; break;
-  case VK_RIGHT:   if (iCursorPos < strEditingLine.Length()) iCursorPos++; break;
-  case VK_HOME:    iCursorPos = 0;                       break;
-  case VK_END:     iCursorPos = strEditingLine.Length(); break;
+  const BOOL bShift = !!(OS::GetKeyState(SE1K_LSHIFT) & 0x8000) || !!(OS::GetKeyState(SE1K_RSHIFT) & 0x8000);
+  switch (event.key.code) {
+    case SE1K_RETURN:    Key_Return();      break;
+    case SE1K_UP:        Key_ArrowUp();     break;
+    case SE1K_DOWN:      Key_ArrowDown();   break;
+    case SE1K_TAB:       Key_Tab(bShift);   break;
+    case SE1K_PAGEUP:    Key_PgUp(bShift);  break;
+    case SE1K_PAGEDOWN:  Key_PgDn(bShift);  break;
+    case SE1K_BACKSPACE: Key_Backspace(bShift, FALSE);  break;
+    case SE1K_DELETE:    Key_Backspace(bShift, TRUE);   break;
+    case SE1K_LEFT:      if (iCursorPos > 0)                       iCursorPos--; break;
+    case SE1K_RIGHT:     if (iCursorPos < strEditingLine.Length()) iCursorPos++; break;
+    case SE1K_HOME:      iCursorPos = 0;                       break;
+    case SE1K_END:       iCursorPos = strEditingLine.Length(); break;
   }
 }
 
 
-void CGame::ConsoleChar( MSG msg)
+void CGame::ConsoleChar(const OS::SE1Event &event)
 {
   // if console is off, do nothing
   if (_pGame->gm_csConsoleState==CS_OFF) return;
 
   // for all keys except tab and shift, discard last found tab browsing symbol
-  char chrKey = msg.wParam;
-  if( msg.wParam!=VK_TAB && msg.wParam!=VK_SHIFT) strLastExpanded = "";
+  char chrKey = event.key.code;
+  if (event.key.code != SE1K_TAB && event.key.code != SE1K_LSHIFT && event.key.code != SE1K_RSHIFT) strLastExpanded = "";
 
   // if key with letter pressed
   if( isprint(chrKey) && chrKey!='`') {

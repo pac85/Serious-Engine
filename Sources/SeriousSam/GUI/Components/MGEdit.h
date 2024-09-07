@@ -30,8 +30,8 @@ public:
   CMGEdit(void);
 
   // return TRUE if handled
-  BOOL OnKeyDown(int iVKey);
-  BOOL OnChar(MSG msg);
+  BOOL OnKeyDown(int iVKey, int iMouseButton);
+  BOOL OnChar(const OS::SE1Event &event);
   void Clear(void);
   void OnActivate(void);
   void OnKillFocus(void);

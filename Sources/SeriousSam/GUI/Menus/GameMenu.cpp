@@ -150,7 +150,7 @@ void CGameMenu::ScrollList(INDEX iDir)
   }
 }
 
-BOOL CGameMenu::OnChar(MSG msg)
+BOOL CGameMenu::OnChar(const OS::SE1Event &event)
 {
   // find curently active gadget
   CMenuGadget *pmgActive = NULL;
@@ -170,7 +170,7 @@ BOOL CGameMenu::OnChar(MSG msg)
   }
 
   // if active gadget handles it
-  if (pmgActive->OnChar(msg)) {
+  if (pmgActive->OnChar(event)) {
     // key is handled
     return TRUE;
   }
@@ -180,7 +180,7 @@ BOOL CGameMenu::OnChar(MSG msg)
 }
 
 // return TRUE if handled
-BOOL CGameMenu::OnKeyDown(int iVKey)
+BOOL CGameMenu::OnKeyDown(int iVKey, int iMouseButton)
 {
   // find curently active gadget
   CMenuGadget *pmgActive = NULL;
@@ -200,28 +200,26 @@ BOOL CGameMenu::OnKeyDown(int iVKey)
   }
 
   // if active gadget handles it
-  if (pmgActive->OnKeyDown(iVKey)) {
+  if (pmgActive->OnKeyDown(iVKey, iMouseButton)) {
     // key is handled
     return TRUE;
   }
 
+  // [Cecil] Scroll with the mouse
+  switch (iMouseButton) {
+    case MOUSEWHEEL_UP: ScrollList(-4); return TRUE;
+    case MOUSEWHEEL_DN: ScrollList(+4); return TRUE;
+  }
+
   // process normal in menu movement
   switch (iVKey) {
-  case VK_PRIOR:
+  case SE1K_PAGEUP:
     ScrollList(-2);
     return TRUE;
-  case VK_NEXT:
+  case SE1K_PAGEDOWN:
     ScrollList(+2);
     return TRUE;
-
-  case 11:
-    ScrollList(-4);
-    return TRUE;
-  case 10:
-    ScrollList(+4);
-    return TRUE;
-
-  case VK_UP:
+  case SE1K_UP:
     // if this is top button in list
     if (pmgActive == gm_pmgListTop) {
       // scroll list up
@@ -240,7 +238,7 @@ BOOL CGameMenu::OnKeyDown(int iVKey)
       return TRUE;
     }
     break;
-  case VK_DOWN:
+  case SE1K_DOWN:
     // if this is bottom button in list
     if (pmgActive == gm_pmgListBottom) {
       // scroll list down
@@ -259,7 +257,7 @@ BOOL CGameMenu::OnKeyDown(int iVKey)
       return TRUE;
     }
     break;
-  case VK_LEFT:
+  case SE1K_LEFT:
     // if we can go left
     if (pmgActive->mg_pmgLeft != NULL) {
       // call lose focus to still active gadget and
@@ -276,7 +274,7 @@ BOOL CGameMenu::OnKeyDown(int iVKey)
       return TRUE;
     }
     break;
-  case VK_RIGHT:
+  case SE1K_RIGHT:
     // if we can go right
     if (pmgActive->mg_pmgRight != NULL) {
       // call lose focus to still active gadget and

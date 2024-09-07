@@ -326,7 +326,7 @@ void CMGServerList::OnMouseOver(PIX pixI, PIX pixJ)
   mg_pixMouseI = pixI;
   mg_pixMouseJ = pixJ;
 
-  if (!(OS::GetKeyState(VK_LBUTTON) & 0x8000)) {
+  if (!(OS::GetMouseState(NULL, NULL) & SDL_BUTTON_LMASK)) {
     mg_pixDragJ = -1;
   }
 
@@ -356,69 +356,52 @@ void CMGServerList::OnMouseOver(PIX pixI, PIX pixJ)
   }
 }
 
-BOOL CMGServerList::OnKeyDown(int iVKey)
+BOOL CMGServerList::OnKeyDown(int iVKey, int iMouseButton)
 {
+  switch (iMouseButton) {
+    // [Cecil] Start dragging with left mouse button
+    case SDL_BUTTON_LEFT: {
+      if (mg_pixMouseDrag >= 0) {
+        mg_pixDragJ = mg_pixMouseDrag;
+        mg_iDragLine = mg_iFirstOnScreen;
+        return TRUE;
+      }
+    } break;
+
+    // [Cecil] Scroll with the mouse
+    case MOUSEWHEEL_UP: {
+      mg_iSelected -= 3;
+      mg_iFirstOnScreen -= 3;
+      AdjustFirstOnScreen();
+    } return TRUE;
+
+    case MOUSEWHEEL_DN: {
+      mg_iSelected += 3;
+      mg_iFirstOnScreen += 3;
+      AdjustFirstOnScreen();
+    } return TRUE;
+  }
+
   switch (iVKey) {
-  case VK_UP:
+  case SE1K_UP:
     mg_iSelected -= 1;
     AdjustFirstOnScreen();
     break;
-  case VK_DOWN:
+  case SE1K_DOWN:
     mg_iSelected += 1;
     AdjustFirstOnScreen();
     break;
-  case VK_PRIOR:
+  case SE1K_PAGEUP:
     mg_iSelected -= mg_ctOnScreen - 1;
     mg_iFirstOnScreen -= mg_ctOnScreen - 1;
     AdjustFirstOnScreen();
     break;
-  case VK_NEXT:
+  case SE1K_PAGEDOWN:
     mg_iSelected += mg_ctOnScreen - 1;
     mg_iFirstOnScreen += mg_ctOnScreen - 1;
     AdjustFirstOnScreen();
     break;
-  case 11:
-    mg_iSelected -= 3;
-    mg_iFirstOnScreen -= 3;
-    AdjustFirstOnScreen();
-    break;
-  case 10:
-    mg_iSelected += 3;
-    mg_iFirstOnScreen += 3;
-    AdjustFirstOnScreen();
-    break;
-  case VK_LBUTTON:
-    /*    if (mg_pixMouseJ>=mg_pixHeaderMinJ && mg_pixMouseJ<=mg_pixHeaderMidJ
-    && mg_pixMouseI>=mg_pixHeaderI[0] && mg_pixMouseI<=mg_pixHeaderI[7]) {
-    INDEX iNewSort = mg_iSort;
-    if (mg_pixMouseI<=mg_pixHeaderI[1]) {
-    iNewSort = 0;
-    } else if (mg_pixMouseI<=mg_pixHeaderI[2]) {
-    iNewSort = 1;
-    } else if (mg_pixMouseI<=mg_pixHeaderI[3]) {
-    iNewSort = 2;
-    } else if (mg_pixMouseI<=mg_pixHeaderI[4]) {
-    iNewSort = 3;
-    } else if (mg_pixMouseI<=mg_pixHeaderI[5]) {
-    iNewSort = 4;
-    } else if (mg_pixMouseI<=mg_pixHeaderI[6]) {
-    iNewSort = 5;
-    } else if (mg_pixMouseI<=mg_pixHeaderI[7]) {
-    iNewSort = 6;
-    }
-    if (iNewSort==mg_iSort) {
-    mg_bSortDown = !mg_bSortDown;
-    } else {
-    mg_bSortDown = FALSE;
-    }
-    mg_iSort = iNewSort;
-    break;
-    } else */if (mg_pixMouseDrag >= 0) {
-      mg_pixDragJ = mg_pixMouseDrag;
-      mg_iDragLine = mg_iFirstOnScreen;
-      break;
-    }
-  case VK_RETURN:
+  case SE1K_RETURN:
     PlayMenuSound(_psdPress);
     IFeel_PlayEffect("Menu_press");
     {INDEX i = 0;

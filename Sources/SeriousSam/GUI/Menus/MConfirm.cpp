@@ -73,11 +73,11 @@ void CConfirmMenu::BeSmall(void)
 }
 
 // return TRUE if handled
-BOOL CConfirmMenu::OnKeyDown(int iVKey)
+BOOL CConfirmMenu::OnKeyDown(int iVKey, int iMouseButton)
 {
-  if ((iVKey == VK_ESCAPE || iVKey == VK_RBUTTON) && gm_mgConfirmNo.mg_pActivatedFunction != NULL) {
+  if ((iVKey == SE1K_ESCAPE || iMouseButton == SDL_BUTTON_RIGHT) && gm_mgConfirmNo.mg_pActivatedFunction != NULL) {
     gm_mgConfirmNo.OnActivate();
     return TRUE;
   }
-  return CGameMenu::OnKeyDown(iVKey);
+  return CGameMenu::OnKeyDown(iVKey, iMouseButton);
 }

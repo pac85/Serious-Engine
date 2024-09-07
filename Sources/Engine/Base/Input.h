@@ -150,7 +150,7 @@ public:
   const CTString &GetAxisTransName(INDEX iAxisNo) const;
 
   // Get current position of given axis
-  inline float GetAxisValue(INDEX iAxisNo) const {
+  inline FLOAT GetAxisValue(INDEX iAxisNo) const {
     return inp_caiAllAxisInfo[iAxisNo].cai_fReading;
   };
 
