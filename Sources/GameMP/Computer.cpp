@@ -1275,6 +1275,7 @@ void CGame::ComputerRender(CDrawPort *pdp)
   for (INDEX i=0; i<CMT_COUNT; i++) {
     PrintButton(&dpComp, i);
   }
+
   // print list of messages
   CDrawPort dpMsgList(&dpComp, _boxMsgList);
   if (dpMsgList.Lock()) {
@@ -1285,6 +1286,7 @@ void CGame::ComputerRender(CDrawPort *pdp)
     PrintMessageList(&dpMsgList);
     dpMsgList.Unlock();
   }
+
   // print text of current message
   CDrawPort dpMsgText(&dpComp, _boxMsgText);
   if (dpMsgText.Lock()) {
@@ -1295,12 +1297,16 @@ void CGame::ComputerRender(CDrawPort *pdp)
     PrintMessageText(&dpMsgText);
     dpMsgText.Unlock();
   }
-  // draw image of current message
-  CDrawPort dpMsgImage(&dpComp, _boxMsgImage);
-  if (dpMsgImage.Lock()) {
-    LCDSetDrawport(&dpMsgImage);
-    RenderMessageImage(&dpMsgImage);
-    dpMsgImage.Unlock();
+
+  // [Cecil] Only in coop
+  if (GetSP()->sp_bCooperative) {
+    // draw image of current message
+    CDrawPort dpMsgImage(&dpComp, _boxMsgImage);
+    if (dpMsgImage.Lock()) {
+      LCDSetDrawport(&dpMsgImage);
+      RenderMessageImage(&dpMsgImage);
+      dpMsgImage.Unlock();
+    }
   }
 
   // render mouse pointer on top of everything else
