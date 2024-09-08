@@ -110,8 +110,8 @@ public:
   FLOAT ts_LightDistance;
   COLOR ts_LightColor;
   COLOR ts_colAmbientColor;
-	COLORREF ts_PaperColor;
-	COLORREF ts_InkColor;
+	ULONG ts_PaperColor;
+	ULONG ts_InkColor;
 	BOOL ts_IsWinBcgTexture;
 	CTFileName ts_WinBcgTextureName;
 	CModelRenderPrefs ts_RenderPrefs;

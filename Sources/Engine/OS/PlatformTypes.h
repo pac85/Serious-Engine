@@ -38,10 +38,6 @@ typedef int INDEX;  // For indexed values and quantities
 typedef ULONG DWORD;
 typedef SLONG LONG;
 typedef UWORD WORD;
-typedef ULONG WPARAM;
-typedef SLONG LPARAM;
-typedef DWORD COLORREF;
-typedef void *LPVOID;
 
 #if SE1_64BIT
   typedef UQUAD UINT_PTR;
@@ -62,18 +58,6 @@ DECLARE_HANDLE(HINSTANCE);
 typedef HINSTANCE HMODULE;
 DECLARE_HANDLE(HDC);
 DECLARE_HANDLE(HGLRC);
-
-typedef struct {
-  LONG x;
-  LONG y;
-} POINT, *LPPOINT;
-
-typedef struct {
-  LONG left;
-  LONG top;
-  LONG right;
-  LONG bottom;
-} RECT;
 
 // For sound playback using a specific API
 typedef struct {
