@@ -1044,10 +1044,8 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, const CTString &strCm
         if (event.type == WM_KEYDOWN) {
           MenuOnKeyDown(event.key.code, -1);
 
-        } else if (event.type == WM_LBUTTONDOWN) {
-          MenuOnKeyDown(-1, event.mouse.button);
-
-        } else if (event.type == WM_RBUTTONDOWN) {
+        } else if (event.type == WM_LBUTTONDOWN || event.type == WM_RBUTTONDOWN
+                || event.type == WM_MBUTTONDOWN || event.type == WM_XBUTTONDOWN) {
           MenuOnKeyDown(-1, event.mouse.button);
 
         } else if (event.type == WM_MOUSEMOVE) {

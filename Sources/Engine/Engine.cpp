@@ -229,6 +229,20 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
 
   SE_InitSDL(bGameApp ? ulGameplay : 0);
 
+#if !SE1_WIN
+  // [Cecil] Register new SDL events
+  WM_SYSKEYDOWN  = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_SYSKEYUP    = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_LBUTTONDOWN = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_LBUTTONUP   = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_RBUTTONDOWN = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_RBUTTONUP   = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_MBUTTONDOWN = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_MBUTTONUP   = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_XBUTTONDOWN = (SDL_EventType)SDL_RegisterEvents(1);
+  WM_XBUTTONUP   = (SDL_EventType)SDL_RegisterEvents(1);
+#endif
+
   // [Cecil] TEMP: Set application type
   _eEngineAppType = eType;
 

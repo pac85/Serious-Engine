@@ -17,6 +17,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Input.h>
 
+#if !SE1_WIN
+
+// [Cecil] No second mouse support for non-Windows OS
+void CInput::Mouse2_Clear(void) {};
+void CInput::Mouse2_Startup(void) {};
+void CInput::Mouse2_Shutdown(void) {};
+void CInput::Mouse2_Update(void) {};
+
+#else
+
 extern INDEX inp_i2ndMousePort;
 extern FLOAT inp_f2ndMouseSensitivity;
 extern INDEX inp_b2ndMousePrecision;
@@ -257,3 +267,5 @@ void CInput::Mouse2_Update(void) {
   inp_caiAllAxisInfo[4].cai_fReading = fMouseRelX;
   inp_caiAllAxisInfo[5].cai_fReading = fMouseRelY;
 };
+
+#endif // SE1_WIN

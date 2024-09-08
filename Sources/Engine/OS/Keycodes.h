@@ -24,6 +24,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SE1K_LBUTTON      0x1
 #define SE1K_RBUTTON      0x2
 #define SE1K_MBUTTON      0x3
+#define SE1K_XBUTTON1     0x4
+#define SE1K_XBUTTON2     0x5
 
 #define SE1K_1            SDLK_1
 #define SE1K_2            SDLK_2
@@ -134,6 +136,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SE1K_LBUTTON      VK_LBUTTON
 #define SE1K_RBUTTON      VK_RBUTTON
 #define SE1K_MBUTTON      VK_MBUTTON
+#define SE1K_XBUTTON1     VK_XBUTTON1
+#define SE1K_XBUTTON2     VK_XBUTTON2
 
 #define SE1K_1            '1'
 #define SE1K_2            '2'

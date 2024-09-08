@@ -19,6 +19,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #if SE1_WIN
   #include <SDL2/include/SDL_syswm.h>
+
+#else
+  // Unique types for some Windows messages
+  SDL_EventType WM_SYSKEYDOWN;
+  SDL_EventType WM_SYSKEYUP;
+  SDL_EventType WM_LBUTTONDOWN;
+  SDL_EventType WM_LBUTTONUP;
+  SDL_EventType WM_RBUTTONDOWN;
+  SDL_EventType WM_RBUTTONUP;
+  SDL_EventType WM_MBUTTONDOWN;
+  SDL_EventType WM_MBUTTONUP;
+  SDL_EventType WM_XBUTTONDOWN;
+  SDL_EventType WM_XBUTTONUP;
 #endif
 
 // Destroy current window
@@ -58,6 +71,104 @@ HWND OS::Window::GetNativeHandle(void) {
 #endif
 
 BOOL OS::PollEvent(OS::SE1Event &event) {
+#if SE1_PREFER_SDL
+  // Read comment above the function definition
+  extern int SE_PollEventForInput(SDL_Event *pEvent);
+
+  // Go in the loop until it finds an event it can process and return TRUE on it
+  // Otherwise break from switch-case and try checking the next event
+  // If none found, exits the loop and returns FALSE because there are no more events
+  SDL_Event sdlevent;
+
+  while (SE_PollEventForInput(&sdlevent))
+  {
+    // Reset the event
+    SDL_zero(event);
+    event.type = WM_NULL;
+
+    switch (sdlevent.type) {
+      // Key events
+      case SDL_TEXTINPUT: {
+        event.type = WM_CHAR;
+        event.key.code = sdlevent.text.text[0]; // [Cecil] FIXME: Use all characters from the array
+      } return TRUE;
+
+      case SDL_KEYDOWN: {
+        event.type = (sdlevent.key.keysym.mod & KMOD_ALT) ? WM_SYSKEYDOWN : WM_KEYDOWN;
+        event.key.code = sdlevent.key.keysym.sym;
+      } return TRUE;
+
+      case SDL_KEYUP: {
+        event.type = (sdlevent.key.keysym.mod & KMOD_ALT) ? WM_SYSKEYUP : WM_KEYUP;
+        event.key.code = sdlevent.key.keysym.sym;
+      } return TRUE;
+
+      // Mouse events
+      case SDL_MOUSEMOTION: {
+        event.type = WM_MOUSEMOVE;
+        event.mouse.x = sdlevent.motion.x;
+        event.mouse.y = sdlevent.motion.y;
+      } return TRUE;
+
+      case SDL_MOUSEWHEEL: {
+        event.type = WM_MOUSEWHEEL;
+        event.mouse.y = sdlevent.wheel.y * MOUSEWHEEL_SCROLL_INTERVAL;
+      } return TRUE;
+
+      case SDL_MOUSEBUTTONDOWN: {
+        switch (sdlevent.button.button) {
+          case SDL_BUTTON_LEFT:   event.type = WM_LBUTTONDOWN; break;
+          case SDL_BUTTON_RIGHT:  event.type = WM_RBUTTONDOWN; break;
+          case SDL_BUTTON_MIDDLE: event.type = WM_MBUTTONDOWN; break;
+          case SDL_BUTTON_X1:     event.type = WM_XBUTTONDOWN; break;
+          case SDL_BUTTON_X2:     event.type = WM_XBUTTONDOWN; break;
+          default: event.type = WM_NULL; // Unknown
+        }
+
+        event.mouse.button = sdlevent.button.button;
+        event.mouse.pressed = sdlevent.button.state;
+      } return TRUE;
+
+      case SDL_MOUSEBUTTONUP: {
+        switch (sdlevent.button.button) {
+          case SDL_BUTTON_LEFT:   event.type = WM_LBUTTONUP; break;
+          case SDL_BUTTON_RIGHT:  event.type = WM_RBUTTONUP; break;
+          case SDL_BUTTON_MIDDLE: event.type = WM_MBUTTONUP; break;
+          case SDL_BUTTON_X1:     event.type = WM_XBUTTONUP; break;
+          case SDL_BUTTON_X2:     event.type = WM_XBUTTONUP; break;
+          default: event.type = WM_NULL; // Unknown
+        }
+
+        event.mouse.button = sdlevent.button.button;
+        event.mouse.pressed = sdlevent.button.state;
+      } return TRUE;
+
+      // Window events
+      case SDL_WINDOWEVENT: {
+        event.type = WM_SYSCOMMAND;
+        event.window.event = sdlevent.window.event;
+      } return TRUE;
+
+      case SDL_QUIT: {
+        event.type = WM_QUIT;
+      } return TRUE;
+
+      // Controller input
+      case SDL_CONTROLLERDEVICEADDED: {
+        _pInput->OpenGameController(sdlevent.cdevice.which);
+      } return TRUE;
+
+      case SDL_CONTROLLERDEVICEREMOVED: {
+        _pInput->CloseGameController(sdlevent.cdevice.which);
+      } return TRUE;
+
+      default: break;
+    }
+  }
+
+  return FALSE;
+
+#else
   // Manual joystick update
   _pInput->UpdateJoysticks();
 
@@ -130,6 +241,26 @@ BOOL OS::PollEvent(OS::SE1Event &event) {
 
       case WM_MBUTTONUP: {
         event.mouse.button = SDL_BUTTON_MIDDLE;
+        event.mouse.pressed = FALSE;
+      } return TRUE;
+
+      case WM_XBUTTONDOWN: case WM_XBUTTONDBLCLK: {
+        event.type = WM_XBUTTONDOWN;
+
+        if (GET_XBUTTON_WPARAM(msg.wParam) & XBUTTON2) {
+          event.mouse.button = SDL_BUTTON_X2;
+        } else {
+          event.mouse.button = SDL_BUTTON_X1;
+        }
+        event.mouse.pressed = TRUE;
+      } return TRUE;
+
+      case WM_XBUTTONUP: {
+        if (GET_XBUTTON_WPARAM(msg.wParam) & XBUTTON2) {
+          event.mouse.button = SDL_BUTTON_X2;
+        } else {
+          event.mouse.button = SDL_BUTTON_X1;
+        }
         event.mouse.pressed = FALSE;
       } return TRUE;
 
@@ -210,6 +341,7 @@ BOOL OS::PollEvent(OS::SE1Event &event) {
   }
 
   return FALSE;
+#endif // !SE1_PREFER_SDL
 };
 
 BOOL OS::IsIconic(OS::Window hWnd)
@@ -223,7 +355,14 @@ BOOL OS::IsIconic(OS::Window hWnd)
 
 UWORD OS::GetKeyState(ULONG iKey)
 {
+#if SE1_PREFER_SDL
+  const Uint8 *aState = SDL_GetKeyboardState(NULL);
+  SDL_Scancode eScancode = SDL_GetScancodeFromKey(iKey);
+
+  return (aState[eScancode] ? 0x8000 : 0x0);
+#else
   return ::GetAsyncKeyState(iKey);
+#endif
 };
 
 ULONG OS::GetMouseState(int *piX, int *piY, BOOL bRelativeToWindow) {
@@ -255,6 +394,8 @@ ULONG OS::GetMouseState(int *piX, int *piY, BOOL bRelativeToWindow) {
   if (::GetKeyState(VK_LBUTTON) & 0x8000) ulMouse |= SDL_BUTTON_LMASK;
   if (::GetKeyState(VK_RBUTTON) & 0x8000) ulMouse |= SDL_BUTTON_RMASK;
   if (::GetKeyState(VK_MBUTTON) & 0x8000) ulMouse |= SDL_BUTTON_MMASK;
+  if (::GetKeyState(VK_XBUTTON1) & 0x8000) ulMouse |= SDL_BUTTON_X1MASK;
+  if (::GetKeyState(VK_XBUTTON2) & 0x8000) ulMouse |= SDL_BUTTON_X2MASK;
 #endif
 
   return ulMouse;
@@ -262,5 +403,14 @@ ULONG OS::GetMouseState(int *piX, int *piY, BOOL bRelativeToWindow) {
 
 int OS::ShowCursor(BOOL bShow)
 {
+#if SE1_PREFER_SDL
+  static int ct = 0;
+  ct += (bShow) ? 1 : -1;
+
+  SDL_ShowCursor((ct >= 0) ? SDL_TRUE : SDL_FALSE);
+  return ct;
+
+#else
   return ::ShowCursor(bShow);
+#endif
 };

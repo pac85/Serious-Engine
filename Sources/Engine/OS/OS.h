@@ -21,13 +21,32 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/OS/Keycodes.h>
 #include <Engine/OS/PlatformSpecific.h>
 
-// Non-Windows OS
 #if !SE1_WIN
 
-#define LOWORD(x) (x & 0xFFFF)
-#define HIWORD(x) ((x >> 16) & 0xFFFF)
+// Unique types for some Windows messages
+extern SDL_EventType WM_SYSKEYDOWN;
+extern SDL_EventType WM_SYSKEYUP;
+extern SDL_EventType WM_LBUTTONDOWN;
+extern SDL_EventType WM_LBUTTONUP;
+extern SDL_EventType WM_RBUTTONDOWN;
+extern SDL_EventType WM_RBUTTONUP;
+extern SDL_EventType WM_MBUTTONDOWN;
+extern SDL_EventType WM_MBUTTONUP;
+extern SDL_EventType WM_XBUTTONDOWN;
+extern SDL_EventType WM_XBUTTONUP;
 
-#endif // !SE1_WIN
+// Redefined Windows messages
+#define WM_NULL       SDL_FIRSTEVENT
+#define WM_CHAR       SDL_TEXTINPUT
+#define WM_KEYDOWN    SDL_KEYDOWN
+#define WM_KEYUP      SDL_KEYUP
+#define WM_MOUSEMOVE  SDL_MOUSEMOTION
+#define WM_MOUSEWHEEL SDL_MOUSEWHEEL
+#define WM_SYSCOMMAND SDL_WINDOWEVENT
+#define WM_QUIT       SDL_QUIT
+#define WM_CLOSE      SDL_QUIT
+
+#endif
 
 // For mimicking Win32 wheel scrolling
 #define MOUSEWHEEL_SCROLL_INTERVAL 120
@@ -153,6 +172,8 @@ class ENGINE_API OS {
       WindowEvent window;
     } SE1Event;
 
+    // [SE1_PREFER_SDL = 1]
+    // Uses SDL_PollEvent() method with additional internal input handling and translates SDL_Event to SE1Event
     // [SE1_PREFER_SDL = 0]
     // Uses Win32's PeekMessage() method and translates MSG events to SE1Event
     static BOOL PollEvent(SE1Event &event);
@@ -160,6 +181,8 @@ class ENGINE_API OS {
     // Check if the game window isn't minimized
     static BOOL IsIconic(Window hWnd);
 
+    // [SE1_PREFER_SDL = 1]
+    // Uses SDL_GetKeyboardState() method and returns 0x8000 if the key is held and 0x0 otherwise
     // [SE1_PREFER_SDL = 0]
     // Works just like Win32's GetAsyncKeyState() method
     static UWORD GetKeyState(ULONG iKey);
@@ -171,6 +194,9 @@ class ENGINE_API OS {
     // returning SDL masks with pressed mouse buttons (SDL_BUTTON)
     static ULONG GetMouseState(int *piX, int *piY, BOOL bRelativeToWindow = TRUE);
 
+    // [SE1_PREFER_SDL = 1]
+    // Mimics Win32's ShowCursor() functionality: if bShow is TRUE, the display count is incremented, otherwise it's decremented
+    // Uses SDL_ShowCursor() with TRUE or FALSE depending on whether the display count is positive or not
     // [SE1_PREFER_SDL = 0]
     // Works just like Win32's ShowCursor() method
     static int ShowCursor(BOOL bShow);

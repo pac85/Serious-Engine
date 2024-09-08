@@ -37,13 +37,12 @@ extern FLOAT inp_bInvertMouse;
 extern INDEX inp_bFilterMouse;
 extern INDEX inp_bAllowPrescan;
 
-INDEX inp_iMButton4Dn = 0x20040;
-INDEX inp_iMButton4Up = 0x20000;
-INDEX inp_iMButton5Dn = 0x10020;
-INDEX inp_iMButton5Up = 0x10000;
-INDEX inp_bMsgDebugger = FALSE;
-
 CTString inp_astrAxisTran[MAX_OVERALL_AXES]; // translated names for axis
+
+#if SE1_PREFER_SDL
+  // [Cecil] For synchronizing SDL events
+  static CTCriticalSection inp_csSDLInput;
+#endif
 
 /*
 
@@ -69,7 +68,11 @@ struct KeyConversion {
   // certain keys, e.g. Left Alt/Right Alt or Enter/Num Enter. As a result, the received scancode is
   // determined with a 0x1FF mask instead of just 0xFF. These scancodes are useless with SDL because
   // SDL is capable of distinguishing the keys when converting between its virtual keys and scancodes.
+#if !SE1_PREFER_SDL
   INDEX kc_iScanCode;
+#else
+  INDEX kc_iUnusedWindowsScanCode;
+#endif
 
   const char *kc_strName;
   const char *kc_strNameTrans;
@@ -201,11 +204,11 @@ static const KeyConversion _akcKeys[] = {
   { KID_NUMENTER        , SE1K_KP_ENTER,     28+256, TRANAME("Num Enter")},
 
   // mouse buttons
-  { KID_MOUSE1          , SE1K_LBUTTON, -1, TRANAME("Mouse Button 1")},
-  { KID_MOUSE2          , SE1K_RBUTTON, -1, TRANAME("Mouse Button 2")},
-  { KID_MOUSE3          , SE1K_MBUTTON, -1, TRANAME("Mouse Button 3")},
-  { KID_MOUSE4          , -1, -1, TRANAME("Mouse Button 4")},
-  { KID_MOUSE5          , -1, -1, TRANAME("Mouse Button 5")},
+  { KID_MOUSE1          , SE1K_LBUTTON,  -1, TRANAME("Mouse Button 1")},
+  { KID_MOUSE2          , SE1K_RBUTTON,  -1, TRANAME("Mouse Button 2")},
+  { KID_MOUSE3          , SE1K_MBUTTON,  -1, TRANAME("Mouse Button 3")},
+  { KID_MOUSE4          , SE1K_XBUTTON1, -1, TRANAME("Mouse Button 4")},
+  { KID_MOUSE5          , SE1K_XBUTTON2, -1, TRANAME("Mouse Button 5")},
   { KID_MOUSEWHEELUP    , -1, -1, TRANAME("Mouse Wheel Up")},
   { KID_MOUSEWHEELDOWN  , -1, -1, TRANAME("Mouse Wheel Down")},
 
@@ -234,8 +237,17 @@ static void MakeConversionTables(void) {
     const INDEX iVirt = kc.kc_iVirtKey;
 
     if (iVirt >= 0) {
+    #if SE1_PREFER_SDL
+      // [Cecil] SDL: Get scancode from virtual keycode
+      INDEX iScan = SDL_GetScancodeFromKey(iVirt);
+
+      // [Cecil] Fix Right Alt on Linux
+      if (iVirt == SE1K_RALT && iScan == SDL_SCANCODE_SYSREQ) iScan = SDL_SCANCODE_RALT;
+
+    #else
       // [Cecil] NOTE: Cannot use MapVirtualKey() here; see comment near kc_iScanCode field
       INDEX iScan = kc.kc_iScanCode;
+    #endif
 
       _aiScanToKid[iScan] = iKID;
     }
@@ -255,18 +267,70 @@ CTCriticalSection csInput;
 // which keys are pressed, as recorded by message interception (by KIDs)
 static UBYTE _abKeysPressed[256];
 
+#if SE1_PREFER_SDL
+
+// [Cecil] SDL: Set key state according to the key event
+static void SetKeyFromEvent(const SDL_Event *pEvent, const BOOL bDown) {
+  const INDEX iKID = _aiScanToKid[pEvent->key.keysym.scancode];
+
+  if (iKID != -1) {
+    _abKeysPressed[iKID] = bDown;
+  }
+};
+
+// [Cecil] SDL: Special method for polling SDL events that is synced with the engine's input system
+// This method has the same prototype as SDL_PollEvent() and should always be used in its place
+int SE_PollEventForInput(SDL_Event *pEvent) {
+  // Make sure it's synchronized
+  CTSingleLock slInput(&inp_csSDLInput, FALSE);
+  if (!slInput.TryToLock()) return FALSE;
+
+  int iRet = SDL_PollEvent(pEvent);
+  if (!iRet) return iRet;
+
+  switch (pEvent->type) {
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP: {
+      INDEX iKID = KID_NONE;
+
+      switch (pEvent->button.button) {
+        case SDL_BUTTON_LEFT: iKID = KID_MOUSE1; break;
+        case SDL_BUTTON_RIGHT: iKID = KID_MOUSE2; break;
+        case SDL_BUTTON_MIDDLE: iKID = KID_MOUSE3; break;
+        case SDL_BUTTON_X1: iKID = KID_MOUSE4; break;
+        case SDL_BUTTON_X2: iKID = KID_MOUSE5; break;
+      }
+
+      if (iKID != KID_NONE) {
+        _abKeysPressed[iKID] = (pEvent->button.state == SDL_PRESSED);
+      }
+    } break;
+
+    case SDL_MOUSEWHEEL: {
+      _iMouseZ += pEvent->wheel.y * MOUSEWHEEL_SCROLL_INTERVAL;
+    } break;
+
+    case SDL_KEYDOWN: SetKeyFromEvent(pEvent, TRUE); break;
+    case SDL_KEYUP: SetKeyFromEvent(pEvent, FALSE); break;
+
+    default: break;
+  }
+
+  return iRet;
+};
+
+#else
+
 static HHOOK _hGetMsgHook = NULL;
 static HHOOK _hSendMsgHook = NULL;
 
-// set a key according to a keydown/keyup message
-static void SetKeyFromMsg(MSG *pMsg, BOOL bDown)
-{
-  // get scan code
-  INDEX iScan = (pMsg->lParam >> 16) & 0x1FF; // (we use the extended bit too!)
-  // convert scan code to kid
-  INDEX iKID = _aiScanToKid[iScan];
+// Set key state according to the key message
+static void SetKeyFromMsg(MSG *pMsg, BOOL bDown) {
+  // Get key ID from scan code
+  const INDEX iScan = (pMsg->lParam >> 16) & 0x1FF; // Use extended bit too!
+  const INDEX iKID = _aiScanToKid[iScan];
 
-  if (iKID >= 0 && iKID < ARRAYCOUNT(_abKeysPressed)) {
+  if (iKID != -1) {
     //CPrintF("%s: %d\n", _pInput->inp_strButtonNames[iKID], bDown);
     _abKeysPressed[iKID] = bDown;
   }
@@ -274,76 +338,73 @@ static void SetKeyFromMsg(MSG *pMsg, BOOL bDown)
 
 static void CheckMessage(MSG *pMsg)
 {
-  if ( pMsg->message == WM_LBUTTONUP) {
+  if (pMsg->message == WM_LBUTTONUP) {
     _abKeysPressed[KID_MOUSE1] = FALSE;
-  } else if ( pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_LBUTTONDBLCLK) {
+  } else if (pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_LBUTTONDBLCLK) {
     _abKeysPressed[KID_MOUSE1] = TRUE;
-  } else if ( pMsg->message == WM_RBUTTONUP) {
+
+  } else if (pMsg->message == WM_RBUTTONUP) {
     _abKeysPressed[KID_MOUSE2] = FALSE;
-  } else if ( pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_RBUTTONDBLCLK) {
+  } else if (pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_RBUTTONDBLCLK) {
     _abKeysPressed[KID_MOUSE2] = TRUE;
-  } else if ( pMsg->message == WM_MBUTTONUP) {
+
+  } else if (pMsg->message == WM_MBUTTONUP) {
     _abKeysPressed[KID_MOUSE3] = FALSE;
-  } else if ( pMsg->message == WM_MBUTTONDOWN || pMsg->message == WM_MBUTTONDBLCLK) {
+  } else if (pMsg->message == WM_MBUTTONDOWN || pMsg->message == WM_MBUTTONDBLCLK) {
     _abKeysPressed[KID_MOUSE3] = TRUE;
 
-  } else if ( pMsg->message == inp_iMButton4Dn) {
-    _abKeysPressed[KID_MOUSE4] = TRUE;
-  } else if ( pMsg->message == inp_iMButton4Up) {
-    _abKeysPressed[KID_MOUSE4] = FALSE;
+  // [Cecil] Proper support for MB4 and MB5
+  } else if (pMsg->message == WM_XBUTTONUP) {
+    if (GET_XBUTTON_WPARAM(pMsg->wParam) & XBUTTON1) {
+      _abKeysPressed[KID_MOUSE4] = FALSE;
+    }
+    if (GET_XBUTTON_WPARAM(pMsg->wParam) & XBUTTON2) {
+      _abKeysPressed[KID_MOUSE5] = FALSE;
+    }
 
-  } else if ( pMsg->message == inp_iMButton5Dn) {
-    _abKeysPressed[KID_MOUSE5] = TRUE;
-  } else if ( pMsg->message == inp_iMButton5Up) {
-    _abKeysPressed[KID_MOUSE5] = FALSE;
+  } else if (pMsg->message == WM_XBUTTONDOWN || pMsg->message == WM_XBUTTONDBLCLK) {
+    if (GET_XBUTTON_WPARAM(pMsg->wParam) & XBUTTON1) {
+      _abKeysPressed[KID_MOUSE4] = TRUE;
+    }
+    if (GET_XBUTTON_WPARAM(pMsg->wParam) & XBUTTON2) {
+      _abKeysPressed[KID_MOUSE5] = TRUE;
+    }
 
-  } else if (pMsg->message==WM_KEYUP || pMsg->message==WM_SYSKEYUP) {
+  } else if (pMsg->message == WM_KEYUP || pMsg->message == WM_SYSKEYUP) {
     SetKeyFromMsg(pMsg, FALSE);
-  } else if (pMsg->message==WM_KEYDOWN || pMsg->message==WM_SYSKEYDOWN) {
-    SetKeyFromMsg(pMsg, TRUE);
-  } else if (inp_bMsgDebugger && pMsg->message >= 0x10000) {
-    CPrintF("%08x(%d)\n", pMsg->message, pMsg->message);
-  }
-}
 
-// procedure called when message is retreived
-LRESULT CALLBACK GetMsgProc(
-  int nCode,      // hook code
-  WPARAM wParam,  // message identifier
-  LPARAM lParam)  // mouse coordinates
-{
+  } else if (pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) {
+    SetKeyFromMsg(pMsg, TRUE);
+  }
+};
+
+// Procedure called when message is retreived
+LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
   MSG *pMsg = reinterpret_cast<MSG *>(lParam);
   CheckMessage(pMsg);
 
-  LRESULT retValue = 0;
-  retValue = CallNextHookEx( _hGetMsgHook, nCode, wParam, lParam );
+  LRESULT r = CallNextHookEx(_hGetMsgHook, nCode, wParam, lParam);
 
   if (wParam == PM_NOREMOVE) {
-    return retValue;
+    return r;
   }
 
-  if ( pMsg->message == WM_MOUSEWHEEL) {
+  if (pMsg->message == WM_MOUSEWHEEL) {
     _iMouseZ += SWORD(UWORD(HIWORD(pMsg->wParam)));
   }
 
-  return retValue;
-}
+  return r;
+};
 
-
-// procedure called when message is sent
-LRESULT CALLBACK SendMsgProc(
-  int nCode,      // hook code
-  WPARAM wParam,  // message identifier
-  LPARAM lParam)  // mouse coordinates
-{
-  MSG *pMsg = (MSG*)lParam;
+// Procedure called when message is sent
+LRESULT CALLBACK SendMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  MSG *pMsg = reinterpret_cast<MSG *>(lParam);
   CheckMessage(pMsg);
 
-  LRESULT retValue = 0;
-  retValue = CallNextHookEx( _hSendMsgHook, nCode, wParam, lParam );
-  
-  return retValue;
-}
+  return CallNextHookEx(_hSendMsgHook, nCode, wParam, lParam);
+};
+
+#endif // !SE1_PREFER_SDL
 
 // pointer to global input object
 CInput *_pInput = NULL;
@@ -366,6 +427,10 @@ CInput::CInput(void)
     inp_caiAllAxisInfo[ iAxis].cai_fReading  = 0.0f;
     inp_caiAllAxisInfo[ iAxis].cai_bExisting = FALSE;
   }
+
+#if SE1_PREFER_SDL
+  inp_csSDLInput.cs_iIndex = 3000; // [Cecil]
+#endif
 
   MakeConversionTables();
 };
@@ -438,7 +503,6 @@ void CInput::Initialize( void )
   CPutString("\n");
 }
 
-
 /*
  * Enable direct input
  */
@@ -455,12 +519,15 @@ void CInput::EnableInput(OS::Window hwnd)
   if( inp_bInputEnabled) return;
 
 #if SE1_PREFER_SDL
-  // [Cecil] FIXME: Get HWND from SDL_Window or...
-  // [Cecil] TODO: Rewrite input using SDL
-  HWND hwndCurrent = GetActiveWindow();
+  // [Cecil] SDL: Enable joysticks and hide mouse cursor
+  SDL_JoystickEventState(SDL_ENABLE);
+  SDL_SetRelativeMouseMode(SDL_TRUE);
+
+  // Clear relative movement since last time
+  SDL_GetRelativeMouseState(NULL, NULL);
+
 #else
   HWND hwndCurrent = hwnd;
-#endif
 
   // get window rectangle
   RECT rectClient;
@@ -492,6 +559,7 @@ void CInput::EnableInput(OS::Window hwnd)
 
   _hGetMsgHook  = SetWindowsHookEx(WH_GETMESSAGE, &GetMsgProc, NULL, GetCurrentThreadId());
   _hSendMsgHook = SetWindowsHookEx(WH_CALLWNDPROC, &SendMsgProc, NULL, GetCurrentThreadId());
+#endif // !SE1_PREFER_SDL
 
   // if required, try to enable 2nd mouse
   Mouse2_Startup(); // [Cecil]
@@ -533,7 +601,7 @@ void CInput::EnableInput(OS::Window hwnd)
     }
   }}
 #endif
-  
+
   // remember current status
   inp_bInputEnabled = TRUE;
   inp_bPollJoysticks = FALSE;
@@ -547,7 +615,13 @@ void CInput::DisableInput( void)
 {
   // skip if allready disabled
   if( !inp_bInputEnabled) return;
-  
+
+#if SE1_PREFER_SDL
+  // [Cecil] SDL: Disable joysticks and show mouse cursor
+  SDL_JoystickEventState(SDL_DISABLE);
+  SDL_SetRelativeMouseMode(SDL_FALSE);
+
+#else
   UnhookWindowsHookEx(_hGetMsgHook);
   UnhookWindowsHookEx(_hSendMsgHook);
 
@@ -560,6 +634,7 @@ void CInput::DisableInput( void)
   while (OS::ShowCursor(TRUE) < 0);
   // set system mouse settings
   SystemParametersInfo(SPI_SETMOUSE, 0, &inp_mscMouseSettings, 0);
+#endif // !SE1_PREFER_SDL
 
   // eventually disable 2nd mouse
   Mouse2_Shutdown(); // [Cecil]
@@ -568,7 +643,6 @@ void CInput::DisableInput( void)
   inp_bInputEnabled = FALSE;
   inp_bPollJoysticks = FALSE;
 }
-
 
 /*
  * Scan states of all available input sources
@@ -590,6 +664,12 @@ void CInput::GetInput(BOOL bPreScan)
     // clear button's buffer
     memset( inp_ubButtonsBuffer, 0, sizeof( inp_ubButtonsBuffer));
 
+    #if SE1_PREFER_SDL
+      // [Cecil] SDL: Get current keyboard and mouse states just once
+      const Uint8 *aKeyboardState = SDL_GetKeyboardState(NULL);
+      const ULONG ulMouseState = SDL_GetMouseState(NULL, NULL);
+    #endif
+
     // for each Key
     for (INDEX iKey=0; iKey<ARRAYCOUNT(_akcKeys); iKey++) {
       const KeyConversion &kc = _akcKeys[iKey];
@@ -603,12 +683,26 @@ void CInput::GetInput(BOOL bPreScan)
         if (iVirt >= 0) {
           BOOL bKeyPressed = FALSE;
 
+        #if SE1_PREFER_SDL
+          switch (iVirt) {
+            // [Cecil] SDL: Use mouse state for mouse buttons
+            case SE1K_LBUTTON: bKeyPressed = !!(ulMouseState & SDL_BUTTON_LMASK); break;
+            case SE1K_RBUTTON: bKeyPressed = !!(ulMouseState & SDL_BUTTON_RMASK); break;
+            case SE1K_MBUTTON: bKeyPressed = !!(ulMouseState & SDL_BUTTON_MMASK); break;
+            case SE1K_XBUTTON1: bKeyPressed = !!(ulMouseState & SDL_BUTTON_X1MASK); break;
+            case SE1K_XBUTTON2: bKeyPressed = !!(ulMouseState & SDL_BUTTON_X2MASK); break;
+
+            default: bKeyPressed = !!(aKeyboardState[SDL_GetScancodeFromKey(iVirt)]);
+          }
+
+        #else
           // transcribe if modifier
           if (iVirt == VK_LSHIFT)   iVirt = VK_SHIFT;
           if (iVirt == VK_LCONTROL) iVirt = VK_CONTROL;
           if (iVirt == VK_LMENU)    iVirt = VK_MENU;
 
           bKeyPressed = !!(OS::GetKeyState(iVirt) & 0x8000);
+        #endif
 
           // is state is pressed
           if (bKeyPressed) {
@@ -627,11 +721,21 @@ void CInput::GetInput(BOOL bPreScan)
 
   // read mouse position
   int iMouseX, iMouseY;
+
+#if SE1_PREFER_SDL
+  SDL_GetRelativeMouseState(&iMouseX, &iMouseY);
+#else
   OS::GetMouseState(&iMouseX, &iMouseY, FALSE);
+#endif
 
   {
+  #if SE1_PREFER_SDL
+    FLOAT fDX = (FLOAT)iMouseX;
+    FLOAT fDY = (FLOAT)iMouseY;
+  #else
     FLOAT fDX = FLOAT(iMouseX - inp_slScreenCenterX);
     FLOAT fDY = FLOAT(iMouseY - inp_slScreenCenterY);
+  #endif
 
     FLOAT fSensitivity = inp_fMouseSensitivity;
     if( inp_bAllowMouseAcceleration) fSensitivity *= 0.25f;
@@ -714,10 +818,12 @@ void CInput::GetInput(BOOL bPreScan)
 
   inp_bLastPrescan = bPreScan;
 
+#if !SE1_PREFER_SDL
   // set cursor position to screen center
   if (iMouseX != inp_slScreenCenterX || iMouseY != inp_slScreenCenterY) {
     SetCursorPos(inp_slScreenCenterX, inp_slScreenCenterY);
   }
+#endif
 
   // readout 2nd mouse if enabled
   Mouse2_Update(); // [Cecil]

@@ -88,10 +88,12 @@ public:
   // [Cecil] Game controllers
   CStaticArray<GameController_t> inp_aControllers;
 
+#if !SE1_PREFER_SDL
   SLONG inp_slScreenCenterX;                        // screen center X in pixels
   SLONG inp_slScreenCenterY;                        // screen center Y in pixels
   int inp_aOldMousePos[2];                          // old mouse position
   struct MouseSpeedControl inp_mscMouseSettings;    // system mouse settings
+#endif
 
 public:
 // Operations

@@ -231,11 +231,6 @@ FLOAT inp_f2ndMousePrecisionTimeout = 0.25f;
 INDEX inp_bInvert2ndMouse = FALSE;
 INDEX inp_bFilter2ndMouse = FALSE;
 
-extern INDEX inp_iMButton4Up;
-extern INDEX inp_iMButton4Dn;
-extern INDEX inp_iMButton5Up;
-extern INDEX inp_iMButton5Dn;
-extern INDEX inp_bMsgDebugger;
 extern INDEX inp_ctJoysticksAllowed;
 extern INDEX inp_bForceJoystickPolling;
 
@@ -888,11 +883,6 @@ void CNetworkLibrary::Init(void)
   _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionThreshold;", &inp_f2ndMousePrecisionThreshold);
   _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionTimeout;",   &inp_f2ndMousePrecisionTimeout);
 
-  _pShell->DeclareSymbol("persistent user INDEX inp_bMsgDebugger;",    &inp_bMsgDebugger);
-  _pShell->DeclareSymbol("persistent user INDEX inp_iMButton4Up;", &inp_iMButton4Up);
-  _pShell->DeclareSymbol("persistent user INDEX inp_iMButton4Dn;", &inp_iMButton4Dn);
-  _pShell->DeclareSymbol("persistent user INDEX inp_iMButton5Up;", &inp_iMButton5Up);
-  _pShell->DeclareSymbol("persistent user INDEX inp_iMButton5Dn;", &inp_iMButton5Dn);
   _pShell->DeclareSymbol("persistent user INDEX inp_ctJoysticksAllowed;",    &inp_ctJoysticksAllowed);
   _pShell->DeclareSymbol("persistent user INDEX inp_bForceJoystickPolling;", &inp_bForceJoystickPolling);
 

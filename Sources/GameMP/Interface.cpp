@@ -96,7 +96,8 @@ void CGame::HandleConsoleAndComputer(const OS::SE1Event &event) {
   // Pass mouse buttons to computer
   if (event.type == WM_LBUTTONDOWN || event.type == WM_LBUTTONUP
    || event.type == WM_RBUTTONDOWN || event.type == WM_RBUTTONUP
-   || event.type == WM_MBUTTONDOWN || event.type == WM_MBUTTONUP) {
+   || event.type == WM_MBUTTONDOWN || event.type == WM_MBUTTONUP
+   || event.type == WM_XBUTTONDOWN || event.type == WM_XBUTTONUP) {
     // Only if console isn't in the way
     if (gm_csConsoleState != CS_ON) ComputerKeyDown(event);
   }
