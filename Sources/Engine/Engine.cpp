@@ -45,6 +45,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Base/IFeel.h>
 
+#if SE1_UNIX
+  #include <cpuid.h>
+  #include <sys/utsname.h>
+#endif
+
 // this version string can be referenced from outside the engine
 ENGINE_API CTString _strEngineBuild  = "";
 ENGINE_API ULONG _ulEngineBuildMajor = _SE_BUILD_MAJOR;
@@ -104,15 +109,15 @@ BOOL _bAllocationArrayParanoiaCheck = FALSE;
 
 static void DetectCPU(void)
 {
-  char strVendor[12+1];
+  char strVendor[12+1] = { 0 };
   strVendor[12] = 0;
-  ULONG ulTFMS;
-  ULONG ulFeatures;
+  ULONG ulTFMS = 0;
+  ULONG ulFeatures = 0;
 
   // test MMX presence and update flag
 #if SE1_OLD_COMPILER || SE1_USE_ASM
   __asm {
-    mov     eax,0           ;// request for basic id
+    xor     eax,eax           ;// request for basic id
     cpuid
     mov     dword ptr [strVendor+0], ebx
     mov     dword ptr [strVendor+4], edx
@@ -128,23 +133,36 @@ static void DetectCPU(void)
     int regs[4];
 
     struct {
-      int EAX, EBX, ECX, EDX;
+      UINT EAX, EBX, ECX, EDX;
     };
   } procID;
 
   // Get highest function parameter and CPU's manufacturer ID string
-  __cpuid(procID.regs, 0);
+  #if SE1_WIN
+    __cpuid(procID.regs, 0);
+  #else
+    __get_cpuid(0, &procID.EAX, &procID.EBX, &procID.ECX, &procID.EDX);
+  #endif
 
   memcpy(&strVendor[0], &procID.EBX, 4);
   memcpy(&strVendor[4], &procID.EDX, 4);
   memcpy(&strVendor[8], &procID.ECX, 4);
 
   // Get processor info and feature bits
-  __cpuid(procID.regs, 1);
+  #if SE1_WIN
+    __cpuid(procID.regs, 1);
+  #else
+    __get_cpuid(1, &procID.EAX, &procID.EBX, &procID.ECX, &procID.EDX);
+  #endif
 
   memcpy(&ulTFMS, &procID.EAX, 4);
   memcpy(&ulFeatures, &procID.EDX, 4);
 #endif
+
+  if (ulTFMS == 0) {
+    CPrintF(TRANS("  (No CPU detection in this binary.)\n"));
+    return;
+  }
 
   INDEX iType     = (ulTFMS>>12)&0x3;
   INDEX iFamily   = (ulTFMS>> 8)&0xF;
@@ -180,11 +198,15 @@ static void DetectCPU(void)
 
 static void DetectCPUWrapper(void)
 {
+#if SE1_WIN
   __try {
     DetectCPU();
   } __except(EXCEPTION_EXECUTE_HANDLER) {
     CPrintF( TRANS("Cannot detect CPU: exception raised.\n"));
   }
+#else
+  DetectCPU();
+#endif
 }
 
 // [Cecil] SDL: Initialization and shutdown management
@@ -216,7 +238,6 @@ static void SE_InitSDL(ULONG ulFlags) {
     }
   }
 
-  atexit(SE_EndSDL);
   _bEngineInitializedSDL = true;
 };
 
@@ -294,6 +315,8 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
 
   // report os info
   CPutString(TRANS("Examining underlying OS...\n"));
+
+#if SE1_WIN
   OSVERSIONINFOA osv;
   memset(&osv, 0, sizeof(osv));
   osv.dwOSVersionInfoSize = sizeof(osv);
@@ -317,6 +340,26 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   } else {
     CPrintF(TRANS("Error getting OS info: %s\n"), GetWindowsError(GetLastError()).ConstData());
   }
+
+#else
+  // [Cecil] FIXME: These values are only relevant under Windows
+  // and the variables themselves are not even used in any scripts!
+  sys_iOSMajor = 1;
+  sys_iOSMinor = 0;
+  sys_iOSBuild = 0;
+
+  // [Cecil] Report some info about the system
+  utsname info;
+  uname(&info);
+
+  sys_strOS = info.sysname;
+  sys_strOSMisc = info.machine;
+
+  CPrintF(TRANS("  Type: %s\n"), sys_strOS.ConstData());
+  CPrintF(TRANS("  Version: %s\n"), info.release);
+  CPrintF(TRANS("  Misc: %s\n"), sys_strOSMisc.ConstData());
+#endif
+
   CPutString("\n");
 
   // report CPU
@@ -324,20 +367,25 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   DetectCPUWrapper();
   CPutString("\n");
 
+  // [Cecil] Set memory to something at the very least
+  sys_iRAMPhys = 1;
+  sys_iRAMSwap = 1;
+
+  const int MB = 1024 * 1024;
+
   // report memory info
+#if SE1_WIN
   extern void ReportGlobalMemoryStatus(void);
   ReportGlobalMemoryStatus();
 
-  MEMORYSTATUS ms;
-  GlobalMemoryStatus(&ms);
+  // [Cecil] GlobalMemoryStatus() -> GlobalMemoryStatusEx()
+  MEMORYSTATUSEX ms;
+  ms.dwLength = sizeof(ms);
 
-  #define MB (1024*1024)
-  sys_iRAMPhys = ms.dwTotalPhys    /MB;
-  sys_iRAMSwap = ms.dwTotalPageFile/MB;
-
-  // initialize zip semaphore
-  zip_csLock.cs_iIndex = -1;  // not checked for locking order
-
+  if (GlobalMemoryStatusEx(&ms)) {
+    sys_iRAMPhys = ms.ullTotalPhys / MB;
+    sys_iRAMSwap = ms.ullTotalPageFile / MB;
+  }
 
   // get info on the first disk in system
   DWORD dwSerial;
@@ -354,6 +402,41 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
   sys_iHDDSize = SQUAD(dwSectors)*dwBytes*dwClusters/MB;
   sys_iHDDFree = SQUAD(dwSectors)*dwBytes*dwFreeClusters/MB;
   sys_iHDDMisc = dwSerial;
+
+#else
+  // [Cecil] Try looking for memory values
+  FILE *fMemInfo = fopen("/proc/meminfo", "r");
+
+  if (fMemInfo != NULL) {
+    char strMemBuffer[256];
+    SQUAD llMemory;
+
+    while (fgets(strMemBuffer, sizeof(strMemBuffer), fMemInfo) != NULL)
+    {
+      if (sscanf(strMemBuffer, "%*s %lld kB", &llMemory) != 1) continue;
+
+      #define KEY_MEMTOTAL  "MemTotal:"
+      #define KEY_SWAPTOTAL "SwapTotal:"
+
+      if (strncmp(strMemBuffer, KEY_MEMTOTAL, sizeof(KEY_MEMTOTAL) - 1) == 0) {
+        sys_iRAMPhys = llMemory / 1024;
+      } else if (strncmp(strMemBuffer, KEY_SWAPTOTAL, sizeof(KEY_SWAPTOTAL) - 1) == 0) {
+        sys_iRAMSwap = llMemory / 1024;
+      }
+    }
+
+    fclose(fMemInfo);
+  }
+
+  // [Cecil] FIXME: These values are only relevant under Windows
+  // and the variables themselves are not even used in any scripts!
+  sys_iHDDSize = 50000; // 50 GB
+  sys_iHDDFree = 10000; // 10 GB
+  sys_iHDDMisc = 0;
+#endif // !SE1_WIN
+
+  // initialize zip semaphore
+  zip_csLock.cs_iIndex = -1;  // not checked for locking order
  
   // add console variables
   extern INDEX con_bNoWarnings;
@@ -466,6 +549,10 @@ ENGINE_API void SE_InitEngine(EEngineAppType eType)
     CPutString( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
   } // done
   ReleaseDC( NULL, hdc);
+
+#else
+  // [Cecil] TODO: Implement detection of adjustable gamma with SDL
+  CPutString(TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
 #endif
 
   // [Cecil] Initialize IFeel
