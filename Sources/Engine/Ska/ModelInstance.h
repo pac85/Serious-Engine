@@ -88,7 +88,7 @@ struct TextureInstance
   }
 
   INDEX GetID() {return ti_iTextureID;}
-  void  SetName(CTString &strTexID) {
+  void SetName(const CTString &strTexID) {
     ti_iTextureID = ska_GetIDFromStringTable(strTexID);
   }
 

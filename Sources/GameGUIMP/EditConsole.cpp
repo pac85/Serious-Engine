@@ -89,7 +89,7 @@ BOOL CEditConsole::PreTranslateMessage(MSG* pMsg)
       INDEX ctLetters = GetLine( iCurrentLine, achrToExecute, 1023);
       // set EOF delimiter
       achrToExecute[ ctLetters] = 0;
-      CTString strToExecute = CStringA(achrToExecute);
+      CTString strToExecute = CStringA(achrToExecute).GetString();
       CPrintF( ">%s\n", strToExecute.ConstData());
       if (strToExecute[strToExecute.Length() - 1] != ';')
       {

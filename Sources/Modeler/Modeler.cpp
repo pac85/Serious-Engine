@@ -60,7 +60,7 @@ BOOL GetFlagFromProfile( CTString strVarName, BOOL bDefault)
   CTString strDefault;
   if( bDefault) strDefault = "YES";
   else          strDefault = "NO";
-  CTString strTemp = CStringA(theApp.GetProfileString( L"Modeler prefs", CString(strVarName), CString(strDefault)));
+  CTString strTemp = CStringA(theApp.GetProfileString( L"Modeler prefs", CString(strVarName), CString(strDefault))).GetString();
   if( strTemp == "YES") return TRUE;
   return FALSE;
 };
@@ -75,7 +75,7 @@ INDEX GetIndexFromProfile( CTString strVarName, INDEX iDefault)
 {
   CTString strDefault;
   strDefault.PrintF("%d", iDefault);
-  CTString strTemp = CStringA(theApp.GetProfileString( L"Modeler prefs", CString(strVarName), CString(strDefault)));
+  CTString strTemp = CStringA(theApp.GetProfileString( L"Modeler prefs", CString(strVarName), CString(strDefault))).GetString();
   INDEX iValue;
   sscanf( strTemp, "%d", &iValue);
   return iValue;
@@ -92,7 +92,7 @@ COLOR GetColorFromProfile( CTString strVarName, COLOR colDefault)
 {
   CTString strDefault;
   strDefault.PrintF("0x%08x", colDefault);
-  CTString strTemp = CStringA(theApp.GetProfileString( L"Modeler prefs", CString(strVarName), CString(strDefault)));
+  CTString strTemp = CStringA(theApp.GetProfileString( L"Modeler prefs", CString(strVarName), CString(strDefault))).GetString();
   COLOR colValue;
   sscanf( strTemp, "0x%08x", &colValue);
   return colValue;

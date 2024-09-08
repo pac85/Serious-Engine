@@ -201,7 +201,7 @@ void CCtrlEditFlags::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
     RECT rectText=GetRectForArea(8);
     CTString strCTBankNo;
     strCTBankNo.PrintF("%d",m_iCurrentBank);
-    CString strBankNo=strCTBankNo;
+    CString strBankNo = strCTBankNo.ConstData();
     pDC->SetBkMode( TRANSPARENT);
     pDC->SetTextAlign(TA_CENTER);
     pDC->ExtTextOut( (rectText.left+rectText.right)/2, rectText.top, ETO_CLIPPED, &rectText, strBankNo, 1, NULL);

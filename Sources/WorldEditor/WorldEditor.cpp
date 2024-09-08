@@ -1206,7 +1206,7 @@ void CAppPrefs::ReadFromIniFile()
 }
 
 // read from INI last values for primitive
-void CValuesForPrimitive::ReadFromIniFile(CTString strPrimitiveType)
+void CValuesForPrimitive::ReadFromIniFile(const CTString &strPrimitiveType)
 {
   CSetFPUPrecision FPUPrecision(FPT_53BIT);
   char strIni[ 256];
@@ -1308,7 +1308,7 @@ void CValuesForPrimitive::ReadFromIniFile(CTString strPrimitiveType)
   CalculatePrimitiveBase();
 }
 // write to INI last used values for primitive
-void CValuesForPrimitive::WriteToIniFile(CTString strPrimitiveType)
+void CValuesForPrimitive::WriteToIniFile(const CTString &strPrimitiveType)
 {
   char strIni[ 256];
 

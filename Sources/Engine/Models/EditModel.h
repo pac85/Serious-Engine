@@ -39,7 +39,7 @@ class ENGINE_API CProgressRoutines
 {
 public:
   CProgressRoutines();
-  void (*SetProgressMessage)( char *strMessage);      // sets message for modeler's "new progress dialog"
+  void (*SetProgressMessage)(const char *strMessage); // sets message for modeler's "new progress dialog"
   void (*SetProgressRange)( INDEX iProgresSteps);     // sets range of modeler's "new progress dialog"
   void (*SetProgressState)( INDEX iCurrentStep);      // sets current modeler's "new progress dialog" state
 };

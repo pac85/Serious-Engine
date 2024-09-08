@@ -57,7 +57,7 @@ void CMDIClientWnd::GetCurrentRect(CRect &rc)
   rc = ClientRect;
 }
 
-void CMDIClientWnd::SetCurrentRect(CRect &rc)
+void CMDIClientWnd::SetCurrentRect(const CRect &rc)
 {
   ClientRect = rc;
 }

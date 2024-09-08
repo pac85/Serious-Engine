@@ -152,7 +152,7 @@ void ClearThumbnail(void)
   _pShell->Execute( "FreeUnusedStock();");
 }
 
-void StartMenus(char *str)
+void StartMenus(const CTString &str)
 {
   _tmMenuLastTickDone=_pTimer->GetRealTimeTick();
   // disable printing of last lines
@@ -178,32 +178,38 @@ void StartMenus(char *str)
       ChangeToMenu(&_pGUIM->gmInGameMenu);
     }
   }
-  if (CTString(str)=="load") {
+
+  if (str == "load") {
     StartCurrentLoadMenu();
-  _pGUIM->gmLoadSaveMenu.gm_pgmParentMenu = NULL;
+    _pGUIM->gmLoadSaveMenu.gm_pgmParentMenu = NULL;
   }
-  if (CTString(str)=="save") {
+
+  if (str == "save") {
     StartCurrentSaveMenu();
-  _pGUIM->gmLoadSaveMenu.gm_pgmParentMenu = NULL;
-  FixupBackButton(&_pGUIM->gmLoadSaveMenu);
+    _pGUIM->gmLoadSaveMenu.gm_pgmParentMenu = NULL;
+    FixupBackButton(&_pGUIM->gmLoadSaveMenu);
   }
-  if (CTString(str)=="controls") {
+
+  if (str == "controls") {
     void StartControlsMenuFromOptions(void);
     StartControlsMenuFromOptions();
-  _pGUIM->gmControls.gm_pgmParentMenu = NULL;
-  FixupBackButton(&_pGUIM->gmControls);
+    _pGUIM->gmControls.gm_pgmParentMenu = NULL;
+    FixupBackButton(&_pGUIM->gmControls);
   }
-  if (CTString(str)=="join") {
+
+  if (str == "join") {
     void StartSelectPlayersMenuFromOpen(void);
     StartSelectPlayersMenuFromOpen();
-  _pGUIM->gmSelectPlayersMenu.gm_pgmParentMenu = &_pGUIM->gmMainMenu;
-  FixupBackButton(&_pGUIM->gmSelectPlayersMenu);
+    _pGUIM->gmSelectPlayersMenu.gm_pgmParentMenu = &_pGUIM->gmMainMenu;
+    FixupBackButton(&_pGUIM->gmSelectPlayersMenu);
   }
-  if (CTString(str)=="hiscore") {
-  ChangeToMenu(&_pGUIM->gmHighScoreMenu);
-  _pGUIM->gmHighScoreMenu.gm_pgmParentMenu = &_pGUIM->gmMainMenu;
-  FixupBackButton(&_pGUIM->gmHighScoreMenu);
+
+  if (str == "hiscore") {
+    ChangeToMenu(&_pGUIM->gmHighScoreMenu);
+    _pGUIM->gmHighScoreMenu.gm_pgmParentMenu = &_pGUIM->gmMainMenu;
+    FixupBackButton(&_pGUIM->gmHighScoreMenu);
   }
+
   bMenuActive = TRUE;
   bMenuRendering = TRUE;
 }

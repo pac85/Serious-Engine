@@ -89,7 +89,7 @@ CPoint CSplitterFrame::GetAbsPosition()
 // Change parent of splitter
 void CSplitterFrame::ChangeParent(CWnd *pNewParent)
 {
-  CPoint &ptCurrent = GetAbsPosition();
+  CPoint ptCurrent = GetAbsPosition();
   SetParent(pNewParent);
   SetAbsPosition(ptCurrent);
 }

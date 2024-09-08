@@ -17,7 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/AllocationArray.h>
 
 // needed for parser and scanner
-extern void yyerror(char *s);
+extern void yyerror(const char *s);
 extern int yyparse(void);
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;

@@ -29,7 +29,7 @@ public:
   CControls &m_ctrlControls;
   
   CDlgPlayerControls( CControls &ctrlControls, CWnd* pParent = NULL);   // standard constructor
-  void ActivatePressKey( char *pFirstOrSecond);
+  void ActivatePressKey(const char *pFirstOrSecond);
   void FillActionsList(void);
   void FillAxisList(void);
   void SetFirstAndSecondButtonNames(void);

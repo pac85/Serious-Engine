@@ -2100,7 +2100,7 @@ void CModelObject::SetPatchesMask(ULONG new_patches_mask)
 /*
  * Sets new name to a color with given index
  */
-void CModelObject::SetColorName( INDEX iColor, CTString &strNewName)
+void CModelObject::SetColorName( INDEX iColor, const CTString &strNewName)
 {
   CModelData *pMD = (CModelData *) GetData();
   ASSERT( iColor < MAX_COLOR_NAMES);

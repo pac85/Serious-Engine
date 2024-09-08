@@ -27,8 +27,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class CEntityPropertyEnumValue {
 public:
-  INDEX epev_iValue;      // value
-  char *epev_strName;     // descriptive name of the enum value (for editor)
+  INDEX epev_iValue; // value
+  const char *epev_strName; // descriptive name of the enum value (for editor)
 };
 class CEntityPropertyEnumType {
 public:
@@ -101,13 +101,13 @@ public:
 
   ULONG ep_ulID;         // property ID for this class
   SLONG ep_slOffset;     // offset of the property in the class
-  char *ep_strName;      // descriptive name of the property (for editor)
+  const char *ep_strName; // descriptive name of the property (for editor)
   ULONG ep_ulFlags;      // additional flags for the property
   char  ep_chShortcut;   // shortcut key for selecting the property in editor (0 for none)
   COLOR ep_colColor;     // property color, for various wed purposes (like target arrows)
 
   CEntityProperty(PropertyType eptType, CEntityPropertyEnumType *pepetEnumType,
-    ULONG ulID, SLONG slOffset, char *strName, char chShortcut, COLOR colColor, ULONG ulFlags)
+    ULONG ulID, SLONG slOffset, const char *strName, char chShortcut, COLOR colColor, ULONG ulFlags)
     : ep_eptType         (eptType      )
     , ep_pepetEnumType   (pepetEnumType)
     , ep_ulID            (ulID         )
@@ -171,7 +171,7 @@ public:
 
   // NOTE: This uses special EFNM initialization for CTFileName class!
   CEntityComponent(EntityComponentType ectType,
-    ULONG ulID, char *strEFNMComponent)
+    ULONG ulID, const char *strEFNMComponent)
     : ec_ectType(ectType)
     , ec_slID(ulID)
     , ec_fnmComponent(strEFNMComponent, 4) { ec_pvPointer = NULL; };
@@ -192,8 +192,8 @@ public:
   CEntityComponent *dec_aecComponents;// array of components
   INDEX dec_ctComponents;             // number of components
 
-  char *dec_strName;                  // descriptive name of the class
-  char *dec_strIconFileName;          // filename of texture or thumbnail
+  const char *dec_strName;            // descriptive name of the class
+  const char *dec_strIconFileName;    // filename of texture or thumbnail
   INDEX dec_iID;                      // class ID
 
   CDLLEntityClass *dec_pdecBase;      // pointer to the base class

@@ -175,7 +175,7 @@ CTFileName CEngineGUI::CreateTexture(CTFileName fnTexFileToRecreate/*=CTString("
       else
       {
         // different filters for different requests
-        char *pFilters = "All files (*.*)\0*.*\0\0";
+        const char *pFilters = "All files (*.*)\0*.*\0\0";
 
         // if dialog result is 0 we want to create normal texture
         if( iDlgResult == 0)
@@ -264,7 +264,7 @@ void CEngineGUI::GetFullScreenModeFromRegistry( CTString strSectionName, CDispla
   dm.dm_pixSizeJ = 480;
   dm.dm_ddDepth  = DD_DEFAULT;
   // read FS parameters from registry
-  CTString strResult = CStringA(AfxGetApp()->GetProfileString(CString(strSectionName.ConstData()), L"Full screen mode", L"640 x 480 x 0"));
+  CTString strResult = CStringA(AfxGetApp()->GetProfileString(CString(strSectionName.ConstData()), L"Full screen mode", L"640 x 480 x 0")).GetString();
   strResult.ScanF( "%d x %d x %d", &dm.dm_pixSizeI, &dm.dm_pixSizeJ, &dm.dm_ddDepth);
   if( dm.dm_ddDepth<DD_DEFAULT || dm.dm_ddDepth>DD_32BIT) dm.dm_ddDepth = DD_DEFAULT;
 

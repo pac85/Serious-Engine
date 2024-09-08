@@ -13,6 +13,6 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-ENGINE_API INDEX ska_GetIDFromStringTable(CTString strName);
+ENGINE_API INDEX ska_GetIDFromStringTable(const CTString &strName);
 ENGINE_API CTString ska_GetStringFromTable(INDEX iIndex);
-ENGINE_API INDEX ska_FindStringInTable(CTString strName);
+ENGINE_API INDEX ska_FindStringInTable(const CTString &strName);

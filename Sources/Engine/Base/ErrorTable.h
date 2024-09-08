@@ -20,9 +20,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 struct ErrorCode {
-  SLONG ec_Code;        // error code value
-  char *ec_Name;        // error code constant name (in .h files)
-  char *ec_Description; // error description (in help files)
+  SLONG ec_Code;              // error code value
+  const char *ec_Name;        // error code constant name (in .h files)
+  const char *ec_Description; // error description (in help files)
 };
 
 struct ErrorTable {

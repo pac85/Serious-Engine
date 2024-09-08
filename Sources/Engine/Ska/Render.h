@@ -107,7 +107,7 @@ ENGINE_API void RM_EndModelRenderingMask(void);
 
 // setup light parameters
 ENGINE_API void RM_SetLightColor(COLOR colAmbient, COLOR colLight);
-ENGINE_API void RM_SetLightDirection(FLOAT3D &vLightDir);
+ENGINE_API void RM_SetLightDirection(const FLOAT3D &vLightDir);
 // LOD factor management
 ENGINE_API void RM_SetCurrentDistance(FLOAT fDistFactor);
 ENGINE_API FLOAT RM_GetMipFactor(void);
@@ -140,7 +140,7 @@ ENGINE_API void RM_GetModelVertices( CModelInstance &mi, CStaticStackArray<FLOAT
                                      FLOAT3D &vPosition, FLOAT fNormalOffset, FLOAT fDistance);
 
 // test if the ray hit any of model instance's triangles and return 
-ENGINE_API FLOAT RM_TestRayCastHit( CModelInstance &mi, FLOATmatrix3D &mRotation, FLOAT3D &vPosition,const FLOAT3D &vOrigin, const FLOAT3D &vTarget,FLOAT fOldDistance,INDEX *piBoneID);
+ENGINE_API FLOAT RM_TestRayCastHit(CModelInstance &mi, FLOATmatrix3D &mRotation, const FLOAT3D &vPosition, const FLOAT3D &vOrigin, const FLOAT3D &vTarget,FLOAT fOldDistance,INDEX *piBoneID);
 
 ENGINE_API void RM_SetBoneAdjustCallback(void (*pAdjustBones)(void *pData), void *pData);
 ENGINE_API void RM_SetShaderParamsAdjustCallback(void (*pAdjustShaderParams)(void *pData, INDEX iSurfaceID, CShader *pShader,ShaderParams &shParams),void *pData);

@@ -394,7 +394,7 @@ public:
   /* Project the whole object into some other space. */
   void Project(CSimpleProjection3D_DOUBLE &pr);
   /* Assignment operator. */
-  CObject3D &operator=(CObject3D &obOriginal);
+  CObject3D &operator=(const CObject3D &obOriginal);
   /* Turn all sectors in object inside-out. (not recommended for multi sector objects) */
   void Inverse(void);
   /* Recalculate all planes from vertices. (used when stretching vertices) */

@@ -325,7 +325,7 @@ INDEX CDynamicArray<Type>::Count(void) const {
 
 // Assignment operator
 template<class Type>
-CDynamicArray<Type> &CDynamicArray<Type>::operator=(CDynamicArray<Type> &arOriginal)
+CDynamicArray<Type> &CDynamicArray<Type>::operator=(const CDynamicArray<Type> &arOriginal)
 {
   ASSERT(this != NULL);
   ASSERT(&arOriginal != NULL);
@@ -345,14 +345,17 @@ CDynamicArray<Type> &CDynamicArray<Type>::operator=(CDynamicArray<Type> &arOrigi
   // Create that many elements
   Type *atNew = New(ctOriginal);
 
+  // [Cecil] FIXME: Can't remember why I designed these arrays the way that required addition of "operator[] const" and "Pointer() const"
+  CDynamicArray<Type> &arNonConst = const_cast<CDynamicArray<Type> &>(arOriginal);
+
   // Copy the elements
-  arOriginal.Lock();
+  arNonConst.Lock();
 
   for (INDEX iNew = 0; iNew < ctOriginal; iNew++) {
-    atNew[iNew] = arOriginal[iNew];
+    atNew[iNew] = arNonConst[iNew];
   }
 
-  arOriginal.Unlock();
+  arNonConst.Unlock();
 
   return *this;
 };

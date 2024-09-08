@@ -1052,7 +1052,7 @@ void CBrowseWindow::OnInsertItems()
     return;
   }
 
-  char *pFilters = "Items (*.tex, *.wld, *.ecl)\0*.tex;*.wld;*.ecl\0"
+  const char *pFilters = "Items (*.tex, *.wld, *.ecl)\0*.tex;*.wld;*.ecl\0"
                          "World Files (*.wld)\0*.wld\0"
                          "Texture files (*.tex)\0*.tex\0"
                          "Class files (*.ecl)\0*.ecl\0"

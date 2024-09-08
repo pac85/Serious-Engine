@@ -89,7 +89,7 @@ void CDlgCreateAnimatedTexture::RefreshTexture(void)
     // write context of edit ctrl to temporary script file
     CTFileStream fileScript;
     fileScript.Create_t( fnTempScript);
-    CTString strEditScript = CStringA(m_strEditScript);
+    CTString strEditScript = CStringA(m_strEditScript).GetString();
     char *pScript = (char *) AllocMemory(strEditScript.Length() + 1);
     strcpy(pScript, strEditScript.ConstData());
     fileScript.WriteRawChunk_t(pScript, strEditScript.Length() + 1);

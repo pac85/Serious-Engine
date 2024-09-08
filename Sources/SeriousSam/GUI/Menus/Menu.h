@@ -30,7 +30,7 @@ void MenuOnKeyDown(int iVKey, int iMouseButton); // [Cecil] Handle mouse buttons
 void MenuOnChar(const OS::SE1Event &event);
 void MenuOnMouseMove(PIX pixI, PIX pixJ);
 BOOL DoMenu( CDrawPort *pdp); // returns TRUE if still active, FALSE if should quit
-void StartMenus( char *str="");
+void StartMenus(const CTString &str = "");
 void StopMenus(BOOL bGoToRoot =TRUE);
 BOOL IsMenusInRoot(void);
 void ChangeToMenu( class CGameMenu *pgmNew);

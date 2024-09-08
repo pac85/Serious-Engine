@@ -42,7 +42,7 @@ BOOL _bFileReplacingApplied;
 extern INDEX wed_bUseBaseForReplacement;
 extern INDEX wed_bUseGenericTextureReplacement; // [Cecil] Used here
 
-static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, char *pFilter)
+static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, const char *pFilter)
 {
   // [Cecil] No API available
   if (_pEngineGuiApi == NULL) {
@@ -54,8 +54,7 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, cha
   return _pEngineGuiApi->ReplaceFileRequester(achrTitle, pFilter, "Replace file directory", achrSelectedFile);
 };
 
-BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
-                      char *pFilter)
+BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile, const char *pFilter)
 {
   // don't replace files if this console variable is set
   if (!wed_bUseBaseForReplacement) {

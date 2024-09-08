@@ -318,7 +318,7 @@ void CDlgPlayerControls::SetFirstAndSecondButtonNames(void)
   GetDlgItem( ID_SECOND_CONTROL_NONE)->EnableWindow( bEnablePressKeyControls);    
 }
 
-void CDlgPlayerControls::ActivatePressKey( char *strFirstOrSecond)
+void CDlgPlayerControls::ActivatePressKey(const char *strFirstOrSecond)
 {
   // get selected action
   m_iSelectedAction = m_listButtonActions.GetNextItem( -1, LVNI_SELECTED);

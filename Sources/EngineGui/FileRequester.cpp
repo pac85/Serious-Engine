@@ -211,7 +211,7 @@ CTFileName CEngineGUI::FileRequester(
   }
 
   // if directory is not inside engine dir
-  CTString strTest = CStringA(strRequestInDirectory);
+  CTString strTest = CStringA(strRequestInDirectory).GetString();
   if (!strTest.RemovePrefix(_fnmApplicationPath)) {
     // force it there
     strRequestInDirectory = _fnmApplicationPath.ConstData();

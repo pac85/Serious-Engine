@@ -446,7 +446,7 @@ void RM_GetModelVertices( CModelInstance &mi, CStaticStackArray<FLOAT3D> &avVert
 
 
 
-FLOAT RM_TestRayCastHit( CModelInstance &mi, FLOATmatrix3D &mRotation, FLOAT3D &vPosition,const FLOAT3D &vOrigin,
+FLOAT RM_TestRayCastHit(CModelInstance &mi, FLOATmatrix3D &mRotation, const FLOAT3D &vPosition,const FLOAT3D &vOrigin,
                         const FLOAT3D &vTarget,FLOAT fOldDistance,INDEX *piBoneID)
 {
 	FLOAT fDistance = 1E6f;
@@ -1420,7 +1420,7 @@ void RM_SetLightColor(COLOR colAmbient, COLOR colLight)
   _colAmbient = colAmbient;
   _colLight = colLight;
 }
-void RM_SetLightDirection(FLOAT3D &vLightDir)
+void RM_SetLightDirection(const FLOAT3D &vLightDir)
 {
   _vLightDir = vLightDir * (-1);
 }

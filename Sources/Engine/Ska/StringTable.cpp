@@ -27,7 +27,7 @@ struct stTable
 CStaticStackArray<struct stTable> _arStringTable;
 
 // add index in table
-INDEX AddIndexToTable(CTString strName)
+INDEX AddIndexToTable(const CTString &strName)
 {
   _arStringTable.Push();
 
@@ -37,7 +37,7 @@ INDEX AddIndexToTable(CTString strName)
   return ctStrings-1;
 }
 // find string in table and return his index, if not found add new and return his index
-INDEX ska_GetIDFromStringTable(CTString strName)
+INDEX ska_GetIDFromStringTable(const CTString &strName)
 {
   if(strName == "") return -1;
 
@@ -52,7 +52,7 @@ INDEX ska_GetIDFromStringTable(CTString strName)
   return AddIndexToTable(strName);  
 }
 // find string in table and return his index, if not found return -1
-INDEX ska_FindStringInTable(CTString strName)
+INDEX ska_FindStringInTable(const CTString &strName)
 {
   if(strName == "") return -1;
 

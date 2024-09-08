@@ -1329,7 +1329,7 @@ void TilePaintTool(void)
 
 }
 
-void EditTerrain(CTextureData *ptdBrush, FLOAT3D &vHitPoint, FLOAT fStrength, ETerrainEdit teTool)
+void EditTerrain(CTextureData *ptdBrush, const FLOAT3D &vHitPoint, FLOAT fStrength, ETerrainEdit teTool)
 {
   _ptdBrush=ptdBrush;
   _fStrength=fStrength;

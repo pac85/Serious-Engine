@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
   /* original VC definition of _assert */
-  _CRTIMP void __cdecl _assert(void *, void *, unsigned);
+  _CRTIMP void __cdecl _assert(const char *, const char *, unsigned);
 
 #ifdef __cplusplus
   }

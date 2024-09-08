@@ -51,8 +51,8 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate=NULL
 // Get value from layer at given point
 ENGINE_API UBYTE GetValueFromMask(CTerrain *ptrTerrain, INDEX iLayer, FLOAT3D vHitPoint);
 // Calculate 2d relative point in terrain from absolute 3d point in world
-ENGINE_API Point Calculate2dHitPoint(CTerrain *ptrTerrain, FLOAT3D &vHitPoint);
-FLOAT2D CalculateShadingTexCoords(CTerrain *ptrTerrain, FLOAT3D &vPoint);
+ENGINE_API Point Calculate2dHitPoint(CTerrain *ptrTerrain, const FLOAT3D &vHitPoint);
+FLOAT2D CalculateShadingTexCoords(CTerrain *ptrTerrain, const FLOAT3D &vPoint);
 
 
 

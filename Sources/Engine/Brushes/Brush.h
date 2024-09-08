@@ -287,7 +287,7 @@ public:
     }
 
   /* Copy polygon properties */
-  CBrushPolygonTexture &CopyTextureProperties(CBrushPolygonTexture &bptOther, BOOL bCopyMapping) {
+  CBrushPolygonTexture &CopyTextureProperties(const CBrushPolygonTexture &bptOther, BOOL bCopyMapping) {
     bpt_toTexture.SetData( bptOther.bpt_toTexture.GetData());
     s.bpt_ubScroll = bptOther.s.bpt_ubScroll;
     s.bpt_ubBlend = bptOther.s.bpt_ubBlend;

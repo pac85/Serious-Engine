@@ -99,7 +99,7 @@ class CDynamicArray {
     INDEX Count(void) const;
 
     // Assignment operator
-    CDynamicArray<Type> &operator=(CDynamicArray<Type> &arOriginal);
+    CDynamicArray<Type> &operator=(const CDynamicArray<Type> &arOriginal);
 
     // Move all elements of another array into this one
     void MoveArray(CDynamicArray<Type> &arOther);

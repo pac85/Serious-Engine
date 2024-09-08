@@ -747,14 +747,14 @@ void CModelerView::RenderView( CDrawPort *pDrawPort)
     // obtain translation speed value
     CString csSpeed;
     pmf->m_ctrlZSpeed.GetWindowText( csSpeed);
-    CTString strSpeed = CStringA(csSpeed);
+    CTString strSpeed = CStringA(csSpeed).GetString();
     FLOAT fSpeed;
     BOOL bSpeedValid = strSpeed.ScanF( "%g", &fSpeed);
     
     // obtain loop value
     CString csLoop;
     pmf->m_ctrlZLoop.GetWindowText( csLoop);
-    CTString strLoop = CStringA(csLoop);
+    CTString strLoop = CStringA(csLoop).GetString();
     INDEX iLoop;
     BOOL bLoopValid = strLoop.ScanF( "%d", &iLoop);
     

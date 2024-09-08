@@ -120,7 +120,7 @@ void OptimizeLayers(void);
 void RecalculateShadows(void);
 void SetHMPixel( UWORD pix, INDEX x, INDEX y);
 UWORD GetHMPixel(INDEX x, INDEX y);
-void EditTerrain(CTextureData *ptdBrush, FLOAT3D &vHitPoint, FLOAT fStrength, ETerrainEdit teTool);
+void EditTerrain(CTextureData *ptdBrush, const FLOAT3D &vHitPoint, FLOAT fStrength, ETerrainEdit teTool);
 void UpdateLayerDistribution(void);
 void ApplyFilterOntoTerrain(void);
 void ApplySmoothOntoTerrain(void);

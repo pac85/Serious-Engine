@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // needed for parser and scanner
 extern int yylex(void);
-extern void yyerror(char *s);
+extern void yyerror(const char *s);
 extern int syyparse(void);
 extern void syyrestart(FILE *f);
 

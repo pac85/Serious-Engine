@@ -46,7 +46,7 @@ public:
 public:
 	virtual ~CMDIClientWnd();
   void GetCurrentRect(CRect &rc);
-  void SetCurrentRect(CRect &rc);
+  void SetCurrentRect(const CRect &rc);
 
 	// Generated message map functions
 protected:

@@ -317,7 +317,7 @@ void CTStream::ExceptionFatalError(void)
 /*
  * Throw an exception of formatted string.
  */
-void CTStream::Throw_t(char *strFormat, ...)  // throws char *
+void CTStream::Throw_t(const char *strFormat, ...)  // throws char *
 {
   const SLONG slBufferSize = 256;
   char strFormatBuffer[slBufferSize];

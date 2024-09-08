@@ -101,7 +101,7 @@ public:
         ULONG ulRenderingFlags);
   INDEX GetClosestPatch( MEX2D mexWanted, MEX2D &mexFound); // returns index and position of closest patch
   CTString GetColorName( INDEX iColor);           // retrieves name of color with given index
-  void SetColorName( INDEX iColor, CTString &strNewName); // sets new color name
+  void SetColorName( INDEX iColor, const CTString &strNewName); // sets new color name
 
   ULONG GetPatchesMask(); // this function returns current value of patches mask
   void  SetPatchesMask( ULONG new_patches_mask);	  	// use this function to set new patches combination

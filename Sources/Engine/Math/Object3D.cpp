@@ -121,7 +121,7 @@ void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr)
 /*
  * Assignment operator.
  */
-CObject3D &CObject3D::operator=(CObject3D &obOriginal)
+CObject3D &CObject3D::operator=(const CObject3D &obOriginal)
 {
   // copy array of sectors from original object, sectors will copy their contents
   ob_aoscSectors = obOriginal.ob_aoscSectors;

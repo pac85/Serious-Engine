@@ -116,7 +116,7 @@ ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString)
   HKEY hkey;
   DWORD dwDisposition;
   LONG lRes = RegCreateKeyExA(hKeyRoot, strKeyPath.ConstData(), 0,
-    "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition);
+    NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition);
   if (lRes!=ERROR_SUCCESS) {
     return FALSE;
   }

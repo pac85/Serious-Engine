@@ -139,7 +139,7 @@ public:
   CTFileName vfp_fnDisplacement;
 
   CValuesForPrimitive();
-  inline CValuesForPrimitive (CValuesForPrimitive &vfpToCopy)
+  inline CValuesForPrimitive(const CValuesForPrimitive &vfpToCopy)
   {
     vfp_avVerticesOnBaseOfPrimitive = vfpToCopy.vfp_avVerticesOnBaseOfPrimitive;
     vfp_ptPrimitiveType = vfpToCopy.vfp_ptPrimitiveType;
@@ -184,15 +184,15 @@ public:
     vfp_fMipStep = vfpToCopy.vfp_fMipStep;
   };
 
-  inline BOOL operator==(const CValuesForPrimitive &vfpToCompare);
-  inline CValuesForPrimitive operator+(const CValuesForPrimitive &vfpToAdd);
+  inline BOOL operator==(const CValuesForPrimitive &vfpToCompare) const;
+  inline CValuesForPrimitive operator+(const CValuesForPrimitive &vfpToAdd) const;
   inline CValuesForPrimitive &operator+=(const CValuesForPrimitive &vfpToAdd);
-  inline CValuesForPrimitive operator-(const CValuesForPrimitive &vfpToSub);
+  inline CValuesForPrimitive operator-(const CValuesForPrimitive &vfpToSub) const;
   inline CValuesForPrimitive &operator-=(const CValuesForPrimitive &vfpToSub);
   void CalculatePrimitiveBase(void);
   inline void CorrectInvalidValues(void);
-  void ReadFromIniFile(CTString strPrimitiveType);
-  void WriteToIniFile(CTString strPrimitiveType);
+  void ReadFromIniFile(const CTString &strPrimitiveType);
+  void WriteToIniFile(const CTString &strPrimitiveType);
   void Read_t(CTStream &strmFile);
   void Write_t(CTStream &strmFile);
 };
@@ -573,7 +573,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 // Inline functions
 
-inline BOOL CValuesForPrimitive::operator==(const CValuesForPrimitive &vfpToCompare)
+inline BOOL CValuesForPrimitive::operator==(const CValuesForPrimitive &vfpToCompare) const
 {
   return (
     (vfp_avVerticesOnBaseOfPrimitive.Count() == vfpToCompare.vfp_avVerticesOnBaseOfPrimitive.Count() ) &&
@@ -628,8 +628,7 @@ inline CValuesForPrimitive &CValuesForPrimitive::operator+=(const
   vfp_fStretchY += vfpToAdd.vfp_fStretchY;
   return *this;
 }
-inline CValuesForPrimitive CValuesForPrimitive::operator+(const
-                                                          CValuesForPrimitive &vfpToAdd)
+inline CValuesForPrimitive CValuesForPrimitive::operator+(const CValuesForPrimitive &vfpToAdd) const
 {
   return CValuesForPrimitive(*this) += vfpToAdd;
 }
@@ -650,8 +649,7 @@ inline CValuesForPrimitive &CValuesForPrimitive::operator-=(const
   vfp_fStretchY -= vfpToSub.vfp_fStretchY;
   return *this;
 }
-inline CValuesForPrimitive CValuesForPrimitive::operator-(const
-                                                          CValuesForPrimitive &vfpToSub)
+inline CValuesForPrimitive CValuesForPrimitive::operator-(const CValuesForPrimitive &vfpToSub) const
 {
   return CValuesForPrimitive(*this) -= vfpToSub;
 }

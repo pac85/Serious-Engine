@@ -1017,7 +1017,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
 
 
 // Calculate 2d relative point in terrain from absolute 3d point in world
-Point Calculate2dHitPoint(CTerrain *ptrTerrain, FLOAT3D &vHitPoint)
+Point Calculate2dHitPoint(CTerrain *ptrTerrain, const FLOAT3D &vHitPoint)
 {
   ASSERT(ptrTerrain!=NULL);
   ASSERT(ptrTerrain->tr_penEntity!=NULL);
@@ -1036,7 +1036,7 @@ Point Calculate2dHitPoint(CTerrain *ptrTerrain, FLOAT3D &vHitPoint)
 }
 
 // Calculate tex coords on shading map from absolute 3d point in world
-FLOAT2D CalculateShadingTexCoords(CTerrain *ptrTerrain, FLOAT3D &vPoint)
+FLOAT2D CalculateShadingTexCoords(CTerrain *ptrTerrain, const FLOAT3D &vPoint)
 {
   ASSERT(ptrTerrain!=NULL);
   ASSERT(ptrTerrain->tr_penEntity!=NULL);

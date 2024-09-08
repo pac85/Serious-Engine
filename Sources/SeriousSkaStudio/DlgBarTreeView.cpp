@@ -1602,7 +1602,7 @@ void CDlgBarTreeView::UpdateModelInstInfo(CModelInstance *pmi)
   HTREEITEM hParent = AddModelInst(*pmi,NULL,TVI_ROOT);
 
   // get name of root item
-  CTString strNewRoot = CStringA(m_TreeCtrl.GetItemText(hParent));
+  CTString strNewRoot = CStringA(m_TreeCtrl.GetItemText(hParent)).GetString();
   // if root item name is different then old root item name clear selection
   if(strRoot != strNewRoot && strRoot.Length() > 0) _aSelectItem.PopAll();
   if(_aSelectItem.Count() > 0)
@@ -1687,14 +1687,14 @@ void CDlgBarTreeView::FillBonesToComboBox(CSkeleton *pskl,INDEX iSelectedIndex)
 }
 
 // set text for 'custom' tab in tab control
-void CDlgBarTreeView::SetCustomTabText(wchar_t *strText)
+void CDlgBarTreeView::SetCustomTabText(const wchar_t *strText)
 {
   // fill tab control item
   TCITEM tcitem;
   memset(&tcitem,0,sizeof(tcitem));
   tcitem.mask = TCIF_TEXT;
   tcitem.cchTextMax = 256;
-  tcitem.pszText = strText;
+  tcitem.pszText = (LPWSTR)strText; // [Cecil] FIXME: I don't like this conversion but what else am I supposed to do?
   ((CTabCtrl*)GetDlgItem(IDC_MODE_SELECT_TAB))->SetItem(2,&tcitem);
 }
 // reset all controls on dialog

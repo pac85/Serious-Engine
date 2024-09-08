@@ -179,7 +179,7 @@ public:
   ENGINE_API void SetData_t(const CTFileName &fnmAnim); // throw char *
 
   /* Get current anim data ptr. */
-  __forceinline CAnimData *GetData() { return ao_AnimData; };
+  __forceinline CAnimData *GetData(void) const { return ao_AnimData; };
 
   /* Get animation's length. */
   ENGINE_API FLOAT GetCurrentAnimLength(void) const;

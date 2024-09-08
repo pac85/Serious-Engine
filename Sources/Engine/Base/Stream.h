@@ -98,7 +98,7 @@ public:
   CDynamicContainer<CSerial> strm_cserPreloaded; // [Cecil] Replacement for 'fnm_pserPreloaded' from old CTFileName
 
   /* Throw an exception of formatted string. */
-  void Throw_t(char *strFormat, ...); // throw char *
+  void Throw_t(const char *strFormat, ...); // throw char *
   // read the dictionary from given offset in file (internal function)
   void ReadDictionary_intenal_t(SLONG slOffset);
   // copy filename dictionary from another stream
