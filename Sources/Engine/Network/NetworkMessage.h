@@ -143,7 +143,7 @@ public:
   void Dump(void);
 
   /* Get the type of this message. */
-  inline MESSAGETYPE GetType(void) const { ASSERT(this!=NULL); return MESSAGETYPE(nm_mtType&0x3F); };
+  inline MESSAGETYPE GetType(void) const { return MESSAGETYPE(nm_mtType&0x3F); };
   /* Check if end of message. */
   BOOL EndOfMessage(void);
   // rewind message to start, so that written message can be read again

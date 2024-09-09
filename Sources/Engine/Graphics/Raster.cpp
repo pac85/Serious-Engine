@@ -79,7 +79,6 @@ void CRaster::RecalculateDrawPortsDimensions(void)
  */
 BOOL CRaster::Lock()
 {
-  ASSERT( this!=NULL);
   ASSERT( ra_LockCount>=0);
 
   // if raster size is too small in some axis
@@ -116,7 +115,6 @@ BOOL CRaster::Lock()
  */
 void CRaster::Unlock()
 {
-  ASSERT( this!=NULL);
   ASSERT( ra_LockCount>0);
 
   // decrement counter

@@ -100,7 +100,8 @@ functions:
   // add to prediction any entities that this entity depends on
   void AddDependentsToPrediction(void)
   {
-    m_penOwner->AddToPrediction();
+    // [Cecil] Don't call this on NULL
+    if (m_penOwner != NULL) { m_penOwner->AddToPrediction(); }
   }
   // postmoving
   void PostMoving(void) {

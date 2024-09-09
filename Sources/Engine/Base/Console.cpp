@@ -99,21 +99,17 @@ void CConsole::Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX 
 // Get current console buffer.
 const char *CConsole::GetBuffer(void)
 {
-  ASSERT(this != NULL);
   return con_strBuffer+(con_ctLines-con_ctLinesPrinted)*(con_ctCharsPerLine+1);
 }
 
 INDEX CConsole::GetBufferSize(void)
 {
-  ASSERT(this != NULL);
   return (con_ctCharsPerLine+1)*con_ctLines+1;
 }
 
 // Discard timing info for last lines
 void CConsole::DiscardLastLineTimes(void)
 {
-  ASSERT(this != NULL);
-
   for(INDEX i=0; i<con_ctLines; i++) {
     con_atmLines[i] = -10000.0f;
   }
@@ -122,8 +118,6 @@ void CConsole::DiscardLastLineTimes(void)
 // Get number of lines newer than given time
 INDEX CConsole::NumberOfLinesAfter(TIME tmLast)
 {
-  ASSERT(this != NULL);
-
   // clamp console variable
   con_iLastLines = Clamp( con_iLastLines, 0L, (INDEX)CONSOLE_MAXLASTLINES);
   // find number of last console lines to be displayed on screen
@@ -138,8 +132,6 @@ INDEX CConsole::NumberOfLinesAfter(TIME tmLast)
 // Get one of last lines
 CTString CConsole::GetLastLine(INDEX iLine)
 {
-  ASSERT(this != NULL);
-
   if (iLine>=con_ctLinesPrinted) {
     return "";
   }
@@ -157,8 +149,6 @@ CTString CConsole::GetLastLine(INDEX iLine)
 // clear one given line in buffer
 void CConsole::ClearLine(INDEX iLine)
 {
-  ASSERT(this != NULL);
-
   // line must be valid
   ASSERT(iLine>=0 && iLine<con_ctLines);
   // get start of line
@@ -173,7 +163,6 @@ void CConsole::ClearLine(INDEX iLine)
 // scroll buffer up, discarding lines at the start
 void CConsole::ScrollBufferUp(INDEX ctLines)
 {
-  ASSERT(this != NULL);
   ASSERT(ctLines>0 && ctLines<con_ctLines);
   // move buffer up
   memmove(
@@ -195,8 +184,6 @@ void CConsole::ScrollBufferUp(INDEX ctLines)
 // Add a line of text to console
 void CConsole::PutString(const char *strString)
 {
-  ASSERT(this != NULL);
-
   // synchronize access to console
   CTSingleLock slConsole(&con_csConsole, TRUE);
 
@@ -251,8 +238,6 @@ void CConsole::PutString(const char *strString)
 // Close console log file buffers (call only when force-exiting!)
 void CConsole::CloseLog(void)
 {
-  ASSERT(this != NULL);
-
   if (con_fLog!=NULL) {
     fclose(con_fLog);
   }

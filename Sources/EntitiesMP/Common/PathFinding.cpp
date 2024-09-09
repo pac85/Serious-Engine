@@ -51,7 +51,10 @@ CPathNode::~CPathNode(void)
 const CTString &CPathNode::GetName(void)
 {
   static CTString strNone="<none>";
-  if (this==NULL || pn_pnmMarker==NULL) {
+
+  // [Cecil] NOTE: Removed questionable 'this == NULL' check that hopefully
+  // isn't needed in the single place where this function is being called from
+  if (pn_pnmMarker==NULL) {
     return strNone;
   } else {
     return pn_pnmMarker->GetName();
@@ -61,7 +64,9 @@ const CTString &CPathNode::GetName(void)
 // get link with given index or null if no more (for iteration along the graph)
 CPathNode *CPathNode::GetLink(INDEX i)
 {
-  if (this==NULL || pn_pnmMarker==NULL) {
+  // [Cecil] NOTE: Removed questionable 'this == NULL' check that hopefully
+  // isn't needed in the single place where this function is being called from
+  if (pn_pnmMarker==NULL) {
     ASSERT(FALSE);
     return NULL;
   }

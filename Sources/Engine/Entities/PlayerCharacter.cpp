@@ -172,7 +172,6 @@ void CPlayerCharacter::SetTeam(CTString strTeam)
 /* Assignment operator. */
 CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
 {
-  ASSERT(this!=NULL && &pcOther!=NULL);
   pc_strName = pcOther.pc_strName;
   pc_strTeam = pcOther.pc_strTeam;
   memcpy(pc_aubGUID, pcOther.pc_aubGUID, PLAYERGUIDSIZE);

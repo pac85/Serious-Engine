@@ -468,7 +468,6 @@ void CShadowMap::WriteLayers_t( CTStream *pstrm) // throw char *
 void CShadowMap::Prepare(void)
 {
   // determine probing
-  ASSERT(this!=NULL);
   extern BOOL ProbeMode( CTimerValue tvLast);
   BOOL bUseProbe = ProbeMode(sm_tvLastDrawn);
 

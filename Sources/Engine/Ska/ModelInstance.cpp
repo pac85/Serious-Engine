@@ -501,7 +501,6 @@ CModelInstance *CModelInstance::GetChild(INDEX iChildID, BOOL bRecursive/*=FALSE
 // returns parent that is not included in his parents smc file
 CModelInstance *CModelInstance::GetFirstNonReferencedParent(CModelInstance *pmiRoot)
 {
-  ASSERT(this!=NULL);
   ASSERT(pmiRoot!=NULL);
   CModelInstance *pmiParent = this->GetParent(pmiRoot);
   CModelInstance *pmiLast = this;

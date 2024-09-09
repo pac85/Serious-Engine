@@ -27,7 +27,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 void CListHead::Clear(void)
 {
-  ASSERT(this!=NULL);
   lh_Head = (CListNode *) &(lh_NULL);
   lh_NULL = (CListNode *) NULL;
   lh_Tail = (CListNode *) &(lh_Head);
@@ -38,7 +37,6 @@ void CListHead::Clear(void)
  */
 BOOL CListHead::IsValid(void) const
 {
-  ASSERT(this!=NULL);
   ASSERT(lh_NULL == NULL);
   ASSERT((lh_Head == (CListNode *) &lh_NULL) && (lh_Tail == (CListNode *) &lh_Head)
       ||  lh_Tail->IsValid() && lh_Head->IsValid() );
@@ -207,7 +205,6 @@ void CListHead::Sort(int (*pCompare)(const void *p0, const void *p1), size_t iNo
  */
 BOOL CListNode::IsValid(void) const
 {
-  ASSERT(this!=NULL);
   ASSERT((ln_Pred==NULL && ln_Succ==NULL) || (ln_Pred!=NULL && ln_Succ!=NULL));
   // it is valid if it is cleared or if it is linked
   return (ln_Pred==NULL && ln_Succ==NULL)

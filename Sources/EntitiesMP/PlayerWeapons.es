@@ -843,10 +843,11 @@ functions:
  // add to prediction any entities that this entity depends on
   void AddDependentsToPrediction(void)
   {
-    m_penPlayer->AddToPrediction();
-  //m_penPipebomb->AddToPrediction();
-  //m_penGhostBusterRay->AddToPrediction();
-    m_penFlame->AddToPrediction();
+    // [Cecil] Don't call this on NULL
+    if (m_penPlayer != NULL) { m_penPlayer->AddToPrediction(); }
+    //if (m_penPipebomb != NULL) { m_penPipebomb->AddToPrediction(); }
+    //if (m_penGhostBusterRay != NULL) { m_penGhostBusterRay->AddToPrediction(); }
+    if (m_penFlame != NULL) { m_penFlame->AddToPrediction(); }
   }
   void Precache(void)
   {

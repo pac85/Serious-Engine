@@ -570,10 +570,9 @@ functions:
   // add to prediction any entities that this entity depends on
   void AddDependentsToPrediction(void)
   {
-    m_penSpray->AddToPrediction();
-    if (m_penWatcher!=NULL) {
-      GetWatcher()->AddToPrediction();
-    }
+    // [Cecil] Don't call this on NULL
+    if (m_penSpray != NULL) { m_penSpray->AddToPrediction(); }
+    if (m_penWatcher != NULL) { m_penWatcher->AddToPrediction(); }
   }
 
   // create a checksum value for sync-check

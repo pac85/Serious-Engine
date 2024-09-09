@@ -1069,8 +1069,6 @@ CGfxLibrary::~CGfxLibrary()
 /* Initialize library for application main window. */
 void CGfxLibrary::Init(void)
 {
-  ASSERT( this!=NULL);
-
   // report desktop settings
   CPutString(TRANS("Desktop settings...\n"));
 

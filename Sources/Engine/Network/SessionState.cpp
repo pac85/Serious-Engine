@@ -906,7 +906,6 @@ void CSessionState::ProcessGameTick(CNetworkMessage &nmMessage, TIME tmCurrentTi
   ses_tmLastPredictionProcessed = -1;
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_PROCESSGAMETICK);
-  ASSERT(this!=NULL);
 
 #if DEBUG_SYNCSTREAMDUMPING
   try
@@ -1027,7 +1026,6 @@ void CSessionState::ProcessGameTick(CNetworkMessage &nmMessage, TIME tmCurrentTi
 void CSessionState::ProcessPredictedGameTick(INDEX iPredictionStep, FLOAT fFactor, TIME tmCurrentTick)
 {
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_PROCESSGAMETICK);
-  ASSERT(this!=NULL);
 
   //CPrintF("predicted: %.2f\n", tmCurrentTick);
 

@@ -929,10 +929,10 @@ void CWorld::TriangularizeForVertices( CBrushVertexSelection &selVertex)
 // add this entity to prediction
 void CEntity::AddToPrediction(void)
 {
-  // this function may be called even for NULLs - so ignore it
-  if (this==NULL) {
-    return;
-  }
+  // [Cecil] NOTE: On Linux, clients with prediction crash here if it's called on empty
+  // entity pointers (but only on Release configurations for some reason, not Debug)
+  // 'this == NULL' check that exited the function has been removed to avoid confusion
+
   // if already added
   if (en_ulFlags&ENF_WILLBEPREDICTED) {
     // do nothing

@@ -69,7 +69,7 @@ INDEX CDlgPgInfoAttachingPlacement::GetCurrentAttachingPlacement(void)
 void CDlgPgInfoAttachingPlacement::SetPlacementReferenceVertex(INDEX iCenter, INDEX iFront, INDEX iUp)
 {
   // patch for calling before page is refreshed
-  if(this == NULL) return;
+  if (this == NULL) return; // [Cecil] FIXME: This should never fire but I still don't like this
   CModelerView *pModelerView = CModelerView::GetActiveView();
   if(pModelerView == NULL) return;
   CModelerDoc* pDoc = pModelerView->GetDocument();

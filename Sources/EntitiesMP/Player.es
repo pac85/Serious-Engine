@@ -1607,10 +1607,11 @@ functions:
   // add to prediction any entities that this entity depends on
   void AddDependentsToPrediction(void)
   {
-    m_penWeapons->AddToPrediction();
-    m_penAnimator->AddToPrediction();
-    m_penView->AddToPrediction();
-    m_pen3rdPersonView->AddToPrediction();
+    // [Cecil] Don't call this on NULL
+    if (m_penWeapons != NULL) { m_penWeapons->AddToPrediction(); }
+    if (m_penAnimator != NULL) { m_penAnimator->AddToPrediction(); }
+    if (m_penView != NULL) { m_penView->AddToPrediction(); }
+    if (m_pen3rdPersonView != NULL) { m_pen3rdPersonView->AddToPrediction(); }
   }
 
   // get in-game time for statistics

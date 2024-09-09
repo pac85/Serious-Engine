@@ -2036,6 +2036,7 @@ static CStaticStackArray<CSentEvent> _aseSentEvents;  // delayed events
 /* Send an event to this entity. */
 void CEntity::SendEvent(const CEntityEvent &ee)
 {
+  // [Cecil] FIXME: I can't be bothered to modify all entity sources right now, so it stays
   if (this==NULL) {
     ASSERT(FALSE);
     return;

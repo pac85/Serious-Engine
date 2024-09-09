@@ -421,8 +421,6 @@ void CTimer::AddHandler(CTimerHandler *pthNew)
 {
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&tm_csHooks, TRUE);
-
-  ASSERT(this!=NULL);
   tm_lhHooks.AddTail(pthNew->th_Node);
 }
 
@@ -433,8 +431,6 @@ void CTimer::RemHandler(CTimerHandler *pthOld)
 {
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&tm_csHooks, TRUE);
-
-  ASSERT(this!=NULL);
   pthOld->th_Node.Remove();
 }
 
@@ -453,7 +449,6 @@ void CTimer::HandleTimerHandlers(void)
  */
 void CTimer::SetRealTimeTick(TIME tNewRealTimeTick)
 {
-  ASSERT(this!=NULL);
   tm_RealTimeTimer = tNewRealTimeTick;
 }
 
@@ -462,7 +457,6 @@ void CTimer::SetRealTimeTick(TIME tNewRealTimeTick)
  */
 TIME CTimer::GetRealTimeTick(void) const
 {
-  ASSERT(this!=NULL);
   return tm_RealTimeTimer;
 }
 
@@ -470,7 +464,6 @@ TIME CTimer::GetRealTimeTick(void) const
  * Set the current game tick used for time dependent tasks (animations etc.).
  */
 void CTimer::SetCurrentTick(TIME tNewCurrentTick) {
-  ASSERT(this!=NULL);
   _CurrentTickTimer = tNewCurrentTick;
 }
 
@@ -478,29 +471,24 @@ void CTimer::SetCurrentTick(TIME tNewCurrentTick) {
  * Get current game time, always valid for the currently active task.
  */
 const TIME CTimer::CurrentTick(void) const {
-  ASSERT(this!=NULL);
   return _CurrentTickTimer;
 }
 const TIME CTimer::GetLerpedCurrentTick(void) const {
-  ASSERT(this!=NULL);
   return _CurrentTickTimer+tm_fLerpFactor*TickQuantum;
 }
 // Set factor for lerping between ticks.
 void CTimer::SetLerp(FLOAT fFactor) // sets both primary and secondary
 {
-  ASSERT(this!=NULL);
   tm_fLerpFactor = fFactor;
   tm_fLerpFactor2 = fFactor;
 }
 void CTimer::SetLerp2(FLOAT fFactor)  // sets only secondary
 {
-  ASSERT(this!=NULL);
   tm_fLerpFactor2 = fFactor;
 }
 // Disable lerping factor (set both factors to 1)
 void CTimer::DisableLerp(void)
 {
-  ASSERT(this!=NULL);
   tm_fLerpFactor =1.0f;
   tm_fLerpFactor2=1.0f;
 }

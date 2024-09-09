@@ -406,7 +406,7 @@ CTStream &operator<<(CTStream &strmStream, const CTString &strString)
  */
 BOOL CTString::IsValid(void) const
 {
-  ASSERT(this!=NULL && str_String!=NULL);
+  ASSERT(str_String != NULL);
   return TRUE;
 }
 #endif // NDEBUG
