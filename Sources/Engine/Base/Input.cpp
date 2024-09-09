@@ -519,11 +519,8 @@ void CInput::EnableInput(OS::Window hwnd)
   if( inp_bInputEnabled) return;
 
 #if SE1_PREFER_SDL
-  // [Cecil] SDL: Enable joysticks and hide mouse cursor
-  SDL_JoystickEventState(SDL_ENABLE);
+  // [Cecil] SDL: Hide mouse cursor and clear relative movement since last time
   SDL_SetRelativeMouseMode(SDL_TRUE);
-
-  // Clear relative movement since last time
   SDL_GetRelativeMouseState(NULL, NULL);
 
 #else
@@ -617,8 +614,7 @@ void CInput::DisableInput( void)
   if( !inp_bInputEnabled) return;
 
 #if SE1_PREFER_SDL
-  // [Cecil] SDL: Disable joysticks and show mouse cursor
-  SDL_JoystickEventState(SDL_DISABLE);
+  // [Cecil] SDL: Show mouse cursor
   SDL_SetRelativeMouseMode(SDL_FALSE);
 
 #else
