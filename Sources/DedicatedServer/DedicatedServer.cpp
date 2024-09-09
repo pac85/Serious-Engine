@@ -16,6 +16,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdAfx.h"
 #include <GameMP/Game.h>
 
+#if SE1_UNIX
+  #include <signal.h>
+#endif
+
 // application state variables
 BOOL _bRunning = TRUE;
 static BOOL _bForceRestart = FALSE;
@@ -71,6 +75,8 @@ void LimitFrameRate(void)
   tvLast = _pTimer->GetHighPrecisionTimer();
 }
 
+#if SE1_WIN
+
 // break/close handler
 BOOL WINAPI HandlerRoutine(
   DWORD dwCtrlType   //  control signal type
@@ -85,6 +91,15 @@ BOOL WINAPI HandlerRoutine(
   }
   return TRUE;
 }
+
+#else
+
+// [Cecil] Stop running the server on certain signals
+void UnixSignalHandler(int iSignal) {
+  _bRunning = FALSE;
+};
+
+#endif // SE1_WIN
 
 #define REFRESHTIME (0.1f)
 
@@ -107,8 +122,15 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
 
   // print status text
   CTString strRes;
+
+#if SE1_WIN
   printf("\r                                                                      ");
   printf("\r%s : %3.0f%%\r", pphi->phi_strDescription.ConstData(), pphi->phi_fCompleted*100);
+
+#else
+  // [Cecil] This isn't ideal but I don't know how to make it update the same line
+  printf("%s : %3.0f%%\n", pphi->phi_strDescription.ConstData(), pphi->phi_fCompleted * 100);
+#endif
 }
 
 // loading hook functions
@@ -153,11 +175,17 @@ BOOL Init(int argc, char* argv[])
     // NOTE: this cannot be translated - translations are not loaded yet
     printf("Usage: DedicatedServer <configname> [<modname>]\n"
       "This starts a server reading configs from directory 'Scripts\\Dedicated\\<configname>\\'\n");
+
+  #if SE1_WIN
     getch();
+  #endif
+
     exit(0);
   }
 
+#if SE1_WIN
   SetConsoleTitleA(argv[1]);
+#endif
 
   ded_strConfig = CTString("Scripts\\Dedicated\\")+argv[1]+"\\";
 
@@ -214,7 +242,15 @@ BOOL Init(int argc, char* argv[])
   LoadStringVar(CTString("Data\\Var\\Sam_Version.var"), _strSamVersion);
   CPrintF(TRANS("Serious Sam version: %s\n"), _strSamVersion.ConstData());
 
+#if SE1_WIN
   SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+
+#else
+  signal(SIGINT, UnixSignalHandler);
+  signal(SIGHUP, UnixSignalHandler);
+  signal(SIGQUIT, UnixSignalHandler);
+  signal(SIGTERM, UnixSignalHandler);
+#endif
 
   // if there is a mod
   if (_fnmMod!="") {
